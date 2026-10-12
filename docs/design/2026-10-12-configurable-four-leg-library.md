@@ -19,6 +19,12 @@ All library implementation and integration tests stay in this repository.
 Existing host repositories supply read-only reference material, not the place
 to install the library or run the integration suite.
 
+The owner explicitly retains the existing Gemini workaround after unsuccessful
+0.63.0 non-interactive plan behavior and no available test path. Replacing or
+retesting that workaround is not part of this design. MCP-based candidates are
+excluded. A possible Codex SDK experiment uses the direct local app-server
+protocol and must not rely on configured MCP servers or change global settings.
+
 ## Canonical representation
 
 Freshly read shared-spec main is
@@ -90,7 +96,11 @@ See [R-AGREE](https://github.com/codefoundry-io/triad-dispatch-spec/blob/396a04d
    macOS15 ARM64. CI provider responses are synthetic and labelled as such.
 4. **Optional transport experiments:** use the CLI research to choose a bounded
    Codex Python SDK comparison in this repository. Keep SDK dependencies outside
-   the deterministic core. Add other real-provider checks only with supported
+   the deterministic core. Preserve existing ChatGPT authentication where
+   accessible; do not introduce an API-key requirement or an MCP transport.
+   Verify SDK credential reuse separately from the CLI's login status. Retain
+   the existing Gemini workaround without making a new plan-mode probe a gate.
+   Add other real-provider checks only with supported
    installed interfaces; record missing/quota-blocked routes honestly. Four-way
    replay is not proof of four real providers or either existing host's adoption.
 5. **Classification:** test measured typed carriers and shared token/exit rules.

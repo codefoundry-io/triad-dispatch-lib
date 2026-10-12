@@ -32,12 +32,18 @@ or effective model/effort selection.
 Priorities are recommendations for experiments, not adopted dependencies or
 permission changes. "Already used" refers to the inspected B host.
 
+Owner follow-up: preserve the existing Gemini workaround; its native 0.63.0
+non-interactive plan behavior was already problematic and no verification path
+is available. The proposed replacement/retest is withdrawn. Exclude MCP-based
+candidates. Direct CLI and SDK app-server interfaces are evaluated separately
+from optional MCP tool connections; no global MCP configuration is changed.
+
 | Priority | Feature and evidence | Current state and proposed benefit | Constraint / disposition |
 | --- | --- | --- | --- |
 | High | **Codex Python SDK**: stable `openai-codex`, `Codex` / `AsyncCodex`, thread calls and `Sandbox.read_only`. [SDK](https://learn.chatgpt.com/docs/codex-sdk) | A candidate for the library repository's optional Codex test transport; could remove hand-written subprocess or JSON-RPC handling. Introduction version unconfirmed. | SDK builds pin a CLI runtime; an explicit `CodexConfig(codex_bin=...)` selects a different local binary. Keep it out of the deterministic core until an isolated comparison proves value. B's current Codex path is native spawning, not a CLI wrapper. |
 | High | **AGY typed failures**: 1.2.6 adds stderr `AGY_ERROR` JSON; 1.2.10 fixes partial-response failures to exit 3. [Changelog](https://raw.githubusercontent.com/google-antigravity/antigravity-cli/main/CHANGELOG.md) | No dedicated `AGY_ERROR` parser was found in B's common helper. A versioned adapter could extract typed failure evidence before shared classification, reducing phrase matching. | Verify real carrier fixtures and mapping before changing classification. The common core must not classify arbitrary answer or tool text as provider errors. |
-| High | **Gemini 0.63.0 headless plan execution and reliability fixes**. [Stable notes](https://geminicli.com/docs/changelogs/latest/) | Current B already requires stable >=0.63.0 and uses plan mode; installed 0.60.0 is below that floor. Evaluate the supported version before designing compatibility machinery. | Autonomous plan execution is not proof of read-only containment. Retain explicit tool policy; no upgrade was performed. |
-| Medium | **Claude 2.1.296 vendor backoff control**: `CLAUDE_CODE_OVERLOADED_RETRY_MAX_DELAY_MS`; headless disabled-MCP handling also fixed. [Release](https://github.com/anthropics/claude-code/releases/tag/v2.1.296) | Vendor request retry control supports keeping the outer adapter to one invocation. | Do not inject this environment variable by default or restart an entire CLI as a substitute. Preserve the shared terminal/retry contract. |
+| Withdrawn by owner | **Gemini 0.63.0 headless plan execution**. [Stable notes](https://geminicli.com/docs/changelogs/latest/) | Preserve the existing workaround; the release note does not supersede the owner's operational evidence. The previously observed version mismatch is recorded history, not an upgrade or retest prerequisite. | No replacement, upgrade or new plan-mode test is selected. Existing version checks and policy are unchanged. |
+| Medium | **Claude 2.1.296 vendor backoff control**: `CLAUDE_CODE_OVERLOADED_RETRY_MAX_DELAY_MS`. [Release](https://github.com/anthropics/claude-code/releases/tag/v2.1.296) | Vendor request retry control supports keeping the outer adapter to one invocation. | Do not inject this environment variable by default or restart an entire CLI as a substitute. MCP-related changes are excluded from adoption candidates. Preserve the shared terminal/retry contract. |
 | Medium | **Codex invocation-local configuration**: `--ignore-user-config`, `-c key=value`, `--strict-config`. [CLI reference](https://learn.chatgpt.com/docs/developer-commands?surface=cli) | Candidate for reproducible library tests and early rejection of unsupported keys. First release unconfirmed. | Ignoring user config does not erase every project/managed layer; authentication still uses `CODEX_HOME`. Preserve effective permissions and owner settings. |
 | Medium | **Claude unattended permission handling**: `--permission-prompts none`, since 2.1.259. [CLI reference](https://code.claude.com/docs/en/cli-reference) | Vendor denies unanswered permission requests, avoiding a custom permission conversation in unattended adapters. Not currently passed by B. | It changes denial behavior and is separate from plan mode. Probe the actual review read/search workflow before adoption. |
 | Medium | **AGY native process and deadline behavior**, including 1.1.24 pipe inheritance and 1.2.9 headless cleanup fixes. [Changelog](https://raw.githubusercontent.com/google-antigravity/antigravity-cli/main/CHANGELOG.md) | Evaluate whether compatibility code is still needed at the supported version. `--print-timeout` is already passed. | Keep direct-call cancellation and complete-result validation. A changelog cannot prove all descendants terminate after every crash. |
@@ -78,7 +84,8 @@ the current fresh native test path, measuring raw-result preservation, startup,
 settings, terminal failures and cancellation. Provider-specific versions and
 capabilities belong to adapters; unsupported options must be reported, not
 silently translated or dropped. CLI envelope extraction and common classification
-are distinct responsibilities.
+are distinct responsibilities. This does not schedule a replacement or new
+plan-mode probe for the existing Gemini workaround.
 
 The library's existing native CI evidence covers Ubuntu 24.04 x86-64 and macOS15
 ARM64 with Python3.12. It does not certify every CLI/SDK. Gemini documents
@@ -90,6 +97,45 @@ CLI installation page. Validate adapters on both target platforms separately.
 [AGY installation](https://antigravity.google/docs/cli/install/).
 
 Recommended order: four-route core configuration and agreement; optional Codex
-SDK experiment; typed AGY failure fixtures; supported-version CLI checks. Consumer
+SDK experiment; typed AGY failure fixtures. Preserve the owner's existing Gemini
+path and exclude MCP-based approaches throughout. Consumer
 ports, global upgrades and adoption of new permission modes remain separate from
 this research. No runtime or dependency change is claimed by this document.
+
+## Follow-up: Python SDK authentication
+
+The official [Python SDK page](https://learn.chatgpt.com/docs/codex-sdk) states
+that `openai-codex` controls a local Codex app-server through JSON-RPC. Published
+builds select a pinned CLI runtime unless `CodexConfig(codex_bin=...)` overrides
+it. This is a direct client interface; it does not require an MCP server.
+The app-server's default transport is stdio JSONL. Optional configured MCP tools
+are a separate surface and are excluded from the proposed experiment.
+[App-server protocol](https://learn.chatgpt.com/docs/app-server#protocol).
+
+Authentication choices are:
+
+- **Existing ChatGPT sign-in:** Codex caches and reuses login state. Reuse by a
+  local SDK runtime depends on reaching the same `CODEX_HOME` and credential
+  storage, including OS keyring access. This follows from the documented runtime
+  and authentication architecture; it is not yet a successful SDK execution on
+  this workstation. The Python overview does not document every environment
+  inheritance or credential-selection detail.
+- **New ChatGPT sign-in:** `codex login` opens the browser flow. Headless use can
+  use `codex login --device-auth` when device login is enabled. The app-server
+  also exposes managed browser/device login operations if a client needs its own
+  login UI; no separate TRIAD OAuth implementation is needed.
+- **API key:** an alternative with API billing, not a requirement for ChatGPT
+  subscription access. Keep the owner's existing sign-in method.
+
+Credentials can live in `auth.json` under `CODEX_HOME` or the OS keyring; an
+ephemeral store exists only for its current process. Do not assume that copying
+`auth.json` is required or that every SDK runtime can see another process's
+credentials. Codex owns token refresh for managed ChatGPT login.
+[Authentication and storage](https://learn.chatgpt.com/docs/auth),
+[app-server authentication modes](https://learn.chatgpt.com/docs/app-server#authentication-modes).
+
+Local follow-up evidence: running only `codex login status` through the required
+login shell returned `Logged in using ChatGPT`, exit 0. No credentials were read
+directly or printed; no login/logout, SDK installation or inference was started.
+This proves the installed CLI's reported mode, not bundled-SDK reuse, entitlement
+to a particular model, or absence of inherited MCP tools in a future runtime.

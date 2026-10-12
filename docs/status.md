@@ -11,6 +11,11 @@ Updated: 2026-10-12
   four together. The Codex-first tests do not limit the product's supported scope.
 - Keep implementation and integration tests in this library repository; existing
   consumer repositories remain read-only references until their separate ports.
+- Preserve the existing Gemini workaround. The owner reports that 0.63.0
+  non-interactive plan execution did not work adequately and has no available
+  verification path; do not replace or retest that path as part of this work.
+- Exclude MCP-based implementation candidates. Investigate `openai-codex`
+  authentication through the direct local app-server interface only.
 
 ## Current slice
 
@@ -58,6 +63,10 @@ the existing B wrappers. It identifies optional transport experiments and
 already-adopted capabilities. This research changes no runtime code, package
 dependencies, spec pin or installed CLI. The four-route implementation is still
 pending; current package capabilities remain those listed above.
+The follow-up authentication check found the installed CLI reports ChatGPT
+login. Official documentation supports ChatGPT OAuth and API-key authentication
+for the app-server used by the Python SDK; SDK reuse on this machine has not
+been executed. The Gemini replacement candidate is withdrawn by owner direction.
 
 Consumer adoption is separate: thin host adapters consume the common core and
 retain native execution. Existing host tests/bootstrap are not part of this
