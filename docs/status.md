@@ -36,8 +36,11 @@ investigations without ballots. Formal and investigation callbacks both observed
 peak concurrency two; native tool snapshots separately observed overlapping
 children. Details and capture limits are in
 [native callback verification](verification/2026-10-12-native-codex-callbacks.md).
-Task review is clear; current whole-branch review and native Ubuntu/macOS CI are
-pending at this documentation checkpoint.
+Task and final whole-branch reviews have no open findings. Reviewed head `99e8e7f`
+passed [native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38222619438)
+on Ubuntu 24.04 x86-64 and macOS 15 ARM64: source/sdist each 399 tests per runner
+plus all four isolated installed-wheel drivers. CI uses synthetic responses;
+actual native Codex observations above were performed on local macOS.
 The [previous four-route verification](verification/2026-10-12-four-route-core.md)
 records the earlier 364-test native CI baseline.
 Earlier 157-test CI and fresh Codex observations describe the historical

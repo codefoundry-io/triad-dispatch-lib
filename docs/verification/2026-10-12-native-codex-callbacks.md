@@ -115,8 +115,28 @@ Final local source and unpacked-sdist suites each pass **399 tests**. The rebuil
 installed native synthetic exchange passes. The prior wheel at the initial driver
 commit also passed the existing 10 raw replay cases, 54 Codex adapter cases and
 four-route matrix (nine scenarios, 51 prompt profiles); the subsequent fix changes
-only the new driver and its tests. Current native CI and final whole-branch review
-are pending at this documentation checkpoint.
+only the new driver and its tests.
+
+[Native CI run 38222619438](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38222619438)
+passed on reviewed head `99e8e7f44a8ee6d75516f2905185871f643d3e94`:
+
+| Native runner | Python | Source suite | Unpacked-sdist suite | Installed wheel |
+| --- | --- | --- | --- | --- |
+| Ubuntu 24.04 x86-64 | 3.12 | 399 passed | 399 passed | All four drivers passed |
+| macOS 15 ARM64 | 3.12 | 399 passed | 399 passed | All four drivers passed |
+
+Each runner verifies 10 raw replays, 54 Codex adapter cases, nine four-route
+scenarios, 51 prompt profiles and the new synthetic supervised exchange with
+three review entries, dissent and an ordinary investigation. These CI exchanges
+use synthetic responses, separately from the six actual macOS observations above.
+
+Final independent whole-branch review (`c6dd981..99e8e7f`, requested
+`gpt-6-astra`/`high`) found no Critical, Important or Minor issues. It independently
+checked all 44 indexed evidence-file hashes, response/report correspondence and
+the installed API paths. Review was prompt-controlled and read-only; pre/post
+HEAD and tree fingerprints matched and the checkout stayed clean. The reviewer
+did not inspect external CI; the root separately verified the successful run and
+retained its complete logs. Subsequent edits record these results only.
 
 ## Limits
 

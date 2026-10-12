@@ -60,4 +60,4 @@
 - [x] Investigation round: two fresh native Codex entries, max2, one boundary-case perspective and one test-design perspective on the same defective fixture. Preserve ordinary text, ensure no approval ballot or mutation of prior formal reports.
 - [x] Root supervises all children, atomically captures original final strings/receipts, and retains tool snapshots/times/agent IDs. Finish or interrupt/await every owned child. Distinguish callback overlap, observed native running overlap and unexposed backend scheduling.
 - [x] Write `docs/verification/2026-10-12-native-codex-callbacks.md` and update `docs/status.md` with measured results/limits; no migration guide (briefing item3) in this slice.
-- [ ] Final independent review, normal branch push/draft PR update, native Ubuntu/macOS CI. Record exact implementation and final documentation heads; no merge/publication. Complete only after current checks and evidence review pass.
+- [x] Final independent review, normal branch push/draft PR update, native Ubuntu/macOS CI. Record exact implementation and final documentation heads; no merge/publication. Complete only after current checks and evidence review pass.
