@@ -37,17 +37,17 @@ review. Existing hosts remain untouched and are not executed.
 with exactly 18 named cases per phase, each reporting review_kind/name/outcome.
 The CLI remains unchanged.
 
-- [ ] Add `test_synthetic_matrix` asserting all three phases, 18 distinct cases
+- [x] Add `test_synthetic_matrix` asserting all three phases, 18 distinct cases
   each and the exact intended admission/rejection outcomes; add
-  `test_synthetic_matrix_refuses_false_admission` and
+  `test_synthetic_matrix_refuses_false_admission`, phase/purpose fault injection, and
   `test_missing_wheel_refused_before_install`.
-- [ ] Run `uv run --locked pytest tests/test_codex_smoke.py -q`.
+- [x] Run `uv run --locked pytest tests/test_codex_smoke.py -q`.
   Expected: new matrix assertion and missing-wheel exit-code failures.
-- [ ] Extend self-test using real renderer/admission calls with explicit expected
+- [x] Extend self-test using real renderer/admission calls with explicit expected
   results and rejection codes. Reject nonexistent wheel via argparse before
   calling installed_wheel. Do not modify src/ or consumer repositories.
-- [ ] Run `uv run --locked pytest -q`. Expected: all pass.
-- [ ] Commit `test: expand library-owned Codex integration matrix`.
+- [x] Run `uv run --locked pytest -q`. Expected: all pass.
+- [x] Commit `test: expand library-owned Codex integration matrix`.
 
 ### Task 2: Installed and fresh native evidence
 
@@ -56,13 +56,13 @@ The CLI remains unchanged.
 
 **Interfaces:** Existing render/admit/self-test CLI and Task 1 cases report.
 
-- [ ] Build sdist and its wheel, run original wheel replay and expanded installed
+- [x] Build sdist and its wheel, run original wheel replay and expanded installed
   self-test. Expected: 10 replay cases and 54 phase matrix cases pass.
-- [ ] Record expectations before dispatch; prepare isolated formal-plan and
+- [x] Record expectations before dispatch; prepare isolated formal-plan and
   implementation-review control/defect packets in ignored `_runs/`.
   Render through the explicit installed wheel. Dispatch four fresh Sol/medium
   children, fork_turns=none, read-only, no scripts/providers/web/subagents.
-- [ ] Save exact final text and observed receipts, admit with the same wheel,
+- [x] Save exact final text and observed receipts, admit with the same wheel,
   packet and prompt, report actual outcomes without repair or invisible retry.
   Expected: SAFE controls and arithmetic findings in negative cases; planned
   future files are not represented as inspected.

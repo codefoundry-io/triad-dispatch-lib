@@ -174,6 +174,19 @@ def test_synthetic_matrix_refuses_false_admission(monkeypatch):
         driver().synthetic_smoke()
 
 
+@pytest.mark.parametrize("fault", ["metadata", "purpose"])
+def test_synthetic_matrix_refuses_wrong_phase(monkeypatch, fault):
+    module = driver()
+    original = module.render_prompt
+    def wrong_phase(context):
+        if fault == "metadata":
+            return original(context | {"review_kind": "pre-merge"})
+        return original(context).replace("Review whether this plan meets", "Review this change's correctness and completeness")
+    monkeypatch.setattr(module, "render_prompt", wrong_phase)
+    with pytest.raises(AssertionError, match="phase"):
+        module.synthetic_smoke()
+
+
 def test_missing_wheel_refused_before_install(monkeypatch, tmp_path, capsys):
     module = driver()
 

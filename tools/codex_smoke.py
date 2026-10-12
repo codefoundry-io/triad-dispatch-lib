@@ -145,6 +145,11 @@ def synthetic_smoke() -> dict:
         for phase in ("formal-plan", "implementation-review", "pre-merge"):
             context["review_kind"] = phase
             prompt = render_prompt(context).encode()
+            metadata = json.loads(prompt.split(b"\n", 1)[0].removeprefix(b"Review v2 metadata: "))
+            purpose = (b"Review whether this plan meets" if phase == "formal-plan"
+                       else b"Review this change's correctness and completeness")
+            if metadata["review_kind"] != phase or purpose not in prompt:
+                raise AssertionError("Synthetic phase rendering mismatch.")
             verdict = {"schema_version": 2, **expected, "verdict": "SAFE TO MERGE",
                        "criteria_checked": ["correctness"], "findings": [],
                        "affected_surfaces_inspected": ["example.py"], "open_questions": []}

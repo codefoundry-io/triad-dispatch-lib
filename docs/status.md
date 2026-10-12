@@ -18,15 +18,16 @@ Python 3.12 is the development/CI baseline; Rust source implementation is deferr
 
 Work is on `codex/strict-v2-admission` in
 [draft PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1).
-Local source and unpacked-sdist checks passed 152 tests. Installed-wheel replay
-passed 10 raw cases plus synthetic prompt/admission checks. Two fresh native
-Codex responses produced the expected control/defect verdicts and passed the
-installed validator. The previous sdist support-file minor is resolved.
-Native Ubuntu 24.04 x86-64 and macOS 15 ARM64 CI both passed the same source,
-sdist and installed-package checks. Independent whole-branch review found no
-Critical/Important findings and one deferred CLI minor: a missing wheel path exits
-1 rather than the documented input-rejection code 2. It does not admit a result.
-See [current evidence](verification/2026-10-12-codex-prompt-smoke.md) and
+The owner explicitly selected tests in this library repository only. Existing
+Codex/Claude hosts are read-only references, with no runtime adoption or host test
+execution. Local checks now pass 157 tests; installed-wheel replay passes 10 raw
+cases and the expanded Codex adapter passes 54 cases across three review phases.
+Four new native sessions verified plan/implementation control and defect packets;
+the earlier two pre-merge observations remain separate evidence. Both prior
+packaging and missing-wheel CLI minors are resolved. Independent review and
+native CI for this latest test-only extension are pending.
+See [current evidence](verification/2026-10-12-lib-only-codex-integration.md),
+[earlier prompt evidence](verification/2026-10-12-codex-prompt-smoke.md) and
 [first-slice evidence](verification/2026-10-12-v2-admission.md).
 
 - [Design and API](design/2026-10-12-v2-admission.md)
@@ -34,6 +35,7 @@ See [current evidence](verification/2026-10-12-codex-prompt-smoke.md) and
 - [Original research](research/2026-10-12-shared-library-assessment.md)
 - [Prompt smoke design](design/2026-10-12-codex-prompt-smoke.md)
 - [Prompt smoke execution plan](superpowers/plans/2026-10-12-codex-prompt-smoke.md)
+- [Library-only integration plan](superpowers/plans/2026-10-12-lib-only-codex-integration.md)
 
 ## Next slices
 
@@ -45,7 +47,7 @@ driver is ready for bounded experiments without copying a full host skill.
 
 ## Boundaries
 
-Neither host imports this package yet. The parent dispatched two native Codex
+Neither host imports this package yet. The parent dispatched fresh native Codex
 test children; the library and driver do not spawn. No global installation,
 package-index publication, final merge or release occurred.
 Platform proof covers the recorded native Python 3.12 combinations only.

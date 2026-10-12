@@ -20,6 +20,7 @@ package. It is not published to a package index and neither host has adopted it 
 - [Prompt renderer and test-driver design](docs/design/2026-10-12-codex-prompt-smoke.md)
 - [Prompt smoke plan](docs/superpowers/plans/2026-10-12-codex-prompt-smoke.md)
 - [Installed-package and fresh Codex evidence](docs/verification/2026-10-12-codex-prompt-smoke.md)
+- [Library-only Codex integration matrix](docs/verification/2026-10-12-lib-only-codex-integration.md)
 - [Contributor and agent guidance](AGENTS.md)
 
 ## Relationship to the shared specification
@@ -124,6 +125,15 @@ to `validate_verdict`. A valid negative verdict is admitted successfully; this
 does not grant merge permission. The driver does not spawn agents or establish
 formal host custody. CI uses synthetic responses; fresh native response evidence
 is recorded separately with its capture limitations.
+
+All these experiments belong to this library repository. They do not execute or
+modify an existing Codex/Claude host, install a plugin, or change host settings.
+`self-test` reports 54 cases: 18 each for formal-plan, implementation-review and
+pre-merge. It preserves valid negative verdicts and rejects every mismatched
+binding, malformed original JSON, and changed packet/prompt. The non-null Codex
+route case is a schema refusal; it cannot be a schema-valid route swap.
+The matrix also checks that the rendered phase and purpose match each case.
+Missing wheel paths are refused with exit code 2 before installation starts.
 
 ## License
 
