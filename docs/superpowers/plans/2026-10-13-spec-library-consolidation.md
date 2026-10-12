@@ -47,14 +47,14 @@
 - Keeps `load_verified_bundle(root, names: tuple[str, ...]) -> dict[str, bytes]` and public APIs unchanged.
 - Produces import ancestry record with `source_repository`, `source_commit`, and `sha256` (all original imported relative files); it is not current bundle provenance.
 
-- [ ] Write tests for identity serialization, valid generated bundles, strict manifest fields, Boolean/unknown versions, malformed digests, mismatched ID and altered payloads. Assert `ContractError` for invalid bundles.
-- [ ] Write generator tests using temporary trees: canonical byte preservation, deterministic repeated generation, nonwriting check, missing/changed/extra outputs and symlink refusal. Assert failure leaves existing outside-target bytes untouched.
-- [ ] Run focused tests before implementation and record expected RED output; distinguish a missing implementation from an unrelated environment failure.
-- [ ] Import the complete upstream tree and generate the original file digest record. Verify the original package payloads equal corresponding upstream bytes; if any differ, report before replacing them. Historical files remain byte-identical at this task.
-- [ ] Implement the shared identity function, generator with explicit mapping and owned-tree validation, and strict runtime manifest validation. Use the exact six-field manifest from the design. Decouple `SCHEMA_NAMESPACE` from current source repository. Preserve error boundaries and fresh schema returns.
-- [ ] Update existing provenance tests for the new format and add assertions preserving verdict, roster and review-kind schema IDs. Include duplicate/non-finite JSON tests already present; do not weaken them.
-- [ ] Run focused tests, `uv run --locked pytest -q`, `uv run --locked pytest -q spec/tests`, `uv run --locked python spec/tools/check_authoring.py`, generator `--check`, and `git diff --check`. Record import/payload equality and results.
-- [ ] Self-review and commit only owned files. Report tests and any integration obligations for Task 2; wheel metadata reporting and normal nested test discovery belong to Task 2.
+- [x] Write tests for identity serialization, valid generated bundles, strict manifest fields, Boolean/unknown versions, malformed digests, mismatched ID and altered payloads. Assert `ContractError` for invalid bundles.
+- [x] Write generator tests using temporary trees: canonical byte preservation, deterministic repeated generation, nonwriting check, missing/changed/extra outputs and symlink refusal. Assert failure leaves existing outside-target bytes untouched.
+- [x] Run focused tests before implementation and record expected RED output; distinguish a missing implementation from an unrelated environment failure.
+- [x] Import the complete upstream tree and generate the original file digest record. Verify the original package payloads equal corresponding upstream bytes; if any differ, report before replacing them. Historical files remain byte-identical at this task.
+- [x] Implement the shared identity function, generator with explicit mapping and owned-tree validation, and strict runtime manifest validation. Use the exact six-field manifest from the design. Decouple `SCHEMA_NAMESPACE` from current source repository. Preserve error boundaries and fresh schema returns.
+- [x] Update existing provenance tests for the new format and add assertions preserving verdict, roster and review-kind schema IDs. Include duplicate/non-finite JSON tests already present; do not weaken them.
+- [x] Run focused tests, `uv run --locked pytest -q`, `uv run --locked pytest -q spec/tests`, `uv run --locked python spec/tools/check_authoring.py`, generator `--check`, and `git diff --check`. Record import/payload equality and results.
+- [x] Self-review and commit only owned files. Report tests and any integration obligations for Task 2; wheel metadata reporting and normal nested test discovery belong to Task 2.
 
 ### Task 2: Ship verifiable source archives and document independent host adoption
 
@@ -70,14 +70,14 @@
 - Produces `0.1.0.dev3` sdist and wheel; the existing `verify_wheel.py <wheel>` interface now reports all bundle identities and verifies all three installed bundles from its isolated interpreter.
 - Keeps all existing isolated replay/Codex/four-route/native drivers and their public arguments.
 
-- [ ] Add a focused failing test for installed probe metadata/all-bundle verification or archive inputs, exercising behavior rather than grepping implementation. Record RED.
-- [ ] Update package version and lock, include canonical source/checkers/tests/TOML inputs in the sdist, and discover both test suites. Exclude `_runs`, temporary outputs, caches and VCS metadata from built artifacts.
-- [ ] Update installed wheel verification to exercise verdict, roster, review-kind and all five prompt resources, validate each manifest ID/digest, and report new metadata instead of the removed `source_commit`. Preserve isolated import-origin checks and strict failure behavior.
-- [ ] Update CI for generator check, imported authoring checker, combined source and unpacked-sdist tests, rebuild-from-sdist and all four isolated drivers at dev3. Use existing Ubuntu/macOS matrix and dependency pins.
-- [ ] Update active authoring instructions to `spec/` as canonical source within this repository, distinguish historical import ancestry from current content IDs, and preserve historical decisions/changelog/cases without rewriting their past assertions. Explain that repository cutover awaits PR merge and old repository notice; do not claim remote retirement.
-- [ ] Document independent host release/adoption metadata, shared-content versus host-native boundaries, generated-asset ownership, managed-file hash/preservation recommendations for each host installer, static versus real-host verification, and a copy-ready old-spec migration notice for use after merge. No consumer or old-spec mutations in this task.
-- [ ] Run `uv sync --locked`, both suites, authoring checker, generator check and `git diff --check`. Build sdist, unpack outside source, rebuild wheel from sdist, run combined tests/checker/generator there, and run all four existing installed-wheel drivers on the rebuilt wheel using current README commands. Record exact paths/results and actual platform.
-- [ ] Update current status and verification evidence without claiming remote CI or actual providers not observed in this slice. Self-review and commit owned files.
+- [x] Add a focused failing test for installed probe metadata/all-bundle verification or archive inputs, exercising behavior rather than grepping implementation. Record RED.
+- [x] Update package version and lock, include canonical source/checkers/tests/TOML inputs in the sdist, and discover both test suites. Exclude `_runs`, temporary outputs, caches and VCS metadata from built artifacts.
+- [x] Update installed wheel verification to exercise verdict, roster, review-kind and all five prompt resources, validate each manifest ID/digest, and report new metadata instead of the removed `source_commit`. Preserve isolated import-origin checks and strict failure behavior.
+- [x] Update CI for generator check, imported authoring checker, combined source and unpacked-sdist tests, rebuild-from-sdist and all four isolated drivers at dev3. Use existing Ubuntu/macOS matrix and dependency pins.
+- [x] Update active authoring instructions to `spec/` as canonical source within this repository, distinguish historical import ancestry from current content IDs, and preserve historical decisions/changelog/cases without rewriting their past assertions. Explain that repository cutover awaits PR merge and old repository notice; do not claim remote retirement.
+- [x] Document independent host release/adoption metadata, shared-content versus host-native boundaries, generated-asset ownership, managed-file hash/preservation recommendations for each host installer, static versus real-host verification, and a copy-ready old-spec migration notice for use after merge. No consumer or old-spec mutations in this task.
+- [x] Run `uv sync --locked`, both suites, authoring checker, generator check and `git diff --check`. Build sdist, unpack outside source, rebuild wheel from sdist, run combined tests/checker/generator there, and run all four existing installed-wheel drivers on the rebuilt wheel using current README commands. Record exact paths/results and actual platform.
+- [x] Update current status and verification evidence without claiming remote CI or actual providers not observed in this slice. Self-review and commit owned files.
 
 ## Controller completion
 

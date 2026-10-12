@@ -7,6 +7,8 @@ Updated: 2026-10-13
 - Develop the common library in public `codefoundry-io/triad-dispatch-lib`.
 - Write the design and implementation plan, then proceed.
 - Preserve host-owned native execution and the shared specification authority.
+- Consolidate the shared specification with this library; keep Claude and Codex
+  distribution independent and record their adoption separately.
 - Support configurable Codex, Claude, Gemini CLI and AGY entries, including all
   four together. The Codex-first tests do not limit the product's supported scope.
 - Keep implementation and integration tests in this library repository; existing
@@ -32,9 +34,13 @@ the authoring checker and generator check. The dev3 sdist includes canonical
 sources, tests/checkers and TOML inputs; unpacked-sdist verification and its
 rebuilt wheel pass the same tests and four isolated synthetic drivers. See
 [consolidation evidence](verification/2026-10-13-spec-library-consolidation.md)
-for artifact identities, RED/GREEN and limits. Current-branch remote CI and real
-providers have not been observed in this slice. Independent task/branch review
-and PR integration remain controller work.
+for artifact identities, RED/GREEN and limits. Both task reviews and the final
+whole-branch review approved `3bcb0da` with no open findings.
+[Committed-head CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38287530518)
+passed on Ubuntu 24.04 x86-64 and macOS 15 ARM64: each runner passed 633 source
+and 633 unpacked-sdist tests, authoring/generator checks and all four isolated
+installed-wheel drivers. The [draft PR](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
+is updated. No new real-provider observation is claimed for this migration.
 
 Repository cutover awaits PR merge and the [old-spec notice](../spec/MIGRATION.md).
 Neither host has adopted this package; [host adoption and independent releases](host-adoption.md)

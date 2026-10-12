@@ -56,12 +56,46 @@ whole imported historical diff is whitespace-clean.
 
 Actual platform is macOS 26.6.2 ARM64, Python 3.12.13, uv 0.11.8. CI configuration
 retains pinned actions/dependencies and Ubuntu 24.04/macOS 15 runners, adding
-combined source and unpacked-sdist checks and all four dev3 drivers. No current
-remote CI result, Ubuntu execution or real provider success is claimed here.
+combined source and unpacked-sdist checks and all four dev3 drivers. The original
+local snapshot did not establish remote CI or Ubuntu execution; the committed-head
+results below now supply that separate evidence. No new real provider success is claimed.
 Earlier dev2 CI/native evidence remains historical. Neither host or old-spec
 repository is modified; no global install, package publication, final merge,
-spec tag, host release or adoption is performed. Review/integration follows in
-the controller task.
+spec tag, host release or adoption is performed.
+
+## Independent review and committed-head CI
+
+Task 1 and Task 2 received independent Sol/high reviews; both were compliant and
+approved with no open findings. A fresh Astra/high reviewer inspected the whole
+branch `c6dd981..3bcb0da` and reported no Critical, Important or Minor findings.
+Requested model/effort settings are recorded, while effective settings remain
+UNEXPOSED. Review containment was prompt-controlled, with unchanged HEAD and clean
+tracked trees before and after the reviews.
+
+The final reviewer independently checked the 131 original import hashes, exactly
+seven intentionally edited active guidance files, and all eight runtime payloads
+against upstream, current canonical source and pre-consolidation package bytes.
+Historical prose was reviewed for migration fidelity, not a new semantic audit.
+Real host installation/provider adoption and noncooperative callback isolation
+remain outside this slice's evidence and retain their documented boundaries.
+
+[CI run 38287530518](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38287530518)
+succeeded for reviewed head `3bcb0da7eb54780aebb1bcc91fd10ba2f2a4acae`:
+
+| Native runner | Interpreter | Source | Unpacked sdist | Installed drivers |
+| --- | --- | --- | --- | --- |
+| Ubuntu 24.04 x86-64 | Python 3.12.15 | 633 passed | 633 passed | all four passed |
+| macOS 15 ARM64 | Python 3.12.10 | 633 passed | 633 passed | all four passed |
+
+Both jobs also passed the source/archive authoring and generator checks, rebuilt
+the wheel from the unpacked source, and verified a clean tracked tree. The watch
+command exited zero; job metadata and full logs are retained locally under
+`_runs/spec-consolidation/ci-38287530518.*`. These are native platform and synthetic
+library results, not authenticated provider or consumer-adoption proof.
+
+The following documentation checkpoint records this completed verification; it
+does not change the reviewed implementation or runtime asset bytes. The existing
+draft PR is updated, with final merge, publication and host ports still separate.
 
 ## Tested archive snapshot
 
