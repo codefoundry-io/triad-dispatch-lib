@@ -148,6 +148,9 @@ batch timestamps, not backend start/end measurements. Read-only child scope is
 prompt-controlled, not a newly enforced provider sandbox.
 
 Actual native cancellation/timeout was not exercised: all six children completed.
+The later [actual native lifecycle follow-up](2026-10-12-native-codex-lifecycle.md)
+separately records native interruption, repeated parent cancellation and late
+final delivery through this installed wheel.
 Synthetic tests verify cancellation propagation and cleanup waiting, but the
 parent must interrupt and await its owned native child in a real cancellation.
 The cooperative driver can wait indefinitely if its supervisor fails to supply a

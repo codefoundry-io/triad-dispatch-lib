@@ -41,6 +41,13 @@ passed [native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/
 on Ubuntu 24.04 x86-64 and macOS 15 ARM64: source/sdist each 399 tests per runner
 plus all four isolated installed-wheel drivers. CI uses synthetic responses;
 actual native Codex observations above were performed on local macOS.
+The [actual native lifecycle follow-up](verification/2026-10-12-native-codex-lifecycle.md)
+adds three Codex child runs through the same installed wheel: timeout interruption,
+repeated parent cancellation with awaited cleanup and no queued dispatch, and a
+valid late affirmative response that remains timed out and cannot approve.
+Two children reached observed `interrupted` state and one completed. This closes
+the earlier actual-Codex lifecycle test gap on macOS; backend process termination,
+Ubuntu native-agent behavior and existing consumer adoption remain unmeasured.
 The [previous four-route verification](verification/2026-10-12-four-route-core.md)
 records the earlier 364-test native CI baseline.
 Earlier 157-test CI and fresh Codex observations describe the historical
