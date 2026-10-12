@@ -22,8 +22,10 @@ to install the library or run the integration suite.
 The owner explicitly retains the existing Gemini workaround after unsuccessful
 0.63.0 non-interactive plan behavior and no available test path. Replacing or
 retesting that workaround is not part of this design. MCP-based candidates are
-excluded. A possible Codex SDK experiment uses the direct local app-server
-protocol and must not rely on configured MCP servers or change global settings.
+excluded. The owner deferred the Codex SDK to TODO after initial research. If
+reactivated, that optional experiment uses the direct local app-server protocol
+without configured MCP servers or global settings changes; it is not a gate for
+the four-route core.
 
 ## Canonical representation
 
@@ -94,13 +96,13 @@ See [R-AGREE](https://github.com/codefoundry-io/triad-dispatch-spec/blob/396a04d
    four route contexts and packaged assets from an isolated wheel. Run source,
    unpacked-sdist and installed-wheel cases on native Ubuntu24.04 x86-64 and
    macOS15 ARM64. CI provider responses are synthetic and labelled as such.
-4. **Optional transport experiments:** use the CLI research to choose a bounded
-   Codex Python SDK comparison in this repository. Keep SDK dependencies outside
-   the deterministic core. Preserve existing ChatGPT authentication where
-   accessible; do not introduce an API-key requirement or an MCP transport.
-   Verify SDK credential reuse separately from the CLI's login status. Retain
-   the existing Gemini workaround without making a new plan-mode probe a gate.
-   Add other real-provider checks only with supported
+4. **Optional transport experiments:** use the
+   [CLI spike results](../research/2026-10-12-cli-feature-spikes.md) to choose
+   supported CLI checks in this repository. Codex Python SDK execution is a
+   deferred TODO and SDK dependencies stay outside the deterministic core.
+   If reactivated, verify existing ChatGPT credential reuse independently of
+   CLI login status; do not require an API key or MCP transport. Retain the
+   Gemini workaround without a new plan-mode gate. Add real-provider checks with
    installed interfaces; record missing/quota-blocked routes honestly. Four-way
    replay is not proof of four real providers or either existing host's adoption.
 5. **Classification:** test measured typed carriers and shared token/exit rules.

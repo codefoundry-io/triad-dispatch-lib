@@ -14,8 +14,9 @@ Updated: 2026-10-12
 - Preserve the existing Gemini workaround. The owner reports that 0.63.0
   non-interactive plan execution did not work adequately and has no available
   verification path; do not replace or retest that path as part of this work.
-- Exclude MCP-based implementation candidates. Investigate `openai-codex`
-  authentication through the direct local app-server interface only.
+- Exclude MCP-based implementation candidates. Keep `openai-codex` as a deferred
+  TODO after authentication/file-access research; spike the other CLI candidates
+  here without adopting new runtime defaults.
 
 ## Current slice
 
@@ -67,6 +68,17 @@ The follow-up authentication check found the installed CLI reports ChatGPT
 login. Official documentation supports ChatGPT OAuth and API-key authentication
 for the app-server used by the Python SDK; SDK reuse on this machine has not
 been executed. The Gemini replacement candidate is withdrawn by owner direction.
+
+The [follow-up CLI spikes](research/2026-10-12-cli-feature-spikes.md) record
+Codex offline configuration behavior, one quota-blocked Claude request, three
+AGY startup validations and 13 passing synthetic Gemini envelope cases.
+Claude's failure combined a success subtype with explicit error fields and exit
+1; terminal checks must precede admission. AGY rejected the bare primitive name
+`string` as invalid JSON and an array-root schema as requiring an object.
+Neither result supports changing permission defaults or deleting process
+cleanup. `openai-codex` remains a TODO, not the next experiment or a prerequisite
+for four-route core work. No Ubuntu provider run or successful live schema-output
+run is claimed by these spikes.
 
 Consumer adoption is separate: thin host adapters consume the common core and
 retain native execution. Existing host tests/bootstrap are not part of this

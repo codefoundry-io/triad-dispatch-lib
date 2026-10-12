@@ -6,6 +6,11 @@ updates for the common library. Official pages were opened after search; three
 independent research children covered Codex, Claude and Google, and the leader
 checked the primary sources and local version-only output.
 
+Follow-up disposition: the owner deferred `openai-codex` to TODO. The later
+[CLI spike results](2026-10-12-cli-feature-spikes.md) supersede experiment priority
+and record actual checks on the other candidates. Historical documentation and
+authentication findings below remain research evidence.
+
 ## Evidence and release status
 
 The source comparison uses B commit
@@ -40,7 +45,7 @@ from optional MCP tool connections; no global MCP configuration is changed.
 
 | Priority | Feature and evidence | Current state and proposed benefit | Constraint / disposition |
 | --- | --- | --- | --- |
-| High | **Codex Python SDK**: stable `openai-codex`, `Codex` / `AsyncCodex`, thread calls and `Sandbox.read_only`. [SDK](https://learn.chatgpt.com/docs/codex-sdk) | A candidate for the library repository's optional Codex test transport; could remove hand-written subprocess or JSON-RPC handling. Introduction version unconfirmed. | SDK builds pin a CLI runtime; an explicit `CodexConfig(codex_bin=...)` selects a different local binary. Keep it out of the deterministic core until an isolated comparison proves value. B's current Codex path is native spawning, not a CLI wrapper. |
+| TODO by owner | **Codex Python SDK**: stable `openai-codex`, `Codex` / `AsyncCodex`, thread calls and `Sandbox.read_only`. [SDK](https://learn.chatgpt.com/docs/codex-sdk) | A deferred optional Codex test transport; could remove hand-written subprocess or JSON-RPC handling. Introduction version unconfirmed. | No SDK execution is selected now. SDK builds pin a CLI runtime; `CodexConfig(codex_bin=...)` selects another binary. Keep dependencies outside the deterministic core. B's Codex path remains native spawning. |
 | High | **AGY typed failures**: 1.2.6 adds stderr `AGY_ERROR` JSON; 1.2.10 fixes partial-response failures to exit 3. [Changelog](https://raw.githubusercontent.com/google-antigravity/antigravity-cli/main/CHANGELOG.md) | No dedicated `AGY_ERROR` parser was found in B's common helper. A versioned adapter could extract typed failure evidence before shared classification, reducing phrase matching. | Verify real carrier fixtures and mapping before changing classification. The common core must not classify arbitrary answer or tool text as provider errors. |
 | Withdrawn by owner | **Gemini 0.63.0 headless plan execution**. [Stable notes](https://geminicli.com/docs/changelogs/latest/) | Preserve the existing workaround; the release note does not supersede the owner's operational evidence. The previously observed version mismatch is recorded history, not an upgrade or retest prerequisite. | No replacement, upgrade or new plan-mode test is selected. Existing version checks and policy are unchanged. |
 | Medium | **Claude 2.1.296 vendor backoff control**: `CLAUDE_CODE_OVERLOADED_RETRY_MAX_DELAY_MS`. [Release](https://github.com/anthropics/claude-code/releases/tag/v2.1.296) | Vendor request retry control supports keeping the outer adapter to one invocation. | Do not inject this environment variable by default or restart an entire CLI as a substitute. MCP-related changes are excluded from adoption candidates. Preserve the shared terminal/retry contract. |
@@ -79,9 +84,9 @@ reason to add runtime dependencies for users who only validate verdicts.
 
 Use four named test entries, with both Google routes explicitly pinned. Test
 roster resolution, prompt profiles, strict result admission and unanimity in the
-library repository first. Then compare one optional Codex SDK transport against
-the current fresh native test path, measuring raw-result preservation, startup,
-settings, terminal failures and cancellation. Provider-specific versions and
+library repository first. A Codex SDK comparison is now a deferred TODO; if
+reactivated, compare raw-result preservation, startup, settings, failures and
+cancellation against the fresh native test path. Provider-specific versions and
 capabilities belong to adapters; unsupported options must be reported, not
 silently translated or dropped. CLI envelope extraction and common classification
 are distinct responsibilities. This does not schedule a replacement or new
@@ -96,8 +101,9 @@ CLI installation page. Validate adapters on both target platforms separately.
 [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk),
 [AGY installation](https://antigravity.google/docs/cli/install/).
 
-Recommended order: four-route core configuration and agreement; optional Codex
-SDK experiment; typed AGY failure fixtures. Preserve the owner's existing Gemini
+Recommended order: four-route core configuration and agreement; measured CLI
+terminal/extraction handling; authentic typed AGY failure fixtures when available.
+The Codex SDK remains TODO. Preserve the owner's existing Gemini
 path and exclude MCP-based approaches throughout. Consumer
 ports, global upgrades and adoption of new permission modes remain separate from
 this research. No runtime or dependency change is claimed by this document.
