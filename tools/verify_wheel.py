@@ -1,6 +1,7 @@
 """Install a wheel outside the checkout and replay the shared raw corpus."""
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 from importlib.metadata import version
 from importlib.resources import files
@@ -67,6 +68,19 @@ def create_environment(prefix: Path) -> Path:
     return prefix / "bin" / "python"
 
 
+@contextmanager
+def installed_wheel(wheel: Path):
+    """Supply a fresh installed interpreter to repository verification tools."""
+    with tempfile.TemporaryDirectory(prefix="triad-wheel-") as temp:
+        neutral = Path(temp).resolve()
+        prefix = neutral / "venv"
+        python = create_environment(prefix)
+        subprocess.run([str(python), "-I", "-m", "pip", "--isolated", "install",
+                        "--only-binary=:all:", str(wheel.resolve())], cwd=neutral,
+                       check=True, stdout=sys.stderr)
+        yield python, prefix, neutral
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("wheel", type=Path, nargs="?")
@@ -80,12 +94,7 @@ def main() -> None:
     wheel = args.wheel.resolve()
     script = Path(__file__).resolve()
     fixtures = script.parents[1] / "tests" / "fixtures" / "replay"
-    with tempfile.TemporaryDirectory(prefix="triad-wheel-") as temp:
-        neutral = Path(temp)
-        prefix = neutral / "venv"
-        python = create_environment(prefix)
-        subprocess.run([str(python), "-I", "-m", "pip", "--isolated", "install",
-                        "--only-binary=:all:", str(wheel)], cwd=neutral, check=True)
+    with installed_wheel(wheel) as (python, prefix, neutral):
         result = subprocess.run([str(python), "-I", str(script), "--probe",
                                  str(fixtures), str(prefix)], cwd=neutral,
                                 check=True, capture_output=True, text=True)
