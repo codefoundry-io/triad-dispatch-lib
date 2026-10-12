@@ -32,11 +32,13 @@ jobs:
       - name: Build wheel from sdist
         run: |
           uv build --sdist
-          uv build dist/*.tar.gz --wheel
+          uv build dist/triad_dispatch_lib-0.1.0.dev2.tar.gz --wheel
       - name: Verify installed wheel and binary dependencies
-        run: uv run --locked python tools/verify_wheel.py dist/*.whl
+        run: uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl
       - name: Verify installed Codex prompt and admission driver
-        run: uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev1-py3-none-any.whl --expected-version 0.1.0.dev1 self-test
+        run: uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 self-test
+      - name: Verify installed four-route synthetic matrix
+        run: uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2
       - name: Run tests from the source distribution
         run: |
           uv run --locked python - <<'PY'
@@ -44,7 +46,7 @@ jobs:
           import subprocess, tarfile, tempfile
           with tempfile.TemporaryDirectory(prefix="triad-sdist-") as temporary:
               root = Path(temporary)
-              with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev1.tar.gz") as archive:
+              with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev2.tar.gz") as archive:
                   archive.extractall(root, filter="data")
               source, = root.iterdir()
               subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, check=True)

@@ -20,27 +20,20 @@ Updated: 2026-10-12
 
 ## Current slice
 
-The development package `0.1.0.dev1` implements strict original-JSON parsing,
-canonical v2 verdict admission with six invocation bindings and pinned common
-prompt rendering for Codex/B. Schema and prompt assets are pinned to spec
-`fcd96a15d18f3131c1f0111bdb10c3faceae34f8` with packaged provenance and SHA-256.
-Python 3.12 is the development/CI baseline; Rust source implementation is deferred.
+The unpublished development package `0.1.0.dev2` implements strict original-JSON
+admission, canonical named roster resolution, all four route prompt profiles on
+hosts A/B, supported carrier extraction, unanimous agreement and bounded async
+host callbacks with separate investigations. Canonical assets retain spec pin
+`fcd96a15d18f3131c1f0111bdb10c3faceae34f8`; Python 3.12 remains the baseline.
 
-Work is on `codex/strict-v2-admission` in
+Work remains on `codex/strict-v2-admission` in
 [draft PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1).
-The owner explicitly selected tests in this library repository only. Existing
-Codex/Claude hosts are read-only references, with no runtime adoption or host test
-execution. Local checks now pass 157 tests; installed-wheel replay passes 10 raw
-cases and the expanded Codex adapter passes 54 cases across three review phases.
-Four new native sessions verified plan/implementation control and defect packets;
-the earlier two pre-merge observations remain separate evidence. Both prior
-packaging and missing-wheel CLI minors are resolved. Independent whole-branch
-review found no Critical/Important/Minor issues. Native Ubuntu 24.04 x86-64 and
-macOS 15 ARM64 CI passed 157 source tests, 157 unpacked-sdist tests, 10 raw replay
-cases and 54 installed Codex adapter cases on each platform.
-See [current evidence](verification/2026-10-12-lib-only-codex-integration.md),
-[earlier prompt evidence](verification/2026-10-12-codex-prompt-smoke.md) and
-[first-slice evidence](verification/2026-10-12-v2-admission.md).
+Current local source/sdist/wheel evidence is recorded in
+[four-route verification](verification/2026-10-12-four-route-core.md).
+Fresh native Ubuntu 24.04/macOS 15 CI for this slice is pending root review/push.
+Earlier 157-test CI and fresh Codex observations describe the historical
+[previous slice](verification/2026-10-12-lib-only-codex-integration.md), not this build.
+Installed synthetic replay does not establish real provider success or host adoption.
 
 - [Design and API](design/2026-10-12-v2-admission.md)
 - [Execution plan](superpowers/plans/2026-10-12-v2-admission.md)
@@ -51,19 +44,16 @@ See [current evidence](verification/2026-10-12-lib-only-codex-integration.md),
 
 ## Next slices
 
-The owner corrected the intended scope to four configurable execution choices.
-The latest spec already permits this: use named Codex and Claude entries plus
-two Google entries pinned separately to Gemini and AGY. Implement common roster
-resolution, all required prompt profiles, and unanimous agreement for every
-selected entry; do not treat the three remaining routes as optional product scope.
-See the [design direction and verification order](design/2026-10-12-configurable-four-leg-library.md).
+The common four-route core is implemented. Consumer adoption and optional
+transport experiments require separate scoped work. See the
+[design direction](design/2026-10-12-configurable-four-leg-library.md).
 
 The [CLI feature assessment](research/2026-10-12-cli-feature-assessment.md)
 compares official current documentation/releases with installed versions and
 the existing B wrappers. It identifies optional transport experiments and
 already-adopted capabilities. This research changes no runtime code, package
-dependencies, spec pin or installed CLI. The four-route implementation is still
-pending; current package capabilities remain those listed above.
+dependencies, spec pin or installed CLI. Current implemented common capabilities
+are listed above.
 The follow-up authentication check found the installed CLI reports ChatGPT
 login. Official documentation supports ChatGPT OAuth and API-key authentication
 for the app-server used by the Python SDK; SDK reuse on this machine has not

@@ -133,7 +133,7 @@ def test_profile_and_identity(context, tmp_path):
     with pytest.raises(ValueError, match="version"):
         module.identity(tmp_path, "not-installed-version")
     with pytest.raises(ValueError, match="site-packages"):
-        module.identity(tmp_path, "0.1.0.dev1")
+        module.identity(tmp_path, "0.1.0.dev2")
 
 
 def test_synthetic_matrix():
@@ -195,7 +195,7 @@ def test_missing_wheel_refused_before_install(monkeypatch, tmp_path, capsys):
 
     monkeypatch.setattr(module, "helpers", lambda: {"installed_wheel": forbidden_install})
     monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(tmp_path / "missing.whl"),
-                                    "--expected-version", "0.1.0.dev1", "self-test"])
+                                    "--expected-version", "0.1.0.dev2", "self-test"])
     with pytest.raises(SystemExit) as caught:
         module.main()
     assert caught.value.code == 2

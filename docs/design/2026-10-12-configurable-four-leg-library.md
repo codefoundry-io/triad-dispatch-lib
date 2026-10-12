@@ -2,8 +2,9 @@
 
 Date: 2026-10-12. This records the owner's scope correction and the resulting
 implementation direction. It supersedes any implication that Codex-only testing
-defines the product boundary. It is not evidence that all four routes are
-implemented or have run successfully.
+defines the product boundary. The common APIs are now implemented and verified
+with synthetic installed-package inputs; actual provider success and consumer
+adoption remain separate claims.
 
 ## Product requirement
 
@@ -63,13 +64,15 @@ a nonexistent CLI flag. Preserve requested and observed settings separately.
 | Select enabled entries and refuse an empty selection before preparation | Resolve native model/effort/preset controls and supported CLI flags |
 | Preserve explicit route and opaque model/effort values | Resolve unpinned Google routing under the host's existing policy |
 | Render pinned common clauses for every supported family/host profile | Start native children or vendor CLI/SDK calls and observe/cancel its call |
-| Validate original verdict JSON and six invocation bindings | Extract the actual final answer from a documented vendor envelope |
+| Extract supported common carriers and validate original verdict JSON plus six bindings | Observe transport/terminal state, remove native markers and adapt unsupported envelopes |
 | Evaluate all selected entries' approval and shared failure rules | Supply observed terminal state and integrity evidence; own artifact I/O |
 
-The proposed public operations are roster validation/resolution, selected-entry
-settings, prompt rendering, existing verdict admission, and an agreement
-predicate with reasons. Exact signatures belong in the next executable slice
-plan; these names are not additions to the canonical wire schema.
+Delivered public operations include resolve_roster/select_entries,
+render_review_clauses/render_investigation_prompt, ProviderOutput/extract_final/
+admit_output, evaluate_agreement, run_review and run_investigations. See the
+[public examples](../../README.md#async-host-callbacks) and
+[verification record](../verification/2026-10-12-four-route-core.md). These APIs
+do not add fields to the canonical wire schema.
 
 Agreement requires every selected entry's current bound result to be explicitly
 `SAFE TO MERGE`, without blockers or open questions, and with complete integrity
@@ -146,7 +149,7 @@ roster, Claude/Google and investigation assets checked against that older ref.
 Retain byte-preserved provenance. The executable plan is
 [four-route core](../superpowers/plans/2026-10-12-four-route-core.md).
 
-### Baseline before this implementation
+### Historical baseline before this implementation
 
 The existing admission API already accepts the canonical three families and
 both Google routes. The renderer and repository driver are still Codex/B only;
