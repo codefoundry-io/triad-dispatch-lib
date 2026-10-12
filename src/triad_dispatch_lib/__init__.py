@@ -6,7 +6,12 @@ from .verdict import validate_binding, validate_verdict
 from .prompts import render_data, render_review_clauses, render_investigation_prompt
 from .contracts import load_roster_contract
 from .roster import resolve_roster, select_entries
+from .errors import OutputError, AgreementError
+from .output import ProviderOutput, extract_final, admit_output
+from .agreement import AgreementResult, evaluate_agreement
 
-__all__ = ["RosterError", "resolve_roster", "select_entries", "load_roster_contract",
+__all__ = ["OutputError", "AgreementError", "ProviderOutput", "extract_final", "admit_output",
+           "AgreementResult", "evaluate_agreement",
+           "RosterError", "resolve_roster", "select_entries", "load_roster_contract",
            "render_investigation_prompt", "AdmissionError", "ContractError", "PromptError", "parse_json",
            "validate_binding", "validate_verdict", "render_data", "render_review_clauses"]

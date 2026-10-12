@@ -41,3 +41,41 @@ class RosterError(ValueError):
             "empty_selection": "Roster has no enabled entries.",
             "nesting_limit": "Roster nesting exceeds the validation limit.",
         }[code])
+
+
+class OutputError(ValueError):
+    """Carrier or terminal-state refusal; never includes provider text."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__({
+            "invalid_output": "Invalid provider output metadata.",
+            "invalid_carrier": "Unknown provider output carrier.",
+            "not_completed": "Provider output did not complete.",
+            "timed_out": "Provider output timed out.",
+            "transport_failed": "Provider output transport failed.",
+            "nonzero_exit": "Provider process did not exit successfully.",
+            "invalid_envelope": "Invalid provider output envelope.",
+            "terminal_failure": "Provider reported terminal failure.",
+            "missing_terminal": "Provider stream has no terminal result.",
+            "multiple_terminals": "Provider stream has multiple terminal results.",
+            "carrier_mismatch": "Provider carrier does not match invocation binding.",
+        }[code])
+
+
+class AgreementError(ValueError):
+    """Invalid caller selection or output map, separate from review failures."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__({
+            "invalid_expected_map": "Invalid expected invocation map.",
+            "invalid_binding": "Invalid selected invocation binding.",
+            "invalid_outputs_map": "Invalid provider output map.",
+            "invalid_output": "Output map values must be provider outputs.",
+            "empty_selection": "No selected review entries.",
+            "name_mismatch": "Selected name does not match invocation binding.",
+            "mixed_basis": "Selected bindings have different review bases.",
+            "extra_output": "Output supplied for an unselected review entry.",
+            "invalid_integrity": "Host integrity must be a boolean.",
+        }[code])
