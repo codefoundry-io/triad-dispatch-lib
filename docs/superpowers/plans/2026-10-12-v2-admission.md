@@ -49,17 +49,17 @@ native CI. No production CLI is needed for this slice.
 **Interfaces:** Produces `parse_json(raw: str | bytes) -> object`,
 `AdmissionError(ValueError).code`, `ContractError(RuntimeError)`.
 
-- [ ] Write `test_original_json`, `test_rejected_raw`, `test_input_type`,
+- [x] Write `test_original_json`, `test_rejected_raw`, `test_input_type`,
   `test_errors_do_not_echo_input`, `test_decoder_limits`: assert valid scalars and
   nested objects preserved; duplicate/escaped duplicate keys, NaN/Infinity/1e400,
   bad UTF-8/fences/trailing content/types/limits produce the specified codes.
-- [ ] Add packaging/test configuration and an empty package; run
+- [x] Add packaging/test configuration and an empty package; run
   `uv run pytest tests/test_json_input.py -q`. Expected: failing assertions for
   missing API behavior (test imports occur inside test bodies).
-- [ ] Implement the interface with `json.loads`, duplicate-member hook,
+- [x] Implement the interface with `json.loads`, duplicate-member hook,
   finite-float and constant hooks; fixed-message errors with no raw payloads.
-- [ ] Run `uv run pytest tests/test_json_input.py -q`. Expected: all pass.
-- [ ] Commit `feat: add strict original JSON parsing`; complete task with the same command.
+- [x] Run `uv run pytest tests/test_json_input.py -q`. Expected: all pass.
+- [x] Commit `feat: add strict original JSON parsing`; complete task with the same command.
 
 ### Task 2: Canonical contract integrity and bound admission
 
@@ -71,22 +71,22 @@ native CI. No production CLI is needed for this slice.
 `validate_verdict(raw: str | bytes, *, expected: dict) -> dict` and internal
 `load_contract() -> dict` (a fresh schema per call, no mutable shared cache).
 
-- [ ] Fetch the exact canonical schema and record its source/digest manifest.
-- [ ] Write `test_admit_canonical`, `test_schema_rejections`, `test_each_binding`,
+- [x] Fetch the exact canonical schema and record its source/digest manifest.
+- [x] Write `test_admit_canonical`, `test_schema_rejections`, `test_each_binding`,
   `test_expected_binding`, `test_admission_errors_do_not_echo_input`,
   `test_original_members_reach_parser`, and `test_no_shared_mutation`.
   Assert all families/routes, valid negatives, integral floats, rejected bools,
   missing/extra fields, SAFE blockers/questions and all six mismatch codes.
-- [ ] Write `test_manifest_and_digest`, `test_broken_contract`,
+- [x] Write `test_manifest_and_digest`, `test_broken_contract`,
   `test_external_ref_is_offline`: fault manifest/digest/schema and verify refusal;
   unresolved HTTP/file references must raise ContractError without retrieval.
-- [ ] Run `uv run pytest tests/test_verdict.py tests/test_contracts.py -q`.
+- [x] Run `uv run pytest tests/test_verdict.py tests/test_contracts.py -q`.
   Expected: failures for absent admission/contract API.
-- [ ] Implement verified resource loading, Draft202012Validator with Registry(),
+- [x] Implement verified resource loading, Draft202012Validator with Registry(),
   schema-derived expected binding validation and exact six-field comparison.
   Package resources in wheel/sdist via setuptools package-data.
-- [ ] Run `uv run pytest -q`. Expected: all pass.
-- [ ] Commit `feat: validate v2 verdicts against pinned offline contracts`;
+- [x] Run `uv run pytest -q`. Expected: all pass.
+- [x] Commit `feat: validate v2 verdicts against pinned offline contracts`;
   complete task with `uv run pytest -q`.
 
 ### Task 3: Raw replay, installed-wheel proof and native CI
@@ -100,19 +100,19 @@ add `docs/verification/2026-10-12-v2-admission.md`.
 `python tools/verify_wheel.py DIST_WHEEL` (binary-only isolated install, subprocess
 outside checkout, fixed fixture corpus, import provenance and wheel hash report).
 
-- [ ] Write `test_replay_vectors` against raw fixtures (positive, nested duplicate,
+- [x] Write `test_replay_vectors` against raw fixtures (positive, nested duplicate,
   invalid UTF-8, nonfinite, stale binding, invalid v1, malformed negative).
   Add `test_installed_probe_requires_site_packages` and
   `test_installed_probe_replays_vectors` for the verifier's child probe.
-- [ ] Run `uv run pytest tests/test_replay.py -q`. Expected: probe behavior fails
+- [x] Run `uv run pytest tests/test_replay.py -q`. Expected: probe behavior fails
   until implemented; new replay vectors must pass existing admission.
-- [ ] Implement isolated verifier and CI with read-only repository permissions,
+- [x] Implement isolated verifier and CI with read-only repository permissions,
   fixed action SHAs, native OS matrix and Python 3.12. Build sdist, rebuild wheel
   from sdist, install outside checkout, and replay raw fixtures.
-- [ ] Run `uv run pytest -q`, `uv build --sdist`, `uv build dist/*.tar.gz --wheel`,
+- [x] Run `uv run pytest -q`, `uv build --sdist`, `uv build dist/*.tar.gz --wheel`,
   `uv run python tools/verify_wheel.py dist/*.whl`, `git diff --check`.
   Expected: green tests, isolated package proof, no whitespace issues.
-- [ ] Document exact local results and current remote CI status; update instructions
+- [x] Document exact local results and current remote CI status; update instructions
   only for setup/test commands. Commit `test: verify isolated wheels on macOS and Ubuntu`;
   complete task with `uv run pytest -q`.
 

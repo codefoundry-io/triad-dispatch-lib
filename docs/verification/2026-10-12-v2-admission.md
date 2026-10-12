@@ -57,12 +57,28 @@ on each run; build timestamps and subsequent metadata edits can change it.
 
 ## Independent review and CI
 
-Pending fresh independent Codex whole-branch review and native GitHub CI.
-The workflow selects Ubuntu 24.04 x86-64 and macOS 15 ARM64, Python 3.12, and
-performs the same tests, sdist-derived wheel build and binary-only replay.
+Native [CI run 38201147972](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38201147972)
+passed at source commit `08601298b728eeb7def2de8319b9459b63ce418d` on 2026-10-12.
+Both jobs completed 110 tests, built the wheel from an sdist, installed with
+binary-only dependencies in an isolated venv, and passed all 10 replay cases.
+
+| Native runner | Observed Python / machine | Result |
+| --- | --- | --- |
+| Ubuntu 24.04 | 3.12.15 / x86_64 (glibc 2.39) | 110 tests + 10 installed-wheel cases |
+| macOS 15.7.9 | 3.12.10 / arm64 | 110 tests + 10 installed-wheel cases |
+
+Observed wheel SHA-256 (builds are not asserted byte-reproducible):
+
+- Ubuntu: `44ecef79d223d842fa470a67bc938153eb5966ac4d6f831f7969bf35e4cdb535`.
+- macOS CI: `479b6ea08c78ab703f7735eab65038e538afbb6ac960fb05969957cbc23f64bb`.
+- Local reviewed wheel: `d152464ca397bcadac9afe41239813bebba8696868f7ff4d55d71f4dd8a2c507`.
+
+All three loaded the package from their fresh venv's `site-packages` and verified
+the same pinned source/schema digest. These are the tested combinations, not a
+claim about all Python versions or architectures.
 See [GitHub's runner definitions](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 Action versions were resolved through the official repositories and pinned to
-commit SHAs. Workflow presence is not platform verification.
+commit SHAs. Only successful native runs support these platform claims.
 
 ## Limits
 
@@ -70,3 +86,24 @@ The corpus is synthetic. It proves deterministic rejection/admission and package
 loading, not a real provider round. No host adapter, prompt renderer integration,
 provider execution, merge permission, installed plugin exposure or release is
 established. Consumer adoption and real fresh-session smoke remain later work.
+
+### Whole-branch review result
+
+Fresh reviewer: requested `gpt-6-astra`, `high`, fresh context; hidden runtime
+settings were UNEXPOSED. The review was prompt-controlled read-only. Reviewed
+range `c6dd981..0860129`; tracked file fingerprints and HEAD remained unchanged.
+Result: no Critical or Important findings, one Minor. Reviewer independently
+ran 109 tests with the venv-creation test excluded under its no-install brief,
+and checked the existing full 110-test and installed-wheel evidence.
+
+Deferred minor: setuptools includes test modules in the sdist but not the raw
+fixture corpus or `tools/verify_wheel.py`. Wheel installation and runtime work;
+running the entire test suite from an unpacked sdist requires those support files
+from the repository. Include them before source-distribution test support or a
+release is promised. The current README development instructions use a Git clone.
+
+Review scope rulings retained: package hashes establish consistency, not
+malicious whole-package replacement authentication; input size limits are owned
+by callers, so callers must prevent resource exhaustion; host/provider behavior
+needs later integration evidence; native platform claims require successful CI,
+not the workflow file alone. These preserve the written design's scope.
