@@ -141,23 +141,72 @@ def synthetic_smoke() -> dict:
                    "packet_files": [str(path) for path in paths], "review_date": "2026-10-12",
                    "objective": "Check integer discount calculation", "criteria": ["correctness"],
                    "approved_boundary": ["brief.md", "example.py"]}
-        prompt = render_prompt(context).encode()
-        verdict = {"schema_version": 2, **expected, "verdict": "SAFE TO MERGE",
-                   "criteria_checked": ["correctness"], "findings": [],
-                   "affected_surfaces_inspected": ["example.py"], "open_questions": []}
-        raw = json.dumps(verdict).encode()
-        assert admit_result(raw, context, prompt) == verdict
-        for candidate, code in [(raw.replace(b'"attempt": 1', b'"attempt": 1, "attempt": 1'), "duplicate_member"),
-                                (json.dumps(verdict | {"review_id": "stale"}).encode(), "binding_mismatch")]:
+        cases = []
+        for phase in ("formal-plan", "implementation-review", "pre-merge"):
+            context["review_kind"] = phase
+            prompt = render_prompt(context).encode()
+            verdict = {"schema_version": 2, **expected, "verdict": "SAFE TO MERGE",
+                       "criteria_checked": ["correctness"], "findings": [],
+                       "affected_surfaces_inspected": ["example.py"], "open_questions": []}
+            finding = {"path": "example.py", "line": 2, "severity": "must-fix",
+                       "summary": "Synthetic arithmetic finding", "trigger": "1000 cents, 20 percent",
+                       "evidence": "Synthetic fixture evidence", "context_known": True,
+                       "correction": "Compute the remaining price"}
+            negative = verdict | {"verdict": "MERGE WITH FIXES", "findings": [finding]}
+
+            def check(name, raw, wanted, *, expected_result=None, saved_prompt=prompt):
+                result = None
+                try:
+                    result = admit_result(raw, context, saved_prompt)
+                    outcome = "admit"
+                except lib.AdmissionError as error:
+                    outcome = error.code
+                except ValueError as error:
+                    # Only these known adapter refusals count; other errors fail the run.
+                    refusals = {"Prepared prompt mismatch.": "prompt_mismatch",
+                                "Packet digest mismatch.": "packet_mismatch"}
+                    if str(error) not in refusals:
+                        raise
+                    outcome = refusals[str(error)]
+                if outcome != wanted or (outcome == "admit" and result != expected_result):
+                    raise AssertionError(f"Synthetic case failed: {phase}/{name}")
+                case = {"review_kind": phase, "name": name, "outcome": outcome,
+                        "prompt_sha256": sha256(saved_prompt), "raw_result_sha256": sha256(raw)}
+                if outcome == "admit":
+                    case["verdict"] = result["verdict"]
+                cases.append(case)
+
+            for name, value in (
+                ("safe", verdict), ("negative-finding", negative),
+                ("negative-question", verdict | {"verdict": "DO NOT MERGE", "open_questions": ["Required fact unresolved"]}),
+                ("negative-minor", negative | {"findings": [finding | {"severity": "Minor"}]}),
+            ):
+                check(name, json.dumps(value).encode(), "admit", expected_result=value)
+            for field, value in (("review_id", "stale"), ("family", "claude"),
+                                 ("content_digest", "b" * 64), ("leg_name", "other-leg"),
+                                 ("attempt", 2), ("route", "agy")):
+                check(field.replace("_", "-"), json.dumps(verdict | {field: value}).encode(),
+                      "schema_violation" if field == "route" else "binding_mismatch")
+            raw = json.dumps(verdict).encode()
+            negative_raw = json.dumps(negative).encode()
+            for name, candidate, code in (
+                ("duplicate", raw.replace(b'"attempt": 1', b'"attempt": 1, "attempt": 1'), "duplicate_member"),
+                ("nested-duplicate", negative_raw.replace(b'"path": "example.py"', b'"path": "example.py", "path": "example.py"'), "duplicate_member"),
+                ("invalid-utf8", b"\xff", "invalid_utf8"),
+                ("fenced", b"```json\n" + raw + b"\n```", "invalid_json"),
+                ("trailing", raw + b" trailing prose", "invalid_json"),
+                ("overflow", raw.replace(b'"attempt": 1', b'"attempt": 1e400'), "nonfinite_number"),
+            ):
+                check(name, candidate, code)
+            check("prompt-change", raw, "prompt_mismatch", saved_prompt=prompt + b"changed")
+            original_packet = paths[1].read_bytes()
             try:
-                admit_result(candidate, context, prompt)
-            except lib.AdmissionError as error:
-                if error.code != code:
-                    raise AssertionError("Unexpected synthetic rejection.") from None
-            else:
-                raise AssertionError("Synthetic rejection was admitted.")
+                paths[1].write_bytes(original_packet + b"\n# changed packet\n")
+                check("packet-change", raw, "packet_mismatch")
+            finally:
+                paths[1].write_bytes(original_packet)
         return {"capture_method": "synthetic", "checks": ["render", "admit", "duplicate_member", "binding_mismatch"],
-                "prompt_sha256": sha256(prompt)}
+                "prompt_sha256": sha256(prompt), "cases": cases}
 
 
 def main() -> int:
@@ -175,6 +224,8 @@ def main() -> int:
     commands.add_parser("self-test")
     args = parser.parse_args()
     wheel = args.wheel.resolve()
+    if not wheel.is_file():
+        parser.error("wheel must be an existing regular file")
     if not args.installed_prefix:
         # Resolve input/output paths before entering the neutral working directory.
         forwarded = ["--wheel", str(wheel), "--expected-version", args.expected_version]

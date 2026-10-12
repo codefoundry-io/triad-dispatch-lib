@@ -4,6 +4,7 @@ import importlib.util
 import json
 from pathlib import Path
 import shutil
+import sys
 
 import pytest
 
@@ -133,3 +134,56 @@ def test_profile_and_identity(context, tmp_path):
         module.identity(tmp_path, "not-installed-version")
     with pytest.raises(ValueError, match="site-packages"):
         module.identity(tmp_path, "0.1.0.dev1")
+
+
+def test_synthetic_matrix():
+    report = driver().synthetic_smoke()
+    assert "cases" in report, "Installed matrix cases missing"
+    wanted = {
+        "safe": "admit", "negative-finding": "admit",
+        "negative-question": "admit", "negative-minor": "admit",
+        "review-id": "binding_mismatch", "family": "binding_mismatch",
+        "content-digest": "binding_mismatch", "leg-name": "binding_mismatch",
+        "attempt": "binding_mismatch", "route": "schema_violation",
+        "duplicate": "duplicate_member", "nested-duplicate": "duplicate_member",
+        "invalid-utf8": "invalid_utf8", "fenced": "invalid_json",
+        "trailing": "invalid_json", "overflow": "nonfinite_number",
+        "prompt-change": "prompt_mismatch", "packet-change": "packet_mismatch",
+    }
+    assert len(report["cases"]) == 54
+    for phase in ("formal-plan", "implementation-review", "pre-merge"):
+        cases = [case for case in report["cases"] if case["review_kind"] == phase]
+        assert len(cases) == len(wanted)
+        assert {case["name"]: case["outcome"] for case in cases} == wanted
+        admitted = {case["name"]: case["verdict"] for case in cases if case["outcome"] == "admit"}
+        assert admitted == {"safe": "SAFE TO MERGE", "negative-finding": "MERGE WITH FIXES",
+                            "negative-question": "DO NOT MERGE", "negative-minor": "MERGE WITH FIXES"}
+
+
+def test_synthetic_matrix_refuses_false_admission(monkeypatch):
+    original = lib.validate_verdict
+
+    def accepts_duplicate(raw, *, expected):
+        # Deliberate validator fault: pre-parsing erases duplicate evidence.
+        if b'"attempt": 1, "attempt": 1' in raw:
+            raw = json.dumps(json.loads(raw)).encode()
+        return original(raw, expected=expected)
+
+    monkeypatch.setattr(lib, "validate_verdict", accepts_duplicate)
+    with pytest.raises(AssertionError):
+        driver().synthetic_smoke()
+
+
+def test_missing_wheel_refused_before_install(monkeypatch, tmp_path, capsys):
+    module = driver()
+
+    def forbidden_install(wheel):
+        raise AssertionError("installation attempted for missing wheel")
+
+    monkeypatch.setattr(module, "helpers", lambda: {"installed_wheel": forbidden_install})
+    monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(tmp_path / "missing.whl"),
+                                    "--expected-version", "0.1.0.dev1", "self-test"])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 2
+    assert "wheel" in capsys.readouterr().err.lower()
