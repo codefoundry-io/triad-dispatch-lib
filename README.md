@@ -215,3 +215,78 @@ Missing wheel paths are refused with exit code 2 before installation starts.
 ## License
 
 [MIT](LICENSE), consistent with the existing TRIAD host repositories.
+
+## Supervised native callback experiment
+
+`tools/native_codex_smoke.py` installs the specified wheel in isolation, verifies
+all exported runtime import paths, and runs a `-I` child from a neutral directory.
+It uses the library's real bounded callbacks and agreement. The driver never
+spawns agents: a Codex parent supervises a test-only file exchange.
+
+```sh
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev2 --config /absolute/config.json --run-dir /absolute/new-run
+```
+
+The self-test is **synthetic**, with three named review entries, concurrency two,
+valid dissent and a separate ordinary investigation. It supplies no native proof.
+A supervised config has exactly `mode` (`review` or `investigation`), a fresh safe
+ASCII `run_id`, positive integer `max_concurrency`, `host`, and nonempty `requests`.
+Each request has `entry` and the existing [Codex context](#codex-response-experiment);
+investigations also require a nonempty `perspective`. Names/run IDs match
+`[A-Za-z0-9][A-Za-z0-9_-]{0,127}`. Entries must be enabled canonical Codex entries,
+with explicit `codex.model`/`codex.reasoning` and timeout 1..3600 seconds. Formal
+contexts share the complete basis, packet and scope, except `expected.leg_name`.
+All inputs are preflighted before any request is published. Use canonical absolute
+regular input paths and a new canonical run directory. No run or receipt reuse.
+
+The exact `host` object is:
+
+```json
+{"supervisor":"codex-parent","native_tool":"collaboration.spawn_agent","supported_settings":[{"model":"gpt-6.1-sol","reasoning":"high"}],"capture_method":"parent-tool-final-string","cleanup":"interrupt-and-await-terminal","effective_settings":"UNEXPOSED"}
+```
+
+This is parent-supplied availability evidence. It does not measure effective
+model settings or establish provider-enforced containment. Each requested pair
+must appear in `supported_settings`. `manifest.json` binds config, wheel, package,
+packets and prompts. Each invoke slot writes its exact `prompt.txt`, then atomically
+publishes `request.json` last as readiness. For example (hash placeholders must be
+replaced with the actual lowercase SHA-256 values):
+
+```json
+{"run_id":"native-correct-1","leg_name":"codex-1","mode":"review","entry":{"name":"codex-1","vendor":"codex","enabled":true,"acceptance":"required","timeout_s":300,"codex":{"model":"gpt-6.1-sol","reasoning":"high"}},"expected":{"review_id":"native-correct-1","family":"codex","content_digest":"<packet digest>","leg_name":"codex-1","attempt":1,"route":null},"requested_settings":{"model":"gpt-6.1-sol","reasoning":"high"},"prompt_path":"/absolute/new-run/codex-1/prompt.txt","prompt_sha256":"<prompt hash>","capture_method":"parent-tool-final-string","effective_settings":"UNEXPOSED"}
+```
+
+The parent dispatches that exact prompt with the requested settings. It saves the
+original returned final string verbatim as UTF-8 `response.txt`, then atomically
+renames a complete temporary receipt to `receipt.json`. Receipt fields are exact;
+duplicate JSON members, unknown fields and binding/hash mismatches are refused:
+
+```json
+{"run_id":"native-correct-1","leg_name":"codex-1","request_sha256":"<hash of exact request.json bytes>","prompt_sha256":"<prompt hash>","response_sha256":"<hash of original response.txt bytes>","agent_id":"/root/native_correct_1","status":"completed","capture_method":"parent-tool-final-string","requested_settings":{"model":"gpt-6.1-sol","reasoning":"high"},"effective_settings":"UNEXPOSED","parent_spawned_at":1791760000.0,"parent_terminal_at":1791760040.0}
+```
+
+`agent_id` is the unique supervisor-visible canonical collaboration task identity;
+opaque backend IDs remain unexposed. Times are finite Unix numbers recording
+parent observations, with terminal >= spawn; they do not measure backend timing.
+Terminal status is `completed`, `failed` or `cancelled`. Only a matching completed
+receipt with the original regular response file can create native output, with
+exit code `None`. No marker/fence removal, normalization or retries occur.
+
+On cancellation the driver publishes `cancel-request.json` containing `run_id`,
+`leg_name`, `request_sha256` and `prompt_sha256`. The parent interrupts its owned
+child when needed, awaits terminal status and posts the same fully bound terminal
+receipt as cleanup acknowledgement. A completed receipt after cancellation is
+cleanup evidence only. This cooperative wait can continue indefinitely if the
+parent fails or posts malformed acknowledgement; the driver has no process or
+native cancellation API. The parent must finish or interrupt/await every owned child.
+
+`report.json` retains ordered callback start/finish times and active/peak counts,
+actual outcomes, observations and original artifact hashes. Bytes in dataclass
+outcomes are represented by hash/length. Review reports retain the library's
+actual admitted verdicts and agreement; investigations preserve ordinary response
+files, report fresh integrity separately and contain no agreement field. Fresh
+integrity rechecks config, wheel, packet, prompt, request and consumed artifacts.
+A report file or exit zero means the experiment was recorded, not that agreement
+passed. Callback overlap, observed native overlap and backend scheduling are
+separate claims. Parent-captured final strings are not raw model wire bytes.

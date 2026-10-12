@@ -54,3 +54,5 @@ jobs:
               subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, env=child_env, check=True)
           PY
       - run: git diff --exit-code
+      - name: Verify installed supervised callback synthetic exchange
+        run: uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 --self-test
