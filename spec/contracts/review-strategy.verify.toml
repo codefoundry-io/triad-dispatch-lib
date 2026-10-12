@@ -1,0 +1,65 @@
+# Per-host conformance evidence; no provider dispatch authorized by this record.
+# Follow each host's existing operations, ownership and verification lifecycle.
+# Record tested commit, actual platform/tool versions and result evidence per host.
+# No CLI version is pinned here; B evidence is provider-free and does not certify authenticated runtime behavior.
+contract = "contracts/review-kind.schema.json"
+contract_sha256 = "855807a26cda96102858da345f4888ee8658ee2ecff7584aecf9cf31ba61f724"
+status = "B provider-free PASS; A provider-free fixtures for STRATEGY-AGREEMENT, -PURPOSE, -CURRENT-EVIDENCE (C20, C62, C63), -STOP and -CLI (C65)"
+result_channel = "cases/cases.json (per-case tests cells) and this manifest's [host.A] / [host.B] blocks, per host; B's platform evidence in decisions/claude-review-strategy-handoff.md; authority in decisions/owner-register.md"
+
+[[check]]
+id = "STRATEGY-AGREEMENT"
+case = "C13,C33"
+what = "All selected entries explicitly approve, independent of family count."
+brief = "Using provider-free fixtures in the existing collector suite, compare one-leg and same-family rosters: all SAFE; one Minor-only negative; missing, failed or invalid entry; SAFE plus blocker or open question. Include an informational entry and sibling binding swap."
+expect = "Only all-selected valid explicit approval reaches AGREED. Negative remains schema-valid but non-approved; family count alone adds no veto; no sibling substitution or owner-exception rewrite."
+on_fail = "Retain fixture/result evidence, diagnose collection versus wire validity; do not weaken the case or roster."
+status = "B provider-free PASS; A provider-free fixtures (t15)"
+
+[[check]]
+id = "STRATEGY-PURPOSE"
+case = "C60,C61"
+what = "Stage selection and faithful current context transport."
+brief = "Render each stage, omitted stage, null and unknown values through the existing host entry point. Supply distinct supported, locked and observed versions, an unknown value, and non-ASCII evidence. Compare decoded context values and the chosen shared purpose for every selected leg."
+expect = "One plan purpose or one code purpose, correct omission/refusal behavior, bound identical context values. No automatic semantic-completeness or reviewer-compliance claim."
+on_fail = "Keep exact input, rendered text and binding evidence; fix transport/selection without introducing an environment parser."
+status = "B provider-free PASS; A provider-free fixtures (t14)"
+
+[[check]]
+id = "STRATEGY-CURRENT-EVIDENCE"
+case = "C20,C62,C63"
+what = "Current residual and prior evidence survive existing eligible cleanup."
+brief = "In task-owned fixtures, provide one current residual and required excerpts through existing host-bound brief/evidence surfaces; B uses prior_residual, EVIDENCE.md or source members. Retain provenance, export and close the eligible previous temporary fixture with existing helpers, then inspect the new bound input. Include a foreign/in-progress negative cleanup control."
+expect = "Current residual appears once, required excerpts remain readable now, no transcript auto-append. Cleanup respects current ownership/export/terminal and host retention rules; foreign/in-progress resources remain."
+on_fail = "Preserve uncertain resources and evidence; repair the existing custody path rather than broadening deletion or adding packet slots."
+status = "B provider-free PASS; A provider-free fixtures for C20 and C62 (t15, t14) and C63 (t25 @ triad 8404021)"
+
+[[check]]
+id = "STRATEGY-STOP"
+case = "C64"
+what = "A stopped or exception-released round remains non-approved."
+brief = "Supply existing non-affirmative or incomplete results with a leader-recorded stop reason. Verify the machine outcome remains non-approved after a separate owner exception record. Inspect guidance for verifiable progress and the skill/prompt experiment boundary."
+expect = "No PASS by repetition, quota or exception; automated checks verify outcome, while semantic progress is explicitly leader judgment."
+on_fail = "Separate the reported stop from admission; retain original results and unresolved evidence."
+status = "B provider-free PASS; A provider-free fixture (t15 axis 76)"
+
+[[check]]
+id = "STRATEGY-CLI"
+case = "C65"
+what = "Observed patch version is not an equality requirement."
+brief = "Use provider-free adapter fixtures with a later CLI version and unchanged required controls, then a missing required control and a known-defect version. Keep current model IDs and authentication/policy checks."
+expect = "No refusal solely for a newer version number; missing controls or justified defect floors still refuse. Version remains an observation, not runtime proof."
+on_fail = "Diagnose the specific control or justified floor; do not bypass permissions or substitute a model."
+status = "B provider-free PASS; A provider-free fixtures (t65, t57)"
+
+[host.B]
+status = "PASS (provider-free fixtures and structural guidance checks)"
+tested_commit = "f6651121bf775a40f8743c10cd6c3f3590fef88c"
+evidence = "decisions/claude-review-strategy-handoff.md"
+limits = "No authenticated v2 provider, prompt efficacy, adoption, installation or release proof."
+
+[host.A]
+status = "Provider-free fixtures (bash suites) for STRATEGY-AGREEMENT, STRATEGY-PURPOSE, STRATEGY-CURRENT-EVIDENCE (C20, C62), STRATEGY-STOP and STRATEGY-CLI (C65: tests/unit/wrappers/t65-cli-version-evidence-c65.sh axes 1-5, tests/unit/wrappers/t57-gemini-preflight-c16.sh axes 13, 17, 18); C63 by tests/unit/skills/t25-prior-evidence-c63.sh @ triad 8404021 (three legs at d76ef23)"
+tested_commit = "ee011968 (triad impl/claude-host-2026-10); C63: 8404021, verified at d76ef23"
+evidence = "tests/unit/skills/t15-collect-v2.sh axes 1 (:458), 4 (:619), 5 (:678), 6b (:655), 72 (:3017), 73 (:3058), 75 (:3139), 77 (:3216), 78 (:3274), 83 (:4847) for C13/C33; axis 76 (:3178) for C64; axis 80 (:3445) for C20; tests/unit/skills/t14-prepare-v2.sh axes 31-35 (:965, :1044, :1141, :1235, :1315) for C60/C61 and C62/C20; tests/unit/wrappers/t65-cli-version-evidence-c65.sh axes 1-5 for C65 (lines @ triad ee011968); per-case cells in cases/cases.json"
+limits = "No authenticated v2 provider, prompt efficacy or release proof; the cases' tests.A cells carry the per-case status."

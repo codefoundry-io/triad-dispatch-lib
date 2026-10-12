@@ -8,6 +8,7 @@ import socket
 import pytest
 
 from triad_dispatch_lib import ContractError
+from triad_dispatch_lib.bundle_manifest import contract_id
 
 
 def contracts():
@@ -19,7 +20,8 @@ def test_manifest_and_digest():
     module = contracts()
     root = files("triad_dispatch_lib").joinpath("data")
     manifest = json.loads(root.joinpath("source-manifest.json").read_bytes())
-    assert manifest["source_commit"] == "fcd96a15d18f3131c1f0111bdb10c3faceae34f8"
+    assert manifest["source_repository"] == "https://github.com/codefoundry-io/triad-dispatch-lib"
+    assert manifest["source_path"] == "spec"
     assert manifest["sha256"]["leg-verdict.schema.json"] == hashlib.sha256(root.joinpath("leg-verdict.schema.json").read_bytes()).hexdigest()
     schema = module.load_contract()
     schema["required"].clear()
@@ -49,6 +51,7 @@ def test_broken_contract(tmp_path, monkeypatch, fault):
         raw = {"schema_json": b"{", "schema_type": b"[]", "dialect": b'{}',
                "invalid_schema": b'{"$schema":"https://json-schema.org/draft/2020-12/schema","type":123}'}[fault]
         manifest["sha256"]["leg-verdict.schema.json"] = hashlib.sha256(raw).hexdigest()
+    manifest["contract_id"] = contract_id(manifest["sha256"])
     root.joinpath("leg-verdict.schema.json").write_bytes(raw)
     root.joinpath("source-manifest.json").write_text("{" if fault == "manifest_json" else json.dumps(manifest))
     monkeypatch.setattr(module, "files", lambda _: tmp_path)
@@ -96,6 +99,7 @@ def test_broken_roster_contract(tmp_path, monkeypatch, fault):
         target.write_bytes(raw)
         manifest = json.loads((root / 'source-manifest.json').read_text())
         manifest['sha256']['contracts/review-legs.schema.json'] = hashlib.sha256(raw).hexdigest()
+        manifest["contract_id"] = contract_id(manifest["sha256"])
         (root / 'source-manifest.json').write_text(json.dumps(manifest))
     monkeypatch.setattr(module, 'files', lambda _: tmp_path)
     with pytest.raises(ContractError):
@@ -121,6 +125,7 @@ def test_roster_schema_identity_refused_before_resolution(tmp_path, monkeypatch,
     target.write_bytes(raw)
     manifest = json.loads((root / 'source-manifest.json').read_text())
     manifest['sha256']['contracts/review-legs.schema.json'] = hashlib.sha256(raw).hexdigest()
+    manifest["contract_id"] = contract_id(manifest["sha256"])
     (root / 'source-manifest.json').write_text(json.dumps(manifest))
     monkeypatch.setattr(module, 'files', lambda _: tmp_path)
     with pytest.raises(ContractError):

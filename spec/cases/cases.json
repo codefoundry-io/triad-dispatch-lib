@@ -1,0 +1,704 @@
+{
+  "schema": "triad-cases.v1-draft",
+  "note": "rule anchors: reference/review-rules.md; unrun handling: reference/spec-authoring.md § 4 PR12 A updates reconciled here are reported source/test evidence at their named commits, not newly executed verification. Former process-group/signal-window and automatic capacity/schema replay evidence is historical under the R-TERMINAL/C78 replacement; explicit A replacement-pending and per-case limits remain.",
+  "cases": [
+    {
+      "id": "C1",
+      "surface": "engine-transport",
+      "rule": "R-TERMINAL",
+      "summary": "Direct CLI completion, inherited handles, input availability and cancellation",
+      "input": "a normally exiting CLI with a descendant retaining output handles; a CLI closing prepared stdin early; failed input preparation; timeout or catchable SIGTERM/SIGHUP, including a child exiting0 on termination",
+      "expected": "Collect the direct CLI result without waiting for descendant EOF or sweeping descendants. Full stdin preparation and availability is complete, not vendor-consumption proof; early stdin close alone is not failure. Preparation/capture failure and invalid UTF-8 cannot become success. Timeout/cancellation withholds the answer, stops/reaps the direct child, and never agrees even if it exits0; R-AUTH precedence remains. Existing schema/completeness/binding checks apply. No no-orphan or every-signal-window record guarantee. Replaces the prior implementation prescription by owner decision 2026-10-11.",
+      "tests": {
+        "A": "Replacement contract verification pending. Historical former-contract A evidence reported by PR12 (not proof of the replacement expectation): tests/unit/wrappers/t48-stdin-delivery-fail-closed.sh and tests/integration/wrappers/flow/f12-codex-stdin-fail-closed.sh (stdin delivery fails closed) @ triad ee011968; timeout/signal terminal record on the agy route: tests/unit/wrappers/t15-agy-driver-decision.sh axis 28/28b (a wrapper timeout on a newline-terminated stream stamps the attempt digest `interrupted: \"timeout\"` and no `truncated_tail`; a signalled child stamps `\"signal\"`; a child's own exit stamps nothing), tests/unit/wrappers/t13-agy-stream-digest.sh axis 32 (`merge_agy_digests` carries the stamp into the attempt's `attempts[]` row), tests/unit/wrappers/t40-agy-read-audit-file.sh axis 24 (the written read-audit file carries it); the reader side: tests/unit/skills/t9-agy-hook.sh axes 26-32 (the per-attempt load check `agy_hook.py check <audit> <hook-log>` attributes hook rows by the attempt's own conversation ids; no reader treats an `interrupted` row specially, DL-124) and axis 36 (a vendor-ended zero-step attempt row carries no `interrupted` stamp and stays certifiable) @ triad fae369d7 (DL-11, DL-124, DL-125). Signalled wrapper mid-dispatch -> `unknown` / exit 1 with summary, audit row and run-log: tests/unit/wrappers/t53-terminal-transport-c1c2.sh axis 7 (codex, gemini, agy) and axes 7a-7g (right after Popen, inside the timeout kill, after the child exit, between attempts with the previous attempt's evidence kept, a signal already delivered when the first attempt starts, before the schema-repair turn) and tests/system/wrappers/agy-proc/s1-proc-lifecycle.sh @ triad e9960053; a signal during a pre-dispatch vendor probe is outside a dispatch -> 128+signum, no record: tests/unit/wrappers/t57-gemini-preflight-c16.sh axes 15-16 and tests/unit/wrappers/t71-agy-model-passthrough-c18.sh axes 21-22 @ triad e9960053 (authoring/shared-dev-log.md DL-123)",
+        "B": "B ba1b6dcdb61ad6a0202917cb4476427e21433159: replacement implemented with anonymous input/output streams, finite offset-independent capture, direct-child supervision and best-effort diagnostics. Dedicated instruction RED/GREEN verified vendor-descendant versus TRIAD-writer decisions. Final runtime/skill suite:236focused passed;2359full passed/4skipped with one obsolete text assertion, then that expectation alone corrected and complete distribution42passed/four validators passed. Fresh triad-vendor-invocation-20261011-r3 all four SAFE with matching integrity. Native macOS/Python3.12.13; Ubuntu not run. See decisions/2026-10-11-b-vendor-invocation-code.md. tests/test_vendor_invocation.py, tests/test_provider_wrappers.py, tests/test_parent_signals.py and tests/test_terminal_transport.py cover descendant preservation, finite output, direct cancellation, failure priority and diagnostic independence."
+      }
+    },
+    {
+      "id": "C2",
+      "surface": "engine-transport",
+      "rule": "R-TERMINAL",
+      "summary": "Input/capture preparation, spawn or capture failure",
+      "input": "invocation resource preparation or child spawn raises; final output snapshot cannot be read or decoded",
+      "expected": "Failure, no successful answer, invocation-owned resources released; stop/reap a still-running direct child on abnormal unwind. No thread-start implementation requirement. Preserve actual nonzero vendor/auth diagnosis when available.",
+      "tests": {
+        "A": "Replacement contract verification pending. Earlier implementation evidence is historical, not proof of the new expectation: tests/unit/wrappers/t53-terminal-transport-c1c2.sh @ triad ebc4dc7",
+        "B": "B ba1b6dcdb61ad6a0202917cb4476427e21433159: replacement implemented with anonymous input/output streams, finite offset-independent capture, direct-child supervision and best-effort diagnostics. Dedicated instruction RED/GREEN verified vendor-descendant versus TRIAD-writer decisions. Final runtime/skill suite:236focused passed;2359full passed/4skipped with one obsolete text assertion, then that expectation alone corrected and complete distribution42passed/four validators passed. Fresh triad-vendor-invocation-20261011-r3 all four SAFE with matching integrity. Native macOS/Python3.12.13; Ubuntu not run. See decisions/2026-10-11-b-vendor-invocation-code.md. tests/test_terminal_transport.py and tests/test_vendor_invocation.py cover partial file preparation, spawn/interrupt/capture failures, direct-child cleanup and success rejection."
+      }
+    },
+    {
+      "id": "C3",
+      "surface": "engine-transport",
+      "rule": "R-CLEANUP",
+      "summary": "Fresh repair-IPC files under the cap-based prune",
+      "input": "a run-log dir over its file cap containing a sibling file younger than the age floor",
+      "expected": "A file younger than the age floor survives a cap prune; only the time-based sweep may delete by age",
+      "tests": {
+        "A": "tests/unit/wrappers/t54-prune-floor-c3.sh (a file younger than the floor survives a cap prune) @ triad d76ef23 — passing without a production change; verified by three legs, rounds r1 and r2 (host A goal plan, Evidence item 2.1)",
+        "B": "Existing coverage: tests/test_log_cleanup.py::test_run_log_count_cap_prunes_only_stale_files_and_allows_fresh_overflow and byte-cap counterpart; included in completed macOS/Ubuntu full-suite runs summarized at C24. No installed-provider conformance inferred."
+      }
+    },
+    {
+      "id": "C4",
+      "surface": "cleanup",
+      "rule": "R-CLEANUP",
+      "summary": "Foreign directories, false markers, symlinks, dirty or untracked content in the review root",
+      "input": "a review root holding (i) a foreign date-prefixed `*.pruning` dir not created by the helper, (ii) a dirty or untracked regular file that is part of the reviewed basis in the ORIGINAL guarded checkout, (iii) the helper's OWN temporary review copy after the agreed evidence-export checks passed; (iv) a stale temporary fallback-IPC directory matching the host prefix but without an allocation record, plus a control allocated by the real host writer",
+      "expected": "(i) preserved and reported — cleanup refuses without deleting and states what it observes; (ii) original or foreign content is never disposed of by cleanup; (iii) a provably owned temporary copy may be disposed of, only after the evidence-export checks (R-CLEANUP). Symlinks: C26 (Q4 RULED) (iv) the unproven directory and all contents survive; only the positively proven control becomes eligible for the host sweep after its floor. A name prefix and age never establish ownership.",
+      "tests": {
+        "A": "tests/unit/skills/t16-close-ownership-c4c5c7.sh @ triad e9960053: (i) a `<name>.pruning` folder without `.active` is an unmanaged folder — axis 1 (reported and left, the folder and its file intact) and axis 14b (a fresh empty one left in place; an old empty one removed by R-CLEANUP's empty-folder rule; an old non-empty one left); the `.pruning` / `.claim` reclaim and the name-shape rmdir are removed @ triad 24226e3d (authoring/shared-dev-log.md DL-141; DL-54's divergence no longer exists on A). (ii): t16 axis 18 (dirty and untracked files of the original guarded checkout survive close) @ triad e9960053. (iv): every wrapper sweep acts only under a role root the host's configuration declares — wrapper-run-logs, wrapper-audit-archives and dispatch-prompts (proof inside-owned-packet), wrapper-debug (proof alloc-record) — through `_common._swept`; the review-scratch sweep (`review_scratch._prune_stale` → `_scratch_role`, role review-scratch, marker:.active) and the test-runs prune (tests/lib/prune_runs.sh, role test-runs, marker:.triad-run) act under their own declared roles — and A has no sweep of a shared temporary directory by name prefix and age: tests/unit/wrappers/t73-prune-roles-c69.sh (prunes, configs, prompts, shipped) @ triad e9960053 (reference/review-rules.md R-CLEANUP).",
+        "B": "Review-packet allocation/export portion remains B a85a800 / tests/test_review_cleanup_custody.py. Fallback IPC correction is B a4fd93c6283349df67bdb5c4d718a52144ac4547: actual writer allocation proof, stale proven cleanup, unproven residue preservation, failure IPC, floor and leaf-link controls. Final dedicated340affected/29standalone/2347full passed,4skipped; four validators and complete R3 all-four SAFE with matching integrity. See decisions/2026-10-10-b-fallback-cleanup-code.md. U6b/C69 declarations remain pending."
+      }
+    },
+    {
+      "id": "C5",
+      "surface": "cleanup",
+      "rule": "R-CLEANUP",
+      "summary": "Partial deletion resumes only with a verifiable ownership claim",
+      "input": "an interrupted cleanup with a partially removed round tree; or two ordinary dispatches from different working folders sweeping the same proven fallback IPC allocation, where one persists its start, removes a leaf and stops, and a remaining leaf changes before the other proceeds",
+      "expected": "Resume requires the allocation record or marker; otherwise refuse. An overlapping sweep must not replace the durable deletion-start inventory and adopt changed remaining data. Preserve a changed remainder and its proof; skipping a busy allocation is permitted. This is machine-level shared-state interaction, not concurrent operations inside one review folder.",
+      "tests": {
+        "A": "tests/unit/skills/t16-close-ownership-c4c5c7.sh axes 1 (a `.pruning` folder without `.active` is an unmanaged folder: reported and left, never resumed or deleted by its name shape) and 5 (an interrupted close resumes only on the surviving `.active` proof, removed last; the next close completes the removal) @ triad ee011968 (the `.pruning` / `.claim` reclaim and its three tests are removed @ triad 24226e3d, authoring/shared-dev-log.md DL-141; close removes the packet in place with the marker last, DL-79)",
+        "B": "Review-packet partial cleanup remains B a85a800 / tests/test_review_cleanup_custody.py. B a4fd93c6283349df67bdb5c4d718a52144ac4547 / tests/test_fallback_cleanup_ownership.py covers interruption, partial start, unchanged-subset resume, changed/new remainder preservation and overlapping sweep serialization. The overlap RED1failed/18passed preceded the correction; final GREEN and fresh R3 completed. See decisions/2026-10-10-b-fallback-cleanup-code.md. No real-user data-loss or full C69 claim."
+      }
+    },
+    {
+      "id": "C6",
+      "surface": "engine-transport",
+      "rule": "R-TERMINAL",
+      "summary": "Historical settings-guard release failure (superseded by U7)",
+      "input": "Historical pre-U7 scenario: a completed transcript followed by a settings-guard restore error",
+      "expected": "Historical expectation: failure with the transcript preserved. This restore-error scenario is not a current host conformance requirement: neither host retains a machine-settings transaction. Current no-mutation and profile behavior is covered by C68 and C72.",
+      "tests": {
+        "A": "n/a — host A has no settings guard: it never writes or locks the machine-wide agy settings file (it only reads it for the agy web prerequisite, R-REVIEW-WEB) and its read-only leg enters no settings transaction (owner D-AGY-SETTINGS-UNTOUCHED-20261008; the guard around the permissive call at 3rd-Agent/wrappers/antigravity_wrapper.py:2147 @ triad e0b15f1 is removed, authoring/shared-dev-log.md DL-112). No A test names C6.",
+        "B": "Not applicable to the historical restore-error scenario after B 47a1503 removed settings transactions. tests/test_agy_search_profile.py verifies completed SUCCESS/profile drift retains stdout and config-conflict, plus raw/formal timeout/profile drift retains timeout and capture. Final dedicated GREEN2364passed/4skipped; fresh U7 R3 all four SAFE with matching integrity. No universal provider enforcement, adoption or release claim. See decisions/2026-10-11-b-agy-profile-only.md."
+      }
+    },
+    {
+      "id": "C7",
+      "surface": "cleanup",
+      "rule": "R-CLEANUP",
+      "summary": "Export verified before disposal; cleanup idempotent",
+      "input": "a round whose evidence export has not been verified; a second cleanup call",
+      "expected": "Second cleanup is a no-op; disposal never precedes export verification",
+      "tests": {
+        "A": "tests/unit/skills/t16-close-ownership-c4c5c7.sh axes 8 (a second close is a no-op), 10 and 11 (close runs a fresh round check before disposal and never refuses on it) @ triad d76ef23 — passing; verified by three legs, rounds r1 and r2 (Evidence item 2.4)",
+        "B": "Implemented in B a85a800: tests/test_review_cleanup_custody.py requires/revalidates an external export before disposal; existing missing-root idempotence remains covered. triad-b-p2-r2 ADMITTED_SAFE."
+      }
+    },
+    {
+      "id": "C8",
+      "surface": "exit-tokens",
+      "rule": "R-TOKENS",
+      "summary": "Exit-token membership",
+      "input": "every token the host's classifier can emit",
+      "expected": "Every emitted token is in contracts/exit-tokens.json with the same code; exceptions listed explicitly; a membership test, not an `is not None` assert, checks it",
+      "tests": {
+        "A": "tests/unit/wrappers/t55-exit-token-membership-c8.sh @ triad ebc4dc7 (membership test against the vendored contract). Axes 8-10 (producer pairs; emitted summary pairs carry the contract's code for their token, never a provisional pair; wrapper-direct emissions — none left since the codex `--task` exits 68 / 69 are removed, DL-91) and axis 12 (the removed exits and tokens stay absent) @ triad ee011968 (triad 6ed217c, authoring/shared-dev-log.md DL-72).",
+        "B": "B632f426 plus U4e local candidate: tests/test_exit_token_contract.py checks exact main3afc4d7 token-table bytes (17 rows), memberships and direct/alias exceptions; tests/test_retired_task_contract.py covers retired phrase/extension/proposal behavior. Fresh affected455passed/full2152passed,4skipped; four validators and triad-retired-task-20261010-r1 all-four SAFE/matching integrity. DL-91 completion and limits: decisions/2026-10-10-b-retired-task-code.md. Earlier 6653bdc evidence remains historical in spikes/2026-09-20-b-wrapper-contracts.md."
+      }
+    },
+    {
+      "id": "C9",
+      "surface": "engine-transport",
+      "rule": "R-RECEIPT",
+      "summary": "Transport receipt fields",
+      "input": "one dispatch on each route",
+      "expected": "Receipt carries stdin delivery class, route, binary and observed version. complete means exact full UTF-8 input made available to the launched CLI, not consumption attestation. Input preparation/encoding/spawn failure is not-started; early vendor stdin close alone does not change complete.",
+      "tests": {
+        "A": "Replacement contract verification pending. Earlier implementation evidence is historical, not proof of the new expectation: tests/unit/wrappers/t51-transport-receipt.sh @ triad ebc4dc7",
+        "B": "B ba1b6dcdb61ad6a0202917cb4476427e21433159: replacement implemented with anonymous input/output streams, finite offset-independent capture, direct-child supervision and best-effort diagnostics. Dedicated instruction RED/GREEN verified vendor-descendant versus TRIAD-writer decisions. Final runtime/skill suite:236focused passed;2359full passed/4skipped with one obsolete text assertion, then that expectation alone corrected and complete distribution42passed/four validators passed. Fresh triad-vendor-invocation-20261011-r3 all four SAFE with matching integrity. Native macOS/Python3.12.13; Ubuntu not run. See decisions/2026-10-11-b-vendor-invocation-code.md. tests/test_common_transport_receipt.py and tests/test_stdin_transport.py cover full exact input availability, early close, encoding/spawn refusal and unchanged route/version custody."
+      }
+    },
+    {
+      "id": "C10",
+      "surface": "engine-transport",
+      "rule": "R-RECEIPT, R-BIND",
+      "summary": "Audit and run-log field schema",
+      "input": "one audit line and one run-log record per host",
+      "expected": "Both hosts write the agreed fields; a leg mislabelling its family is caught by binding, not by the audit",
+      "tests": {
+        "A": "tests/unit/wrappers/t51-transport-receipt.sh @ triad ebc4dc7",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Host observations distinguish unknown from observed empty/default; preflight versions are not fabricated as runtime versions. Regression sources: tests/test_common_transport_receipt.py, tests/test_v2_round_cli.py, tests/test_v2_runtime_boundaries.py, tests/test_v2_review_findings.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C11",
+      "surface": "engine-transport",
+      "rule": "R-NOCOST",
+      "summary": "Child environment scrub set as data",
+      "input": "a leader env carrying loader, credential, endpoint and model-selector variables",
+      "expected": "Loader/interpreter injection variables removed on every route; credential/endpoint removal per the agreed set. Model/effort user settings pass through unchanged; the three former model-selector names are excluded from the removed set under D-SELECTOR-PROPOSAL-WITHDRAWN-20261009. No new selector warning or attestation is required.",
+      "tests": {
+        "A": "tests/unit/wrappers/t37-child-env-scrub.sh (C11/C17 layer) @ triad e9960053 — the loader names and the credential / endpoint names (`_CHILD_ENV_SCRUB`, `_CHILD_ENV_SCRUB_CREDENTIALS`, the four agy names included) are removed on every route; the model / effort user settings GEMINI_MODEL, ANTHROPIC_MODEL and ANTHROPIC_SMALL_FAST_MODEL pass through (the kept-through axis; triad 31c7be92, D-SELECTOR-PROPOSAL-WITHDRAWN-20261009 on PR #13); names are filtered before values, so an omitted variable is never read (the C75 guarded-Mapping axis on the codex and gemini routes); the gemini route, its preflight probes included, keeps the project family (the C37/K7 and C75 preflight axes); tests/unit/wrappers/t68-gemini-route-env-c17.sh axis 4 (GEMINI_MODEL reaches every gemini child) @ triad e9960053. The agreed set is the union in reference/review-rules.md R-NOCOST.",
+        "B": "B632f426 + dirty U2c candidate: agreed all-route omissions, name-before-value, Gemini project exception and preserved model/effort settings. Dedicated focused370/full2029 passed with4skips, both validators, fresh all-four SAFE with matching integrity. See decisions/2026-10-09-b-child-environment.md. No authenticated-service or release claim."
+      }
+    },
+    {
+      "id": "C12",
+      "surface": "roster",
+      "rule": "R-ROSTER, R-PREPARE",
+      "summary": "Roster resolution",
+      "input": "no file / a file overriding one default by name / a file with an unknown key / two Google CLIs present",
+      "expected": "No file = three standing legs at recommended defaults, including the Claude leg at Opus with xhigh, named by the `opus` alias; file entry overrides by name, including an older Claude model only where a route takes a full model name (R-ROSTER); explicit null retains host selection semantics; unknown key refused; resolved roster printed before dispatch; unselected legs never start; runtime Google resolution recorded",
+      "tests": {
+        "A": "tests/unit/skills/t12-roster-v2.sh (cases C12, C18, C22: v2 named roster, merge-by-name, per-entry Google chain) @ triad ebc4dc7; tests/unit/skills/t28-review-lib-basis-c13c19c32.sh axis 4 (a non-default shipped preset, -max, is selectable: the roster_v2.py resolve preview prints its model and effort, opus / max, and refuses when its -web twin file is missing; the leg spawns the -web twin and the round record binds that file; a name outside the closed shipped list, the removed -older and a ':'-scoped one included, is refused at prepare) @ triad e0b15f1 and tests/unit/skills/t12-roster-v2.sh axes 32, 33 (claude.agent names a shipped preset by its bare name; an unlisted, scoped or newline-carrying id is refused) @ triad 3894879; tests/unit/skills/t14-prepare-v2.sh axis 36 (an unselected entry never starts; the resolved roster is printed and recorded) @ triad ee011968",
+        "B": "Implemented P3 candidate: Three defaults, B project discovery, merge-by-name, enabled display and consumption by capability-checked invocation allocation. Malformed review identifier/root path types receive controlled CLI refusal before adapter preparation. Evidence: tests/test_review_roster.py, tests/test_v2_adapters.py, tests/test_v2_rounds.py, tests/test_v2_review_findings.py, tests/test_v2_input_refusals.py. Current verification and publication: decisions/host-b-p3-verification.md."
+      }
+    },
+    {
+      "id": "C13",
+      "surface": "verdict-wire",
+      "rule": "R-AGREE",
+      "summary": "Agreement and release",
+      "input": "a nonempty selected roster with every enabled entry, including informational entries; explicit SAFE TO MERGE results, a non-affirmative verdict carrying only Minor findings, a blocking finding, an unresolved open question, and a missing, invalid or failed result",
+      "expected": "PASS only when every selected leg explicitly returns SAFE TO MERGE on the same current bound basis, with no blocking finding or open_questions and with intact binding and transport. A Minor-only non-affirmative verdict remains schema-valid but is not agreement. Missing, invalid, failed or negative output blocks PASS; probe-refuted findings and owner decisions remain recorded evidence, not inferred approvals. No minimum leg or family count applies.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axes 1 (all SAFE -> AGREED), 4 (a Minor-only negative is not agreement), 5 (an informational Critical blocks) and 6b (two families, all approved -> AGREED); collection runs the round integrity check before AGREED (R-AGREE, DL-52): axes 91 and 91b (a failed check refuses AGREED with one refusal — the round is INVALID, prepare a new round), 110 and 114 (a check that cannot be launched, crashes or is killed is a host fault, 64) and 111 (a relative packet path verifies the same round) @ triad ee011968 (the second check right before the AGREED record is removed @ triad bb933c6b); close's fresh check never refuses: tests/unit/skills/t16-close-ownership-c4c5c7.sh axes 10, 11 and 11b @ triad ee011968 (the legacy-label arm 11c is removed @ triad d075a879).",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_rounds.py C13 and tests/test_v2_round_custody.py cover both Minor-only negative tokens, all-selected approval, invalid SAFE evidence and INCOMPLETE precedence. See decisions/claude-review-strategy-handoff.md for actual platform results and limits. Historical old-contract evidence: local B P3 candidate based on 3d62b7c validated canonical v2 verdicts and all-entry agreement including Minor-only negative, blockers and questions in tests/test_validate_v2.py, tests/test_v2_producer_adapter.py and tests/test_v2_rounds.py. That evidence does not establish the revised collection rule."
+      }
+    },
+    {
+      "id": "C14",
+      "surface": "verdict-wire",
+      "rule": "R-BIND",
+      "summary": "Verdict binding",
+      "input": "a verdict with a wrong review_id / family / digest / attempt / route; a raw reply with a duplicate member",
+      "expected": "review_id + leg identity + attempt + family + resolved route + content digest must match; duplicate JSON members rejected at the original-text boundary",
+      "tests": {
+        "A": "tests/unit/wrappers/t56-wrapper-dup-members-c14.sh (wrapper schema path) @ triad ebc4dc7; duplicate members are also rejected by the v2 admission of every route (lib/verdict_v2.py:277-311 `_reject_duplicate` / `_parse_strict` @ triad e9960053; the retired raw-reply admission lib/validate_verdict.py is removed @ triad 12b1dd6f, DL-128); six-field binding: lib/verdict_v2.py. A `--pydantic` answer carrying a lone-surrogate escape is refused by the validator and ends schema-fail 66; the validated answer takes the one byte-safe encode: tests/unit/wrappers/t51-transport-receipt.sh axis 12c @ triad e9960053 (authoring/shared-dev-log.md DL-138).",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Opt-in producers/renderers/collector use all six bindings; explicit legacy wire remains separate. Regression sources: tests/test_validate_v2.py, tests/test_v2_review_prompts.py, tests/test_v2_round_cli.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C15",
+      "surface": "gemini-policy",
+      "rule": "R-CONTAIN",
+      "summary": "Gemini no-web host profiles (the profile for a false review-web condition) remain byte-identical to their selected contract and deny web tools explicitly (D-9, D-B1)",
+      "input": "the shipped TOML vs the contract file; a dedicated fixture with read/search controls and attempted web/write calls; final-model prose without engine evidence; a candidate policy with a catch-all and a base-versus-candidate unlisted-tool control",
+      "expected": "Each shipped profile is BYTE-IDENTICAL to its selected complete contract: A contracts/gemini-readonly.toml (unchanged 100/200 profile), B contracts/gemini-readonly-b.toml (999 allow/deny plus existing 998 catch-all and Plan Mode transition denies). Both explicitly deny google_web_search and web_fetch. B moves only those tools out of its prior allow set; no overlay or loss of existing protection. Runtime effect requires attributable engine call/result or authoritative policy-exclusion evidence; model prose or missing files alone never prove enforcement. Unknown evidence is INCONCLUSIVE. Preserve local reads/search. Runtime effects are checked through the verification manifests (contracts/gemini-readonly.verify.toml, contracts/gemini-readonly-b.verify.toml); A's proposed rows land only after those checks. Source/byte tests do not imply runtime conformance.",
+      "tests": {
+        "A": "tests/unit/wrappers/t50-gemini-policy-web-deny-c15.sh (file shape + byte identity with the contract, offline); runtime checks V1-V5: NOT RUN (owner runs where gemini is in service; V3/V5 use a candidate copy through the direct CLI invocation in the manifest)",
+        "B": "P4 implemented at 8f12bd5: tests/test_investigation_completion.py verifies exact separate B candidate bytes, digest and explicit web denies while preserving 999/998 controls; existing test_review_no_web.py and provider tests retain AGY/render/raw boundaries. triad-b-p4-r1 ADMITTED_SAFE. B1-B3 and A V1-V5 remain NOT RUN; implementation/source equality is not effective-policy proof or revision adoption."
+      }
+    },
+    {
+      "id": "C16",
+      "surface": "gemini-policy",
+      "rule": "R-CONTAIN",
+      "summary": "Gemini preflight",
+      "input": "gemini 0.33 / a missing capability / an API-key auth path / hardened default with --sandbox omitted",
+      "expected": "Refuses below CLI 0.63.0, on a missing capability, when auth is not the approved subscription route; effective posture computed BEFORE the conflict/policy checks",
+      "tests": {
+        "A": "tests/unit/wrappers/t57-gemini-preflight-c16.sh @ triad e9960053 — effective posture computed before the conflict and policy checks (axis 1; 3rd-Agent/wrappers/gemini_wrapper.py:421-437 @ ebc4dc7); the 0.63.0 route floor on every gemini route (D-GEMINI-FLOOR-20261009): axes 2, 7, 8, 9, 10, 11, 13, 17, 18 (triad 1491387a).",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Version/help/model-policy interface validation before review inference; actual OAuth principal and account entitlement remain unexposed unless independently observed. Regression sources: tests/test_gemini_version_floor.py, tests/test_v2_adapters.py, tests/test_v2_adapter_wrapper_bridge.py, tests/test_v2_review_findings.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C17",
+      "surface": "gemini-policy",
+      "rule": "R-NOCOST",
+      "summary": "Credential scrub on the gemini route",
+      "input": "a leader env carrying Google credential variables on the gemini route",
+      "expected": "Google credential / ADC / Vertex / endpoint variables absent from the child env. Model/effort user settings pass through unchanged; the three former model-selector names are excluded from the removed set under D-SELECTOR-PROPOSAL-WITHDRAWN-20261009. No new selector warning or attestation is required.",
+      "tests": {
+        "A": "tests/unit/wrappers/t37-child-env-scrub.sh (C11/C17 layer) and tests/unit/wrappers/t68-gemini-route-env-c17.sh axes 1-4 (no credential / ADC / Vertex / endpoint variable reaches the gemini review dispatch, its preflight probes or the --web investigation; HOME, PATH and GOOGLE_GENAI_USE_GCA survive; GEMINI_MODEL passes through) @ triad e9960053 (triad 31c7be92).",
+        "B": "B632f426 + dirty U2c candidate: agreed all-route omissions, name-before-value, Gemini project exception and preserved model/effort settings. Dedicated focused370/full2029 passed with4skips, both validators, fresh all-four SAFE with matching integrity. See decisions/2026-10-09-b-child-environment.md. No authenticated-service or release claim."
+      }
+    },
+    {
+      "id": "C18",
+      "surface": "gemini-policy",
+      "rule": "R-NOCOST, R-MODEL",
+      "summary": "Google review leg default model",
+      "input": "a roster with no gemini model / the Pro-high default / an explicit other model; Gemini CLI 0.62.9 / 0.63.0-preview.1 / 0.63.0 / later, with known and previously unlisted model pins; explicit model values `--help`, `--yolo`, an unknown ordinary pin, and a pin containing spaces across wrapper/vendor parser boundaries; literal pin `--`, including an older host parser returning a non-string value",
+      "expected": "Default = the Pro-high tier on agy and on gemini (dispatch-time slug from the roster, never in code); a different model is accepted only as an explicit roster choice to evaluate a future model and is passed to the CLI as written, never checked against a model list (R-MODEL); a model the CLI refuses ends as one terminal failed-to-run record naming the leg and the model and telling the user to change the roster entry (R-MODEL); the resolved model is recorded in the receipt; all Gemini CLI routes refuse versions below 0.63.0 (including 0.63.0 prereleases) before inference, independently of model membership; 0.63.0 and later pass this version gate, subject to existing capability, authentication, containment and binding checks (D-GEMINI-FLOOR-20261009) Transport each explicit pin as one opaque model-option value at every parser boundary: option-shaped pins never activate help or permission options, and unknown pins/spaces are preserved. This specifies transport, not vendor model availability; an unsupported pin may be refused once under R-MODEL, without substitution or inference retry. If host parsing cannot preserve an explicitly supplied model as a string, refuse before dispatch rather than treating it as omitted or selecting a default.",
+      "tests": {
+        "A": "tests/unit/skills/t12-roster-v2.sh (cases C12, C18, C22) @ triad ebc4dc7; the pin passed as written with no model-list call: tests/unit/wrappers/t71-agy-model-passthrough-c18.sh axes P0, P1, P2 and tests/unit/wrappers/t57-gemini-preflight-c16.sh axis 12 @ triad e9960053 (DL-116); a pin shaped like an option stays ONE option-value token from the roster to each wrapper's parser and on to the vendor (codex `-c model=\"<v>\"`, gemini and agy `--model=<v>`): tests/unit/skills/t12-roster-v2.sh axis 42, t57 axis 12b, t71 axis M1 @ triad e9960053 (triad 9e16880d, DL-132; reference/review-rules.md R-MODEL On A).",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Separate Google route blocks, explicit pin, Pro-high requested defaults; Gemini never receives a fabricated effort flag. Regression sources: tests/test_v2_adapters.py, tests/test_v2_google_wrappers.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred. U1T implemented at Bed8b76f: tests/test_model_value_transport.py covers generated Python-wrapper/preflight, both Google route receipts/dispatch and raw Gemini, plus old-parser refusal. Final82 current affected/46 official old-parser module tests and four validators pass; earlier full2326/4 on identical production predates test-only correction. Fresh R3 all-four SAFE/matching integrity; see decisions/2026-10-10-model-value-transport.md for actual-parser evidence and limits. No native-leg or model-availability claim."
+      }
+    },
+    {
+      "id": "C19",
+      "surface": "review-lifecycle",
+      "rule": "R-RETRY, R-PREPARE",
+      "summary": "Failed leg, nothing changed",
+      "input": "one leg failed to run; source, prompts, roster, model, route unchanged. Negative arm: after prepare, one selected entry's enabled flag or one resolved control (model, effort, route, timeout) in the host's round custody differs from the bound basis, or a control the host resolves from a host-native source outside the roster file (On A: the claude preset's model or effort) changes between prepare and the retry, and the failed leg is retried",
+      "expected": "Only the failed leg is re-dispatched on the same bound basis; other legs' results are retained; the receipt records attempt 2. Negative arm: the retry is refused before an attempt is allocated, naming the changed selection or control; collection does not agree on that round; every selected leg reviews again on a new basis (R-REREVIEW)",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axis 79 (unchanged-basis retry) and axes 77, 78 (a changed selection or configuration is refused in collect and retry) @ triad ee011968. A claude preset change: tests/unit/skills/t28-review-lib-basis-c13c19c32.sh axis 3 (the shipped preset file bound by its sha256, in the plugin layout: an unchanged file collects and retries; a changed model, effort or body, or a deleted file, refuses collect and retry naming the bound and installed agent, model, effort and digest, nothing allocated) @ triad 3894879 (authoring/shared-dev-log.md DL-49)",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Diagnosed unchanged-basis failed-entry retry increments attempt and retains siblings/history; preparation failures are preserved without fabricating provider attempts. Regression sources: tests/test_v2_rounds.py, tests/test_v2_round_custody.py, tests/test_v2_runtime_boundaries.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred. Negative arm: a claude entry's `agent` definition is outside the sealed basis (bin/review_adapters_v2.py:107-108, bin/review_round_v2.py:222-223) — open (authoring/shared-dev-log.md DL-49)."
+      }
+    },
+    {
+      "id": "C20",
+      "surface": "review-lifecycle",
+      "rule": "R-REREVIEW",
+      "summary": "Reviewed bytes or review conditions changed after a round",
+      "input": "a fix wave or changed review condition after a round; the leader supplies a condensed current residual with excerpts needed for the next judgment",
+      "expected": "Create a new bound basis and have every selected leg review the current full scope again. Render the leader's current residual once as fenced data, with required prior excerpts, counterevidence and verification results materialized now in the host's existing bound inputs: A's brief/evidence surfaces; B's prior_residual or EVIDENCE.md/source members. Old paths are provenance, not the only evidence; no transcript or prior residual is appended automatically, no earlier approval carries forward, and normal owned temporary-root cleanup may proceed. The leader chooses the reviewed range; the host does not check it against earlier rounds.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axis 80 (changed bytes -> a new bound basis, full scope, no carried approval) and tests/unit/skills/t14-prepare-v2.sh axis 34 (the current residual rendered once for every leg) @ triad ebc4dc7. The historical old-contract item: the focused re-confirm (old rule 5(b)) is removed: rule 5 forbids a focused pass (.claude/skills/triad-cross-family-review/SKILL.md:159) @ triad ee011968.",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_review_cleanup_custody.py C20_C63 binds current materialized evidence before eligible previous cleanup; tests/test_v2_rounds.py and existing toolkit/custody tests preserve changed-basis refusal and full re-review. See decisions/claude-review-strategy-handoff.md for actual platform results and limits. Historical old-contract evidence: local B P3 candidate based on 3d62b7c required changed-source/condition full review and fenced, bound prior residual inputs; tests/test_review_conditions.py, tests/test_v2_review_prompts.py, tests/test_v2_rounds.py, tests/test_v2_toolkit_inputs.py. This does not establish the revised current-input contract."
+      }
+    },
+    {
+      "id": "C21",
+      "surface": "verdict-wire",
+      "rule": "R-AGREE",
+      "summary": "Blocking finding from an informational leg",
+      "input": "an informational leg returning a verified Critical",
+      "expected": "Blocks agreement on that basis. Only a later current-basis round in which every selected leg, including this informational entry, explicitly returns SAFE TO MERGE reaches AGREED. A leader refutation or owner exception is recorded separately and never converts the negative result into approval; the acceptance label grants no exemption.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axis 74 @ triad 4af44cf: an informational entry's Critical blocks (BLOCKED); a re-admission into the recorded attempt is refused and the emptied attempt is INCOMPLETE; only a new round in which the informational entry approves reaches AGREED.",
+        "B": "Historical pre-amendment evidence: implemented in the local B P3 candidate based on 3d62b7c. Every enabled entry counted regardless of acceptance label, with missing/invalid/blocking states and independent family coverage. Regression sources: tests/test_v2_rounds.py, tests/test_v2_round_cli.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md. Current all-selected/no-family-veto fixture evidence is recorded under C13/C33; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C22",
+      "surface": "roster",
+      "rule": "R-ROSTER",
+      "summary": "Model and effort reach the actual invocation for every vendor",
+      "input": "a roster naming model/effort for each vendor",
+      "expected": "The roster's per-vendor block appears in the rendered argv / native tool arguments; an unsupported value is refused at the adapter with the reason",
+      "tests": {
+        "A": "tests/unit/skills/t12-roster-v2.sh (cases C12, C18, C22) @ triad ebc4dc7 and its axis 40 (non-default per-vendor values reach the invocation; unsupported values are refused) @ triad ee011968",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Native and CLI controls reach actual invocation interfaces; unsupported selections are rejected before review inference, without guessed runtime defaults. Regression sources: tests/test_v2_adapters.py, tests/test_v2_adapter_wrapper_bridge.py, tests/test_v2_claude_agent.py, tests/test_v2_runtime_boundaries.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C23",
+      "surface": "agy-containment",
+      "rule": "R-BIND, R-CONTAIN",
+      "summary": "AGY leg isolation and same-run finish recovery",
+      "input": "two agy legs in one round; one read-only run with an earlier errored finish and a later finish/DONE without tool_info.error, terminal ERROR/raw0; reversed/missing success, no reads, executed off-list tool, another errored non-read step, and denied-before-execution controls",
+      "expected": "Each leg has its own bound read-audit evidence and binding; one leg's hook/audit cannot satisfy another's. The R-CONTAIN finish-recovery case admits the later submission through normal answer/schema/binding validation. Reversed/missing success, invalid success shape, no reads or another executed/errored non-read step do not qualify. An ERROR tool step with a measured denial head is denied-before-execution and does not itself void recovery; the same text in a DONE step or quoted mid-message is not a denial. Finish success/order never comes from message prose. B retains its nonzero classifier path; broader A nonzero admission is an A fact.",
+      "tests": {
+        "A": "tests/unit/skills/t9-agy-hook.sh axes 26-32 (per attempt: `agy_hook.py check <audit> <hook-log>`, hook rows attributed by the attempt's own conversation ids) @ triad ec4349dd; the agy driver's attempt-preserving read audit, no in-loop soft-deny re-run (DL-140) and a signal between attempts: tests/unit/wrappers/t15-agy-driver-decision.sh axes 6, 17, 42, 42b; the measured denial heads `_agy_step_denied` (3rd-Agent/wrappers/_common.py:373): tests/unit/wrappers/t13-agy-stream-digest.sh axes 24, 26, 27 @ triad e9960053 Current same-run finish-recovery evidence: finish recovery source tests: tests/unit/wrappers/t15-agy-driver-decision.sh axes30-37; denial predicate 3rd-Agent/wrappers/_common.py::_agy_step_denied at a5456b13 inspected by B, A runtime not rerun. Maintainer confirms the measured denial scope in PR13comment6092107935.",
+        "B": "Implemented P3 candidate: Exclusive named-entry/attempt results, original host files and read observations; sibling/attempt swaps and changed evidence are refused. Reserved collector output/metadata paths refuse before writes and permit same-attempt recovery using corrected input filenames. Evidence: tests/test_v2_rounds.py, tests/test_v2_round_custody.py, tests/test_v2_evidence_custody.py, tests/test_v2_round_cli.py, tests/test_v2_input_refusals.py. Current verification and publication: decisions/host-b-p3-verification.md. DL-113 recovery implemented in B632f426 plus candidate: tests/test_agy_finish_resubmission.py; dedicated RED/GREEN,458affected/2213full passed with4skips, four validators and all-four SAFE/integrity. Scope and limits: decisions/2026-10-10-agy-resubmission-evidence.md. This does not certify all C23 axes."
+      }
+    },
+    {
+      "id": "C24",
+      "surface": "engine-transport",
+      "rule": "R-PLATFORM",
+      "summary": "Per-platform outcomes",
+      "input": "a run on macOS and a run on Ubuntu 24.04",
+      "expected": "macOS and Ubuntu 24.04 results recorded separately; an unrun platform is listed NOT RUN",
+      "tests": {
+        "A": "todo",
+        "B": "Corrected P3 candidate: clean-input dedicated GREEN 27 focused and 1631 full macOS tests; Ubuntu 24.04 unprivileged uid 65534: 1629 passed, 2 existing filesystem skips. Validator/provider-free lifecycle passed; source hashes unchanged and exact fixtures/container removed. Formal admission and clean distribution are recorded separately in decisions/host-b-p3-verification.md. No installed-service or authenticated policy conformance is inferred. Historical P4 8f12bd5: 1429 macOS / 1427 Ubuntu plus two skips, triad-b-p4-r1 ADMITTED_SAFE."
+      }
+    },
+    {
+      "id": "C25",
+      "surface": "selected-investigations",
+      "rule": "R-INVEST",
+      "summary": "Selected investigation preserved",
+      "input": "one chosen leg with a custom prompt, an authorized extra read root and web enabled",
+      "expected": "The chosen model/effort/perspective and the extra root/web reach the actual invocation; the caller may customize the investigation prompt and free-form or custom-schema result; no review verdict is demanded and no roster accounting occurs",
+      "tests": {
+        "A": "tests/unit/wrappers/t69-selected-investigation-c25.sh axes 1 (codex: `--search`, model and reasoning in the argv, the child cwd = the `--cwd` root, the custom prompt on stdin, a custom schema at `--output-schema`), 2 (agy: the research agent under `--web`, model and effort, `--add-dir` = the root, the custom prompt heading `-p`, a custom schema at `--json-schema`), 3 (gemini: the `--web` research profile, `-m`, the child cwd = the root, the custom prompt heading `-p`, a free-form answer) and 5 (no review accounting: no review-web marker, no review-attempt receipt) @ triad ee011968; the web-evidence clause of the agy and gemini `--web` calls: C29.",
+        "B": "P4 8f12bd5: tests/test_investigation_completion.py covers authorized raw extra roots, native argv, invalid-root and formal-expansion refusal, Gemini comma-path refusal and custom-schema preservation. Existing raw-route tests remain; both explicit Google web triggers are implemented under C29 without a mandatory investigation envelope."
+      }
+    },
+    {
+      "id": "C26",
+      "surface": "review-lifecycle",
+      "rule": "R-PREPARE",
+      "summary": "Symlink in the reviewed basis (owner Q4 ruled)",
+      "input": "a dirty basis containing a nonignored symlink to a path outside the tree",
+      "expected": "The link itself is reviewed: path, kind and exact link text fingerprinted and visible to legs; the target is never followed automatically; target content enters only as an independently authorized bound input; an unfollowable link is disclosed as a coverage gap; cleanup never follows a link to delete its target; the host's no-follow mechanism leaves evidence",
+      "tests": {
+        "A": "tests/unit/skills/t24-symlink-c26.sh axes 1 (an untracked link in an `r1` capture refuses, naming it), 2 and 2b (an uncommitted source link is never in the round copy; a working-tree range lists its kind and exact text in the bound brief), 4 (every committed link listed with its path, kind and exact text, no per-link mark, no target content), 5 (the prompts carry the no-follow clause), 6 (close never removes a link's target), 7 (a link planted in the round tree after capture fails verify), 9 and 9b (links into untracked-only directories and submodules listed; an empty link text listed, a refusal names the decoded path) and the \"C26 blanket gap\" axis (four rows, one gap sentence, no per-link mark) @ triad ee011968 (triad 92b7feeb, authoring/shared-dev-log.md DL-53)",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Guarded review shows link text without implicit target read; prepared copies retain existing refusal and cleanup preserves external targets. Prompt control is not OS path confinement. Regression sources: tests/test_review_cleanup_custody.py, tests/test_review_round.py, tests/test_review_link_evidence.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C27",
+      "surface": "google-resolution",
+      "rule": "R-GOOGLE",
+      "summary": "Google route resolution",
+      "input": "explicit pin / agy installed only / gemini installed only / neither installed",
+      "expected": "The resolved route, binary and observed version are frozen for the attempt and recorded; a started leg never switches route; neither-installed = the host's recorded policy (A skip-and-log, B refuse) and is never agreement",
+      "tests": {
+        "A": "tests/unit/skills/t70-google-route-resolution-c27.sh axes 1-7 (agy installed only -> agy; gemini only -> gemini; both, no pin -> agy; an explicit gemini pin wins; an agy pin with only gemini installed is skipped naming the pin, never switched; neither installed -> skip and log, not startable, not a family; the attempt receipt records route, resolved binary and observed version) and tests/unit/skills/t12-roster-v2.sh axes 9 (a pinned Google route never switches silently) and 16 (the chain is per entry) @ triad ee011968; never agreement: tests/unit/skills/t15-collect-v2.sh axis 6a (an enabled entry skipped for a missing CLI collects INCOMPLETE) @ triad ee011968",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Selected route/executable and observed preflight version are frozen; exposed runtime contradictions refuse and unavailable runtime versions remain null. Regression sources: tests/test_v2_adapters.py, tests/test_v2_google_wrappers.py, tests/test_v2_runtime_boundaries.py, tests/test_v2_review_findings.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred."
+      }
+    },
+    {
+      "id": "C28",
+      "surface": "engine-transport",
+      "rule": "R-CONTAIN",
+      "summary": "Relative --prompt-file / --cwd resolution (recurring dispatch failure)",
+      "input": "a wrapper invoked from a cwd with `--prompt-file rel/brief.md` that exists there; the same with a path that does not exist",
+      "expected": "Existing relative --prompt-file and --cwd values resolve independently against the wrapper PROCESS cwd captured at entry (never child cwd). Preserve configured runtime roots, regular-file/UTF-8/non-empty/existence checks. Existing success summary and audit represent resolved absolute prompt-file and child-cwd values through the host's existing redaction mode (D-B2); no new log and no unmasked-path expansion. Invalid input exits 3 (argument error) before any vendor call, identifying the resolved candidate through the same masking policy.",
+      "tests": {
+        "A": "tests/unit/wrappers/t52-relative-paths-c28.sh @ triad ebc4dc7 (relative paths rebased on the process-entry cwd, 3rd-Agent/wrappers/_common.py:1800-1844)",
+        "B": "Implemented at 8f12bd5 (P4), extending 6653bdc: tests/test_wrapper_relative_paths.py and test_investigation_completion.py cover entry-cwd-relative loading, preserved validation, resolved success/audit fields, masking, refusal and vanished entry cwd. Accepted diagnostic limits are recorded in decisions/host-b-0555-contract-compliance-handoff.md; no unmasked-path expansion."
+      }
+    },
+    {
+      "id": "C29",
+      "surface": "selected-investigations",
+      "rule": "R-INVEST",
+      "summary": "Web evidence on a research dispatch is a fetched page, never a search summary",
+      "input": "Web-enabled Google-family INVESTIGATION with caller prompt and optional schema; REVIEW and raw calls without web do not trigger clause insertion.",
+      "expected": "The vendor prompt ENDS with the shared web-evidence clause after the caller's text; only tool names are substituted per Google CLI. Existing audit/redaction/failure-log/retention rules apply (D-B2); do not require a new permanent exact-prompt or fetched-page store. Verify exact assembly in tests and actual fetch/interpretation using bounded task-authorized evidence. A URL in prose, search summary or successful exit never proves a fetch or complete body. A cited but unfetched/unverifiable URL, placeholder, undated claim or incomplete page evidence remains UNSURE. Preserve existing host read-audit capability without activating dormant hooks for symmetry.",
+      "tests": {
+        "A": "tests/unit/wrappers/t49-agy-web-evidence-c29.sh (prompt tail + audit record over a fake agy) + the live old-vs-new run recorded in the spike @ triad ebc4dc7 — investigation arm. v2 REVIEW arm closed on A: the v2 agy and gemini legs launch with --review-web, which never appends the investigation clause, while --web keeps it for investigations (3rd-Agent/wrappers/antigravity_wrapper.py:1915-1920, :2043-2047; tests/unit/wrappers/t62-review-web-option-c32.sh @ b53409b). The gemini investigation arm: tests/unit/wrappers/t58-gemini-web-clause-c29.sh axis 2 (the audit row's `cmd` carries the clause last; the audit prompt is the caller's text) @ triad e9960053. A has no legacy review path: the small path that passed the investigation --web to agy is removed @ triad 32124be5 (authoring/shared-dev-log.md DL-128)",
+        "B": "P4 8f12bd5: test_agy_web_evidence.py plus test_investigation_completion.py verify explicit raw AGY/Gemini triggers, clause-last assembly including Gemini schema repair, caller/custom-schema preservation and refusals. Cross-site live evidence records AGY URL-body prefix loss as non-fatal KI-AGY-URL-BODY-PREFIX under the owner disposition; incomplete evidence stays UNSURE where relevant. No new permanent store, dispatch failure or provider-fix claim. See decisions/2026-09-20-owner-follow-up.md and the current handoff."
+      }
+    },
+    {
+      "id": "C30",
+      "surface": "verdict-wire",
+      "rule": "R-BIND, R-ROSTER",
+      "summary": "Canonical v2 schemas reject ambiguous boundaries while preserving agreed result distinctions",
+      "input": "v2 verdict with Minor-only negative, uncertainty-only negative, legacy omissions, unsafe/terminal-newline paths or binding; partial roster overrides and shared template; native or CLI transport receipt",
+      "expected": "Minor-only negative and uncertainty-only DO NOT MERGE are valid; SAFE with blockers/questions, missing required v2 data, unknown fields, unsafe or newline-terminated paths/identifiers/digests are invalid. Named partial overrides validate before merge; complete resolved entries obey vendor blocks. Native receipts do not invent CLI identity. Schema success is not adapter/binding/admission/runtime proof. A pinned resolved Google route requires its own CLI block; absent/null route preserves host selection and adapter checks.",
+      "tests": {
+        "shared": "tests/test_schemas.py; original schema absence RED 65 failed; terminal-newline RED 6 failed / 65 passed; final local authoring verification recorded in decisions/rev-2-implementation-spec.md. No host conformance implied. Measured producer refusals and each host's producer projection: decisions/rev-2-implementation-spec.md (projection bullet); authoring/shared-dev-log.md DL-103.",
+        "A": "tests/unit/skills/t11-verdict-v2.sh axis 28 (Minor-only and uncertainty-only negatives are valid; SAFE with a blocker or an open question, a missing or unknown member, an unsafe or newline-terminated path, identifier or digest is invalid) and tests/unit/skills/t12-roster-v2.sh axis 41 (a partial override validates before the merge; a pinned route needs its own block; an explicit null route keeps the host chain and its adapter checks; the native claude record names only its preset — no binary, CLI version or model) @ triad ee011968. On A the native claude leg writes no transport receipt, so \"native receipts do not invent CLI identity\" holds with nothing to invent (t12 axis 41's arm 41d, a fact).",
+        "B": "Implemented in the local B P3 candidate based on 3d62b7c. Pinned canonical schema/prompts, thin generation projection, strict original local validation and legacy/v2 isolation. Regression sources: tests/test_validate_v2.py, tests/test_v2_producer_adapter.py, tests/test_v2_review_prompts.py, tests/test_v2_claude_wrapper.py, tests/test_v2_google_wrappers.py. Corrected-byte platform outcomes, formal admission and distribution are tracked separately in decisions/host-b-p3-verification.md; no authenticated service conformance is inferred. Current B aa91bde: one live AGY1.3.3 Pro/high normal v2 wrapper accepts the bound full schema and passes full local validation (DL-103; decisions/2026-10-10-b-agy-v2-schema.md). This is current-route acceptance, not complete C30 certification."
+      }
+    },
+    {
+      "id": "C31",
+      "surface": "selected-investigations",
+      "rule": "R-INVEST",
+      "summary": "Explicit raw Claude web permission reaches the native CLI",
+      "input": "Caller explicitly requests raw Claude web via --web; compare an omitted flag.",
+      "expected": "Only the selected invocation adds native --allowedTools WebSearch WebFetch. The caller prompt, custom schema, default controls and native deny precedence survive; no review accounting, global settings mutation or arbitrary argv interface is added.",
+      "tests": {
+        "A": "n/a — host A runs the claude family natively and has no claude CLI route (D-OWNER-ANSWERS-20261008). C31 is a codex-host case: the raw claude --web is B's claude CLI wrapper. Host A's claude CLI wrapper bundle (3rd-Agent/wrappers/claude_wrapper.py, the triad-claude-dispatch skill, tests/unit/wrappers/t63-claude-web-option-c31.sh @ triad e0b15f1) is removed (authoring/shared-dev-log.md DL-110); a claude investigation on A runs as the leader's own native agent.",
+        "B": "tests/test_claude_owner_web.py::test_C31_raw_fixed_web_permit; implementation verification pending"
+      }
+    },
+    {
+      "id": "C32",
+      "surface": "review-web-authorization",
+      "rule": "R-REVIEW-WEB, R-REREVIEW, R-CONTAIN",
+      "summary": "The owner's standing authorization binds web across every review leg in every round",
+      "input": "A review round under the owner's standing authorization (D-REVIEW-LEGS-20261003); compare a revoked authorization and absent/false/nonboolean/mismatched conditions, preflight, prompt and invocation.",
+      "expected": "Every round binds review_web_authorized true while the standing authorization holds — a caller's false is ignored and recorded as true, a nonboolean value is refused as an input — enabling all participating routes with a short common permission clause and preserved native/read-only controls; a revoked authorization binds false and renders the `review-no-web` clause. The same condition enters common digest, preflight and allocation; changed conditions require a new basis; retry preserves it. A route that lacks the web capability refuses before inference; a launch switch that disagrees with the bound condition never counts — it is caught at collection by the executed-command receipt on both hosts (owner D-OWNER-ANSWERS-20261008 item 6; B also refuses it before inference), and a line with every review marker removed likewise runs as an ordinary call on both hosts and is caught at collection, never agreement (owner D-ENV-DROPPED-LINE-20261003); unsupported capability refuses rather than silently running a partially authorized round. No technology-detection heuristic, roster field or changed verdict schema. The no-web Gemini profile bytes remain unchanged; each host's complete web profile (On A: contracts/gemini-readonly-web.toml; On B: contracts/gemini-readonly-web-b.toml) permits only its two web tools in addition to the existing read tools. Every route of every host supports the true condition.",
+      "tests": {
+        "A": "tests/unit/skills/t23-review-web-c32.sh axes 1-6 and 8-11 (standing true bound with the date; codex --search, agy --review-web, claude web twin, hook --web; a caller false ignored and a non-boolean refused before any file; revoked -> false everywhere and a changed digest; collection reads the bound condition, absent = false; retry re-renders the bound condition and date (prepare and retry render every record from the bound condition; no record is re-compared); twins per preset by the closed table, a name outside it refused; the build-time check of the eight shipped preset files (frontmatter keys, base and twin tools, equal model and effort lines, the export list and rename regexes) in axis 9; render_dispatch per route; <review-web-policy> and <review-date> from the vendored clauses; the gemini web profile equals the contract) @ triad ee011968 (its orphan-attempt adoption arm is removed @ triad 207dd39f, DL-130) and tests/unit/wrappers/t62-review-web-option-c32.sh (--review-web on agy and gemini) @ triad b53409b. Live: WEB-A-1 (the true condition on every route, live) RUN 2026-10-03 (host A b53409b); WEB-A-3 (absent / false / mismatched condition refuses web, live), WEB-A-2 and WEB-B-1 NOT RUN (decisions/owner-register.md#review-web-a1-20261003); the false condition and a mismatched switch are covered by the unit tests above. The A web-profile payload invariant is tests/test_policy_profiles.py::test_c32_a_web_profile_moves_only_the_two_web_tools_to_allow (spec repository). An edited wrapper line runs and is INVALID at collection — host A has no pre-spawn check (its review-argv digest is removed @ triad b83d95f4, owner D-OWNER-ANSWERS-20261008 item 6, authoring/shared-dev-log.md DL-111) (no receipt, or an executed command other than the recorded one), and a line that never ran or was refused before the spawn leaves no or an empty result file and is MISSING (lib/collect_v2.py:1327-1337 @ triad ee011968); both block agreement: tests/unit/wrappers/t64-review-run-log.sh and tests/unit/skills/t15-collect-v2.sh axes 94-96 (one axis: an edited or unrun wrapper line is INVALID), 97, 98, 103 and 106 @ triad ee011968 (R-BIND, the executed-command receipt; authoring/shared-dev-log.md DL-63). Known limit, both hosts (owner, decisions/owner-register.md#D-ENV-DROPPED-LINE-20261003): a line with both review env values removed runs as an ordinary call and is caught at collection, never agreement. The agy web prerequisite (a true round with an agy leg and no `read_url(*)` allow, a deny of it, or no settings file is refused before inference): tests/unit/skills/t28-review-lib-basis-c13c19c32.sh axis 5 @ triad e0b15f1 (authoring/shared-dev-log.md DL-58).",
+        "B": "tests/test_claude_owner_web.py C32 scenarios cover standing preparation for omitted/false/true input, strict type refusal, missing native web capability, revoked policy and bound retry in both directions. Existing adapter/wrapper tests retain capability, flag, profile and preflight mismatch controls. B source candidate U5b: decisions/2026-10-10-b-standing-review-web.md; not installed revision adoption or complete live C32 certification. Legacy per-request behavior remains the recorded DL-59 difference.",
+        "service": "contracts/review-web.verify.toml: WEB-A-1 (the true condition on every route, live) RUN 2026-10-03 (host A b53409b); WEB-A-3 (absent / false / mismatched condition refuses web, live), WEB-A-2 and WEB-B-1 NOT RUN (decisions/owner-register.md#review-web-a1-20261003); contracts/gemini-readonly-web.verify.toml (WA1-WA2) and contracts/gemini-readonly-web-b.verify.toml (WB1-WB2) NOT RUN"
+      }
+    },
+    {
+      "id": "C33",
+      "surface": "roster",
+      "rule": "R-ROSTER, R-AGREE, R-BIND, R-RETRY, R-REREVIEW",
+      "summary": "All selected named legs must approve, regardless of family count",
+      "input": "A configurable nonempty selected roster, for example codex, google-contracts, google-failures and google-state, including any informational entry; all receive the same phase goal, requirements, environment and full scope. Compare an all-disabled roster (every entry enabled: false), same-family result/receipt swaps, missing/invalid/negative/blocking output, an enabled entry skipped before dispatch, failed-to-run unchanged-basis retry and a changed phase goal.",
+      "expected": "Every selected entry gets an independent bound attempt and exclusive evidence path. PASS requires each one to explicitly return SAFE TO MERGE with no blocking finding or open_questions; a two-family or one-family roster has no special owner-decision or family-minimum gate. Sibling result/receipt swaps fail binding. Missing, invalid, failed, skipped or negative results cannot be counted as agreement, even if a same-family sibling approves. Preparation refusal cannot produce PASS. An all-disabled roster is refused at preparation, naming the empty selection, before any adapter starts or any round record is written. The common phase goal, requirements and environment reach every bound leg. Retry only a diagnosed failed-to-run entry on unchanged conditions; changed phase goal, requirements, environment, roster or controls require all selected entries to review the current full scope, and a retry or collection against a changed recorded selection or control is refused. Preserve machine outcome separately from any later owner decision.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh @ triad d80dad0 (lib identical to 4af44cf): axis 6b (:556, two families, every enabled entry approved -> AGREED), axis 72 (:4652, a one-leg roster, no family minimum), axis 73 (:4693, a same-family-only roster; :4702 both approving collect AGREED), axis 62 (:3354, a skipped enabled entry is INCOMPLETE, never AGREED), axis 75 (:4771, an all-disabled roster refused at prepare), axes 77-78 (:4846, :4901, changed selection or configuration refused), axis 83 (:5524; lib/collect_v2.py:1830 `_outcome` folds an empty entry list to INCOMPLETE). Fixture coverage only; no live service run is claimed.",
+        "B": "The collector computes AGREED for an empty enabled list too (bin/review_round_v2.py:531), reachable only through a forged sealed basis (DL-42). tests/test_v2_rounds.py:252 test_C33_zero_enabled_entries_refuse_before_adapters @ 0.2.558 7f75863. B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_rounds.py C33 covers one/same-family/informational and empty rosters; existing sibling/attempt/route swaps and retry regressions remain. See decisions/claude-review-strategy-handoff.md for actual platform results and limits. Historical old-contract evidence: v0.2.556 source supported named entries and exclusive paths but required OWNER_DECISION_REQUIRED for two-family output; generic-N/renamed-Google tests and decisions/codex-google-four-leg-operating-spec.md are supporting old-contract evidence only."
+      }
+    },
+    {
+      "id": "C34",
+      "surface": "roster",
+      "rule": "R-ROSTER, R-MODEL",
+      "summary": "Claude selection by alias, a full model ID only where a route takes one, and conflicting identity evidence",
+      "input": "Default Claude selection `opus` (alias) / xhigh, with a reported selection or exposed identity of an Opus model, or of a model outside the Opus family (Sonnet); on a route that takes a full model ID, claude-opus-5-5 / xhigh with a reported Opus 5.5, or Opus 5 instead; explicit model values `--help`, `--yolo`, an unknown ordinary pin, and a pin containing spaces across wrapper/vendor parser boundaries; literal pin `--`, including an older host parser returning a non-string value",
+      "expected": "Retain the requested and the selected (or exposed) identities separately: the request is the configured value — the alias, or a full model ID only where a route takes one — and with the alias the CLI's resolution is the selection. A contradicting identity is outside the requested family and tier (for a full model ID any other model, such as a reported Opus 5 for a requested Opus 5.5) (R-ROSTER, R-MODEL). A capability receipt does not attest eventual runtime identity. Transport each explicit pin as one opaque model-option value at every parser boundary: option-shaped pins never activate help or permission options, and unknown pins/spaces are preserved. This specifies transport, not vendor model availability; an unsupported pin may be refused once under R-MODEL, without substitution or inference retry. If host parsing cannot preserve an explicitly supplied model as a string, refuse before dispatch rather than treating it as omitted or selecting a default. Where the route provides selection evidence without inference, check the exposed model and effort before review inference and refuse a reported contradiction. This CLI-selection check does not attest eventual runtime identity. Check identity or effort exposed by the actual review call before accepting its answer. Absent observations remain absent/null, never inferred and never alone grounds for refusal; routes without exposed selection evidence acquire no new probe. An availability probe (a pre-call listing, a catalog lookup) is never a substitute, and a local table never supplies an identity the vendor did not state (R-MODEL).",
+      "tests": {
+        "A": "tests/unit/skills/t7-reviewer-siblings-mirror.sh axis 1 (the six shipped preset files cross-family-review-reviewer{,-high,-max}.md and their three -web twins exist; every preset names `model: opus` (alias) with effort xhigh / high / max; no full model ID in any preset), axis 2 (base bodies byte-identical) and axis 4b (every -web body equal to the web reviewer's) @ triad ee011968; the list is closed — a name outside it is refused: tests/unit/skills/t12-roster-v2.sh axis 32 (claude.agent names a shipped preset by its bare name; a scoped or unlisted id is refused) and tests/unit/skills/t28-review-lib-basis-c13c19c32.sh axis 4 (a non-default shipped preset is selectable; an unlisted name is not) @ triad ee011968. The frontmatter alias is A's SELECTION evidence (R-ROSTER; D-PRESET-ALIASES-20261006); runtime identity is not attested; C34 states A's alias selection (DL-100). The pin's transport as one opaque option value (a value shaped like an option never activates it): tests/unit/skills/t12-roster-v2.sh axis 42 @ triad e9960053 (DL-132; reference/review-rules.md R-MODEL On A).",
+        "B": "tests/test_v2_adapters.py::test_resolved_three_family_invocations_have_real_capability_evidence and ::test_C34_opus_55_pin_rejects_provider_selection_of_opus_5; results recorded in decisions/2026-09-25-opus-5-5-default.md. U1T implemented at Bed8b76f: tests/test_model_value_transport.py covers generated Python-wrapper/preflight, both Google route receipts/dispatch and raw Gemini, plus old-parser refusal. Final82 current affected/46 official old-parser module tests and four validators pass; earlier full2326/4 on identical production predates test-only correction. Fresh R3 all-four SAFE/matching integrity; see decisions/2026-10-10-model-value-transport.md for actual-parser evidence and limits. No native-leg or model-availability claim."
+      }
+    },
+    {
+      "id": "C35",
+      "surface": "roster",
+      "rule": "R-ROSTER",
+      "summary": "Explicit codex review default and requested-model custody",
+      "input": "no roster file / an override setting codex.model to null / an override naming an explicit codex model; the CLI route (A) and the native route (B)",
+      "expected": "No file = the codex leg requests the recommended explicit default (gpt-6-astra / high), never a value read from the operator's personal CLI configuration. An explicit null override keeps host-default semantics and is frozen as null. The requested model and reasoning are frozen in the bound round inputs and visible in the per-attempt dispatch record (A: wrapper argv and summary line; B: adapter record). A runtime model identity the CLI does not expose stays null and is never inferred from the request; an exposed identity that contradicts the request is refused, never relabelled.",
+      "tests": {
+        "A": "tests/unit/skills/t12-roster-v2.sh axes 36-37 @ triad fae369d7 (no file -> codex gpt-6-astra / high on the argv; an explicit null override frozen as null with no --model; the shipped four-leg example resolves to ONE codex leg — the shipped default `codex` entry is gpt-6-astra / high, .claude/skills/triad-cross-family-review/spec/review-legs.default.json:23-24, and the project override .claude/triad-review-legs.json has no codex-astra entry) + tests/unit/wrappers/t60-codex-requested-model-c35.sh @ triad fae369d7 (the summary tail carries ` model=<slug>` and then ` reasoning=<tier>`, the audit row and failure run-log carry `requested_model` and `requested_reasoning`, on the summary line, every promotion re-emission and the audit row; agy records its --effort under the same names (A has no claude CLI route, DL-110); 3rd-Agent/wrappers/_common.py:1631-1655 `_summary_tail`, documented in 3rd-Agent/wrappers/README.md:258-270). Live evidence 2026-10-03 (task 6 verification round): `[wrapper] codex ok exit=0 vendor=0 elapsed=200.7s attempt=1 prompt_file=<abs> model=gpt-6-astra reasoning=high`. codex exec --json exposes no runtime model, so the runtime identity stays unexposed.",
+        "B": "Adoption of the 2026-10-03 default (gpt-6-astra / high) pending. Prior evidence for the 2026-09-25 default (not evidence for the 2026-10-03 expected): contracts/review-legs.default.json:12 (gpt-5.6-terra / xhigh), tests/test_v2_adapters.py:183 (null request resolves to the host-exposed default and is recorded), bin/review_round_v2.py:454-477 (runtime_model observed separately; identity-mismatch refused). B maintainer names the case in its test."
+      }
+    },
+    {
+      "id": "C36",
+      "surface": "review-lifecycle",
+      "rule": "R-BIND, R-CONTAIN",
+      "summary": "Evidence binding survives exotic evidence paths",
+      "input": "an attempt whose evidence directory path carries a space, brackets, an embedded newline or a byte that is not valid UTF-8; the attempt's own read evidence and a sibling's",
+      "expected": "The host's evidence binding (A: the wrapper's custody line matched by the collector; B: the review_binding member of the read evidence) admits the attempt's OWN evidence and refuses a sibling's regardless of the path's bytes — a legitimate attempt is never refused forever because of its path, and a foreign one is never admitted. A path-carrying line is one line on both the producing and the comparing side.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axis 66 (pure arms for a newline and a \\xff path; end-to-end for a space + brackets path; drift guard between the wrapper's _summary_field safe set and the collector's; its arm 66e: own exotic-path evidence is custody on one line, a sibling's is refused) and tests/unit/wrappers/t40-agy-read-audit-file.sh axes 16/22 @ triad ee011968 (the `read-audit-file:` custody line, an ordinary path byte-identical and an exotic one escaped onto one line; it is the only custody line, one read-audit file, DL-126).",
+        "B": "Satisfied by construction: read evidence is bound by the JSON review_binding member and compared as data, never through a path-carrying text line (bin/review_round_v2.py:309-314 at v0.2.557). B maintainer may name a regression if one exists."
+      }
+    },
+    {
+      "id": "C37",
+      "surface": "engine-transport",
+      "rule": "R-AUTH, R-NOCOST",
+      "summary": "Browser login only: no API-key-shaped credential is ever tried, and an observed one is a STOP",
+      "input": "a vendor CLI whose subscription login is missing or expired; a child environment that carries a vendor API-key or endpoint variable; a CLI that answers a dispatch with a `401 Incorrect API key` class error or an auth banner naming an API key",
+      "expected": "No route issues, configures, reads, stores, sends or tries an API-key-shaped credential and no route has an API-key authentication fallback (the credential / endpoint variables are scrubbed from the child on every route — hygiene, their values never read). The observed API-key-shaped failure is a terminal failed-to-run record for that attempt (A: classification oauth-env, exit 65; B: its auth-class refusal / start-failure record) whose remedy is the owner's browser re-login through the CLI's own flow; the host never retries on that basis by itself, never inspects or repairs the credential store, and a same-basis retry (R-RETRY) runs only after the owner reports the re-login. R-AUTH is an absolute law (D-AUTH-ABSOLUTE-20261004); there is no pre-call check of the login (D-AUTH-JUDGE-STOP-20261004): an observed authentication failure — a missing or expired login, or an API-key-shaped credential — stops that attempt before any other classification of the run, with no retry, no other method and no fallback. Model/effort user settings pass through unchanged; the three former model-selector names are excluded from the removed set under D-SELECTOR-PROPOSAL-WITHDRAWN-20261009. No new selector warning or attestation is required.",
+      "tests": {
+        "A": "tests/unit/wrappers/t37-child-env-scrub.sh (the three families' credential / endpoint / model-selector tuple removed from the child on every route; per-name membership pin); tests/unit/wrappers/t57-gemini-preflight-c16.sh (api-key / Vertex / ADC auth classes refused before any vendor call); tests/integration/wrappers/classifier/f1-known-patterns.sh (the measured codex 401 line written into codex's own carrier — a JSONL error event + turn.failed — maps to oauth-env / exit 65, the token the r18 codex attempts carried; @ triad 7e9e1fb); the case's `401 Incorrect API key` class error is the class, and the measured codex line `unexpected status 401 Unauthorized: Incorrect API key provided` (gate-1 r18, 2026-09-25; contracts/vendor-failure-lines.json) its observed member, classified oauth-env through the auth-carrier rung only — no raw-text authentication phrase is kept after a measured false STOP (authoring/shared-dev-log.md DL-92; the `401 unauthorized` phrase of triad cbc67f6 is gone @ triad 7e9e1fb); the f1 fixture `incorrect_api_key` carries that measured line (DL-74). Live evidence: gate-1 round r18 (2026-09-25T23:07Z) — both codex entries' first attempts returned oauth-env rc 65 in 41-42 s on a `401 Incorrect API key provided` shape (an `sk-svcacct…` bearer presented to the ChatGPT backend); the leader configured nothing, retried nothing, stopped its own environment inspection when the auto-mode classifier refused it, and the same-basis retry ran only after the owner reported the CLI login working (docs/reviews/2026-09-21-host-a-v2-gate1.md row r18-L1). WITHDRAWN (owner 2026-10-04, D-AUTH-JUDGE-STOP-20261004: no pre-call check): a codex / claude preflight before the vendor call. A negative test that no wrapper argv carries an API-key form of authentication is NOT YET PINNED (Phase 12 T4). The auth STOP before any other classification of the run (an auth failure beside a server-capacity sentence): A fixed @ triad ca82837 (authoring/shared-dev-log.md DL-75, DL-76). The auth-carrier rung and its guard @ triad fae369d7: tests/unit/wrappers/t67-auth-carrier-stop-c37.sh (the C37 carrier axes for codex, gemini and agy; R1 ×3 — an undecodable stderr object before a genuine 401 still completes as oauth-env/65, records written) + tests/unit/wrappers/t74-record-seam-a4-c1.sh G axes (G5 — the auth rung raising on a measured codex 401 in its carrier ends unknown/1, never retried, since no raw-text authentication rung remains @ triad 7e9e1fb; G1 — the auth rung raising ends unknown/1 with the records written). The model-selector-removal description above is historical; triad 31c7be92 keeps the withdrawn model settings through (C11/C17/C75). Full C37 negative argv coverage remains NOT YET PINNED.",
+        "B": "B maintainer to name: the wrapper's credential scrub; the gemini auth-class preflight refusal (C16); whether B's start-failure record (`v2-record-start-failure`) for an API-key-shaped 401 names the browser re-login as the remedy and never retries on its own; that no adapter has an API-key fallback. Absolute law (D-AUTH-ABSOLUTE-20261004, D-AUTH-JUDGE-STOP-20261004): check that an observed authentication failure stops the attempt before any other classification, with no retry or other attempt (authoring/shared-dev-log.md DL-75, DL-76). B U2a candidate 632f426 + dirty: Gemini raw exit 41 now preserves oauth-env/65 through capture and late SIGTERM/SIGHUP without retry; tests/test_gemini_auth_exit.py plus parent-signal regression, dedicated full suite 1925 passed/4 skipped, fresh all-four SAFE and matching integrity. This closes only DL-99; other carriers and full C37 remain open. See decisions/2026-10-09-b-gemini-auth-exit.md for evidence and limits. B U2b candidate: measured carrier STOP before capacity/timeout, captured authentication survives signals, usable-answer/reflected-text controls, no raw-auth phrases. Dedicated focused437/full2005 passed with4skips, all-four SAFE and matching integrity. This implements DL-75/95 and the auth part of DL-92 only; complete C37 remains open. See decisions/2026-10-09-b-auth-carriers.md. U2c now completes the bounded child-environment parity portion (all-route agreed omissions, Gemini project exception, preserved model/effort settings, C75); dedicated full2029passed/4skipped and fresh all-four SAFE/integrity. See decisions/2026-10-09-b-child-environment.md. Full C37 remains open."
+      }
+    },
+    {
+      "id": "C43",
+      "surface": "exit-tokens",
+      "rule": "R-CLASSIFY",
+      "summary": "A known vendor failure sentence is classified on its own CLI only, and a plain fragment is not",
+      "input": "a run carrying a sentence of contracts/vendor-failure-lines.json in the row's specified carrier and exit conditions (vendor exit 1 where the row does not specify otherwise), on the row's CLI and on another CLI; a failed run whose output carries the plain sentence `The venue is at capacity, so the event moved.`; no user classifier extension present. For AGY print timeout, include vendor exits 0 and nonzero, with raw or schema-valid partial output and with no result, plus quoted/inline/wrong-carrier controls and an authentication-banner combination",
+      "expected": "On the row's CLI the classification is the row's token. On another CLI the sentence does not produce that token. The plain sentence does not produce `server-capacity`. The AGY network row is matched in string result.error only with status ERROR, exactly empty response and vendor exit 1; response/tool text, stderr alone and other status/exit/response combinations do not gain that match. Earlier authentication, wrapper-timeout, transport, strong vendor-exit and subscription-cap decisions remain authoritative. See decisions/2026-10-10-b-agy-network-carrier.md for the bounded examples. For answer folding, an own-line marker in the emitted raw response withholds that answer as truncated-answer/65; LF and CRLF line endings are positive controls for both bytes and lines markers, preserving original evidence bytes. An inline quote does not. A separately valid structured_output remains usable when only incidental response carries the marker. Tool/web-search output markers do not trigger this answer-channel rule. Existing schema, binding and original-JSON checks still apply; the mixed-channel pair is a constructed boundary, not a captured vendor incident. A currently withholds both channels as its recorded host choice (DL-102). For the measured whole-line AGY print timeout, return timeout/2 and no answer at any vendor exit, before raw/schema success or other vendor classification; authentication STOP, wrapper timeout and transport failures retain precedence. A SUCCESS/exit0 partial envelope does not qualify for the completed-answer authentication exemption. Quoted/inline/lookalike lines and occurrences in stdout, result.error or tool output do not trigger this stderr rule.",
+      "tests": {
+        "A": "tests/unit/wrappers/t1-classify-timeout.sh (the codex sentence -> server-capacity on codex, unknown on gemini; the agy sentence in a failed codex run -> unknown; the plain sentence -> unknown) + tests/unit/wrappers/t14-agy-classify.sh (the agy sentence -> server-capacity on the agy path; the codex sentence on the agy path -> unknown) @ triad e9960053; agy's print-timeout row (a whole stderr line beginning `[agy] `, any vendor exit) -> timeout with the partial answer withheld, below the engine-decided verdicts and the allowlist census: tests/integration/wrappers/flow/f13-agy-partial-timeout-c43.sh @ triad e9960053; an oauth-env reading on the same failed agy run (its line-start sign-in banner or its `result.error` carrier — no raw-text authentication phrase remains, DL-92) outranks the print-timeout rung: f13's C37 axis print_timeout_auth (oauth-env / 65, stdout empty, each posture) and tests/unit/wrappers/t67-auth-carrier-stop-c37.sh's agy_print_timeout axis @ triad e9960053. The own-line truncation marker with an LF or a CRLF line end -> truncated-answer / 65: tests/unit/wrappers/t15-agy-driver-decision.sh axes 8 and 8d @ triad 4b07949a (DL-145). Kept axes @ triad e9960053: t67 (the C43 carrier axes; K2 — codex's own measured refusal `Invalid schema for response_format …` (the whole refusal, real failures of 2026-09-20) stays schema-rejected/67 — the bare 'schema validation failed' is no match phrase, and the codex sentence classifies on codex only (every phrase per CLI, DL-92 @ triad 7e9e1fb); K3 — agy's banner in a gemini stderr object never STOPs gemini, its RESOURCE_EXHAUSTED envelope retries; R1 — a gemini stderr object that fails to decode (a 5,000-digit integer, a deep nesting) before a genuine 401, classification completes) + tests/unit/wrappers/t1-classify-timeout.sh DL-86 ×6 (the plain-English 'service unavailable' / 'model overloaded' / 'too many requests' are no match phrases; the measured capacity carriers still retry) + tests/unit/wrappers/t74-record-seam-a4-c1.sh G axes (an exception in classify, the auth rung, an extractor or agy's no-answer classifier ends unknown, exit 1, records written, through the one wrapper guard @ triad c8907314). The repair loop's verification on the stored record (DL-104, DL-146): tests/unit/wrappers/t76-reclassify-run-record.sh @ triad e9960053. The retry descriptions above are historical evidence of the prior wrapper contract; current one-invocation behavior is governed by R-TERMINAL/C78, whose A replacement verification remains pending.",
+        "B": "tests/test_agy_turn_timeout.py: DL-102 typed terminal turn-timeout row implemented in B632f426 plus candidate; fresh dedicated RED/GREEN (416 affected,2171 full passed/4skipped), four validators and all-four SAFE review with matching integrity. Evidence/limits: decisions/2026-10-10-b-agy-turn-timeout.md. DL-101: tests/test_agy_network_carrier.py verifies the measured typed network row and priority/carrier/replay controls; fresh dedicated RED/GREEN495affected/2237full passed,4skipped, four validators and all-four SAFE with matching integrity. Evidence: decisions/2026-10-10-b-agy-network-carrier.md. DL-102 raw truncation: tests/test_agy_answer_truncation.py verifies own-line/inline, raw/schema/tool/web channels, priority and replay; fresh final RED/GREEN564affected/2264full passed,4skipped, four validators, all-four SAFE and matching integrity. Evidence: decisions/2026-10-10-b-agy-answer-truncation.md. Other C43 rows retain their separate status. DL-62 print timeout: B a8d6fe9 tests/test_agy_print_timeout.py covers the measured stderr row, any-exit raw/schema/absent-answer, authentication/transport priority, alternate-carrier controls and stored replay. Fresh dedicated RED27failed/15passed then GREEN320focused/2411full passed,4skipped; four validators and Sol/xhigh+Astra/high+Google Pro/high all SAFE with matching integrity. No new live timeout was induced; other C43 rows are not thereby certified."
+      }
+    },
+    {
+      "id": "C60",
+      "surface": "review-lifecycle",
+      "rule": "R-PROMPT, R-REREVIEW, R-PREPARE",
+      "summary": "Review stage selects the shared plan or code purpose",
+      "input": "formal-plan, pre-merge, implementation-review, an omitted stage, null and an unknown stage, each given at the host's v2 preparation entry (On A: `review_scratch.py prepare --v2 --review-kind <value>`; On B: the `review_kind` member of the `v2-create` request); the stage under another name; identical bytes prepared once as formal-plan and once as pre-merge",
+      "expected": "formal-plan uses the short plan purpose; pre-merge and implementation-review use the code purpose. The host applies pre-merge on omission. Null and unknown stages are refused before dispatch; the schema default annotates the omission rule but does not fill input data. A stage under another name is an unknown input. The resolved stage is a member of the bound basis: the two prepares bind different content digests, and a retry renders the bound stage.",
+      "tests": {
+        "A": "tests/unit/skills/t14-prepare-v2.sh axes 31 (stage selects the purpose) and 32 (stage bound into the content digest) @ triad ebc4dc7. Shared schema boundary: tests/test_review_kind.py.",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_review_prompts.py, test_v2_rounds.py, test_v2_round_cli.py and test_v2_google_wrappers.py cover every phase, omission/default, early null/unknown refusal and actual mocked wrapper/collector integration; shared schema tests remain tests/test_review_kind.py. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C61",
+      "surface": "prompts",
+      "rule": "R-CONTEXT, R-PROMPT",
+      "summary": "Leader context prose is transported exactly as decoded data",
+      "input": "TASK or brief names requirements, scope, supported versions, dependency and observed validation versions, unknowns and sources; a prose value contains escaped JSON characters; a value begins or ends with blank lines, and two residuals differ only in a final newline; an empty or omitted prior_residual; a prose line that collides with the host's data framing",
+      "expected": "The bound prompt carries the exact decoded context value and fixed clauses. Escaping differences do not change the value. Edge blank lines and the final-newline state are part of the value: the exact value is recoverable from the bound prompt, and values that differ only at an edge bind different prompts. An empty prior_residual is the absent value, rendered as R-CONTEXT states for each host. A host that refuses a framing collision names the colliding line. The host checks only fields already required by its input contract and their binding; prior_residual may be empty, and there is no generic nonempty-TASK guarantee. The host does not claim to validate the truth, completeness, semantic deduplication or actual reviewer use of leader-authored prose.",
+      "tests": {
+        "A": "tests/unit/skills/t14-prepare-v2.sh axes 33 (context prose byte-for-byte) and 35 (edge newlines of context, questions and residual) @ triad ebc4dc7; a brief line shaped like a fence or carrying an alternate line separator is ordinary brief text — only the one `=====QUESTIONS=====` marker splits a brief; the excerpt / residual fence check stays: t14 axis 41 @ triad e9960053 (triad 107c5a1b, authoring/shared-dev-log.md DL-148)",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_review_prompts.py C61 verifies decoded non-ASCII/escaped context equality, distinct version/unknown prose, empty residual/TASK boundaries and unchanged TASK bytes for every family. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C62",
+      "surface": "prompts",
+      "rule": "R-REREVIEW, R-CONTEXT",
+      "summary": "Current residual appears once on a changed-basis review",
+      "input": "the leader supplies one current prior_residual string and the prior round had its own transcript and residual",
+      "expected": "Render the current bound prior_residual exactly once as data for every selected leg. Do not append the earlier transcript or residual automatically; changed basis triggers a full current-scope review.",
+      "tests": {
+        "A": "tests/unit/skills/t14-prepare-v2.sh axis 34 (the current residual rendered once for every leg) @ triad ebc4dc7",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_rounds.py C62 allocates all four enabled entries and proves one current residual, exact decoded scopes and no old-transcript auto-append. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C63",
+      "surface": "cleanup",
+      "rule": "R-CONTEXT, R-REREVIEW, R-CLEANUP",
+      "summary": "Prior evidence needed now survives normal temporary-root cleanup",
+      "input": "a current residual cites an older temporary review root whose owned cleanup is due, with excerpts needed for the new judgment",
+      "expected": "Put required excerpts, counterevidence and verification results into the current host-bound inputs before dispatch: A's existing brief/evidence surfaces; B's prior_residual or EVIDENCE.md/source members. Old paths are provenance alone; normal provenance-checked cleanup can remove the prior owned temporary root after its existing export checks. Preserve foreign, provider-owned and in-progress resources.",
+      "tests": {
+        "A": "tests/unit/skills/t25-prior-evidence-c63.sh @ triad 8404021 (a mutation that drops --prior-residual fails) — passing without a production change; verified by three legs, rounds r1 and r2, at triad d76ef23 (Evidence item 2.6)",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_review_cleanup_custody.py C20_C63 checks current EVIDENCE bytes, SHA-256, manifest/snapshot and verify_round after export/cleanup; foreign and unexported current resources remain. Provider-terminal ownership is leader-managed, not helper liveness detection. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C64",
+      "surface": "review-lifecycle",
+      "rule": "R-STOP, R-AGREE",
+      "summary": "Stalled review exits without PASS",
+      "input": "all selected legs have unresolved negative verdicts and repetition yields no new counterexample, verifiable fix or material unknown resolved; or a quota/limit prevents completion",
+      "expected": "Record a nonapproval outcome with the unresolved evidence and reason for stopping. The stop reason is leader prose kept with the round's evidence, not a collector input or outcome (On A: the round's committed ledger under `docs/reviews/`; On B: the stop/exception prose kept beside the collected round). Semantic progress and exhausted avenues are leader judgments, not an automatic string classifier; repetition cannot turn negative, missing or failed results into PASS.",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axis 76 (a stalled round exits without AGREED; re-collection is idempotent) @ triad ebc4dc7. The stop reason is leader prose in the committed ledger, not a collector input (DL-51).",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_round_custody.py C64 preserves negative/incomplete collection after separate stop/exception prose and invalidates bound mutation. Source guidance structural checks cover progress/reopening boundaries; no semantic classifier or prompt efficacy measurement. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C65",
+      "surface": "engine-transport",
+      "rule": "R-CLI-VERSION",
+      "summary": "Observed CLI patch version is evidence, not an equality pin",
+      "input": "a CLI version newer than the previously observed patch with required invocation, authentication, isolation and output capabilities present; a version missing one required capability",
+      "expected": "Do not refuse solely because a new version differs from the old observed patch. Preserve each required capability check and any justified minimum or known-defect exclusion; refuse or stop when those conditions fail. Record the version actually observed without inferring runtime behavior from its number alone.; Gemini CLI now has one model-independent minimum of 0.63.0 for raw, legacy and v2 routes (D-GEMINI-FLOOR-20261009); later versions retain the same required controls",
+      "tests": {
+        "A": "tests/unit/wrappers/t65-cli-version-evidence-c65.sh axes 1-5 @ triad ee011968 (a newer gemini or agy with every control runs and records the observed version; a newer gemini missing a required control is refused; gemini below the 0.63.0 route floor and agy below the stream-json 1.1.8 floor are refused, the observed version recorded) and tests/unit/wrappers/t57-gemini-preflight-c16.sh axes 13, 17, 18 (pre-release and build metadata, every route) @ triad ee011968 (triad 1491387a, DL-134).",
+        "B": "B provider-free evidence at f6651121bf775a40f8743c10cd6c3f3590fef88c: tests/test_v2_adapters.py C65 and tests/test_gemini_version_floor.py cover later versions, missing controls and independent Claude 2.1.205, AGY 1.1.20, formal Gemini 0.34.0 and v2 Gemini 0.60.0 seams. New Opus 5.5 mocks use 2.1.280+; no authenticated runtime compatibility claim. See decisions/claude-review-strategy-handoff.md for actual platform results and limits."
+      }
+    },
+    {
+      "id": "C66",
+      "surface": "review-lifecycle",
+      "rule": "R-BIND, R-RETRY, R-AGREE",
+      "summary": "A recorded attempt is sealed; a new answer needs a new attempt or a new round",
+      "input": "one selected entry's attempt 1 is recorded with a blocking result, so collection is BLOCKED; its result file is then (a) overwritten by re-running the dispatch or admission into the same attempt, or (b) removed and a SAFE TO MERGE result written or admitted into the same attempt; separately, a retry is requested for that completed negative attempt",
+      "expected": "The re-run or re-admission into a recorded attempt is refused; collection refuses the changed, removed or replaced result as an integrity failure and never reports AGREED; the retry of a completed attempt is refused. The original blocking result stays preserved. Only a new round on a current basis in which the entry returns SAFE TO MERGE reaches AGREED (C21).",
+      "tests": {
+        "A": "tests/unit/skills/t15-collect-v2.sh axes 74 (an informational entry re-routed through the seal), 81, 82 and 84-89 (a recorded attempt is sealed; an earlier attempt must be a diagnosed failed-to-run terminal; the native admission seals; a removed seal; a sealed agy read audit; an answer recorded INVALID is sealed with its retry open; retry refuses a history that can never be collected; sealing per entry over the bytes judged), 90 and 90c (a refused native reply is unsealed and retry-open, never an admit loop; retry seals it invalid), 97 (the receipt is sealed; a sealed VALID attempt is never re-judged), 98 (the admit line takes its expected values from binding.json), 99, 104 and 117 (a saved native reply never admitted, in any attempt, blocks retry and agreement), 107 and 108 (retry records the attempt it replaces; a late answer into it is never AGREED), 109 (an admitted, unsealed native result is judged as found and sealed), 115 and 121 (retry seals an answered, inadmissible attempt invalid) and 124, 125 (beside an attempt an interrupted retry left, collect names what retry does and retry refuses it) @ triad ee011968 (the single valid seal @ triad e24a82f2, DL-135; the second check right before AGREED removed @ triad bb933c6b; the tampering and constructed-file arms removed @ triad 15c31232, DL-153). Known limits (R-BIND): both hosts, a reply replaced before any host write landed (owner, decisions/owner-register.md#D-PRE-RECORD-REPLY-20261003); on A (1) and (4) deliberate tampering (D-C66-LIMITS-20261003 and the leader's ruling under R-THREAT) and (5) a hand-edited binding.json; the recorded limits of the single valid seal (DL-135); (3) a seal write that fails at collection leaves the entry INCOMPLETE until the next collection seals the same bytes (a fact) (authoring/shared-dev-log.md DL-60, DL-135).",
+        "B": "tests/test_v2_rounds.py:319 test_no_attempt_or_terminal_result_can_be_overwritten and :305 test_final_integrity_refuses_every_changed_basis_or_evidence @ 0.2.558 7f75863"
+      }
+    },
+    {
+      "id": "C67",
+      "surface": "prompts",
+      "rule": "R-PROMPT, R-PREPARE",
+      "summary": "Every review leg receives the round's date and the newer-names instruction",
+      "input": "a round prepared on one UTC date whose bound inputs name a model, CLI version or product newer than a reviewer's training data; a failed leg retried on a later date",
+      "expected": "Every selected leg's prompt carries the shared current-date clause, placed after current-basis as each leg's order says, with <review-date> filled by the UTC date the round was prepared; a retry renders the same bound date. How a leg treats a newer model, CLI version or product name is model behaviour (R-PROMPT), not asserted by the host.",
+      "tests": {
+        "A": "tests/unit/skills/t23-review-web-c32.sh axis 10 (<review-date> filled from the bound date) and axis 6 (retry re-renders the bound date) @ triad b53409b; prepare binds review_date (lib/review_scratch.py:3805) and the renderer fills it (lib/prompts_v2.py:288); the current-date clause is vendored in every leg order (spec/prompts/leg-*.md, candidate 1f907af).",
+        "B": "todo (re-vendor; authoring/shared-dev-log.md DL-46)"
+      }
+    },
+    {
+      "id": "C68",
+      "surface": "prompts",
+      "rule": "R-THREAT, R-CONTEXT, R-PROMPT",
+      "summary": "Reviews of a TRIAD host's own code carry the host deployment context",
+      "input": "every leg's rendered prompt for a round, both when the reviewed code is a TRIAD host's own code and when it is another target; B formal and raw calls with existing, absent or malformed settings and stale backup/lease files; another fixture writer changes settings during the provider call",
+      "expected": "Every selected leg's prompt carries the shared deployment-context clause, placed immediately before severity-instruction, with its evidence pointer (R-THREAT, D-THREAT-MODEL-20261003, D-CONCURRENCY-FACT-20261008) and its scope to a TRIAD host's own code; for another target the brief's deployment context governs (R-CONTEXT). How a leg labels a finding and how the leader records it are model and leader behaviour (R-THREAT, R-VERIFY), not asserted by the host. On B under the U7 decision, no settings/backup/lock/lease file is created, edited, restored, healed or deleted; another writer's new bytes survive. Requested web refuses an observed URL-wide deny or malformed existing settings without editing them. This is not permission-layer attestation.",
+      "tests": {
+        "A": "tests/unit/skills/t13-prompts-v2.sh axes 19-20 (code-round prompts carry the deployment-context clause right before severity-instruction; C67's current-date clause after current-basis) + tests/unit/skills/t23-review-web-c32.sh axis 12 (every prepared leg prompt carries both) @ triad ee011968 (the clauses vendored @ triad 0e04d2a3)",
+        "B": "todo (re-vendor; authoring/shared-dev-log.md DL-56); U7 global-state arm implemented in B 47a1503: tests/test_agy_no_global_settings.py and tests/test_agy_settings.py verify provider-entry/post-call preservation, absent/existing/stale state, concurrent writer, provider errors and requested-web refusal without writes. Dedicated RED reproduced mutation; final fresh GREEN304affected/2364full passed,4skipped, matching source/log hashes. Fresh R3 all four SAFE with matching integrity. This does not close the older deployment-context re-vendor entry. See decisions/2026-10-11-b-agy-profile-only.md."
+      }
+    },
+    {
+      "id": "C69",
+      "surface": "cleanup",
+      "rule": "R-CLEANUP",
+      "summary": "Only host code deletes, from roots declared in one configuration file",
+      "input": "a host deletion request (an AI choosing a role and a folder, a printed remedy, an automatic prune) for (a) a folder inside a declared root that the host can prove it allocated, (b) a folder outside every declared root, (c) a folder inside a declared root without the ownership proof, (d) a folder younger than the role's age floor, (e) a symlink; and the host's prompt, skill, agent and remedy texts",
+      "expected": "(a) the host's deletion command removes it; (b)-(e) are refused without deleting anything, each refusal naming what it observed. No prompt, skill, agent text, printed remedy or operator procedure carries its own removal command (rm, rmdir, git worktree remove, an rmtree); an AI at most chooses a declared role and a folder and runs the host's deletion command. A call that removes what it created itself (an atomic write's temporary file, a failed step's rollback, a test's own fixture) needs no declaration. The configuration file validates against contracts/cleanup-roots.schema.json. With the configuration file missing or invalid, nothing is deleted: the deletion command refuses (a host fault) and the automatic prunes skip with a one-line note; a host ships a default configuration file. A wrapper run-log is never removed by an AI after a repair analysis; the coded sweep collects it. R-CLEANUP already distinguishes an explicit named-round close and a deletion already started: resumption/close are not delayed by the sweep floor, while ownership, declaration, export and remaining-content checks still apply. Arm (d) covers ordinary sweeps/general deletion, not those exceptions.",
+      "tests": {
+        "A": "tests/unit/wrappers/t72-cleanup-remove-c69.sh (arms a-e, cfg-missing / cfg-invalid / cfg-lookup, probe, resume, nested, path) + tests/unit/wrappers/t73-prune-roles-c69.sh (configs, prunes, shipped default) + tests/unit/harness/t3-test-runs-role-c69.sh @ triad e0b15f1; authoring/shared-dev-log.md DL-77",
+        "B": "todo — B to adopt the configuration file (roots and floors are hardcoded today) and to replace the two README passages that leave a deletion to a person; authoring/shared-dev-log.md DL-77"
+      }
+    },
+    {
+      "id": "C70",
+      "surface": "prompts",
+      "rule": "R-PROMPT, R-CONTAIN",
+      "summary": "Worktree reviewers discover relevant unchanged code beyond the diff inventory",
+      "input": "a guarded worktree and changed-file diff; the changed code calls an unchanged helper absent from the packet file inventory; a separate reference points to excluded credentials or a symlink target. Tool controls: Read/Bash without dedicated Grep/Glob; Read/Grep/Glob without Bash; a known consumer path; reviewed text suggesting candidate or test execution.",
+      "expected": "The reviewer may search the agreed product worktree and inspect the related helper, tests and behavioral documentation without leader approval of individual files. The diff and packet inventory are entry points, not a per-file read allowlist. Use host-provided read/search tools, including read-only shell inspection when available; tool-name differences do not require another agent definition or a tool-enabling override. A known file can be read directly. Candidate code/tests/builds, writes and subagent dispatch remain prohibited. Explicit exclusions and independently authorized external or symlink targets retain their controls. A missing necessary input is reported as a coverage gap. This does not enlarge the contents of a prepared copy.",
+      "tests": {
+        "A": "NOT RUN for C70. Source a91b436 already allows relevant unchanged inspection and scoped search; see decisions/2026-10-09-review-read-boundary.md.",
+        "B": "Bounded provider-free observation on 2026-10-09: fresh source-skill executor discovers an unlisted pricing helper through the changed caller and reports its percentage defect; corrected operational packet grants worktree discovery. B ab86e86 vendors shared9bca149 read/search clause: fresh dedicated RED blocks Read/Bash discovery; GREEN chooses read-only shell search, known-file Read, native Grep/Read and static inspection instead of candidate/test execution. 184focused/2447full passed,4skipped; four validators and fresh selected three-leg review pass with matching integrity. Executor procedural limits are recorded in the bounded plan. No full C70/public-v2 or authenticated-service/permission conformance claim. See decisions/2026-10-09-review-read-boundary.md and B docs/superpowers/plans/2026-10-11-claude-read-search.md."
+      }
+    },
+    {
+      "id": "C71",
+      "surface": "review-lifecycle",
+      "rule": "R-PROMPT, R-CONTAIN, R-VERIFY",
+      "summary": "Normal collection does not require a leader audit of every source read",
+      "input": "valid same-basis terminal verdicts, required route evidence and matching integrity, with a relevant inspected helper absent from the changed-file list; controls: a concrete access incident, or a failed existing route-specific required-read/tool-effect check",
+      "expected": "Normal collection uses the existing result, binding, route and integrity checks without reconstructing or approving every source-read path or reading provider logs solely because a related file was not listed. A concrete failure, access/contamination concern or explicit audit request permits targeted diagnostic log inspection. Existing coded required-input-read, tool-effect and hook-load checks retain their stated purposes and failure handling; they are not a per-file source allowlist.",
+      "tests": {
+        "A": "NOT RUN for C71. Existing AGY required brief/patch reads and hook checks are automatic route controls, not a leader source-path audit; see decisions/2026-10-09-review-read-boundary.md.",
+        "B": "Bounded provider-free correction: three actual operational collector cases fail at the unnecessary audit-log read before removal, then pass for normal SAFE collection, negative-result blocking and integrity-mismatch blocking. Fresh executor chooses targeted diagnostics only for a reported incident. Combined relevant checks: 191 passed. Product collector/runtime unchanged; see decisions/2026-10-09-review-read-boundary.md."
+      }
+    },
+    {
+      "id": "C72",
+      "surface": "review-lifecycle",
+      "rule": "R-CONTAIN, R-PROMPT",
+      "summary": "AGY search-capable profile is explicit and bound before review",
+      "input": "AGY without default native search; matching installed review profile, missing/drifted profile, profile changed after preflight, and authorized-web versus no-web review; B exclusion-enabled native-tool profiles, including the authorized-web twin and read-only raw investigation",
+      "expected": "A selected main-agent definition explicitly enables native read/content-search/name-search/listing. Missing/drifted or changed bound definition refuses before inference; dispatch never auto-installs or silently falls back. Model/effort remain CLI selections. The no-web profile omits web tools and its authorized-web counterpart includes them; the vendor tool inventory is not a permission guarantee. Existing web authorization, containment and native-leg ownership remain. Capability recovery requires an actual successful native search plus read control, not only successful preflight or a SAFE verdict. B retains explicit read/search/list/finish and optional native web tools with excludeDefaultComponents:true; requires AGY>=1.2.1 for read-only calls; keeps profile checks before/after dispatch and before formal inference. No read-only autoapproval or global settings transaction. A write-request/no-write observation is not provider-denial proof; the documented U7 limit is explicit.",
+      "tests": {
+        "A": "NOT RUN. Explicit profile and byte equality check present in 9e16880; current runtime search proof requested in decisions/2026-10-09-agy-search-tools.md.",
+        "B": "Historical U1b evidence: Source candidate at 632f426 + dirty correction: tests/test_agy_search_profile.py 12 passed; dedicated fresh full suite 1915 passed/4 skipped (macOS arm64, Python 3.12.13), both skill validators passed, 55 source hashes stable. Missing/drifted definition RED and Unicode receipt RED were observed first. After explicit owner approval, both global profiles installed with byte equality and A profiles unchanged. One AGY 1.3.2 Pro/high formal-v2 no-web invocation selected the real review profile, completed grep_search then view_file on the discovered fixture, and exited 0. Its first finish schema_version 1 was corrected to 2 within that invocation. Fresh U1b+C72 R3: Claude/Pro/Flash/Astra all SAFE, ROUND_INTEGRITY_OK; six nonblocking Minor findings have recorded dispositions. Evidence: decisions/2026-10-09-agy-search-tools.md. Authenticated web capability remains NOT RUN; no universal runtime conformance, revision adoption or release claim. U7 completed in B 47a1503: both exclusion profiles completed actual native search/read on AGY1.3.3; research completed search_web/read_url_content. Both declined a fixture-file write without attempting one; no universal permission guarantee. Final dedicated GREEN304affected/2364full passed,4skipped; fresh R3 all four SAFE, integrity matched. Explicitly approved installed profile hashes match source; known permission settings unchanged. Includes raw/formal routing, version/profile/web boundaries and ambient-settings-independent fixtures. See decisions/2026-10-11-b-agy-profile-only.md."
+      }
+    },
+    {
+      "id": "C73",
+      "surface": "review-lifecycle",
+      "rule": "R-ROSTER, R-AGENT-ROLES, R-CONTAIN",
+      "summary": "Agent-definition requirements stay specific to the selected route",
+      "input": "B default Claude entry with agent null; A external Codex CLI entry; AGY formal entry needing native discovery; each host's native reviewer; control: B explicitly selects a non-null Claude CLI agent whose definition is unbound; capability control: default CLI tool surface under read-only/plan permissions, without agent or tool-enabling overrides",
+      "expected": "Default Claude and external Codex CLI legs use their direct model/effort controls without introducing an agent-definition prerequisite. AGY retains the checked/bound discovery profile under C72. Native spawning/presets remain host-owned. Only an explicitly selected optional Claude CLI agent triggers DL-49 bind-or-refuse; an unbound optional selection is not certified by the null-agent default passing. Optional work does not block unrelated default-leg implementation. Read/search capability is separate from exact tool names and remains subject to effective vendor settings and permissions; no per-round source-read audit is introduced.",
+      "tests": {
+        "A": "NOT RUN for C73. Source inspected at 0e04d2a: external Codex wrapper passes model/reasoning directly, native Claude uses its shipped preset mechanism. No A edit requested.",
+        "B": "NOT RUN for C73. Source at 632f426 plus dirty candidate: shipped Claude default agent is null; adapter appends --agent only for non-null selection. C72 profile capability/review evidence remains separate. Non-null Claude definition binding remains unresolved, not waived. B-maintainer one-off diagnostic: Claude 2.1.289 opus/xhigh plan Bash rg then Read, Codex 0.160.0 gpt-6.1-sol/medium read-only rg then cat, no agent/tool override, both exit 0 and recovered an undisclosed random fixture marker. This is bounded CLI capability evidence only, not full C73 or A wrapper conformance; see decisions/2026-10-09-leg-agent-scope.md."
+      }
+    },
+    {
+      "id": "C74",
+      "surface": "engine-transport",
+      "rule": "R-CLASSIFY, R-AUTH, R-CONTAIN",
+      "summary": "Reflected denied-command text is not vendor authentication or retry evidence",
+      "input": "The existing AGY permission check failed for command error embeds a model-authored command naming credentials-review.json or a login command; B plan mode also has an otherwise admissible structured verdict. A Claude is_error envelope has an ordinary API 500 result and permission_denials tool_input containing 400 Bad Request, too many requests or schema validation failed. Controls: a genuine own-line sign-in banner and the existing usable-answer path.",
+      "expected": "The reflected command or tool_input does not create an authentication STOP, capacity retry or another vendor classification. Genuine measured authentication carriers still STOP. Existing host admission/permission checks remain responsible for whether an answer is usable; this case grants no new permission. Classifier integration retains original streams for authentication carrier selection without widening other classifications to unrelated envelope fields.",
+      "tests": {
+        "A": "PARTIAL. PR12 reports triad 893bc085: _auth_carrier_stop skips AGY permission-denied result.error whose first line begins `permission check failed for ` before schema-report/vocabulary arms; tests/unit/wrappers/t67-auth-carrier-stop-c37.sh C74 axes (a)-(d) and neutral control @ triad e9960053. Genuine own-line stderr banners remain carriers. A has no external Claude route (DL-110), so the permission_denials half does not apply. Residual: reflected measured capacity/subscription text in that first line can still reach the no-answer classifier as server-capacity/cli-subscription-cap (constructed, unguarded shape). This is reported source/test evidence, not newly executed or full C74 verification.",
+        "B": "B 632f426 + dirty candidate: tests/test_auth_carriers.py C74 reflected-command and Claude tool_input controls; initial C74 RED10failures, subsequent multiline-command RED2failures/4controls, then dedicated focused437/full2005 passed with4skips and all-four SAFE review with matching integrity. Existing admission remains. Synthetic command-content controls are not new vendor captures. See decisions/2026-10-09-reflected-error-text.md and decisions/2026-10-09-b-auth-carriers.md."
+      }
+    },
+    {
+      "id": "C75",
+      "surface": "engine-transport",
+      "rule": "R-NOCOST, R-AUTH",
+      "summary": "Omitted child-environment values are not retrieved",
+      "input": "A synthetic Mapping carries every agreed omitted name and raises on value retrieval for those names; kept PATH/configuration/login selectors and the Gemini project exception have ordinary synthetic values. Include the adapter -> wrapper -> vendor version/help chain: an outer generic preflight label must not lose the Gemini project exception.",
+      "expected": "Filter names before value retrieval, leave the parent unchanged and return a fresh child mapping. Every vendor spawn and standalone probe removes the agreed names; only Gemini keeps its four project names. No actual credentials or authentication probe is needed to verify this boundary.",
+      "tests": {
+        "A": "PR12 reports triad 31c7be92: scrubbed_child_env filters names before values; omitted variables are never read. tests/unit/wrappers/t37-child-env-scrub.sh kept-through and C75 guarded-Mapping axes on codex/gemini, including Gemini project-family preflight controls; tests/unit/wrappers/t68-gemini-route-env-c17.sh axis4 @ triad e9960053. GEMINI_MODEL, ANTHROPIC_MODEL and ANTHROPIC_SMALL_FAST_MODEL pass through under D-SELECTOR-PROPOSAL-WITHDRAWN-20261009; loader/credential/endpoint scrub remains. Reported source/test evidence; not rerun during reconciliation.",
+        "B": "Implemented in B632f426 + dirty U2c candidate. tests/test_child_env_contract.py guarded Mapping, parent immutability, explicit removals, route/project cases, local normal/formal child capture and standalone probes. Dedicated focused370/full2029passed with4skips, both validators and all-four SAFE/matching integrity. See decisions/2026-10-09-b-child-environment.md."
+      }
+    },
+    {
+      "id": "C76",
+      "surface": "engine-transport",
+      "rule": "R-CLASSIFY, R-AUTH",
+      "summary": "Both hosts allow failure-driven web research by the read-only repair analyzer",
+      "input": "An actual unknown/extraction-error run record whose CLI error needs external explanation, with public vendor documentation or source available. Controls: sufficient local evidence; an unrelated error found online; unavailable or inconclusive web research; a log containing private data. Stored-verification controls: unchanged extraction-error class with no learned entry; host output/setup failure that bypasses vendor classification, plus a nonzero failure whose runtime retains the vendor diagnosis; empty verification path.",
+      "expected": "Read the failed run and local classifier first. Permit web search/fetch when needed, using sanitized error/version context and citing sources in the existing reason or handoff. Propose only an entry supported by this run and an existing class; public text alone does not establish a new carrier or exit combination. Keep private log content out of queries. Unneeded search is skipped; unavailable needed research or insufficient evidence is disclosed and escalated, never guessed. Analyzer remains read-only and does not invoke a vendor CLI/model. Deterministic verification reclassifies the stored record; verified learned phrases enter the common spec through authoring. Authentication STOP and timeout routing remain. No routine successful-run audit or exhaustive error enumeration. Stored verification requires usable evidence and a demonstrated classification change; unchanged classification is not proof of repair. Transport/collection failures that decide the runtime result before vendor classification, and empty verification input, are refused without mutation or a vendor call. When R-TERMINAL preserves a nonzero vendor diagnosis, verification uses that same classification path; it does not add a complete-output policy.",
+      "tests": {
+        "A": "PARTIAL. PR12 reports read-only repair agents .claude/agents/{codex,gemini,agy}-wrapper-repair.md and 3rd-Agent/export_assets/distributed-repair-agent.md.tmpl expose Read/Grep/Glob/WebSearch/WebFetch without write/edit/shell/subagent tools @ triad 7dbba148 + 2118f7ff; tests/unit/wrappers/t33-repair-agent-readonly-lint.sh @ e9960053 (DL-147). Stored-record verifier _common.reclassify_run_record / apply_patch.py --verify-run-log @ 1e979d60 + 35dc7de8 and tests/unit/wrappers/t76-reclassify-run-record.sh @ e9960053 require usable stored inputs and a change to the proposed token; unusable/missing evidence refuses before apply, an unchanged result exits4 with the applied entry retained (DL-104/DL-146). Source/tool/verifier evidence is reported, not a fresh successful web fetch or universal C76 certification; current R-CLASSIFY/R-TERMINAL governs transport-failure refusal and retained nonzero vendor diagnosis.",
+        "B": "PARTIAL. 632f426 plus U4a candidate permits research in the actual repair prompt with aligned README EN/KO, SECURITY and migration guidance. Fresh dedicated RED/GREEN includes actual search/fetch and source citation; local-evidence control skips web and duplicate entries. Focused106/full2029 passed, 4 skipped, both validators; migration correction passed fresh106 and both validators, plus4 migration-contract tests. Synthetic capability fixtures are not vendor incidents; production Terra preset and unavailable-tool branch were not separately runtime-certified. Full C76 runtime certification remains partial. See decisions/2026-10-09-repair-web-research.md. U4b1/U4b2 now complete in the local candidate: all auth proposals refused, obsolete caps removed, timeout excluded, three dispatch handoffs, read-only actual-route stored verification. Final U4b2 dedicated359focused passed; unchanged applier previously2078full passed/4skipped; four validators, all-four SAFE and matching integrity. Full runtime C76 limits remain. See decisions/2026-10-10-repair-replay-inputs.md."
+      }
+    },
+    {
+      "id": "C77",
+      "surface": "exit-tokens",
+      "rule": "R-CLASSIFY, R-TOKENS",
+      "summary": "Hand-edited classifier exit maps retain only supported failure classes and no exit-zero entry",
+      "input": "A temporary user extension maps vendor exit7 to an unknown token, ok or a wrapper-only timeout class, with valid server-capacity and existing curated oauth-env siblings. Separate controls have zero-valued keys using the integer spellings consumed by classify, wrong-typed values, and a valid ordinary failure mapping.",
+      "expected": "Ignore unsupported class entries with one log line and drop exit-zero entries at load (DL-97/DL-106). Retain valid siblings and existing curated authentication behavior; R-CLASSIFY independently refuses every new authentication proposal. Classification emits only the existing contract class/exit pair, and success remains success. Reading never rewrites the extension. No vendor invocation or new error vocabulary.",
+      "tests": {
+        "A": "PR12 reports triad 9a440ebf: _load_classifier_extension keeps only string VENDOR_EXIT_PROPOSAL_CLASSES and drops nonpositive integer keys with one log line, retaining valid siblings; tests/unit/wrappers/t21-classifier-extension.sh axes10/12/14/17 and tests/unit/wrappers/t32-apply-classifier-patch.sh @ e9960053. Non-integer spellings stay inert and never match a vendor exit (A fact, not a common key grammar). Reported source/test evidence, not newly rerun verification.",
+        "B": "IMPLEMENTED-B-CANDIDATE at632f426 plus local changes. tests/test_classifier_extension_contract.py: RED36failed/25passed; final GREEN403focused/2143full passed,4skipped and four validators. All-four SAFE, matching integrity in triad-classifier-loader-20261010-r1. Loader-output assertions prove zero-key removal; success assertion is an unchanged-behavior control. Earlier verification limits and bounded completion: decisions/2026-10-10-b-typed-loader.md."
+      }
+    },
+    {
+      "id": "C79",
+      "surface": "review-lifecycle",
+      "rule": "R-PREPARE, R-BIND, R-CONTAIN",
+      "summary": "Bound packet inputs are available to permitted native file tools",
+      "input": "Guarded-worktree review with brief and diff in an external sealed packet. Normal: read packet and discover a related product helper. Boundaries: packet denied by the vendor workspace; omitted or changed launch control; wrong-round, missing, noncanonical, symlinked, comma-containing, parent or sibling directory; prepared-directory and raw investigation controls.",
+      "expected": "The generated launch makes required bound inputs readable using permitted file tools without changing product cwd, relaxing write restrictions or adding receipt/log/result siblings. On B’s guarded Gemini route, bind the narrow packet directory through existing launch custody and preflight digest; keep six result binding values. Reject invalid or changed controls before inference, retain formal arbitrary-root refusal, and require a new basis after launch controls change. A schema-valid negative for unreadable inputs remains a negative with coverage gaps, not a transport retry or successful coverage. Co-located/prepared and raw paths retain their existing behavior; no routine read audit.",
+      "tests": {
+        "A": "NOT RUN. Read-only source at 1de943af places brief/patch/history in its review worktree; no external-directory propagation mechanism is needed for that layout. See decisions/2026-10-12-gemini-packet-access.md.",
+        "B": "IMPLEMENTED at d0f32ad89be037884d39a48bfcec123358e8f4c3 (B PR43). tests/test_gemini_review_packet.py: dedicated intended RED reproduces unreadable packet; focused GREEN148 passed/4 route skips, full2462 passed/4 skips, four skill validators on macOS arm64/Python3.12.13. The generated formal producer/preflight/wrapper/collector is exercised against a deterministic file-reading vendor boundary. Official 0.63.0 native file-tool behavior verified separately without inference; authenticated company execution remains NOT RUN here and owner-tested after release. See decisions/2026-10-12-gemini-packet-access.md."
+      }
+    },
+    {
+      "id": "C78",
+      "surface": "engine-transport",
+      "rule": "R-TERMINAL, R-TOKENS, R-RETRY",
+      "summary": "One CLI inference invocation without wrapper capacity/schema replay",
+      "input": "An external CLI returns capacity failure (including a Claude zero-exit error envelope), or a valid vendor envelope contains an answer failing a caller schema. Controls: valid answer; observed authentication failure; transport failure; explicitly requested later same-basis failed-entry retry.",
+      "expected": "One wrapper dispatch starts inference once. Capacity returns server-capacity/64; local validation failure returns schema-fail/66 and no accepted answer; do not sleep and restart or append a correction prompt. Preserve vendor exit/streams, initial prompt/schema/web clause, auth STOP, transport failure and existing result/binding validation. Vendor-internal retries and explicit review-level retries are separate. Old schema-repair counters may remain zero-valued compatibility fields; no new fields required.",
+      "tests": {
+        "A": "NOT RUN for replacement. Read-only1de943af common run_cli_with_retry retains capacity and schema loops; host adoption/verification pending, native leg excluded.",
+        "B": "IMPLEMENTED in B f4d6331. tests/test_single_cli_call.py real local subprocess journals: dedicated RED5failed/4passed; final GREEN397focused/2369full passed,4skipped, four skill validators and diff check passed. Pre/post source matched and exact owned temporary roots removed. Two later exit-code comment updates preserve identical executable AST. R1 was incomplete from actual Claude usage exhaustion; fresh owner-selected Sol/xhigh+Astra/high+Google Pro/high R2 all SAFE with matching integrity and exact cleanup. Capacity64, schema66, auth/transport precedence, initial prompt/web clause and existing explicit review retry regressions passed. Local fixtures establish wrapper policy, not universal vendor behavior or A adoption. Two nonblocking existing/wording residuals are disclosed in decisions/2026-10-11-single-cli-invocation.md. macOS26.6.2 arm64/Python3.12.13; Ubuntu not run."
+      }
+    }
+  ]
+}
