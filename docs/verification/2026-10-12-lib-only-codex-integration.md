@@ -89,8 +89,47 @@ relabeled as new observations.
 
 ## Independent review and native CI
 
-Pending for this latest extension. Prior native CI evidence belongs to its
-recorded earlier commits until this slice's jobs finish.
+Native [CI run 38205026277](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38205026277)
+passed at `03d0ecd4b7a6ec01c1c6e35957fd2ef18bd4910f`. Both jobs passed 157 source
+tests, 157 unpacked-sdist tests, 10 installed raw replay cases and 54 installed
+Codex matrix cases. Each reported the actual package/validator site-packages path.
+
+| Platform | Observed Python / architecture | Wheel SHA-256 |
+| --- | --- | --- |
+| Ubuntu 24.04 | 3.12.15 / x86_64 | `93dfebf9aa77cf235d2b31acdae87afb6368b3e88ae4b2050862bed46c44a5be` |
+| macOS 15 | 3.12.10 / arm64 | `4e3180321756dfc134175b5dd3ff62854c8920e808179d325235f46a93fecc86` |
+
+The local reviewed-commit wheel also passed 10 replay and 54 matrix cases; its
+SHA-256 is `d0a70dfc3cedfb4399cf2341f8fb405c2bb5efff6dce075b3661d0e3de3a1441`.
+The local unpacked source distribution passed all 157 tests. Archive hashes are
+observed identities; cross-platform byte reproducibility is not asserted.
+
+Fresh whole-branch reviewer: requested `gpt-6-astra`, high, `fork_turns=none`,
+range `c6dd981..03d0ecd`. No Critical, Important or Minor findings. The reviewer
+passed 156 tests and excluded only the environment-creation test under its
+no-install brief; parent and CI full runs include that test. It independently
+checked four saved native artifacts and revalidated their complete verdicts.
+Tracked fingerprints, index, HEAD and branch stayed unchanged. Read-only
+containment was prompt-controlled; hidden runtime settings were UNEXPOSED.
+Technical readiness does not authorize final merge.
+
+Review scope rulings retained:
+
+- Actual host adoption/execution/error mapping is excluded by the owner's
+  library-only boundary. Host integration remains unproven and needs its own tests.
+- Other renderer families and classification/aggregation are outside the current
+  public API. Broader adoption needs those additional implementations.
+- Formal custody, concurrent-change prevention and authentication against malicious
+  package/manifest replacement are not provided. Consistency checks must not be
+  treated as a security or custody boundary.
+- Input-size limits remain the documented caller responsibility. Unbounded caller
+  inputs can exhaust resources if that responsibility is ignored.
+- General model reliability, injection resistance and hidden runtime identity
+  cannot be inferred from four bounded parent-transcribed observations. Other
+  scenarios may behave differently.
+- The read-only reviewer did not repeat platform/installation checks. The parent
+  verified the native CI evidence above; other Python/OS/architecture combinations
+  remain unverified and need their own native runs.
 
 ## Native artifact identities
 

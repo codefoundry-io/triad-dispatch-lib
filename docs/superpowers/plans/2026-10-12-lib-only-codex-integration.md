@@ -66,7 +66,7 @@ The CLI remains unchanged.
   packet and prompt, report actual outcomes without repair or invisible retry.
   Expected: SAFE controls and arithmetic findings in negative cases; planned
   future files are not represented as inspected.
-- [ ] Update docs, run full suite and commit evidence. Request one fresh
+- [x] Update docs, run full suite and commit evidence. Request one fresh
   whole-branch reviewer, handle findings according to executing-plans, update
   draft PR and inspect native Ubuntu/macOS CI.
 

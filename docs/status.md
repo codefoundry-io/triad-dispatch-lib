@@ -24,8 +24,10 @@ execution. Local checks now pass 157 tests; installed-wheel replay passes 10 raw
 cases and the expanded Codex adapter passes 54 cases across three review phases.
 Four new native sessions verified plan/implementation control and defect packets;
 the earlier two pre-merge observations remain separate evidence. Both prior
-packaging and missing-wheel CLI minors are resolved. Independent review and
-native CI for this latest test-only extension are pending.
+packaging and missing-wheel CLI minors are resolved. Independent whole-branch
+review found no Critical/Important/Minor issues. Native Ubuntu 24.04 x86-64 and
+macOS 15 ARM64 CI passed 157 source tests, 157 unpacked-sdist tests, 10 raw replay
+cases and 54 installed Codex adapter cases on each platform.
 See [current evidence](verification/2026-10-12-lib-only-codex-integration.md),
 [earlier prompt evidence](verification/2026-10-12-codex-prompt-smoke.md) and
 [first-slice evidence](verification/2026-10-12-v2-admission.md).
