@@ -11,7 +11,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 
 from .agreement import AgreementResult, evaluate_agreement
-from .errors import AdmissionError, DispatchError, RosterError
+from .errors import AdmissionError, ContractError, DispatchError, RosterError
 from .output import ProviderOutput
 from .prompts import render_investigation_prompt
 from .roster import resolve_roster
@@ -96,6 +96,26 @@ def _prepare(requests, kind, max_concurrency, callbacks):
     return prepared
 
 
+async def _cancel_and_wait(children):
+    """Signal cancellation once, shielding cleanup from later parent cancels.
+
+    Return whether the owner was cancelled while draining. Cancellation is
+    reported only after every owned child settles, even if it is repeated.
+    """
+    for child in children:
+        if not child.done():
+            child.cancel()
+    settled = asyncio.gather(*children, return_exceptions=True)
+    cancelled = False
+    while not settled.done():
+        try:
+            await asyncio.shield(settled)
+        except asyncio.CancelledError:
+            cancelled = True
+    settled.result()
+    return cancelled
+
+
 async def _call(callback, args, timeout=None):
     """Isolate child self-cancel and retain deadline status after late returns."""
     async def invoke():
@@ -103,18 +123,21 @@ async def _call(callback, args, timeout=None):
     child = asyncio.create_task(invoke())
     try:
         done, _ = await asyncio.wait({child}, timeout=timeout)
-        if not done:
-            child.cancel()
-            await asyncio.gather(child, return_exceptions=True)
-            return 'timed_out', None
-        try:
-            return 'completed', child.result()
-        except (Exception, asyncio.CancelledError):
-            return 'failed', None
     except asyncio.CancelledError:
-        child.cancel()
-        await asyncio.gather(child, return_exceptions=True)
+        await _cancel_and_wait((child,))
         raise
+    if not done:
+        if await _cancel_and_wait((child,)):
+            raise asyncio.CancelledError
+        if not child.cancelled() and isinstance(child.exception(), ContractError):
+            raise child.exception()
+        return 'timed_out', None
+    try:
+        return 'completed', child.result()
+    except ContractError:
+        raise
+    except (Exception, asyncio.CancelledError):
+        return 'failed', None
 
 
 async def _bounded(requests, callback, max_concurrency, *, preflight=False, review=False):
@@ -129,12 +152,19 @@ async def _bounded(requests, callback, max_concurrency, *, preflight=False, revi
                                None if status == 'completed' else (
                                    'timed_out' if status == 'timed_out' else 'callback_failed'))
     children = [asyncio.create_task(one(request)) for request in requests]
+    settled = asyncio.gather(*children)
     try:
-        return tuple(await asyncio.gather(*children))
-    except asyncio.CancelledError:
-        for child in children:
-            child.cancel()
-        await asyncio.gather(*children, return_exceptions=True)
+        # Shield ownership: parent cancellation must reach wrappers once, under
+        # our control, rather than repeatedly cancelling their cleanup awaits.
+        return tuple(await asyncio.shield(settled))
+    except BaseException:
+        cancelled = await _cancel_and_wait(children)
+        # Retrieve gather's terminal exception even when parent cancellation
+        # won the race with a child ContractError.
+        if not settled.cancelled():
+            settled.exception()
+        if cancelled:
+            raise asyncio.CancelledError
         raise
 
 
@@ -149,9 +179,10 @@ async def run_review(requests, invoke, *, preflight, integrity_check,
     """Preflight all, invoke once per leg, then obtain fresh host integrity.
 
     Inputs and callback arguments are independent snapshots. Host integrity
-    exceptions, self-cancellation and non-bool values block agreement while
+    ordinary exceptions, self-cancellation and non-bool values block agreement while
     preserving outcomes. Cancellation of this coordinator propagates only after
-    its owned callback tasks have settled.
+    its owned callback tasks have settled. ContractError from any callback is
+    distinct and propagates after owned peers have settled.
     """
     prepared = _prepare(requests, ReviewRequest, max_concurrency,
                         (invoke, preflight, integrity_check))

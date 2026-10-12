@@ -319,3 +319,86 @@ def test_malformed_request_collection_is_fixed_refusal(selected):
     with pytest.raises(lib.DispatchError):
         asyncio.run(lib.run_review(selected, preflight, preflight=preflight,
                                    integrity_check=integrity, max_concurrency=1))
+
+
+@pytest.mark.parametrize('repeated', [False, True])
+def test_parent_cancellation_during_deadline_cleanup_waits_without_recancelling(repeated):
+    async def scenario():
+        selected = requests()[:1]
+        selected[0].entry['timeout_s'] = 1
+        cleaning, release, finished = asyncio.Event(), asyncio.Event(), asyncio.Event()
+        async def invoke(request):
+            try:
+                await asyncio.Event().wait()
+            finally:
+                cleaning.set()
+                await release.wait()
+                finished.set()
+        task = asyncio.create_task(lib.run_review(selected, invoke, preflight=preflight,
+                    integrity_check=integrity, max_concurrency=1))
+        await cleaning.wait()  # A real deadline has already cancelled the child once.
+        task.cancel()
+        for _ in range(3): await asyncio.sleep(0)
+        if repeated:
+            task.cancel()
+            for _ in range(3): await asyncio.sleep(0)
+        release.set()
+        with pytest.raises(asyncio.CancelledError): await task
+        assert finished.is_set(), 'parent cancellation interrupted child deadline cleanup'
+    run_scenario(scenario())
+
+
+@pytest.mark.parametrize('stage', ['preflight', 'invoke', 'integrity'])
+def test_callback_contract_error_is_distinct_and_owned_peers_settle(stage):
+    async def scenario():
+        selected = requests()[:2]
+        selected[1].entry['timeout_s'] = 1
+        all_started, release = asyncio.Event(), asyncio.Event()
+        peer_cleaning, peer_finished = asyncio.Event(), asyncio.Event()
+        error = lib.ContractError('packaged contract is unavailable')
+        started = 0
+        async def callback(request):
+            nonlocal started
+            started += 1
+            if started == 2: all_started.set()
+            await all_started.wait()
+            if request.entry['name'] == 'c': raise error
+            try:
+                await release.wait()
+            finally:
+                peer_cleaning.set()
+                await release.wait()
+                peer_finished.set()
+            return None if stage == 'preflight' else output(request)
+        async def invoke(request): return output(request)
+        async def bad_integrity(): raise error
+        task = asyncio.create_task(lib.run_review(selected,
+                    callback if stage == 'invoke' else invoke,
+                    preflight=callback if stage == 'preflight' else preflight,
+                    integrity_check=bad_integrity if stage == 'integrity' else integrity,
+                    max_concurrency=2))
+        if stage != 'integrity':
+            await all_started.wait()
+            await peer_cleaning.wait()
+            assert not task.done(), 'contract failure escaped before peer cleanup'
+            release.set()
+        with pytest.raises(lib.ContractError) as caught: await task
+        assert caught.value is error
+        if stage != 'integrity': assert peer_finished.is_set()
+    run_scenario(scenario())
+
+
+@pytest.mark.parametrize('stage', ['preflight', 'invoke'])
+def test_callback_contract_error_during_deadline_cleanup_is_preserved(stage):
+    selected = requests()[:1]
+    selected[0].entry['timeout_s'] = 1
+    async def broken(request):
+        try:
+            await asyncio.Event().wait()
+        finally:
+            raise lib.ContractError('contract unavailable during cleanup')
+    async def invoke(request): return output(request)
+    with pytest.raises(lib.ContractError):
+        asyncio.run(lib.run_review(selected, broken if stage == 'invoke' else invoke,
+                    preflight=broken if stage == 'preflight' else preflight,
+                    integrity_check=integrity, max_concurrency=1))
