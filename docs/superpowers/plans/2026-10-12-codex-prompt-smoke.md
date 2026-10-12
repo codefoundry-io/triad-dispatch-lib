@@ -41,18 +41,18 @@ outside the library and return only JSON.
 replacements, review_kind="pre-merge") -> str`, `render_data(value: str) -> str`,
 `PromptError(ValueError)`. Share internal `load_verified_bundle(root, names)`.
 
-- [ ] Fetch pinned payload bytes/manifest. Write `test_phase_and_order`,
+- [x] Fetch pinned payload bytes/manifest. Write `test_phase_and_order`,
   `test_web_and_arguments`, `test_replacement_once`, `test_bundle_damage`,
   `test_clause_format`, `test_residual_roundtrip`, `test_validate_binding_api`.
   Assert three phases, exact canonical order, strict booleans/date/profile,
   missing/extra replacements, no notes/A-only leakage, placeholder preservation,
   manifest refusal and JSON-decoded hostile residual equality.
-- [ ] Run `uv run pytest tests/test_prompts.py tests/test_verdict.py -q`.
+- [x] Run `uv run pytest tests/test_prompts.py tests/test_verdict.py -q`.
   Expected: new API assertions fail; prior admission cases pass.
-- [ ] Implement minimal pure renderer and shared integrity/binding helpers.
+- [x] Implement minimal pure renderer and shared integrity/binding helpers.
   Package nested data resources; bump dev version and refresh uv lock.
-- [ ] Run `uv run pytest -q`. Expected: all pass, unchanged admission semantics.
-- [ ] Commit `feat: render pinned Codex review clauses`; complete with full suite.
+- [x] Run `uv run pytest -q`. Expected: all pass, unchanged admission semantics.
+- [x] Commit `feat: render pinned Codex review clauses`; complete with full suite.
 
 ### Task 2: Installed-wheel Codex test adapter
 
@@ -65,19 +65,19 @@ replacements, review_kind="pre-merge") -> str`, `render_data(value: str) -> str`
 CLI `--wheel W --expected-version V render --context C --prompt P`,
 `... admit --context C --prompt P --result R`, and `... self-test`.
 
-- [ ] Write `test_context_and_prompt`, `test_scope_rejection`,
+- [x] Write `test_context_and_prompt`, `test_scope_rejection`,
   `test_packet_and_prompt_changes`, `test_admission_call_through`,
   `test_raw_rejections`, `test_profile_and_identity`.
   Assert decoded scope/residual equality, confined regular files and digest,
   no duplicate packet paths, actual validator spy/sentinel, unchanged raw bytes,
   stale binding/duplicate rejection and explicit version/path checks.
-- [ ] Run `uv run pytest tests/test_codex_smoke.py -q`.
+- [x] Run `uv run pytest tests/test_codex_smoke.py -q`.
   Expected: missing-driver assertions fail.
-- [ ] Implement driver and reuse wheel environment creation. Record hashes and
+- [x] Implement driver and reuse wheel environment creation. Record hashes and
   installed callable origin. `self-test` builds a temporary synthetic context,
   exercises render plus positive/duplicate/stale admission without any provider.
-- [ ] Run `uv run pytest -q`. Expected: all pass.
-- [ ] Commit `test: add isolated Codex prompt admission driver`; complete with full suite.
+- [x] Run `uv run pytest -q`. Expected: all pass.
+- [x] Commit `test: add isolated Codex prompt admission driver`; complete with full suite.
 
 ### Task 3: Distribution, fresh native smoke and recorded evidence
 
@@ -86,20 +86,20 @@ CLI `--wheel W --expected-version V render --context C --prompt P`,
 
 **Interfaces:** Task 2 CLI plus actual collaboration final JSON as original text.
 
-- [ ] Test built sdist membership for fixture/tool requirements; observe missing
+- [x] Test built sdist membership for fixture/tool requirements; observe missing
   support files before adding MANIFEST.in. Include tools, fixture data and local
   test-support files; do not include `_runs` or private prompt/provider records.
-- [ ] Build sdist and wheel, unpack sdist and run tests there. Run installed-wheel
+- [x] Build sdist and wheel, unpack sdist and run tests there. Run installed-wheel
   replay and `codex_smoke.py --wheel W --expected-version 0.1.0.dev1 self-test`.
   Expected: full tests and synthetic render/admission pass outside source imports.
-- [ ] Record control/defect expectations, prepare two bounded synthetic packets
+- [x] Record control/defect expectations, prepare two bounded synthetic packets
   under ignored `_runs/`, and render prompts via the installed wheel.
   Dispatch two fresh Sol/medium read-only native children (`fork_turns=none`).
   Save exact final text and observed receipt metadata, then admit both via the
   installed wheel. Expected: schema/bindings pass, correct control is SAFE,
   defective case identifies the concrete defect despite instruction-like data.
   Do not repair/retry a failing model response invisibly; report the observation.
-- [ ] Add native CI synthetic driver step; record actual local/live outcomes and
+- [x] Add native CI synthetic driver step; record actual local/live outcomes and
   custody limits. Update package commands and next scope. Commit
   `test: verify packaged prompt driver and fresh native responses`.
 - [ ] Complete with `uv run pytest -q`, then fresh whole-branch reviewer, any

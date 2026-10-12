@@ -35,4 +35,18 @@ jobs:
           uv build dist/*.tar.gz --wheel
       - name: Verify installed wheel and binary dependencies
         run: uv run --locked python tools/verify_wheel.py dist/*.whl
+      - name: Verify installed Codex prompt and admission driver
+        run: uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev1-py3-none-any.whl --expected-version 0.1.0.dev1 self-test
+      - name: Run tests from the source distribution
+        run: |
+          uv run --locked python - <<'PY'
+          from pathlib import Path
+          import subprocess, tarfile, tempfile
+          with tempfile.TemporaryDirectory(prefix="triad-sdist-") as temporary:
+              root = Path(temporary)
+              with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev1.tar.gz") as archive:
+                  archive.extractall(root, filter="data")
+              source, = root.iterdir()
+              subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, check=True)
+          PY
       - run: git diff --exit-code
