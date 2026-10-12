@@ -30,13 +30,19 @@ Work remains on `codex/strict-v2-admission` in
 [draft PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1).
 Current local source/sdist/wheel evidence is recorded in
 [four-route verification](verification/2026-10-12-four-route-core.md).
-Fresh native Ubuntu 24.04/macOS 15 CI for this slice is pending root review/push.
+Native Ubuntu 24.04 x86-64/macOS 15 ARM64
+[CI passed](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38217590730)
+on implementation commit `2f8c813`: 364 source tests and 364 unpacked-sdist tests
+per platform, plus all three isolated installed-wheel drivers. Independent final
+review and scoped re-review left no open findings.
 Earlier 157-test CI and fresh Codex observations describe the historical
 [previous slice](verification/2026-10-12-lib-only-codex-integration.md), not this build.
 Installed synthetic replay does not establish real provider success or host adoption.
 
-- [Design and API](design/2026-10-12-v2-admission.md)
-- [Execution plan](superpowers/plans/2026-10-12-v2-admission.md)
+- [Four-route design](design/2026-10-12-configurable-four-leg-library.md)
+- [Four-route execution plan](superpowers/plans/2026-10-12-four-route-core.md)
+- [Original admission design and API](design/2026-10-12-v2-admission.md)
+- [Original admission execution plan](superpowers/plans/2026-10-12-v2-admission.md)
 - [Original research](research/2026-10-12-shared-library-assessment.md)
 - [Prompt smoke design](design/2026-10-12-codex-prompt-smoke.md)
 - [Prompt smoke execution plan](superpowers/plans/2026-10-12-codex-prompt-smoke.md)
@@ -77,8 +83,9 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Neither host imports this package yet. The parent dispatched fresh native Codex
-test children; the library and driver do not spawn. No global installation,
+Neither host imports this package yet. The earlier Codex integration experiment
+used parent-dispatched native children; the library and driver do not spawn
+native agents or provider processes. No global installation,
 package-index publication, final merge or release occurred.
 Platform proof covers the recorded native Python 3.12 combinations only.
 The review profile is ordinary independent Codex review, not formal TRIAD

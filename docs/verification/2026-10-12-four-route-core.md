@@ -39,15 +39,28 @@ prompt profiles. Its callbacks and carrier data are explicitly synthetic; only
 the package runtime under verification comes from the wheel.
 
 Local exact output reports and archive digests are retained in the task's ignored
-`_runs/four-route-implementation/task4-*` evidence, with commands and terminal
-results in the ignored task report. They are verification artifacts, not package
-runtime dependencies.
+`_runs/four-route-implementation/task4-*` evidence. They are verification artifacts,
+not package runtime dependencies. The final local verification of implementation
+commit `2f8c81354dac8485e8dc55bfb428f446fd739035` produced:
+
+- sdist SHA-256: `6adf41e919bf852e9917ffd67205d0beb55481b62f0e9bbfa9aa3487b600fec8`
+- wheel SHA-256: `f287786bbe04d1a37bd97c7e192e80ccf6d133af21847c03a3e9a97ad9b5c76d`
 
 ## Platform and execution limits
 
-Current-slice native Ubuntu 24.04 x86-64/macOS 15 ARM64 CI is **pending** final
-branch review and push. This document records no current CI success. Earlier
-157-test CI belongs to the [historical slice](2026-10-12-lib-only-codex-integration.md).
+[Native CI run 38217590730](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38217590730)
+passed on implementation commit `2f8c81354dac8485e8dc55bfb428f446fd739035`:
+
+| Native platform | Python | Source suite | Unpacked-sdist suite | Installed-wheel checks |
+| --- | --- | --- | --- | --- |
+| Ubuntu 24.04 x86-64 | 3.12.15 | 364 passed | 364 passed | All three drivers passed |
+| macOS 15.7.9 ARM64 | 3.12.10 | 364 passed | 364 passed | All three drivers passed |
+
+Each platform passed the same 10 raw replay cases, 54 Codex adapter cases, nine
+four-route scenarios, 51 prompt profiles and 27 exported runtime path checks
+described above. The final independent whole-branch review and scoped re-review
+left no open findings. Earlier 157-test CI belongs to the
+[historical slice](2026-10-12-lib-only-codex-integration.md).
 
 No real provider calls, existing host imports/tests/edits, SDK/MCP execution,
 global installation, merge, release or package-index publication occurred for
