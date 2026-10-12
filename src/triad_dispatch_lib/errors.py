@@ -25,6 +25,26 @@ class ContractError(RuntimeError):
     """The packaged validation contract is unavailable or inconsistent."""
 
 
+class DispatchError(ValueError):
+    """Invalid coordination inputs or preflight; no invocation has started."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__({
+            'invalid_concurrency': 'Concurrency must be a positive integer.',
+            'invalid_callback': 'Callbacks must be callable.',
+            'invalid_requests': 'Invalid dispatch requests.',
+            'empty_selection': 'No dispatch requests selected.',
+            'invalid_entries': 'Invalid canonical dispatch entries.',
+            'disabled_entry': 'Dispatch entry is disabled.',
+            'unresolved_route': 'Google invocation route is unresolved.',
+            'invalid_binding': 'Invalid formal invocation binding.',
+            'binding_mismatch': 'Formal binding does not match entry.',
+            'mixed_basis': 'Formal requests have different review bases.',
+            'preflight_failed': 'Host preflight did not succeed.',
+        }[code])
+
+
 class PromptError(ValueError):
     """Invalid rendering arguments, separate from verdict admission."""
 

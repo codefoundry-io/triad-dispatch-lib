@@ -9,8 +9,13 @@ from .roster import resolve_roster, select_entries
 from .errors import OutputError, AgreementError
 from .output import ProviderOutput, extract_final, admit_output
 from .agreement import AgreementResult, evaluate_agreement
+from .errors import DispatchError
+from .dispatch import (ReviewRequest, InvestigationRequest, CallOutcome, ReviewRun,
+                       run_review, run_investigations)
 
 __all__ = ["OutputError", "AgreementError", "ProviderOutput", "extract_final", "admit_output",
+           "DispatchError", "ReviewRequest", "InvestigationRequest", "CallOutcome", "ReviewRun",
+           "run_review", "run_investigations",
            "AgreementResult", "evaluate_agreement",
            "RosterError", "resolve_roster", "select_entries", "load_roster_contract",
            "render_investigation_prompt", "AdmissionError", "ContractError", "PromptError", "parse_json",
