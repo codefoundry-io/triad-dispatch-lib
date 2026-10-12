@@ -1,0 +1,25 @@
+"""Errors that never interpolate untrusted verdict contents."""
+
+_MESSAGES = {
+    "invalid_json": "Invalid original JSON.",
+    "invalid_utf8": "JSON bytes must be UTF-8.",
+    "duplicate_member": "Duplicate JSON object member.",
+    "nonfinite_number": "Nonfinite JSON number.",
+    "invalid_input_type": "Original JSON must be str or bytes.",
+    "nesting_limit": "JSON nesting exceeds the decoder limit.",
+    "schema_violation": "Verdict violates the canonical schema.",
+    "invalid_expected": "Invalid expected invocation binding.",
+    "binding_mismatch": "Verdict does not match the expected invocation.",
+}
+
+
+class AdmissionError(ValueError):
+    """Rejected input; ``code`` is stable, human-readable wording is not."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__(_MESSAGES[code])
+
+
+class ContractError(RuntimeError):
+    """The packaged validation contract is unavailable or inconsistent."""
