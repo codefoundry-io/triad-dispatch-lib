@@ -4,42 +4,38 @@ Updated: 2026-10-12
 
 ## Owner decisions
 
-- Create `codefoundry-io/triad-dispatch-lib` as a public GitHub repository.
-- Use this independent repository as the development home for shared library work.
-- Preserve the existing hosts and shared specification during initialization.
+- Develop the common library in public `codefoundry-io/triad-dispatch-lib`.
+- Write the design and implementation plan, then proceed.
+- Preserve host-owned native execution and the shared specification authority.
 
-## Current scope
+## Current slice
 
-Repository initialization and a durable handoff of the preceding research.
-The repository contains documentation and project guidance only. No package has
-been built, no host imports this library, and no release or installation has
-been performed. Repository visibility is not evidence of runtime readiness.
+The first development package implements strict original-JSON parsing and
+canonical v2 verdict admission with six invocation bindings. Its candidate
+schema is pinned to spec `fcd96a15d18f3131c1f0111bdb10c3faceae34f8` with a packaged
+provenance manifest and SHA-256. Python 3.12 is the development/CI baseline;
+Rust source implementation is deferred.
 
-## Research direction
+Work is on `codex/strict-v2-admission`. Local tests and the isolated installed-wheel
+replay pass. Independent whole-branch review and native GitHub CI are pending.
+See [verification evidence](verification/2026-10-12-v2-admission.md).
 
-The [assessment](research/2026-10-12-shared-library-assessment.md) recommends
-Python 3.12+, shared deterministic functions, pinned specification artifacts,
-and host-owned integration adapters. It recommends deferring a Rust rewrite.
-These recommendations do not settle public APIs or constitute an approved
-implementation plan.
+- [Design and API](design/2026-10-12-v2-admission.md)
+- [Execution plan](superpowers/plans/2026-10-12-v2-admission.md)
+- [Original research](research/2026-10-12-shared-library-assessment.md)
 
-## Next work
+## Next slices
 
-Develop a concrete first-slice design for strict original-JSON parsing and v2
-verdict admission. Define the input/output and error contracts, specification
-provenance, shared conformance vectors, and compatibility expectations before
-extracting code. Refresh the relevant shared-spec revision when that work starts.
+Design classification and agreement logic against shared contract cases. Then
+build a thin Codex integration driver proving the installed library identity and
+actual host call path. Use pinned canonical prompt clauses for render tests and
+separate fresh-session smoke tests for real model behavior. See the design's
+Codex testing section; copying the full Codex skill is not the test strategy.
 
-Keep canonical validation separate from vendor-facing schema projections and
-legacy v1 interfaces. Model/effort selection, native spawning, provider calls,
-installation, and destructive cleanup are outside that initial proposed slice.
+## Boundaries
 
-The design should resolve package layout, dependency/release pinning, review
-profile, and verification commands. Later implementation belongs on a `codex/`
-work branch in this repository. Consumer adoption remains separate scoped work.
-
-## Verification boundary
-
-Initialization checks cover repository isolation, document links and whitespace,
-public visibility, and equality of the local and remote initial commit. They do
-not establish schema conformance, vendor behavior, or macOS/Ubuntu support.
+Neither host imports this package yet. No native spawning, provider calls, global
+installation, package-index publication, final merge or release occurred. Local
+macOS proof does not establish Ubuntu support; successful native CI is required.
+The review profile is ordinary independent Codex review, not formal TRIAD
+multi-family admission. Consumer adoption requires separate scoped work.

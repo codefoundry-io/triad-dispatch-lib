@@ -11,13 +11,13 @@
 - Preserve existing work and make the smallest coherent change. State the issue,
   proposed change, and impact before material edits. Write repository documentation
   in English and use the owner's language in conversation.
-- This repository currently has documentation only. Use `git diff --check` for
-  whitespace checks; no runtime test/build command is defined. Add reproducible
-  setup and meaningful tests with the first executable slice. Do not claim
-  macOS/Ubuntu compatibility without results from the relevant native platform.
+- Use `uv sync --locked`, `uv run --locked pytest -q`, and `git diff --check`.
+  For package changes also build an sdist, rebuild its wheel and run
+  `uv run --locked python tools/verify_wheel.py <wheel>`; see README commands.
+  Do not claim macOS/Ubuntu compatibility without native platform results.
 - Keep changing progress in `docs/status.md` and research/design records under
-  `docs/`; keep this instruction file small. No formal review profile is selected
-  by this initialization; resolve an applicable profile before work requiring one.
+  `docs/`; keep this instruction file small. The first slice uses ordinary
+  independent Codex review; it is not formal multi-family TRIAD admission.
 
 ## Owner-managed workspace
 
