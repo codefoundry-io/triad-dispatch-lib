@@ -5,6 +5,12 @@ Shared deterministic logic for the Claude-hosted
 Codex-hosted [triad-codex-dispatch](https://github.com/codefoundry-io/triad-codex-dispatch).
 Implement common rules once while preserving each host's native execution.
 
+The product scope is configurable **Codex, Claude, Gemini CLI and AGY** review
+entries, including all four together. Codex is the first test environment, not
+the library's support boundary. Gemini and AGY are separate execution routes of
+the canonical Google family. See the [four-route design direction](docs/design/2026-10-12-configurable-four-leg-library.md)
+and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assessment.md).
+
 ## Status
 
 The development package (`0.1.0.dev1`) provides strict original-JSON parsing,

@@ -7,6 +7,10 @@ Updated: 2026-10-12
 - Develop the common library in public `codefoundry-io/triad-dispatch-lib`.
 - Write the design and implementation plan, then proceed.
 - Preserve host-owned native execution and the shared specification authority.
+- Support configurable Codex, Claude, Gemini CLI and AGY entries, including all
+  four together. The Codex-first tests do not limit the product's supported scope.
+- Keep implementation and integration tests in this library repository; existing
+  consumer repositories remain read-only references until their separate ports.
 
 ## Current slice
 
@@ -41,11 +45,24 @@ See [current evidence](verification/2026-10-12-lib-only-codex-integration.md),
 
 ## Next slices
 
-Design classification and agreement logic against shared contract cases; extend
-renderer profiles when their contracts are ready. Consumer adoption is separate:
-replace selected duplicate logic through thin host adapters, then verify the
-actual consumer call path and fresh installed behavior. The repository test
-driver is ready for bounded experiments without copying a full host skill.
+The owner corrected the intended scope to four configurable execution choices.
+The latest spec already permits this: use named Codex and Claude entries plus
+two Google entries pinned separately to Gemini and AGY. Implement common roster
+resolution, all required prompt profiles, and unanimous agreement for every
+selected entry; do not treat the three remaining routes as optional product scope.
+See the [design direction and verification order](design/2026-10-12-configurable-four-leg-library.md).
+
+The [CLI feature assessment](research/2026-10-12-cli-feature-assessment.md)
+compares official current documentation/releases with installed versions and
+the existing B wrappers. It identifies optional transport experiments and
+already-adopted capabilities. This research changes no runtime code, package
+dependencies, spec pin or installed CLI. The four-route implementation is still
+pending; current package capabilities remain those listed above.
+
+Consumer adoption is separate: thin host adapters consume the common core and
+retain native execution. Existing host tests/bootstrap are not part of this
+library test plan. Classification follows measured typed carriers and the latest
+shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
