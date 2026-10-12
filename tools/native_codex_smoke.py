@@ -191,8 +191,9 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         folder = run_dir/name
         path = folder/'receipt.json'
         raw = regular(path)
-        observations[name] = dict(receipt_sha256=sha(raw), receipt_length=len(raw),
-                                  cleanup_only=cleanup)
+        observation = observations.setdefault(name, {})
+        observation.update(receipt_sha256=sha(raw), receipt_length=len(raw),
+                           cleanup_only=cleanup)
         snapshots[path] = sha(raw)
         receipt = strict(raw)
         exact(receipt, ('run_id','leg_name','request_sha256','prompt_sha256','response_sha256',
@@ -215,8 +216,10 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         if not isinstance(receipt['response_sha256'], str) or not re.fullmatch('[0-9a-f]{64}', receipt['response_sha256']):
             raise ValueError('Invalid response hash')
         duplicate = receipt['agent_id'] in agents and agents[receipt['agent_id']] != name
-        agents[receipt['agent_id']] = name
-        observations[name].update(receipt=receipt, duplicate_agent=duplicate)
+        # First ownership and detected custody violations survive cleanup retries.
+        agents.setdefault(receipt['agent_id'], name)
+        observation.update(receipt=receipt,
+                           duplicate_agent=duplicate or observation.get('duplicate_agent', False))
         response = None
         if receipt['status'] == 'completed':
             response = regular(folder/'response.txt')

@@ -275,3 +275,40 @@ def test_failed_receipt_retains_original_evidence_hash(driver, setup_run):
     observation = report['observations']['first']
     assert observation['receipt_sha256'] == digest((setup_run[2]/'first/receipt.json').read_bytes())
     assert observation['validation_error'] == 'Receipt binding mismatch'
+
+
+def test_investigation_cleanup_retries_preserve_duplicate_identity_evidence(driver, setup_run):
+    """A reused identity must never become valid by re-reading the same ack."""
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['mode'] = 'investigation'
+        value['requests'] = value['requests'][:2]
+        for item in value['requests']:
+            item['perspective'] = 'Boundary evidence'
+        value['requests'][1]['entry']['timeout_s'] = 1
+        config.write_text(json.dumps(value))
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        first, second = await asyncio.gather(wait_request(run, 'first'), wait_request(run, 'second'))
+        first_raw, second_raw = b'First ordinary evidence.\n', b'Second ordinary evidence.\n'
+        post(run, first, first_raw, receipt_for(first, first_raw, agent='owned-first'))
+        async with asyncio.timeout(3):
+            while not (run/'second/cancel-request.json').exists():
+                await asyncio.sleep(.002)
+        post(run, second, second_raw, receipt_for(second, second_raw, agent='owned-first'))
+        # Several actual cleanup polls must reject this identical duplicate ack.
+        await asyncio.sleep(.08)
+        waited_for_unique_ack = not task.done()
+        # Supply valid unique terminal cleanup even on RED, so no task is leaked.
+        replacement = run/'second/receipt.replacement'
+        replacement.write_text(json.dumps(receipt_for(second, second_raw, agent='owned-second')))
+        replacement.replace(run/'second/receipt.json')
+        report = await task
+        assert waited_for_unique_ack, 'duplicate cleanup receipt released custody on retry'
+        assert [o['status'] for o in report['outcomes']] == ['completed', 'timed_out']
+        assert report['observations']['second']['receipt']['agent_id'] == 'owned-second'
+        assert report['observations']['second']['duplicate_agent'] is True
+        assert report['observations']['second']['validation_error'] == 'Reused agent identity'
+        assert report['integrity_ok'] is False
+        assert 'agreement' not in report
+    asyncio.run(scenario())
