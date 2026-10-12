@@ -14,7 +14,14 @@ from .contracts import load_verified_bundle
 from .errors import ContractError, PromptError
 from .json_input import parse_json
 
-PAYLOADS = ("prompts/common-clauses.md", "prompts/leg-codex.md", "contracts/review-kind.schema.json")
+PAYLOADS = ("prompts/common-clauses.md", "prompts/leg-codex.md", "contracts/review-kind.schema.json",
+            "prompts/leg-claude.md", "prompts/leg-google.md", "prompts/investigation.md")
+# These metavariables are literal shape documentation in the canonical Claude clause.
+CLAUDE_LITERALS = {"echo", "echo integer", "non-empty", "repo-relative",
+    "positive int or null", "one sentence", "concrete scenario", "verified evidence",
+    "actually inspected repo-relative path", "unresolved necessary fact, or empty array when none",
+    "END-VERDICT"}
+PLACEHOLDER = r"<([^<>\n]+)>"
 REPLACEMENTS = {"worktree", "brief-file", "packet-files", "review-id", "content-digest", "leg-name", "attempt"}
 
 
@@ -48,14 +55,18 @@ def parse_clauses(text: str, *, host: str | None) -> dict[str, str]:
 
 def render_review_clauses(*, family: str, host: str, review_date: str,
                           review_web_authorized: bool, replacements: dict,
-                          review_kind: str = "pre-merge") -> str:
-    """Render the supported Codex/B profile with one-pass caller substitution.
+                          review_kind: str = "pre-merge", route: str | None = None,
+                          agy_hook_active: bool = False) -> str:
+    """Render a canonical family/host profile with one-pass caller substitution.
 
     Caller-owned replacement values are already encoded single-line strings.
     This function performs no path inspection and grants no execution authority.
     """
-    if family != "codex" or host != "B":
+    _validate_profile(family, route)
+    if host not in ("A", "B"):
         raise PromptError("Unsupported prompt profile.")
+    if type(agy_hook_active) is not bool or (agy_hook_active and (family, host, route) != ("google", "A", "agy")):
+        raise PromptError("Invalid active hook profile.")
     if type(review_web_authorized) is not bool:
         raise PromptError("Web permission must be a boolean.")
     try:
@@ -64,7 +75,7 @@ def render_review_clauses(*, family: str, host: str, review_date: str,
         date.fromisoformat(review_date)
     except ValueError:
         raise PromptError("Review date must be an explicit ISO calendar date.") from None
-    if (not isinstance(replacements, dict) or set(replacements) != REPLACEMENTS
+    if (not isinstance(replacements, dict) or set(replacements) != (REPLACEMENTS | {"gated-patch-file"} if family == "google" else REPLACEMENTS)
             or any(not isinstance(value, str) or "\n" in value or "\r" in value for value in replacements.values())):
         raise PromptError("Invalid caller replacements.")
     bundle = _bundle()
@@ -81,9 +92,11 @@ def render_review_clauses(*, family: str, host: str, review_date: str,
     except Unresolvable:
         raise ContractError("Invalid prompt phase contract.") from None
     common = parse_clauses(bundle[PAYLOADS[0]], host=host)
-    leg_text = bundle[PAYLOADS[1]].replace("common:<review-purpose>",
+    leg_text = bundle[f"prompts/leg-{family}.md"].replace("common:<review-purpose>",
         "common:" + ("plan-purpose" if review_kind == "formal-plan" else "code-purpose"))
     leg = parse_clauses(leg_text, host=host)
+    if not agy_hook_active:
+        leg.pop("google-a-hook-audit", None)
     all_common = parse_clauses(bundle[PAYLOADS[0]], host=None)
     all_leg = parse_clauses(leg_text, host=None)
     order = re.findall(r"^\d+\. ([\w:-]+)", leg_text, re.MULTILINE)
@@ -101,10 +114,13 @@ def render_review_clauses(*, family: str, host: str, review_date: str,
             "review-web-policy": common["review-web-permission" if review_web_authorized else "review-no-web"]}
     except KeyError:
         raise ContractError("Missing ordered prompt clause.") from None
+    if family == "google":
+        values["google-route"] = route
     text = "\n\n".join(pieces)
-    if not set(re.findall(r"<([a-z][a-z-]+)>", text)).issubset(values):
+    literals = CLAUDE_LITERALS if family == "claude" else set()
+    if not set(re.findall(PLACEHOLDER, text)).issubset(values.keys() | literals):
         raise ContractError("Unexpected prompt placeholders.")
-    return re.sub(r"<([a-z][a-z-]+)>", lambda match: values[match[1]], text)
+    return re.sub(PLACEHOLDER, lambda match: values.get(match[1], match[0]), text)
 
 
 def render_data(value: str) -> str:
@@ -114,3 +130,27 @@ def render_data(value: str) -> str:
     common = parse_clauses(_bundle()[PAYLOADS[0]], host="B")
     fence = "`" * (max([2, *(len(run) for run in re.findall(r"`+", value))]) + 1)
     return common["data-fence-caveat"] + "\n" + fence + "text\n" + json.dumps(value, ensure_ascii=True) + "\n" + fence
+
+
+def _validate_profile(family: str, route: str | None) -> None:
+    if family not in ("codex", "claude", "google") or (
+            route not in ("agy", "gemini") if family == "google" else route is not None):
+        raise PromptError("Unsupported prompt profile.")
+
+
+def render_investigation_prompt(prompt: str, *, family: str, route: str | None = None,
+                                web_authorized: bool = False) -> str:
+    """Append canonical Google web evidence last; investigations are not ballots."""
+    _validate_profile(family, route)
+    if not isinstance(prompt, str) or type(web_authorized) is not bool:
+        raise PromptError("Invalid investigation arguments.")
+    if family != "google" or not web_authorized:
+        return prompt
+    clauses = parse_clauses(_bundle()["prompts/investigation.md"], host=None)
+    try:
+        suffix = clauses["web-evidence"]
+    except KeyError:
+        raise ContractError("Missing investigation clause.") from None
+    if route == "gemini":
+        suffix = suffix.replace("read_url_content", "web_fetch").replace("search_web", "google_web_search")
+    return prompt + "\n\n" + suffix

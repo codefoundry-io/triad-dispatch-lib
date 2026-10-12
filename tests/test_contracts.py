@@ -66,3 +66,37 @@ def test_external_ref_is_offline(monkeypatch, ref):
     monkeypatch.setattr(socket.socket, "connect", forbidden)
     with pytest.raises(ContractError):
         module.validate_verdict("{}", expected={})
+
+
+def test_roster_contract_fresh_and_pinned():
+    module = contracts()
+    assert callable(getattr(module, 'load_roster_contract', None)), 'roster contract missing'
+    schema = module.load_roster_contract()
+    assert schema['$defs']['resolvedRoster']['required'] == ['schema', 'legs']
+    schema['$defs'].clear()
+    assert module.load_roster_contract()['$defs']
+
+
+@pytest.mark.parametrize('fault', ['missing', 'digest', 'manifest', 'invalid_schema'])
+def test_broken_roster_contract(tmp_path, monkeypatch, fault):
+    import shutil
+    module = contracts()
+    source = files('triad_dispatch_lib').joinpath('data/roster-bundle')
+    root = tmp_path / 'data/roster-bundle'
+    shutil.copytree(str(source), root)
+    target = root / 'contracts/review-legs.schema.json'
+    if fault == 'missing':
+        target.unlink()
+    elif fault == 'digest':
+        target.write_text('changed')
+    elif fault == 'manifest':
+        (root / 'source-manifest.json').write_text('{}')
+    else:
+        raw = b'{"$schema":"https://json-schema.org/draft/2020-12/schema","type":123}'
+        target.write_bytes(raw)
+        manifest = json.loads((root / 'source-manifest.json').read_text())
+        manifest['sha256']['contracts/review-legs.schema.json'] = hashlib.sha256(raw).hexdigest()
+        (root / 'source-manifest.json').write_text(json.dumps(manifest))
+    monkeypatch.setattr(module, 'files', lambda _: tmp_path)
+    with pytest.raises(ContractError):
+        module.load_roster_contract()

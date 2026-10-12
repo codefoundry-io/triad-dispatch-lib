@@ -21,7 +21,7 @@ dev = ["pytest>=9,<10"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-triad_dispatch_lib = ["data/*.json", "data/prompt-bundle/*.json", "data/prompt-bundle/prompts/*.md", "data/prompt-bundle/contracts/*.json"]
+triad_dispatch_lib = ["data/*.json", "data/roster-bundle/*.json", "data/roster-bundle/contracts/*.json", "data/prompt-bundle/*.json", "data/prompt-bundle/prompts/*.md", "data/prompt-bundle/contracts/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -27,3 +27,17 @@ class ContractError(RuntimeError):
 
 class PromptError(ValueError):
     """Invalid rendering arguments, separate from verdict admission."""
+
+
+class RosterError(ValueError):
+    """Caller roster refusal with fixed text and a stable reason code."""
+
+    def __init__(self, code: str):
+        self.code = code
+        super().__init__({
+            "invalid_json": "Invalid roster override JSON.",
+            "schema_violation": "Roster violates the canonical schema.",
+            "duplicate_name": "Duplicate roster entry name.",
+            "empty_selection": "Roster has no enabled entries.",
+            "nesting_limit": "Roster nesting exceeds the validation limit.",
+        }[code])

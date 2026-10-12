@@ -51,3 +51,17 @@ def load_contract() -> dict:
         return schema
     except (OSError, ValueError, SchemaError, RecursionError):
         raise ContractError("Unreadable or invalid packaged contract.") from None
+
+
+def load_roster_contract() -> dict:
+    """Return the canonical roster schema with its own pinned provenance."""
+    try:
+        root = files("triad_dispatch_lib").joinpath("data", "roster-bundle")
+        name = "contracts/review-legs.schema.json"
+        schema = parse_json(load_verified_bundle(root, (name,))[name])
+        if not isinstance(schema, dict) or schema.get("$schema") != Draft202012Validator.META_SCHEMA["$id"]:
+            raise ValueError
+        Draft202012Validator.check_schema(schema)
+        return schema
+    except (OSError, ValueError, SchemaError, RecursionError):
+        raise ContractError("Unreadable or invalid packaged roster contract.") from None
