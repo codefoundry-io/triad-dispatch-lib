@@ -43,12 +43,14 @@ jobs:
         run: |
           uv run --locked python - <<'PY'
           from pathlib import Path
-          import subprocess, tarfile, tempfile
+          import os, subprocess, tarfile, tempfile
+          child_env = os.environ.copy()
+          child_env.pop("VIRTUAL_ENV", None)
           with tempfile.TemporaryDirectory(prefix="triad-sdist-") as temporary:
               root = Path(temporary)
               with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev2.tar.gz") as archive:
                   archive.extractall(root, filter="data")
               source, = root.iterdir()
-              subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, check=True)
+              subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, env=child_env, check=True)
           PY
       - run: git diff --exit-code

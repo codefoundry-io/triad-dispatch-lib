@@ -75,7 +75,7 @@ def installed_wheel(wheel: Path):
         neutral = Path(temp).resolve()
         prefix = neutral / "venv"
         python = create_environment(prefix)
-        subprocess.run([str(python), "-I", "-m", "pip", "--isolated", "install",
+        subprocess.run([str(python), "-I", "-m", "pip", "--isolated", "--disable-pip-version-check", "install",
                         "--only-binary=:all:", str(wheel.resolve())], cwd=neutral,
                        check=True, stdout=sys.stderr)
         yield python, prefix, neutral
