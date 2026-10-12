@@ -28,19 +28,25 @@ host callbacks with separate investigations. Canonical assets retain spec pin
 
 Work remains on `codex/strict-v2-admission` in
 [draft PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1).
-Current local source/sdist/wheel evidence is recorded in
-[four-route verification](verification/2026-10-12-four-route-core.md).
-Native Ubuntu 24.04 x86-64/macOS 15 ARM64
-[CI passed](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38217590730)
-on implementation commit `2f8c813`: 364 source tests and 364 unpacked-sdist tests
-per platform, plus all three isolated installed-wheel drivers. Independent final
-review and scoped re-review left no open findings.
+The current repository-only supervised callback driver is implemented at
+`9d6f8a0`. Local source/sdist suites each pass 399 tests. Six fresh native Codex
+responses passed through installed dev2 callbacks: three unanimous safe reviews,
+one admitted negative review that blocks agreement, and two ordinary perspective
+investigations without ballots. Formal and investigation callbacks both observed
+peak concurrency two; native tool snapshots separately observed overlapping
+children. Details and capture limits are in
+[native callback verification](verification/2026-10-12-native-codex-callbacks.md).
+Task review is clear; current whole-branch review and native Ubuntu/macOS CI are
+pending at this documentation checkpoint.
+The [previous four-route verification](verification/2026-10-12-four-route-core.md)
+records the earlier 364-test native CI baseline.
 Earlier 157-test CI and fresh Codex observations describe the historical
 [previous slice](verification/2026-10-12-lib-only-codex-integration.md), not this build.
 Installed synthetic replay does not establish real provider success or host adoption.
 
 - [Four-route design](design/2026-10-12-configurable-four-leg-library.md)
 - [Four-route execution plan](superpowers/plans/2026-10-12-four-route-core.md)
+- [Native callback verification plan](superpowers/plans/2026-10-12-native-codex-callbacks.md)
 - [Original admission design and API](design/2026-10-12-v2-admission.md)
 - [Original admission execution plan](superpowers/plans/2026-10-12-v2-admission.md)
 - [Original research](research/2026-10-12-shared-library-assessment.md)
@@ -50,7 +56,8 @@ Installed synthetic replay does not establish real provider success or host adop
 
 ## Next slices
 
-The common four-route core is implemented. Consumer adoption and optional
+The common four-route core and repository-only native callback harness are
+implemented. Consumer adoption and optional
 transport experiments require separate scoped work. See the
 [design direction](design/2026-10-12-configurable-four-leg-library.md).
 
