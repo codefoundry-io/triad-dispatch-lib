@@ -14,10 +14,9 @@ SOURCE_COMMIT = "fcd96a15d18f3131c1f0111bdb10c3faceae34f8"
 SCHEMA_NAME = "leg-verdict.schema.json"
 
 
-def load_contract() -> dict:
-    """Return fresh schema data; hashes establish consistency, not authenticity."""
+def load_verified_bundle(root, names: tuple[str, ...]) -> dict[str, bytes]:
+    """Verify an exact set of pinned resource paths; no remote I/O or caching."""
     try:
-        root = files("triad_dispatch_lib").joinpath("data")
         manifest = parse_json(root.joinpath("source-manifest.json").read_bytes())
         if (
             not isinstance(manifest, dict)
@@ -26,12 +25,25 @@ def load_contract() -> dict:
             or manifest["source_commit"] != SOURCE_COMMIT
             or manifest["status"] != "candidate"
             or not isinstance(manifest["sha256"], dict)
-            or set(manifest["sha256"]) != {SCHEMA_NAME}
+            or set(manifest["sha256"]) != set(names)
         ):
             raise ContractError("Invalid packaged contract provenance.")
-        raw = root.joinpath(SCHEMA_NAME).read_bytes()
-        if hashlib.sha256(raw).hexdigest() != manifest["sha256"][SCHEMA_NAME]:
-            raise ContractError("Packaged contract digest mismatch.")
+        payloads = {}
+        for name in names:
+            raw = root.joinpath(*name.split("/")).read_bytes()
+            if hashlib.sha256(raw).hexdigest() != manifest["sha256"][name]:
+                raise ContractError("Packaged contract digest mismatch.")
+            payloads[name] = raw
+        return payloads
+    except (OSError, ValueError, RecursionError):
+        raise ContractError("Unreadable or invalid packaged contract.") from None
+
+
+def load_contract() -> dict:
+    """Return fresh schema data; hashes establish consistency, not authenticity."""
+    try:
+        root = files("triad_dispatch_lib").joinpath("data")
+        raw = load_verified_bundle(root, (SCHEMA_NAME,))[SCHEMA_NAME]
         schema = parse_json(raw)
         if not isinstance(schema, dict) or schema.get("$schema") != Draft202012Validator.META_SCHEMA["$id"]:
             raise ContractError("Unsupported packaged contract dialect.")

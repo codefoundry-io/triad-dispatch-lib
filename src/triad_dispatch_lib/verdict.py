@@ -12,6 +12,23 @@ from .json_input import parse_json
 BINDING_FIELDS = ("review_id", "family", "content_digest", "leg_name", "attempt", "route")
 
 
+def _validate_binding(expected: dict, schema: dict) -> None:
+    binding_schema = {
+        "type": "object", "additionalProperties": False,
+        "required": list(BINDING_FIELDS),
+        "properties": {name: schema["properties"][name] for name in BINDING_FIELDS},
+        # In the pinned contract, allOf[0] owns family/route compatibility.
+        "allOf": [schema["allOf"][0]],
+    }
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+        raise AdmissionError("invalid_expected")
+
+
+def validate_binding(expected: dict) -> None:
+    """Validate exactly the six canonical invocation binding fields."""
+    _validate_binding(expected, load_contract())
+
+
 def validate_verdict(raw: str | bytes, *, expected: dict) -> dict:
     """Admit original JSON without rewriting it or making a merge decision.
 
@@ -22,15 +39,7 @@ def validate_verdict(raw: str | bytes, *, expected: dict) -> dict:
     schema = load_contract()
     try:
         Draft202012Validator(schema, registry=Registry()).validate(data)
-        binding_schema = {
-            "type": "object", "additionalProperties": False,
-            "required": list(BINDING_FIELDS),
-            "properties": {name: schema["properties"][name] for name in BINDING_FIELDS},
-            # In the pinned contract, allOf[0] owns family/route compatibility.
-            "allOf": [schema["allOf"][0]],
-        }
-        if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
-            raise AdmissionError("invalid_expected")
+        _validate_binding(expected, schema)
         if any(data[name] != expected[name] for name in BINDING_FIELDS):
             raise AdmissionError("binding_mismatch")
         return data

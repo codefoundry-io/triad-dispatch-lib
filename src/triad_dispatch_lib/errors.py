@@ -23,3 +23,7 @@ class AdmissionError(ValueError):
 
 class ContractError(RuntimeError):
     """The packaged validation contract is unavailable or inconsistent."""
+
+
+class PromptError(ValueError):
+    """Invalid rendering arguments, separate from verdict admission."""

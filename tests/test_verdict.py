@@ -120,3 +120,13 @@ def test_no_shared_mutation():
     assert BASE == original
     assert expected == {key: BASE[key] for key in BINDINGS}
     assert admit(BASE) == original
+
+
+def test_validate_binding_api():
+    assert callable(getattr(lib, "validate_binding", None)), "binding API missing"
+    expected = {key: BASE[key] for key in BINDINGS}
+    assert lib.validate_binding(expected) is None
+    for change in ({"attempt": True}, {"family": "google"}, {"extra": 1}):
+        with pytest.raises(lib.AdmissionError) as caught:
+            lib.validate_binding(expected | change)
+        assert caught.value.code == "invalid_expected"

@@ -223,7 +223,7 @@ wheels = [
 
 [[package]]
 name = "triad-dispatch-lib"
-version = "0.1.0.dev0"
+version = "0.1.0.dev1"
 source = { editable = "." }
 dependencies = [
     { name = "jsonschema" },
