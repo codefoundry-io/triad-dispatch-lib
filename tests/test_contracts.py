@@ -100,3 +100,30 @@ def test_broken_roster_contract(tmp_path, monkeypatch, fault):
     monkeypatch.setattr(module, 'files', lambda _: tmp_path)
     with pytest.raises(ContractError):
         module.load_roster_contract()
+
+
+@pytest.mark.parametrize('identifier', [None, 'https://example.invalid/wrong.json', 123])
+def test_roster_schema_identity_refused_before_resolution(tmp_path, monkeypatch, identifier):
+    """A matching digest cannot make a missing or noncanonical schema ID valid."""
+    import shutil
+    import triad_dispatch_lib as lib
+    module = contracts()
+    source = files('triad_dispatch_lib').joinpath('data/roster-bundle')
+    root = tmp_path / 'data/roster-bundle'
+    shutil.copytree(str(source), root)
+    target = root / 'contracts/review-legs.schema.json'
+    schema = json.loads(target.read_text())
+    if identifier is None:
+        del schema['$id']
+    else:
+        schema['$id'] = identifier
+    raw = json.dumps(schema).encode()
+    target.write_bytes(raw)
+    manifest = json.loads((root / 'source-manifest.json').read_text())
+    manifest['sha256']['contracts/review-legs.schema.json'] = hashlib.sha256(raw).hexdigest()
+    (root / 'source-manifest.json').write_text(json.dumps(manifest))
+    monkeypatch.setattr(module, 'files', lambda _: tmp_path)
+    with pytest.raises(ContractError):
+        lib.resolve_roster({'schema': 'triad-review-legs.v2', 'legs': []})
+    with pytest.raises(ContractError):
+        module.load_roster_contract()

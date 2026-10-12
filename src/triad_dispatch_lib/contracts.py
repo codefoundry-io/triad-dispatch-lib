@@ -59,7 +59,9 @@ def load_roster_contract() -> dict:
         root = files("triad_dispatch_lib").joinpath("data", "roster-bundle")
         name = "contracts/review-legs.schema.json"
         schema = parse_json(load_verified_bundle(root, (name,))[name])
-        if not isinstance(schema, dict) or schema.get("$schema") != Draft202012Validator.META_SCHEMA["$id"]:
+        if (not isinstance(schema, dict)
+                or schema.get("$schema") != Draft202012Validator.META_SCHEMA["$id"]
+                or schema.get("$id") != SOURCE_REPOSITORY + "/" + name):
             raise ValueError
         Draft202012Validator.check_schema(schema)
         return schema
