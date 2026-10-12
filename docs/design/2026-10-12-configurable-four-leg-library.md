@@ -111,6 +111,43 @@ See [R-AGREE](https://github.com/codefoundry-io/triad-dispatch-spec/blob/396a04d
 
 ## Current implementation and research limits
 
+## Approved execution shape (2026-10-12 follow-up)
+
+The owner authorized implementation, including adapting existing library code.
+Use arbitrary named selected entries, bounded parallel calls and additional
+perspective investigations. The caller supplies perspective-specific investigation
+prompts; all formal reviewers still receive the same complete review scope.
+Investigations return ordinary data and never become approval ballots. Adding a
+formal reviewer requires a new bound round, not inserting a vote into an old one.
+
+The library may coordinate async host callbacks but contains no CLI subprocess,
+native-spawn implementation, credentials, permission defaults or SDK dependency.
+Host callbacks own actual provider capability checks, spawning and cleanup.
+Preflight every selected entry before any review call. A concurrency bound and
+per-entry timeout cover calls; cancellation must be awaited and cooperatively
+handled by callbacks, which remain responsible for their processes. Return one
+ordered outcome per entry without retries or dropping failed/dissenting entries.
+After formal calls, obtain a fresh host integrity result before agreement.
+
+Four explicit output carriers feed the existing strict admission API: native
+final response, Claude JSON with native structured output, Gemini JSON response
+string, and AGY stream JSON with native structured output. Preserve original
+embedded JSON spans, including duplicate-member evidence. Check completion,
+timeout, delivery failure, process exit and authoritative terminal fields first.
+For the new single-shot AGY carrier, require exactly one terminal result and valid
+JSON records; ambiguous/malformed streams are refused. This is stricter than the
+existing host's last-complete-result extraction and is an explicit new adapter
+contract, not a claim that either host already behaves that way. Host-specific
+AGY error salvage is not generalized into successful transport.
+
+Fresh spec main was checked again at `396a04dac310d5ff91dbe0a36982f7679aa00428`.
+Required canonical assets match the current `fcd96a1` pin, including newly fetched
+roster, Claude/Google and investigation assets checked against that older ref.
+Retain byte-preserved provenance. The executable plan is
+[four-route core](../superpowers/plans/2026-10-12-four-route-core.md).
+
+### Baseline before this implementation
+
 The existing admission API already accepts the canonical three families and
 both Google routes. The renderer and repository driver are still Codex/B only;
 roster resolution, common agreement and classification are not implemented yet.
