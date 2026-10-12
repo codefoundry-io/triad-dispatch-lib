@@ -1,12 +1,16 @@
-# triad-dispatch-spec — shared specification for the TRIAD dispatch hosts
+# TRIAD shared specification
 
-Shared specification for the two TRIAD dispatch hosts: the Claude-hosted `triad-dispatch` (source of truth `~/triad`) and
-the Codex-hosted `triad-codex-dispatch`. This public repository is the owner-published
-authoring source. `main` contains the current v2 implementation candidate and
-subsequent amendments; rev-0 remains the only published revision tag.
-The owner subsequently authorized Codex-host implementation first, using the shared schemas/specification before host
-code. See `reference/spec-authoring.md#R-AUTHORING-SYNC` and `decisions/rev-2-implementation-spec.md`. This does not
-authorize Claude-host edits, silently change a deployed revision, or create a tag.
+This directory is the canonical shared specification inside
+[`triad-dispatch-lib`](../README.md). Common contracts, prompts, cases,
+implementation and tests are developed together here; native host execution and
+installation stay in their independently released host repositories.
+
+The consolidation is pending PR merge and an old-repository notice. The former
+`triad-dispatch-spec` repository remains available; no remote retirement or host
+adoption is claimed. [Migration and ancestry](MIGRATION.md) distinguishes the
+original imported commit/hashes from current runtime bundle IDs. The imported
+v2 candidate and historical rev-0 records retain their original meaning; this
+move creates no specification tag.
 
 **What this repository is (owner Q-V, verbatim):** "UI 요소가 없는 실험적 시도로 컨셉만 잡아서 Likec4 없이 스펙저장소를
 가벼운 실험소처럼 쓰자" — a lightweight experiment lab for writing specs and accumulating behavioral cases. Concept level.
@@ -16,7 +20,7 @@ released; each host records the revision of this repository it conforms to.
 ## Layout
 
 ```
-triad-dispatch-spec/
+triad-dispatch-lib/spec/
 ├── README.md                      this file: purpose, layout, how a host adopts a revision
 ├── AGENTS.md                      identical link map for Codex, Claude and Gemini
 ├── CLAUDE.md                      identical link map
@@ -39,6 +43,19 @@ triad-dispatch-spec/
 ```
 
 ## How a host uses a revision
+
+For new adoption, follow [independent host adoption](../docs/host-adoption.md):
+record the library version, individual bundle IDs and host adapter version.
+Adoption, host release and publication are independent actions; an installed
+package never silently changes a host's deployed revision. Legacy revision
+tags and existing hosts' revision records remain historical evidence.
+
+### Historical revision and host records
+
+The following records describe the imported specification's earlier workflow
+and host snapshots. Paths and hashes in them are preserved historical claims,
+not the current library manifest format or fresh host verification.
+
 
 1. A revision is a git tag `rev-N` on `main`. The owner tags it after the other leader has read the handed folder and its `CHANGELOG.md` entry (owner Q-T); no signature ceremony.
 2. Each host repository records the revision it conforms to in one file (`SPEC_REVISION`, one line: `rev-N` + the tag's commit). The host vendors `reference/`, `prompts/*.md` and the `contracts/` files it consumes at that revision with the payload bytes UNCHANGED, recording revision and source digest in an adjacent small manifest (never inside the file — JSON has no comment syntax and byte equality is the check), so the adopted rules are available offline at the pinned revision; a live main-branch URL never changes installed behavior. It runs the `cases/` its `units.json` row maps to its own tests.
@@ -67,8 +84,9 @@ needed for the current task. For PRD/Spec edits, use
 [the authoring guide](authoring/README.md) and
 [the current Claude v2 bundle](authoring/maps/claude-host-v2.json).
 
-Verify before handoff: `python3 tools/check_authoring.py`, then
-`python3 -m pytest -q tests` (dependencies: `requirements-dev.txt`).
+From the library root, verify before handoff with `uv run --locked python
+spec/tools/check_authoring.py`, `uv run --locked python tools/sync_spec_assets.py
+--check`, and `uv run --locked pytest -q` (both suites).
 
 Historical 2026-09-21 operating profile (topology and setup context):
 [Codex + three Google legs: historical agreement](decisions/2026-09-21-codex-google-four-leg-agreement.md),

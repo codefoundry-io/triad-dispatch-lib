@@ -1,4 +1,6 @@
-# Repository map
+# Specification map in triad-dispatch-lib/spec
+
+- [Migration, ancestry and generated ownership](MIGRATION.md) · [Independent host adoption](../docs/host-adoption.md)
 
 - [Start and source map](reference/README.md)
 - [PRD and Spec authoring](reference/spec-authoring.md) · [Authoring schema and checks](authoring/README.md)

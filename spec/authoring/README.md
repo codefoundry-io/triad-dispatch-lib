@@ -1,5 +1,9 @@
 # PRD and Spec authoring
 
+Author these bundles in `triad-dispatch-lib/spec/`; all bundle-local references
+remain relative to `spec/`. See [migration](../MIGRATION.md). Historical import
+hashes are ancestry, not hashes of subsequently edited guidance.
+
 [The common authoring rule](../reference/spec-authoring.md#R-PRD-SPEC) defines
 the relationship: PRD intent → Spec behavior → rule/contract → case → owning unit.
 [implementation-map.schema.json](implementation-map.schema.json) is the
@@ -34,11 +38,12 @@ decision documents are not all registered as implementation bundles.
 
 ## Offline checks
 
-With `requirements-dev.txt` available in the selected Python environment:
+From the library root with the locked development environment:
 
 ```sh
-python3 tools/check_authoring.py
-python3 -m pytest -q tests
+uv run --locked python spec/tools/check_authoring.py
+uv run --locked python tools/sync_spec_assets.py --check
+uv run --locked pytest -q
 ```
 
 The checker uses the existing JSON Schema Draft 2020-12 library and local

@@ -2,3 +2,9 @@ include .python-version uv.lock AGENTS.md
 recursive-include tools *.py
 recursive-include tests *.py *.json *.bin *.md
 recursive-include docs *.md
+include spec/*.md spec/*.json spec/*.txt
+include spec/authoring/*.md spec/authoring/*.json spec/authoring/maps/*.json
+include spec/cases/*.md spec/cases/*.json
+include spec/contracts/*.md spec/contracts/*.json spec/contracts/*.toml
+include spec/decisions/*.md spec/prompts/*.md spec/reference/*.md spec/spikes/*.md
+include spec/tests/*.py spec/tools/*.py

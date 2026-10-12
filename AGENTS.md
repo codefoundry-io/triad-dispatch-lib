@@ -2,12 +2,13 @@
 
 - Work in this repository's Git root. Read [current status](docs/status.md)
   before continuing; historical research is evidence, not an execution plan.
-- Implement shared deterministic behavior against the adopted
-  [TRIAD specification](https://github.com/codefoundry-io/triad-dispatch-spec).
-  Preserve canonical schemas, pinned source provenance, and explicit host exceptions.
-- Keep native agent spawning, model/effort integration, installation, and host
-  configuration in their owning projects. Changes to either consumer or the
-  specification require their own scoped work; do not modify them as a side effect.
+- Implement shared deterministic behavior against the canonical [specification](spec/README.md)
+  in this repository. Edit `spec/contracts/` and `spec/prompts/`; generate package
+  assets with `tools/sync_spec_assets.py --write` and verify with `--check`.
+  Preserve canonical schema identities and historical import ancestry.
+- Keep native spawning, model/effort integration, installation and configuration
+  in their owning host projects. Follow [independent adoption](docs/host-adoption.md);
+  consumer ports and the old repository notice require separate scoped work.
 - Preserve existing work and make the smallest coherent change. State the issue,
   proposed change, and impact before material edits. Write repository documentation
   in English and use the owner's language in conversation.

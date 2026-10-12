@@ -29,30 +29,37 @@ jobs:
           enable-cache: false
       - run: uv sync --locked
       - run: uv run --locked pytest -q
-      - name: Build wheel from sdist
+      - run: uv run --locked python tools/sync_spec_assets.py --check
+      - run: uv run --locked python spec/tools/check_authoring.py
+      - name: Build and unpack sdist outside the checkout
         run: |
           uv build --sdist
-          uv build dist/triad_dispatch_lib-0.1.0.dev2.tar.gz --wheel
-      - name: Verify installed wheel and binary dependencies
-        run: uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl
-      - name: Verify installed Codex prompt and admission driver
-        run: uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 self-test
-      - name: Verify installed four-route synthetic matrix
-        run: uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2
-      - name: Run tests from the source distribution
-        run: |
           uv run --locked python - <<'PY'
           from pathlib import Path
-          import os, subprocess, tarfile, tempfile
-          child_env = os.environ.copy()
-          child_env.pop("VIRTUAL_ENV", None)
-          with tempfile.TemporaryDirectory(prefix="triad-sdist-") as temporary:
-              root = Path(temporary)
-              with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev2.tar.gz") as archive:
-                  archive.extractall(root, filter="data")
-              source, = root.iterdir()
-              subprocess.run(["uv", "run", "--locked", "pytest", "-q"], cwd=source, env=child_env, check=True)
+          import os, tarfile
+          root = Path(os.environ["RUNNER_TEMP"]) / "triad-sdist"
+          root.mkdir()
+          with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev3.tar.gz") as archive:
+              archive.extractall(root, filter="data")
+          source, = root.iterdir()
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write(f"SDIST_SOURCE={source}\n")
           PY
+      - name: Verify and rebuild from unpacked sdist
+        working-directory: ${{ env.SDIST_SOURCE }}
+        run: |
+          unset VIRTUAL_ENV
+          uv sync --locked
+          uv run --locked pytest -q
+          uv run --locked python spec/tools/check_authoring.py
+          uv run --locked python tools/sync_spec_assets.py --check
+          uv build --wheel
+      - name: Verify installed wheel and binary dependencies
+        run: uv run --locked python tools/verify_wheel.py "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl"
+      - name: Verify installed Codex prompt and admission driver
+        run: uv run --locked python tools/codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3 self-test
+      - name: Verify installed four-route synthetic matrix
+        run: uv run --locked python tools/four_route_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3
       - run: git diff --exit-code
       - name: Verify installed supervised callback synthetic exchange
-        run: uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 --self-test
+        run: uv run --locked python tools/native_codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3 --self-test

@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-10-12
+Updated: 2026-10-13
 
 ## Owner decisions
 
@@ -19,6 +19,29 @@ Updated: 2026-10-12
   here without adopting new runtime defaults.
 
 ## Current slice
+
+The unpublished development package is `0.1.0.dev3`. The shared specification
+is consolidated under canonical `spec/`; runtime schemas/prompts generate the
+same eight payload bytes with three content-addressed, six-field manifests.
+Import commit/hashes remain ancestry in `spec/import-origin.json`, separate from
+current content IDs. Python 3.12, current dependencies, all four routes and native
+callback interfaces are preserved. Root pytest discovers both test suites.
+
+Local macOS 26.6.2 ARM64 / Python 3.12.13 verification passes 633 combined tests,
+the authoring checker and generator check. The dev3 sdist includes canonical
+sources, tests/checkers and TOML inputs; unpacked-sdist verification and its
+rebuilt wheel pass the same tests and four isolated synthetic drivers. See
+[consolidation evidence](verification/2026-10-13-spec-library-consolidation.md)
+for artifact identities, RED/GREEN and limits. Current-branch remote CI and real
+providers have not been observed in this slice. Independent task/branch review
+and PR integration remain controller work.
+
+Repository cutover awaits PR merge and the [old-spec notice](../spec/MIGRATION.md).
+Neither host has adopted this package; [host adoption and independent releases](host-adoption.md)
+are separate scoped work. No merge, publication, global install, host port or
+remote retirement is claimed.
+
+## Previous dev2 slice (historical evidence)
 
 The unpublished development package `0.1.0.dev2` implements strict original-JSON
 admission, canonical named roster resolution, all four route prompt profiles on

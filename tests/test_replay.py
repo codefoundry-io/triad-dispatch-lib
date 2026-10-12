@@ -2,6 +2,7 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+import shutil
 
 import pytest
 
@@ -42,6 +43,42 @@ def test_installed_probe_requires_site_packages(tmp_path):
 
 def test_installed_probe_replays_vectors():
     assert verifier().replay(ROOT) == [case["name"] for case in CASES]
+
+
+def test_probe_reports_all_verified_bundle_identities():
+    data = Path(__file__).parents[1] / "src/triad_dispatch_lib/data"
+    report = verifier().verify_bundles(data)
+    assert set(report) == {"verdict", "roster", "prompts"}
+    assert [len(report[name]["sha256"]) for name in ("verdict", "roster", "prompts")] == [1, 1, 6]
+    for manifest in report.values():
+        assert set(manifest) == {"schema_version", "source_repository", "source_path",
+                                 "status", "sha256", "contract_id"}
+        assert len(manifest["contract_id"]) == 64
+
+
+@pytest.mark.parametrize("relative", [
+    "leg-verdict.schema.json", "roster-bundle/contracts/review-legs.schema.json",
+    "prompt-bundle/contracts/review-kind.schema.json",
+    "prompt-bundle/prompts/common-clauses.md", "prompt-bundle/prompts/leg-codex.md",
+    "prompt-bundle/prompts/leg-claude.md", "prompt-bundle/prompts/leg-google.md",
+    "prompt-bundle/prompts/investigation.md",
+    "source-manifest.json", "roster-bundle/source-manifest.json",
+    "prompt-bundle/source-manifest.json",
+])
+def test_probe_refuses_corruption_in_every_bundle_resource(tmp_path, relative):
+    from triad_dispatch_lib import ContractError
+
+    data = tmp_path / "data"
+    shutil.copytree(Path(__file__).parents[1] / "src/triad_dispatch_lib/data", data)
+    target = data / relative
+    if target.name == "source-manifest.json":
+        manifest = json.loads(target.read_bytes())
+        manifest["contract_id"] = "0" * 64
+        target.write_text(json.dumps(manifest))
+    else:
+        target.write_bytes(target.read_bytes() + b"\ncorruption")
+    with pytest.raises(ContractError):
+        verifier().verify_bundles(data)
 
 
 def test_environment_interpreter_starts(tmp_path):

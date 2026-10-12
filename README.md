@@ -13,7 +13,7 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development package (`0.1.0.dev2`) provides strict original-JSON parsing,
+The development package (`0.1.0.dev3`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks. Repository drivers verify the installed package with
@@ -33,15 +33,23 @@ It is not published to a package index and neither host has adopted it yet.
 
 ## Relationship to the shared specification
 
-[triad-dispatch-spec](https://github.com/codefoundry-io/triad-dispatch-spec)
-remains the authority for common behavior, schemas, prompt clauses, and cases.
-This repository implements those contracts, with byte-preserved pinned schema
-data and an adjacent provenance manifest.
+The canonical specification now lives in [`spec/`](spec/README.md) alongside
+its deterministic implementation and tests. Edit `spec/contracts/` and
+`spec/prompts/`, then run `tools/sync_spec_assets.py --write`; never hand-edit
+`src/triad_dispatch_lib/data/`. `--check` detects missing, stale and unexpected
+generated assets without writing or requiring Git/network access.
 
-The dependency direction is: pinned specification artifacts → shared library →
-host adapters. Each host retains native spawning, model and effort integration,
-installation, and platform-specific execution. Hosts retain independent release
-schedules and explicitly record the versions they adopt.
+[`spec/import-origin.json`](spec/import-origin.json) records the original import
+commit and file hashes as ancestry, not current document hashes. The three runtime
+manifests each contain exactly `schema_version`, `source_repository`, `source_path`,
+`status`, `sha256` and `contract_id`. Each ID identifies one bundle of payload
+bytes, not the entire specification or a repository commit. Integrity establishes
+consistency, not authenticity. Legacy schema `$id` values remain unchanged.
+
+Repository cutover awaits this PR merge and an old-repository notice; no remote
+retirement is claimed. See [migration](spec/MIGRATION.md) and
+[independent host adoption](docs/host-adoption.md). Each host retains native
+spawning, model/effort integration, installation and independent releases.
 
 ## API
 
@@ -69,8 +77,8 @@ must contain exactly the six shown fields. Google uses `agy` or `gemini` routes;
 other families use null. Admission returns the unmodified parsed object, including
 valid negative verdicts; it makes no merge decision. Callers own input size limits.
 
-See the design for error codes and edge cases. The package pins candidate spec
-commit `fcd96a15d18f3131c1f0111bdb10c3faceae34f8`; it does not convert v1 data.
+See the design for error codes and edge cases. Runtime bundles have candidate
+content IDs; historical import commits are separate. The API does not convert v1 data.
 Output admission and unanimous agreement are implemented; native host adapters
 remain separate work. Rust is deferred until a measured need justifies it.
 
@@ -157,11 +165,14 @@ git clone git@github.com:codefoundry-io/triad-dispatch-lib.git
 cd triad-dispatch-lib
 uv sync --locked
 uv run --locked pytest -q
+uv run --locked python spec/tools/check_authoring.py
+uv run --locked python tools/sync_spec_assets.py --check
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev2.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2
+uv build dist/triad_dispatch_lib-0.1.0.dev3.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 --self-test
 git diff --check
 ```
 
@@ -170,10 +181,18 @@ metadata permits Python 3.12+; tested combinations are recorded in verification
 evidence. `uv.lock` pins development dependencies. The wheel probe creates a
 temporary environment outside the checkout and installs the wheel and allowed
 runtime dependencies using binary wheels only, then replays the raw fixtures.
-It reports import path, versions, platform, schema hash and wheel hash. That
+It verifies all three bundle manifests and all eight payloads, reporting their
+content IDs/digests, import path, versions, platform and wheel hash. That
 probe needs package-index access for installation; the admission API itself is
 offline. Transitive `rpds-py` includes native Rust code, so wheel availability is
 checked per platform even though this repository needs no Rust source build.
+
+Root pytest discovers both `tests/` and `spec/tests/` with importlib mode.
+The sdist includes canonical sources, checkers, tests and TOML policy inputs; the
+wheel includes only the runtime package. For archive verification, unpack the
+sdist in a neutral temporary directory, unset `VIRTUAL_ENV`, run `uv sync --locked`,
+the same pytest/checker/generator commands there, and `uv build --wheel`. Pass
+that rebuilt wheel to all four drivers above. CI performs this full sequence.
 
 CI uses [native GitHub runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
 for Ubuntu 24.04 x86-64 and macOS 15 ARM64 with Python 3.12. Platform claims require
@@ -190,9 +209,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev2 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev2 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and
@@ -224,8 +243,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev2-py3-none-any.whl --expected-version 0.1.0.dev2 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev2 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

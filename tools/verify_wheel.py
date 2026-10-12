@@ -42,21 +42,38 @@ def replay(root: Path) -> list[str]:
     return passed
 
 
+def verify_bundles(data) -> dict:
+    """Verify all runtime payloads and report their complete bundle provenance."""
+    from triad_dispatch_lib.contracts import load_verified_bundle
+    from triad_dispatch_lib.json_input import parse_json
+
+    bundles = {
+        "verdict": (data, ("leg-verdict.schema.json",)),
+        "roster": (data.joinpath("roster-bundle"), ("contracts/review-legs.schema.json",)),
+        "prompts": (data.joinpath("prompt-bundle"), (
+            "contracts/review-kind.schema.json", "prompts/common-clauses.md",
+            "prompts/leg-codex.md", "prompts/leg-claude.md", "prompts/leg-google.md",
+            "prompts/investigation.md")),
+    }
+    report = {}
+    for name, (bundle, payloads) in bundles.items():
+        load_verified_bundle(bundle, payloads)
+        report[name] = parse_json(bundle.joinpath("source-manifest.json").read_bytes())
+    return report
+
+
 def probe(root: Path, prefix: Path) -> dict:
     import triad_dispatch_lib
 
     verify_import(Path(triad_dispatch_lib.__file__), prefix)
     passed = replay(root)
     data = files("triad_dispatch_lib").joinpath("data")
-    manifest = json.loads(data.joinpath("source-manifest.json").read_bytes())
-    schema_hash = hashlib.sha256(data.joinpath("leg-verdict.schema.json").read_bytes()).hexdigest()
-    if schema_hash != manifest["sha256"]["leg-verdict.schema.json"]:
-        raise AssertionError("installed schema digest mismatch")
+    bundles = verify_bundles(data)
     return {
         "package_path": triad_dispatch_lib.__file__,
         "version": version("triad-dispatch-lib"), "python": platform.python_version(),
         "platform": platform.platform(), "machine": platform.machine(),
-        "source_commit": manifest["source_commit"], "schema_sha256": schema_hash,
+        "bundles": bundles,
         "dependencies": {name: version(name) for name in ("jsonschema", "referencing", "rpds-py", "attrs")},
         "replay_passed": passed,
     }
