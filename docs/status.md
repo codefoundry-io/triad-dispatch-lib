@@ -22,7 +22,10 @@ Local source and unpacked-sdist checks passed 152 tests. Installed-wheel replay
 passed 10 raw cases plus synthetic prompt/admission checks. Two fresh native
 Codex responses produced the expected control/defect verdicts and passed the
 installed validator. The previous sdist support-file minor is resolved.
-Independent review and new native Ubuntu/macOS CI are pending for this slice.
+Native Ubuntu 24.04 x86-64 and macOS 15 ARM64 CI both passed the same source,
+sdist and installed-package checks. Independent whole-branch review found no
+Critical/Important findings and one deferred CLI minor: a missing wheel path exits
+1 rather than the documented input-rejection code 2. It does not admit a result.
 See [current evidence](verification/2026-10-12-codex-prompt-smoke.md) and
 [first-slice evidence](verification/2026-10-12-v2-admission.md).
 

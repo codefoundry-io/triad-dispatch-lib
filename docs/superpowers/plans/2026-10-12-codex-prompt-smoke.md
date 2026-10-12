@@ -102,7 +102,7 @@ CLI `--wheel W --expected-version V render --context C --prompt P`,
 - [x] Add native CI synthetic driver step; record actual local/live outcomes and
   custody limits. Update package commands and next scope. Commit
   `test: verify packaged prompt driver and fresh native responses`.
-- [ ] Complete with `uv run pytest -q`, then fresh whole-branch reviewer, any
+- [x] Complete with `uv run pytest -q`, then fresh whole-branch reviewer, any
   necessary TDD fixes, push/update draft PR and inspect both native CI jobs.
 
 ## Completion

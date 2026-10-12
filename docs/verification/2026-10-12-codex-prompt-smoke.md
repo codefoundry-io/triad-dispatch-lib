@@ -80,8 +80,46 @@ venv `lib/python3.12/site-packages/triad_dispatch_lib/verdict.py` paths.
 
 ## Review and platform evidence
 
-Whole-branch independent review and native Ubuntu/macOS CI are pending for this
-slice. Earlier platform results cover dev0 only until the new jobs complete.
+Native [CI run 38203172928](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38203172928)
+passed at implementation commit `197e8c1b44d2fec3ce62eee9c9fa8186a11e6384`.
+Both platforms ran 152 source tests, 152 unpacked-sdist tests, 10 installed-wheel
+raw replay cases and the installed synthetic Codex driver checks successfully.
+
+| Native platform | Observed Python / architecture | Wheel SHA-256 |
+| --- | --- | --- |
+| Ubuntu 24.04 | 3.12.15 / x86_64, glibc 2.39 | `428ddd67181e2d7eec8949f7ce4f8dd030ac3a268b6ea40effaf8b39c9daa1f6` |
+| macOS 15.7.9 | 3.12.10 / arm64 | `624972917afda27d703bec03f86acb36a6725b923e0d4b7ae3af2bda18afe08d` |
+
+The local wheel built from the reviewed commit had SHA-256
+`d621852a9ab255c1283c9402c7107f680e10f3f259d6a2975616bc16ae470e62`;
+its 10 replay cases and installed synthetic driver also passed. These hashes
+identify each observed archive, not cross-platform reproducible builds.
+
+Fresh independent whole-branch reviewer: requested `gpt-6-astra`, `high`,
+`fork_turns=none`; actual runtime settings were `UNEXPOSED`. Reviewed range
+`c6dd981..197e8c1`, with prompt-controlled read-only containment. The reviewer
+independently passed all 152 tests and checked saved prompt, packet, binding and
+raw-result evidence. HEAD, index and tracked file fingerprints remained unchanged.
+No Critical or Important findings; one Minor; technical assessment ready to merge.
+That assessment does not authorize final merge.
+
+Deferred minor: `tools/codex_smoke.py` begins wheel installation outside its input
+error handler. A nonexistent wheel path therefore produces a failed installation
+and exit code 1 instead of the design's input-rejection code 2. It cannot admit a
+result, but callers distinguishing error classes must account for it. A future
+bounded fix should check the wheel path before environment creation and add a CLI
+regression test. The finding was confirmed from current control flow; no failing
+installation was run solely to demonstrate it.
+
+Review scope rulings retained:
+
+- Actual consumer integration and formal TRIAD custody were set aside. Existing
+  hosts remain untouched and parent-transcribed capture is explicit; separate
+  integration proof is required. Cost if wrong: consumers could be adopted without
+  adequate runtime evidence.
+- Claude/Google rendering, classification and aggregation were set aside. The
+  supported renderer is explicitly Codex/B and later scope is recorded. Cost if
+  wrong: broader adoption could need those missing profiles and logic before use.
 
 ## Limits
 
