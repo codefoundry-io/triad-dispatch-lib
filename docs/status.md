@@ -124,6 +124,17 @@ The follow-up source and sdist each pass 706 tests on local Python 3.12.13 and
 3.14.6, with all four installed-wheel checks. Exact-head CI and the next complete
 review are recorded externally after this documentation-only result update.
 
+R10 (`20261014-lib-spec-r10-9218dc`) completed AGREED on `3ad33e8`, with all
+three required reviewers approving and no Astra comparison finding. Native CI
+run 38591880134 passed 706 source and 706 archive tests plus four installed-wheel
+checks in all four Python/platform jobs. Opus retained a stale case-map evidence
+link/line-anchor Minor and an isolated-interpreter color hardening suggestion.
+The case map now uses the current-status entry point and named workflow steps;
+actual `-I` forced-color reproduction drives the bounded test correction in the
+same [follow-up record](verification/2026-10-14-python314-followups.md).
+The completed round was exported and cleaned before edits. Changed bytes need
+new exact-head CI and a fresh complete review, recorded with the draft PR.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

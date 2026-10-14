@@ -120,6 +120,7 @@ def test_cli_wheel_oserror_refused(operation, error_number, tmp_path, monkeypatc
 
 def test_public_help_hides_internal_probe_without_installation(monkeypatch, capsys):
     monkeypatch.setenv("PYTHON_COLORS", "0")
+    monkeypatch.setenv("NO_COLOR", "1")
     module = verifier()
 
     def forbidden_install(wheel):

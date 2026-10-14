@@ -71,10 +71,32 @@ per request. The completed round was exported/cleaned before further edits.
   retain actual per-request context revalidation. Test real loader counts across
   two runs and refusal of context changes before invocation. Keep prepare's
   return contract and avoid a global cache. Estimate +2/-1 production lines.
-- [ ] Repeat source/archive/wheel checks on both interpreters, exact-head four-job
+- [x] Repeat source/archive/wheel checks on both interpreters, exact-head four-job
   CI and a fresh full-scope review with the same profile and 40-minute budgets.
 
 These corrections add no dependency, native protocol, schema or product limit.
 Measured follow-up delta: production +2/-1 (net +1), tests +48/-0 and two new
 cases. Both local source/archive suites pass 706 tests, with four installed-wheel
 checks each. Committed-head CI and the next review still follow this recording.
+
+## R10 documentation and isolated-interpreter follow-up
+
+R10 completed AGREED on `3ad33e8`; all four exact-head native CI jobs passed
+706 source and 706 archive tests plus installed-wheel checks. The round was
+exported and cleaned before these bounded follow-ups. Opus found a stale current
+verification link and workflow line anchors in the derived case map. A separate
+hardening suggestion identified the help test's color control under `-E`/`-I`.
+
+- [x] Replace the case map's old measurement link with the current-status entry
+  point and unstable workflow line numbers with named steps and the matrix.
+- [x] Reproduce the actual Python 3.14 isolated-interpreter color failure;
+  additionally set test-local NO_COLOR=1 if confirmed, preserving product help.
+- [x] Verify the existing help regression on both interpreters and with actual
+  isolated-interpreter forced-color execution.
+- [x] Repeat integrated source/archive/wheel checks on both interpreters.
+- [ ] Commit the bounded snapshot, await exact-head native CI and run the same
+  complete review profile with 40-minute budgets and current official sources.
+
+No runtime or normative case change is intended. Do not add a new inventory
+framework or duplicate tests for the documentation edits. Record current outcomes
+externally after the frozen commit, preserving the historical evidence boundary.

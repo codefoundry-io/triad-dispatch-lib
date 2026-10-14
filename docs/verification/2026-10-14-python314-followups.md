@@ -171,3 +171,58 @@ in `final-{3.12,3.14}-r3/` under the same owner evidence root. This paragraph is
 documentation-only recording after measurement. The next committed-head CI and
 fresh review outcomes are recorded externally with their exact head and round;
 no old approval or platform result is transferred to the new commit.
+
+## R10 outcome and isolated-interpreter follow-up
+
+R10 `20261014-lib-spec-r10-9218dc` completed AGREED on
+`3ad33e8180492a624dbbac9fce38f74788efd013`, digest
+`f0e00da07b30a85a626122a606bcb8a81aa84494f949b086dfd42988399e8a1e`.
+All three required reviewers returned SAFE TO MERGE; Sol and Argon had no
+findings, and the separate Astra comparison found no actionable defect. All
+results were terminal before canonical export and cleanup. Each review had the
+same 2400-second budget and authorization for current official web evidence.
+
+[Native CI run 38591880134](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38591880134)
+passed on that exact head: each of the four jobs passed **706 source and 706
+unpacked-sdist tests**, actual source/archive interpreter assertions, authoring,
+asset checks, wheel rebuilding and all four installed-wheel checks. Actual
+Python versions were macOS 3.12.10/3.14.7 and Ubuntu 3.12.15/3.14.8.
+
+Opus found a Minor in the derived case map: its current-measurement link pointed
+at the older R1-R4 record, and workflow line anchors no longer identified the
+Python selection or all installed-wheel steps. The map now links the current
+status entry point and names the matrix and workflow steps. Normative case text,
+runtime contracts and generated assets are unchanged. Its optional suggestion
+to introduce an inventory test framework is outside this small documentation fix;
+existing external `verify.py` directly executes the map checks and saves
+`interface-map-check.json`, separate from subprocess rows in `results.json`.
+
+A separate hardening suggestion concerned Python 3.14 `-E`/`-I`: the pinned
+[CPython v3.14.6 color helper](https://raw.githubusercontent.com/python/cpython/v3.14.6/Lib/_colorize.py),
+checked 2026-10-15, skips PYTHON_COLORS when environment handling is disabled,
+then checks NO_COLOR before FORCE_COLOR. Actual Python 3.14.6 execution with
+`NO_COLOR` unset and `FORCE_COLOR=1`, through `python -I -m pytest`, reproduced
+the existing help test failure: **1 failed, 29 deselected**, with ANSI escapes
+around the positional wheel text. This does not affect the product CLI or the
+documented ordinary pytest/CI command. The bounded correction adds test-local
+`NO_COLOR=1` alongside `PYTHON_COLORS=0`, restoring both via monkeypatch and
+retaining every help assertion. No new runtime code or duplicated test is needed.
+
+After correction, the complete help-test file passes **30 cases** on Python
+3.12.13 and 3.14.6, including an actual 3.14 `-I` run with FORCE_COLOR=1 and
+NO_COLOR unset in the caller. A targeted 3.14 `-E` run also passes. The test adds
+one line and no cases; source and archive suites remain **706 tests each**.
+Both interpreters pass those full suites, authoring/generator/diff checks,
+the 53-test-reference/27-export checks and all four installed-wheel paths.
+
+| Interpreter | R10 follow-up sdist SHA-256 | R10 follow-up rebuilt wheel SHA-256 |
+| --- | --- | --- |
+| 3.12.13 | `1e54c0bce7ef33fd92924d15433d4d2eb6c022e7e15d1e0881b2352ebc38eb0d` | `6da2f93d198a8a0b0f36b72d5f76f8eacea4492d31d97d30af4a7d2df2e72b88` |
+| 3.14.6 | `53e02dd8b830f83d03f86f8c679b0c931281058c118f2f0ad9b3dbd8660b1496` | `7ea335e104c772cdbde43ee4764fd4d9ba369fd4fae0f4594e3f1de08b781e4d` |
+
+Raw observations and cleanup receipts are retained in `final-{3.12,3.14}-r4/`
+under the same owner evidence root; focused reproduction is in
+`r10-followups/help/`. These hashes identify measured builds before this
+documentation-only recording. No runtime/test/asset changed afterward. Native CI
+will build the exact resulting commit independently. Its result and the fresh
+full review are recorded externally with the frozen head and draft PR.
