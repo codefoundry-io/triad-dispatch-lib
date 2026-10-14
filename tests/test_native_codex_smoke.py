@@ -132,6 +132,53 @@ def test_review_dissent_order_and_two_slots(driver, setup_run):
     asyncio.run(scenario())
 
 
+def test_preflight_helper_loads_are_bounded_per_run(driver, setup_run, monkeypatch):
+    original_helper = driver.helper
+    loads = []
+
+    def helper(name):
+        value = original_helper(name)
+        if name == 'codex_smoke':
+            loads.append(value)
+        return value
+
+    monkeypatch.setattr(driver, 'helper', helper)
+
+    async def scenario():
+        config, wheel, first_run = setup_run
+        counts = []
+        for run in (first_run, first_run.with_name('second-run')):
+            task = asyncio.create_task(driver.run(config, wheel, run))
+            for name in ('first', 'second', 'third'):
+                request = await wait_request(run, name)
+                post(run, request, verdict(request))
+            report = await task
+            assert report['agreement']['agreed']
+            counts.append(len(loads))
+        assert counts == [2, 4], 'preflight reloaded the real helper for every request'
+    asyncio.run(scenario())
+
+
+def test_reused_preflight_helper_revalidates_changed_packet(driver, setup_run, monkeypatch):
+    from triad_dispatch_lib import DispatchError
+
+    config, wheel, run = setup_run
+    brief = config.parent/'packet/brief.md'
+    original_prepare = driver.prepare
+
+    def prepare(value):
+        prepared = original_prepare(value)
+        brief.write_text('Packet changed after preparation.\n')
+        return prepared
+
+    monkeypatch.setattr(driver, 'prepare', prepare)
+    with pytest.raises(DispatchError) as caught:
+        asyncio.run(driver.run(config, wheel, run))
+    assert caught.value.code == 'preflight_failed'
+    assert not list(run.glob('*/request.json'))
+    assert brief.read_text() == 'Packet changed after preparation.\n'
+
+
 @pytest.mark.parametrize('field,value', [('run_id','old'), ('prompt_sha256','0'*64),
     ('request_sha256','0'*64), ('response_sha256','0'*64), ('status','failed'),
     ('effective_settings','high'), ('parent_terminal_at',True),

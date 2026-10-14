@@ -38,9 +38,9 @@ Tests, workflow and evidence documentation are counted separately: roughly
   This is test portability work; add no product depth limit or runtime changes.
 - [x] Run focused RED/GREEN checks, then source and rebuilt-sdist suites on
   Python 3.12 and 3.14; check authoring/assets and four installed-wheel drivers.
-- [ ] Extend CI to both interpreters on Ubuntu/macOS with explicit UV_PYTHON
+- [x] Extend CI to both interpreters on Ubuntu/macOS with explicit UV_PYTHON
   selection and recorded runtime versions; commit/push and await exact-head CI.
-- [ ] Update status/evidence, then run a fresh full-scope required
+- [x] Update status/evidence, then run a fresh full-scope required
   Opus5.5/xhigh, Sol6.1/xhigh, Argon/high review plus separate Astra/high,
   each with 2400 seconds and current official web evidence. Preserve all
   results, adjudicate findings and clean exact owned review roots.
@@ -56,3 +56,25 @@ verification and adds no production code. Workflow +12/-1; documentation is
 recorded separately. Local source and sdist each pass 704 tests on both versions.
 CI/review completion evidence is recorded externally after the committed source
 is frozen, so this plan does not predeclare their outcomes.
+
+## R9 bounded follow-up
+
+R9 completed AGREED on 6f790f6 after four native CI jobs passed. Opus retained
+two Minor findings within this outcome: forced Python 3.14 color causes a false
+failure in the new help assertion, and native preflight reloads the same helper
+per request. The completed round was exported/cleaned before further edits.
+
+- [x] Pin PYTHON_COLORS=0 inside the help test after reproducing its failure with
+  PYTHON_COLORS=1. Retain public-help behavior and the internal-probe assertion;
+  verify both interpreters and Python 3.14 forced-color environments.
+- [x] Load the native prepare_context callable once per run before callbacks;
+  retain actual per-request context revalidation. Test real loader counts across
+  two runs and refusal of context changes before invocation. Keep prepare's
+  return contract and avoid a global cache. Estimate +2/-1 production lines.
+- [ ] Repeat source/archive/wheel checks on both interpreters, exact-head four-job
+  CI and a fresh full-scope review with the same profile and 40-minute budgets.
+
+These corrections add no dependency, native protocol, schema or product limit.
+Measured follow-up delta: production +2/-1 (net +1), tests +48/-0 and two new
+cases. Both local source/archive suites pass 706 tests, with four installed-wheel
+checks each. Committed-head CI and the next review still follow this recording.

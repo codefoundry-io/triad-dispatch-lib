@@ -115,6 +115,15 @@ with the owner-managed evidence and draft PR after this source record.
 The default development interpreter remains Python 3.12; a new complete review
 must assess the corrected bytes.
 
+R9 completed AGREED on `6f790f6`; native Ubuntu/macOS Python 3.12/3.14 CI passed
+704 source and 704 archive tests in all four jobs. The same follow-up record
+documents two neighboring Minor corrections from that round: test-local color
+isolation and per-run native preflight helper reuse with unchanged freshness
+checks. R9 was exported/cleaned before edits; changed bytes require fresh evidence.
+The follow-up source and sdist each pass 706 tests on local Python 3.12.13 and
+3.14.6, with all four installed-wheel checks. Exact-head CI and the next complete
+review are recorded externally after this documentation-only result update.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

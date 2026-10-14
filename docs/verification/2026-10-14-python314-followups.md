@@ -110,3 +110,64 @@ configured job is not a successful platform observation.
 Synthetic callback tests do not attest real backend termination, effective
 provider settings, consumer adoption or release. Final merge and publication
 remain separate boundaries.
+
+## R9 outcome and follow-up boundary
+
+R9 `20261014-lib-spec-r9-053dee` completed AGREED on `6f790f6`, digest
+`9cf742bc5da6e473d86bda974ba0c81698ddf8e5f5520ce545a48eec9a89ec51`.
+Opus, Sol and Argon all returned SAFE TO MERGE; separate Astra reported no
+concrete defect. The three R8 follow-ups were confirmed closed. Opus retained
+two Minor maintenance findings: forced-color help test portability and per-entry
+native preflight helper loading. All children/producers terminated and the exact
+round roots were exported/cleaned before subsequent edits. Original outputs and
+adjudication are retained in the owner workspace; no approval transfers.
+
+[Native CI run 38586758282](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38586758282)
+passed on the exact `6f790f6cd21a9555bd8d1eeb7a375abe4cf67b5c` head. Each native
+job passed 704 source and 704 sdist tests, interpreter assertions, asset/authoring
+checks, archive rebuild and all four installed-wheel checks:
+
+| Native platform | Actual source/archive Python |
+| --- | --- |
+| macOS 15 ARM64 | 3.12.10 and 3.14.7 |
+| Ubuntu 24.04 x86_64 | 3.12.15 and 3.14.8 |
+
+The bounded correction isolates the test's color environment and reuses the
+native preflight callable per run, while preserving every context revalidation.
+Actual Python 3.14.6 with `PYTHON_COLORS=1` reproduced the help failure; the same
+file now passes 30 tests on each interpreter and with both caller color variables
+forced on 3.14. `FORCE_COLOR` alone did not reproduce in the inherited environment
+and is not counted as RED evidence. The existing test locally sets
+`PYTHON_COLORS=0`, restores it through monkeypatch, and leaves CLI behavior and
+all previous assertions intact.
+
+The [3.14 argparse color documentation](https://docs.python.org/3.14/library/argparse.html#color)
+and [CPython v3.14.6 color helper](https://raw.githubusercontent.com/python/cpython/v3.14.6/Lib/_colorize.py)
+were checked on 2026-10-15. The pinned source gives `PYTHON_COLORS=0` precedence
+over competing color controls when environment handling is enabled.
+
+Native preflight now retains a real `prepare_context` callable per run. Two real
+three-request exchanges reproduce helper-load counts `[4, 8]` before correction
+and `[2, 4]` afterward. The two loads per run deliberately retain `prepare()`'s
+own load plus one callback lookup, avoiding a new return contract or global cache.
+Every preflight still calls the real validator: a packet changed after preparation
+is refused with `preflight_failed` before any request is published. Production
+delta is +2/-1; regressions add two cases. Its final source/archive/native-CI and
+fresh review evidence follow this recording boundary.
+
+Final follow-up verification: local macOS 26.6.2 ARM64, Python 3.12.13 and 3.14.6
+each pass **706 source + 706 unpacked-sdist tests**, all four installed-wheel
+paths, authoring/generator/diff and 53-test-reference/27-export map checks.
+Focused native suites each pass 69 cases. These runs follow the two bounded R9
+corrections; the earlier 704-test measurements remain historical.
+
+| Interpreter | Follow-up sdist SHA-256 | Follow-up rebuilt wheel SHA-256 |
+| --- | --- | --- |
+| 3.12.13 | `79a11252d1533caf3349275cc1d61ddd9f5b8f691bb5436e96550c2513ff35a9` | `78410de6fe5eca99a6c2e230a355e697afec94ccad15e0ad0bee8f63c4fc5e23` |
+| 3.14.6 | `b12a96e3d8ec413a71dd61fd617ee0a8a2a8eabe5d4e862174e47cf877c7361b` | `d124e19bd8109176900a5b3dc901dc3fe37f95c354ac7bfc29c1d0178769a574` |
+
+Commands, terminal exits, hashes and successful exact-stage cleanup are retained
+in `final-{3.12,3.14}-r3/` under the same owner evidence root. This paragraph is
+documentation-only recording after measurement. The next committed-head CI and
+fresh review outcomes are recorded externally with their exact head and round;
+no old approval or platform result is transferred to the new commit.

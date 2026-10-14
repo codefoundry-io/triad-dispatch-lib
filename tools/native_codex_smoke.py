@@ -158,6 +158,7 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     config_raw, wheel_raw = regular(config_path), regular(wheel_path)
     config = strict(config_raw)
     prepared = prepare(config)  # No directory/publication before complete validation.
+    prepare_context = helper('codex_smoke')['prepare_context']
     try:
         if (not run_dir.is_absolute() or not run_dir.parent.is_dir()
                 or run_dir.parent.resolve() != run_dir.parent):
@@ -296,7 +297,7 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     async def preflight(request):
         # Library performs every preflight before invoke; recheck prepared evidence.
         item = bound[request.entry['name']]
-        helper('codex_smoke')['prepare_context'](item['context'])
+        prepare_context(item['context'])
         if regular(run_dir/request.entry['name']/'prompt.txt') != item['prompt']:
             raise ValueError('Prompt changed before invoke')
 
