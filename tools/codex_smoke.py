@@ -56,12 +56,20 @@ def prepare_context(context: dict) -> dict:
         raise ValueError("Invalid packet paths.")
     root = Path(context["worktree"])
     paths = [Path(value) for value in context["packet_files"]]
-    if not root.is_absolute() or root.resolve() != root or not root.is_dir():
+    try:
+        resolved_root = root.resolve() if root.is_absolute() else None
+    except RuntimeError:
+        raise ValueError("Worktree must be a canonical absolute directory.") from None
+    if resolved_root != root or not root.is_dir():
         raise ValueError("Worktree must be a canonical absolute directory.")
     if len(set(paths)) != len(paths) or Path(context["brief_file"]) not in paths:
         raise ValueError("Brief must belong to a unique bound packet.")
     for path in paths:
-        if (not path.is_absolute() or path.resolve() != path or not path.is_relative_to(root)
+        try:
+            resolved_path = path.resolve() if path.is_absolute() else None
+        except RuntimeError:
+            raise ValueError("Packet must contain canonical regular files inside the worktree.") from None
+        if (resolved_path != path or not path.is_relative_to(root)
                 or path.is_symlink() or not path.is_file()):
             raise ValueError("Packet must contain canonical regular files inside the worktree.")
     records = packet_records(root, paths)
@@ -228,7 +236,10 @@ def main() -> int:
             command.add_argument("--result", type=Path, required=True)
     commands.add_parser("self-test")
     args = parser.parse_args()
-    wheel = args.wheel.resolve()
+    try:
+        wheel = args.wheel.resolve()
+    except RuntimeError:  # Python 3.12 reports symlink loops during resolution.
+        parser.error("wheel must be an existing regular file")
     if not wheel.is_file():
         parser.error("wheel must be an existing regular file")
     if not args.installed_prefix:

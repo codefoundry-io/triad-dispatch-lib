@@ -200,3 +200,61 @@ def test_missing_wheel_refused_before_install(monkeypatch, tmp_path, capsys):
         module.main()
     assert caught.value.code == 2
     assert "wheel" in capsys.readouterr().err.lower()
+
+
+@pytest.fixture(params=["worktree-leaf", "worktree-ancestor", "packet-leaf", "packet-ancestor"])
+def cyclic_context(context, tmp_path, request):
+    loop = tmp_path.resolve() / "cycle"
+    loop.symlink_to(loop)
+    path = loop / "child" if request.param.endswith("ancestor") else loop
+    if request.param.startswith("worktree"):
+        return context | {"worktree": str(path)}
+    return context | {"packet_files": [context["brief_file"], str(path)]}
+
+
+def test_cyclic_packet_paths_refused(cyclic_context):
+    with pytest.raises(ValueError, match="canonical"):
+        driver().prepare_context(cyclic_context)
+
+
+def test_cli_cyclic_packet_paths_refused_without_publication(cyclic_context, tmp_path, monkeypatch, capsys):
+    module = driver()
+    wheel = tmp_path / "fixture.whl"
+    wheel.write_bytes(b"fixture")
+    context_file = tmp_path / "context.json"
+    context_file.write_text(json.dumps(cyclic_context))
+    prompt_file = tmp_path / "prompt.txt"
+    monkeypatch.setattr(module, "identity", lambda prefix, expected_version: {})
+    monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(wheel),
+                                    "--expected-version", "0.1.0.dev3", "--installed-prefix", str(tmp_path),
+                                    "render", "--context", str(context_file), "--prompt", str(prompt_file)])
+    assert module.main() == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == "Codex smoke refused: ValueError\n"
+    assert not prompt_file.exists()
+
+
+@pytest.mark.parametrize("ancestor", [False, True], ids=["leaf", "ancestor"])
+def test_cli_cyclic_wheel_refused_before_install(ancestor, tmp_path, monkeypatch, capsys):
+    module = driver()
+    cycle = tmp_path / "cycle"
+    cycle.symlink_to(cycle)
+    wheel = cycle / "package.whl" if ancestor else cycle
+    prompt = tmp_path / "prompt.txt"
+
+    def forbidden_helpers():
+        raise AssertionError("installation attempted for cyclic wheel")
+
+    monkeypatch.setattr(module, "helpers", forbidden_helpers)
+    monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(wheel),
+                                    "--expected-version", "0.1.0.dev3", "render",
+                                    "--context", str(tmp_path / "context.json"), "--prompt", str(prompt)])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "wheel must be an existing regular file" in captured.err
+    assert "Traceback" not in captured.err
+    assert not prompt.exists()

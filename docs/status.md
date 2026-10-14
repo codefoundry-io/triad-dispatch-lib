@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-10-13
+Updated: 2026-10-14
 
 ## Owner decisions
 
@@ -19,8 +19,80 @@ Updated: 2026-10-13
 - Exclude MCP-based implementation candidates. Keep `openai-codex` as a deferred
   TODO after authentication/file-access research; spike the other CLI candidates
   here without adopting new runtime defaults.
+- Trial this project's reviews with Argon/high, Sol 6.1/xhigh and Opus 5.5/xhigh
+  as three required entries, plus a separate Astra/high comparison without a
+  vote. This is a project override, not a host-distribution or workspace default.
+  See [review profile](review-profile.md) and its separate setup evidence.
 
-## Current slice
+## Project review setup
+
+Shared specification and implementation authoring already lives in this
+repository. The Codex host has a separate source-adoption candidate; the earlier
+statements below about no host adoption describe release/installation boundaries,
+not the absence of that candidate. Claude's port remains separately owned.
+This project profile uses existing Codex host v2 configuration and does not move
+provider execution or model defaults into the shared library implementation.
+The project roster is installed locally. Source/installed host resolution and
+provider-free adapter preparation pass; 64 focused tests and fresh Sol/Astra
+instruction probes pass. See [setup evidence](verification/2026-10-14-review-profile.md)
+for identities and limits. Those setup probes are not formal review evidence.
+
+## Review corrections (2026-10-14)
+
+The first complete project review, `20261014-lib-spec-r1-5754af`, admitted all
+three required results and ended BLOCKED: Sol requested fixes; Opus and Argon
+approved. Separate Astra comparison independently found the cancellation defect.
+The owner approved both reproduced corrections and the adoption/documentation work.
+
+The native test driver now waits for terminal acknowledgement even if publishing
+cancellation fails. The shared coordinator reaps a created callback when wait setup
+raises, including an overflowing timeout. Regression cases cover these
+paths; canonical schemas, dependencies and provider defaults are unchanged.
+The [conformance map](../spec/reference/library-conformance.md) and
+[adoption contracts](host-adoption.md#required-adapter-contracts) identify AGY
+recovery, host-fault and unextracted classifier responsibilities.
+
+All project review entries now allow 2400 seconds, with the same parent-observed
+Astra budget. Current verification and re-review evidence belongs to this
+correction snapshot; the 633-test consolidation results below remain historical.
+See [correction verification](verification/2026-10-14-review-corrections.md)
+for the measured results, review dispositions and platform limits.
+
+The complete R2 review, `20261014-lib-spec-r2-917b20`, remained BLOCKED: Sol
+found a neighboring malformed-receipt custody path; the separate Astra review
+found timestamp overflow escaping cleanup. Both original corrections were
+confirmed. The follow-up preserves a published request until valid terminal
+acknowledgement, retains first-refusal evidence, and separates terminal custody
+from response admission. These changes remain in repository test support.
+The pre-R3 correction source and unpacked-sdist suites each passed 654 tests on
+macOS/Python 3.12.13; authoring/generation and four installed-wheel verification
+paths pass. Corrected-byte Ubuntu execution remains unrun. The linked correction
+record identifies the measured artifacts and the documentation-only recording
+boundary.
+
+R3 also completed all three entries and remained BLOCKED for receipt readiness
+stat/lstat errors escaping custody. That complete observation boundary is now
+corrected with ten RED/GREEN regressions. The subsequent four-way
+[specification/interface audit](verification/2026-10-14-spec-contract-audit.md)
+found a separate pre-publication cyclic-path refusal gap, corrected with eight
+RED/GREEN cases. Eight controlled callback races also verify documented
+cancellation/ContractError precedence without production changes.
+The [current API contract](../spec/reference/library-api.md) inventories all 27
+exports; the conformance map assigns all 33 active normative groups and the case
+map gives all 58 actual cases an explicit disposition. Final source and unpacked
+sdist suites each passed **680 tests**, with all four installed-wheel checks,
+authoring/generation, links and interface-map checks passing. See the correction
+record for measured hashes and the documentation-only recording boundary.
+R4 (`20261014-lib-spec-r4-bf8144`) completed with all three required reviewers
+returning `SAFE TO MERGE`; collection was `AGREED`. The separate Astra comparison
+found no concrete blocker. Two remaining Minor CLI-input issues were retained:
+oversized native-driver timeout integers and cyclic paths at CLI argument
+resolution. The owner authorized both corrections, regressions, native Ubuntu
+source/package verification and another complete review. These results do not
+certify host-only case axes. See the [Minor correction record](verification/2026-10-14-cli-input-corrections.md)
+for the new verification boundary and current evidence.
+
+## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification
 is consolidated under canonical `spec/`; runtime schemas/prompts generate the
@@ -129,10 +201,12 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Neither host imports this package yet. The earlier Codex integration experiment
+Neither host has completed released adoption; Codex source-adoption work is a
+separate candidate. The earlier Codex integration experiment
 used parent-dispatched native children; the library and driver do not spawn
 native agents or provider processes. No global installation,
 package-index publication, final merge or release occurred.
 Platform proof covers the recorded native Python 3.12 combinations only.
-The review profile is ordinary independent Codex review, not formal TRIAD
-multi-family admission. Consumer adoption requires separate scoped work.
+The historical library slices above used ordinary independent Codex review;
+they do not become formal TRIAD admission under the newly selected project
+profile. Consumer adoption requires separate scoped work.

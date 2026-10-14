@@ -140,8 +140,11 @@ timeout, delivery failure, process exit and authoritative terminal fields first.
 For the new single-shot AGY carrier, require exactly one terminal result and valid
 JSON records; ambiguous/malformed streams are refused. This is stricter than the
 existing host's last-complete-result extraction and is an explicit new adapter
-contract, not a claim that either host already behaves that way. Host-specific
-AGY error salvage is not generalized into successful transport.
+contract, not a claim that either host already behaves that way. The shared C23
+same-run recovery obligation still applies to adopting hosts; its observation
+and recovery judgement are not implemented by this strict carrier. See the
+[adoption boundary](../host-adoption.md#required-adapter-contracts). Do not
+generalize an arbitrary AGY error into successful transport.
 
 Fresh spec main was checked again at `396a04dac310d5ff91dbe0a36982f7679aa00428`.
 Required canonical assets match the current `fcd96a1` pin, including newly fetched

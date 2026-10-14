@@ -28,6 +28,9 @@ the sources below and update the three maps together when a destination changes.
 | PRD/Spec authoring structure and requirement links | `authoring/implementation-map.schema.json`; current bundles in `authoring/maps/` | [Authoring guide and checks](../authoring/README.md); document prose remains at the linked anchors |
 | Prompt text | `prompts/*.md` | generated package resources and adopted host copies ([adoption](../../docs/host-adoption.md)) |
 | Behavioral cases (inputs, expected results, rule anchor) | `cases/cases.json` | host tests carrying the case ids in their names |
+| Current library rule/case coverage, APIs, tests and host-owned limits | `reference/library-conformance.md` | linked from the library README and adoption guide |
+| Per-case library evidence and remaining ownership | `reference/library-case-coverage.md` | derived from canonical cases and current code/tests; never a replacement for full host case verification |
+| Python package-root API: signatures, results, errors and callback lifecycle | `reference/library-api.md` | library implementation, tests and README examples; wire/rule authority remains in the rows above |
 | Which host file implements which surface; which tests carry which cases | `units.json` | none |
 | Owner decisions | `decisions/owner-register.md` | quotes in plans and ledgers |
 | Revision agreement and signatures | `decisions/rev-N-agreement.md` (rev-1: `decisions/rev-1-agreement.md`) | the relayed round documents point here |

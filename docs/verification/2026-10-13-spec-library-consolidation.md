@@ -148,4 +148,6 @@ and lock versions agree at dev3; dependency pins are unchanged. The three spec
 agent maps remain identical and updated links resolve within the consolidated
 tree. Active guidance distinguishes pending cutover, import ancestry, per-bundle
 IDs and independent host releases. No open implementation concern remains;
-independent task/branch review and committed-head CI are pending controller work.
+independent task/branch review and committed-head CI were pending at this earlier
+self-review checkpoint. Their subsequent completion is recorded above under
+Independent review and committed-head CI.

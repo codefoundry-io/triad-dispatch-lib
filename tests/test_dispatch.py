@@ -35,6 +35,29 @@ async def integrity():
     return True
 
 
+def test_overflowing_timeout_does_not_leave_a_callback_after_coordinator_error():
+    async def scenario():
+        selected = entry('huge-timeout', timeout_s=10**400)
+        release = asyncio.Event()
+        before = asyncio.all_tasks()
+
+        async def waiting(request):
+            await release.wait()
+
+        with pytest.raises(OverflowError):
+            await lib.run_investigations(
+                [lib.InvestigationRequest(selected, 'scope')], waiting,
+                preflight=waiting, max_concurrency=1)
+        pending = asyncio.all_tasks() - before
+        try:
+            # Check while the loop is alive; asyncio.run shutdown can hide leaks.
+            assert not pending
+        finally:
+            release.set()
+            await asyncio.gather(*pending, return_exceptions=True)
+    run_scenario(scenario())
+
+
 def output(request):
     carrier = {'codex': 'native-final', 'claude': 'claude-json',
                'gemini': 'gemini-json', 'agy': 'agy-stream-json'}[
@@ -402,3 +425,84 @@ def test_callback_contract_error_during_deadline_cleanup_is_preserved(stage):
         asyncio.run(lib.run_review(selected, broken if stage == 'invoke' else invoke,
                     preflight=broken if stage == 'preflight' else preflight,
                     integrity_check=integrity, max_concurrency=1))
+
+
+@pytest.mark.parametrize('stage', ['preflight', 'invoke'])
+@pytest.mark.parametrize('first', ['contract-error', 'parent-cancel'])
+@pytest.mark.parametrize('repeated', [False, True])
+def test_parent_cancel_wins_contract_error_race_after_owned_peers_settle(stage, first, repeated):
+    """Losing cancellation precedence or interrupting peer cleanup must fail."""
+    async def scenario():
+        before = asyncio.all_tasks()
+        selected = requests()[:2]
+        both_started, raise_fault = asyncio.Event(), asyncio.Event()
+        fault_raised, peer_cleaning = asyncio.Event(), asyncio.Event()
+        release_peer, peer_finished = asyncio.Event(), asyncio.Event()
+        callbacks = []
+
+        async def callback(request):
+            callbacks.append(asyncio.current_task())
+            if len(callbacks) == 2:
+                both_started.set()
+            await both_started.wait()
+            if request.entry['name'] == 'c':
+                try:
+                    await raise_fault.wait()
+                finally:
+                    # The fault also occurs when parent cancellation gets here first.
+                    fault_raised.set()
+                    raise lib.ContractError('contract unavailable during cancellation race')
+            try:
+                await asyncio.Event().wait()
+            finally:
+                peer_cleaning.set()
+                await release_peer.wait()
+                peer_finished.set()
+
+        async def invoke(request):
+            return output(request)
+
+        async def cancellation_checkpoint():
+            # Run after the ready task's cancellation delivery, without a timing delay.
+            checkpoint = asyncio.Event()
+            asyncio.get_running_loop().call_soon(checkpoint.set)
+            await checkpoint.wait()
+
+        task = asyncio.create_task(lib.run_review(selected,
+                    callback if stage == 'invoke' else invoke,
+                    preflight=callback if stage == 'preflight' else preflight,
+                    integrity_check=integrity, max_concurrency=2))
+        try:
+            await both_started.wait()
+            if first == 'contract-error':
+                raise_fault.set()
+                # The fault has reached the coordinator and initiated peer drain.
+                await peer_cleaning.wait()
+                assert fault_raised.is_set()
+                assert not task.done()
+            task.cancel()
+            await peer_cleaning.wait()
+            await fault_raised.wait()
+            await cancellation_checkpoint()
+            assert not task.done(), 'coordinator escaped before peer cleanup'
+            assert not peer_finished.is_set()
+            if repeated:
+                task.cancel()
+                await cancellation_checkpoint()
+                assert not task.done(), 'repeated cancellation interrupted peer cleanup'
+                assert not peer_finished.is_set()
+            release_peer.set()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+            assert peer_finished.is_set()
+            assert len(callbacks) == 2 and all(child.done() for child in callbacks)
+            # Inspect the live loop, before asyncio.run can conceal leaked children.
+            assert not asyncio.all_tasks() - before
+        finally:
+            # Drain even if a regression fails an assertion above.
+            release_peer.set()
+            raise_fault.set()
+            if not task.done():
+                task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+    run_scenario(scenario())

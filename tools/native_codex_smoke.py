@@ -31,8 +31,11 @@ def sha(raw):
 
 def regular(path):
     path = Path(path)
-    if not path.is_absolute() or path.resolve() != path or path.is_symlink() or not path.is_file():
-        raise ValueError('Expected canonical absolute regular file')
+    try:
+        if not path.is_absolute() or path.is_symlink() or path.resolve() != path or not path.is_file():
+            raise ValueError('Expected canonical absolute regular file')
+    except RuntimeError:  # Python 3.12 resolve() reports ancestor symlink loops this way.
+        raise ValueError('Expected canonical absolute regular file') from None
     return path.read_bytes()
 
 
@@ -111,8 +114,8 @@ def prepare(config):
         safe(entry.get('name'))
         timeout = entry.get('timeout_s')
         if (entry.get('vendor') != 'codex' or entry.get('enabled') is not True
-                or type(timeout) not in (int, float) or not math.isfinite(timeout)
-                or not 0 < timeout <= 3600):
+                or type(timeout) not in (int, float) or not 0 < timeout <= 3600
+                or not math.isfinite(timeout)):
             raise ValueError('Invalid Codex entry or bounded timeout')
         requested = entry.get('codex')
         exact(requested, ('model', 'reasoning'))
@@ -155,8 +158,11 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     config_raw, wheel_raw = regular(config_path), regular(wheel_path)
     config = strict(config_raw)
     prepared = prepare(config)  # No directory/publication before complete validation.
-    if not run_dir.is_absolute() or run_dir.parent.resolve() != run_dir.parent:
-        raise ValueError('Run parent must be canonical')
+    try:
+        if not run_dir.is_absolute() or run_dir.parent.resolve() != run_dir.parent:
+            raise ValueError('Run parent must be canonical')
+    except RuntimeError:
+        raise ValueError('Run parent must be canonical') from None
     if run_dir.exists() or run_dir.is_symlink():
         raise ValueError('Run directory already exists')
     run_dir.mkdir()
@@ -164,6 +170,7 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     observations, agents, trace = {}, {}, []
     active = peak = 0
     bound = {}
+    acknowledged, cancel_requested = set(), set()
     for item in prepared:
         name = item['entry']['name']
         folder = run_dir / name
@@ -209,8 +216,11 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         if not isinstance(receipt['agent_id'], str) or not receipt['agent_id'].strip():
             raise ValueError('Missing supervisor-visible identity')
         for key in ('parent_spawned_at','parent_terminal_at'):
-            if type(receipt[key]) not in (int,float) or not math.isfinite(receipt[key]):
-                raise ValueError('Invalid observation timestamp')
+            try:
+                if type(receipt[key]) not in (int,float) or not math.isfinite(receipt[key]):
+                    raise ValueError('Invalid observation timestamp')
+            except OverflowError:
+                raise ValueError('Invalid observation timestamp') from None
         if receipt['parent_terminal_at'] < receipt['parent_spawned_at']:
             raise ValueError('Reversed observation timestamps')
         if not isinstance(receipt['response_sha256'], str) or not re.fullmatch('[0-9a-f]{64}', receipt['response_sha256']):
@@ -220,6 +230,9 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         agents.setdefault(receipt['agent_id'], name)
         observation.update(receipt=receipt,
                            duplicate_agent=duplicate or observation.get('duplicate_agent', False))
+        if duplicate:
+            raise ValueError('Reused agent identity')
+        acknowledged.add(name)  # Response admission cannot undo observed child termination.
         response = None
         if receipt['status'] == 'completed':
             response = regular(folder/'response.txt')
@@ -229,20 +242,49 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
             response.decode('utf-8', errors='strict')
             if sha(response) != receipt['response_sha256']:
                 raise ValueError('Response hash mismatch')
-        if duplicate:
-            raise ValueError('Reused agent identity')
         return receipt, response
 
+    def request_cancel(name, raw):
+        if name in cancel_requested:
+            return
+        cancel_requested.add(name)
+        try:
+            atomic(run_dir/name/'cancel-request.json', dict(run_id=config['run_id'], leg_name=name,
+                   request_sha256=sha(raw), prompt_sha256=sha(bound[name]['prompt'])))
+        except (ValueError, OSError) as error:
+            try:
+                observation = observations.setdefault(name, {})
+                observation['cancel_publication_error'] = type(error).__name__
+                observation['cancel_publication_error'] = str(error)
+            except Exception:
+                pass  # A diagnostic failure must not replace cancellation.
+
     async def terminal(name, raw, *, cleanup=False):
+        first_error = None
         while True:
-            if (run_dir/name/'receipt.json').exists() or (run_dir/name/'receipt.json').is_symlink():
-                try:
-                    return consume(name, raw, cleanup=cleanup)
-                except (ValueError, OSError) as error:
-                    observations.setdefault(name, {})['validation_error'] = str(error)
-                    if not cleanup:
-                        raise
-                    # Malformed acknowledgements do not release cancellation custody.
+            try:
+                ready = (run_dir/name/'receipt.json').exists() or (run_dir/name/'receipt.json').is_symlink()
+                if ready:
+                    result = consume(name, raw, cleanup=cleanup)
+            except (ValueError, OSError) as error:
+                observation = observations.setdefault(name, {})
+                observation['validation_error'] = str(error)
+                if name in acknowledged:
+                    if cleanup:
+                        return observation['receipt'], None
+                    raise
+                observation.setdefault('first_refusal', dict(
+                    validation_error=str(error), receipt_sha256=observation.get('receipt_sha256'),
+                    receipt_length=observation.get('receipt_length')))
+                if first_error is None:
+                    first_error = error
+                request_cancel(name, raw)
+                # Stay inside invoke's cancellation boundary until a matching ack.
+            else:
+                if ready:
+                    if first_error is not None and not cleanup:
+                        raise first_error  # A replacement acknowledges cleanup, never success.
+                    return result
             await asyncio.sleep(.01)
 
     async def preflight(request):
@@ -278,9 +320,11 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
                     if config['mode'] == 'review' else response)
         except asyncio.CancelledError:
             if raw is not None:
-                atomic(run_dir/name/'cancel-request.json', dict(run_id=config['run_id'], leg_name=name,
-                       request_sha256=sha(raw), prompt_sha256=sha(item['prompt'])))
-                await terminal(name, raw, cleanup=True)
+                try:
+                    request_cancel(name, raw)
+                finally:
+                    # Published native work remains owned even if cancellation publication fails.
+                    await terminal(name, raw, cleanup=True)
             raise
         finally:
             active -= 1

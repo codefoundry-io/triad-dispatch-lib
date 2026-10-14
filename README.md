@@ -18,7 +18,8 @@ canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks. Repository drivers verify the installed package with
 synthetic four-route responses; earlier fresh Codex observations remain historical.
-It is not published to a package index and neither host has adopted it yet.
+It is not published to a package index and neither host has completed released
+adoption. Codex source-adoption work is a separate candidate.
 
 - [Current status and next work](docs/status.md)
 - [Research assessment](docs/research/2026-10-12-shared-library-assessment.md)
@@ -50,8 +51,15 @@ Repository cutover awaits this PR merge and an old-repository notice; no remote
 retirement is claimed. See [migration](spec/MIGRATION.md) and
 [independent host adoption](docs/host-adoption.md). Each host retains native
 spawning, model/effort integration, installation and independent releases.
+The [library conformance map](spec/reference/library-conformance.md) links current
+rules/cases to APIs and tests, with partial coverage and host responsibilities.
 
 ## API
+
+The [current Python API contract](spec/reference/library-api.md) covers all 27
+package-root exports: signatures, result fields, mutation boundaries, emitted
+error codes and callback lifecycle. It supplements the canonical wire and review
+rules; historical implementation plans are not the current API entry point.
 
 ```python
 from triad_dispatch_lib import AdmissionError, ContractError, validate_verdict
@@ -77,7 +85,7 @@ must contain exactly the six shown fields. Google uses `agy` or `gemini` routes;
 other families use null. Admission returns the unmodified parsed object, including
 valid negative verdicts; it makes no merge decision. Callers own input size limits.
 
-See the design for error codes and edge cases. Runtime bundles have candidate
+See the API contract for error codes and edge cases. Runtime bundles have candidate
 content IDs; historical import commits are separate. The API does not convert v1 data.
 Output admission and unanimous agreement are implemented; native host adapters
 remain separate work. Rust is deferred until a measured need justifies it.
@@ -89,7 +97,7 @@ Codex, Claude and Google on hosts A/B; Google requires explicit `agy` or `gemini
 Google also requires `gated-patch-file` in replacements; active hook clauses
 require Google/AGY on host A. Unsupported profiles raise `PromptError`.
 `render_data(text)` quotes residual evidence as data. These pure functions do not
-launch agents. See the [renderer contract](docs/design/2026-10-12-codex-prompt-smoke.md)
+launch agents. See the [renderer contract](spec/reference/library-api.md#prompt-rendering)
 for the exact replacement keys and phase behavior.
 
 ## Async host callbacks
@@ -131,7 +139,9 @@ async def review(selected, bindings, prompts, adapter):
 Each request binds exactly review_id, family, content_digest, leg_name, attempt
 and route. Formal reviewers receive the complete common scope. The host prepares
 and hashes packets/prompts and supplies current integrity evidence. Callbacks
-execute once, without retries. Deadlines start after acquiring an invoke slot.
+execute once, without retries. Each preflight gets its full entry timeout after
+acquiring a preflight slot; invocation then gets a separate full timeout after
+acquiring an invoke slot. Queue time is excluded from both budgets.
 A callback returning is a completed outcome; admission separately checks terminal
 metadata and verdicts. Integrity exceptions/non-bools preserve completed outcomes
 but block agreement. Invalid arguments or refused preflight raise `DispatchError`;
@@ -139,6 +149,11 @@ broken packaged contracts raise `ContractError` after owned child cleanup.
 Parent cancellation propagates after awaiting child cleanup, including repeated
 cancellation. Callbacks must cooperate; the library cannot forcibly terminate
 native processes or guarantee a deadline for a callback that suppresses cancellation.
+Wait-setup errors also settle the created callback before propagating. The canonical
+timeout schema has no operational maximum; an unschedulable value may raise a
+runtime scheduling error. `integrity_check` has no built-in timeout. A refused
+preflight exposes the aggregate `preflight_failed` code, not per-entry diagnostics.
+Full collectors must preserve the [host-fault distinction](docs/host-adoption.md#required-adapter-contracts).
 
 `ProviderOutput` supports `native-final`, `claude-json`, `gemini-json` and
 `agy-stream-json`. Native-final is original JSON after host-owned marker/fence
@@ -148,6 +163,10 @@ successful result terminal with object-valued structured output in valid JSONL.
 Duplicate members, malformed tails and ambiguous terminals are refused. Completion,
 timeout, transport and exit observations precede admission; unsupported envelope
 adaptation remains host-owned. `admit_output` preserves embedded JSON evidence.
+The strict AGY carrier does not perform C23 same-run finish recovery; adopting
+hosts must retain that decision and its guards before admitting recovered output.
+Generic `native-final` trusts host-observed completion and original final bytes
+for any family; it does not attest execution or authorize relabelling failed transport.
 `evaluate_agreement` re-admits every selected binding and requires unanimous safe
 verdicts plus true integrity. Valid dissent is retained and blocks approval.
 
@@ -292,13 +311,21 @@ Terminal status is `completed`, `failed` or `cancelled`. Only a matching complet
 receipt with the original regular response file can create native output, with
 exit code `None`. No marker/fence removal, normalization or retries occur.
 
-On cancellation the driver publishes `cancel-request.json` containing `run_id`,
+On cancellation, or a refused receipt before terminal acknowledgement, the
+driver attempts to publish `cancel-request.json` once, containing `run_id`,
 `leg_name`, `request_sha256` and `prompt_sha256`. The parent interrupts its owned
 child when needed, awaits terminal status and posts the same fully bound terminal
 receipt as cleanup acknowledgement. A completed receipt after cancellation is
 cleanup evidence only. This cooperative wait can continue indefinitely if the
 parent fails or posts malformed acknowledgement; the driver has no process or
 native cancellation API. The parent must finish or interrupt/await every owned child.
+
+Malformed or stale receipts retain the slot until a valid replacement establishes
+terminal custody. The original refusal remains a failed observation; replacement
+does not retry the review or turn it into approval. Terminal acknowledgement and
+response admission are separate: after valid unique terminal metadata, unreadable,
+invalid UTF-8 or hash-mismatched response bytes fail output admission but do not
+require another terminal event. Cleanup records that response error and completes.
 
 `report.json` retains ordered callback start/finish times and active/peak counts,
 actual outcomes, observations and original artifact hashes. Bytes in dataclass

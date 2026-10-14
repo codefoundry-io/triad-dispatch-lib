@@ -188,7 +188,10 @@ def main():
     parser.add_argument('--expected-version', required=True)
     parser.add_argument('--installed-prefix', type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args()
-    wheel = args.wheel.resolve()
+    try:
+        wheel = args.wheel.resolve()
+    except RuntimeError:  # Python 3.12 reports symlink loops during resolution.
+        parser.error('wheel must be an existing regular file')
     if not wheel.is_file():
         parser.error('wheel must be an existing regular file')
     if args.installed_prefix is None:

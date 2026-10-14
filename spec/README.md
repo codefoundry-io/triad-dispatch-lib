@@ -46,6 +46,8 @@ triad-dispatch-lib/spec/
 
 For new adoption, follow [independent host adoption](../docs/host-adoption.md):
 record the library version, individual bundle IDs and host adapter version.
+Use the [current library conformance map](reference/library-conformance.md) for
+shared API/test coverage and the portions still owned by each host.
 Adoption, host release and publication are independent actions; an installed
 package never silently changes a host's deployed revision. Legacy revision
 tags and existing hosts' revision records remain historical evidence.

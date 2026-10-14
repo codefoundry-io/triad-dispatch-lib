@@ -17,8 +17,9 @@
   `uv run --locked python tools/verify_wheel.py <wheel>`; see README commands.
   Do not claim macOS/Ubuntu compatibility without native platform results.
 - Keep changing progress in `docs/status.md` and research/design records under
-  `docs/`; keep this instruction file small. The first slice uses ordinary
-  independent Codex review; it is not formal multi-family TRIAD admission.
+  `docs/`; keep this instruction file small. For owner-managed project reviews,
+  use the [project review trial](docs/review-profile.md): explicit public v2,
+  three required reviewers and a separate Astra comparison without a vote.
 
 ## Owner-managed workspace
 

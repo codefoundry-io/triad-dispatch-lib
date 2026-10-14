@@ -1,6 +1,9 @@
 """Behavioral checks for the synthetic installed-feature verification harness."""
 import importlib.util
 from pathlib import Path
+import sys
+
+import pytest
 
 
 def driver():
@@ -38,3 +41,25 @@ def test_matrix_detects_approval_fault(monkeypatch):
     monkeypatch.setattr('triad_dispatch_lib.dispatch.evaluate_agreement', approves)
     with pytest.raises(AssertionError):
         driver().synthetic_smoke()
+
+
+@pytest.mark.parametrize("ancestor", [False, True], ids=["leaf", "ancestor"])
+def test_cli_cyclic_wheel_refused_before_install(ancestor, tmp_path, monkeypatch, capsys):
+    module = driver()
+    cycle = tmp_path / 'cycle'
+    cycle.symlink_to(cycle)
+    wheel = cycle / 'package.whl' if ancestor else cycle
+
+    def forbidden_helpers():
+        raise AssertionError('installation attempted for cyclic wheel')
+
+    monkeypatch.setattr(module, 'helpers', forbidden_helpers)
+    monkeypatch.setattr(sys, 'argv', ['four_route_smoke.py', '--wheel', str(wheel),
+                                    '--expected-version', '0.1.0.dev3'])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert 'wheel must be an existing regular file' in captured.err
+    assert 'Traceback' not in captured.err

@@ -1,9 +1,11 @@
 """Exercise actual supervised file exchange; no provider/native execution."""
 import asyncio
+import errno
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -99,6 +101,10 @@ async def exchange(driver, setup_run, edit=None, mutate=None):
         if edit:
             edit(receipt, request)
         post(run, request, raw, receipt)
+        if edit:
+            await asyncio.sleep(.04)
+            if (run/name/'cancel-request.json').exists():
+                post(run, request, raw)
     if mutate:
         mutate(config, wheel, run)
     return await task
@@ -173,6 +179,46 @@ def test_all_preflight_before_publish(driver, setup_run, bad):
     assert not list(run.glob('*/request.json'))
 
 
+@pytest.mark.parametrize('bad,diagnostic', [
+    ('huge-timeout', 'Invalid Codex entry or bounded timeout'),
+    ('cyclic-run-parent', 'Run parent must be canonical'),
+])
+def test_cli_invalid_timeout_and_run_parent_exit_before_publication(
+        driver, setup_run, monkeypatch, capsys, bad, diagnostic):
+    config, wheel, run = setup_run
+    original_run = run
+    if bad == 'huge-timeout':
+        value = json.loads(config.read_text())
+        value['requests'][-1]['entry']['timeout_s'] = 10**400
+        config.write_text(json.dumps(value))
+    else:
+        loop = config.parent/'loop'
+        loop.symlink_to('loop')
+        run = loop/'run'
+    original_helper = driver.helper
+
+    def helper(name):
+        if name == 'four_route_smoke':
+            # Exercise CLI validation without installing or asserting a fake wheel identity.
+            return {'identity': lambda *args: {}}
+        return original_helper(name)
+
+    monkeypatch.setattr(driver, 'helper', helper)
+    monkeypatch.setattr(sys, 'argv', [
+        'native_codex_smoke.py', '--wheel', str(wheel), '--expected-version', 'test',
+        '--config', str(config), '--run-dir', str(run), '--installed-prefix', str(config.parent),
+    ])
+    with pytest.raises(SystemExit) as caught:
+        driver.main()
+    assert caught.value.code == 2
+    captured = capsys.readouterr()
+    assert diagnostic in captured.err
+    assert 'Traceback' not in captured.err
+    assert not captured.out
+    assert not run.exists()
+    assert not original_run.exists()
+
+
 def test_duplicate_receipt_members_and_altered_response(driver, setup_run):
     async def scenario():
         config,wheel,run = setup_run
@@ -184,6 +230,9 @@ def test_duplicate_receipt_members_and_altered_response(driver, setup_run):
         post(run,request,raw)
         path = run/'first/receipt.json'
         path.write_text(path.read_text().replace('"status": "completed"','"status": "completed", "status": "completed"'))
+        await asyncio.sleep(.04)
+        if (run/'first/cancel-request.json').exists():
+            post(run, request, raw)
         report = await task
         assert report['outcomes'][0]['status'] == 'failed'
     asyncio.run(scenario())
@@ -206,6 +255,289 @@ def test_timeout_waits_for_parent_and_late_completion_is_cleanup_only(driver, se
         assert report['outcomes'][0]['status'] == 'timed_out'
         assert not report['agreement']['agreed']
         assert report['observations']['first']['cleanup_only'] is True
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('cancellation,broken_diagnostic', [
+    ('timeout', False), ('timeout', True), ('parent', False),
+])
+def test_cancel_publication_failure_retains_custody_until_terminal_ack(
+        driver, setup_run, monkeypatch, cancellation, broken_diagnostic):
+    """An I/O error must not release a native slot before its terminal receipt."""
+    class BrokenDiagnostic(OSError):
+        def __str__(self):
+            raise RuntimeError('diagnostic formatting failed')
+
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        value['requests'][0]['entry']['timeout_s'] = 1
+        config.write_text(json.dumps(value))
+        publication_failed = asyncio.Event()
+        original_atomic = driver.atomic
+
+        def atomic(path, payload):
+            if path.name == 'cancel-request.json':
+                publication_failed.set()
+                if broken_diagnostic:
+                    raise BrokenDiagnostic()
+                raise OSError('synthetic cancellation publication failure')
+            return original_atomic(path, payload)
+
+        monkeypatch.setattr(driver, 'atomic', atomic)
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        if cancellation == 'parent':
+            task.cancel()
+        async with asyncio.timeout(3):
+            await publication_failed.wait()
+        await asyncio.sleep(.04)
+        if cancellation == 'parent':
+            task.cancel()  # Repeated cancellation must also retain custody.
+            await asyncio.sleep(.04)
+        held_until_ack = not task.done() and not (run/'second/request.json').exists()
+        # Always provide terminal cleanup, including on RED, so no task is leaked.
+        post(run, request, verdict(request))
+        if cancellation == 'parent':
+            with pytest.raises(asyncio.CancelledError):
+                await task
+            assert not (run/'second/request.json').exists()
+        else:
+            second = await wait_request(run, 'second')
+            post(run, second, verdict(second))
+            report = await task
+            assert held_until_ack, 'cancellation publication failure released native custody before ack'
+            assert [o['status'] for o in report['outcomes']] == ['timed_out', 'completed']
+            assert report['observations']['first']['cleanup_only'] is True
+            diagnostic = report['observations']['first']['cancel_publication_error']
+            assert diagnostic
+            if broken_diagnostic:
+                assert diagnostic == 'BrokenDiagnostic'
+            else:
+                assert 'synthetic cancellation publication failure' in diagnostic
+            assert not report['agreement']['agreed']
+        assert held_until_ack, 'cancellation publication failure released native custody before ack'
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('field,bad,interruption', [
+    ('run_id', 'stale', None), ('status', 'running', None),
+    ('parent_spawned_at', 10**400, None), ('parent_terminal_at', 10**400, None),
+    ('parent_spawned_at', 10**400, 'after-deadline'),
+    ('parent_terminal_at', 10**400, 'after-deadline'),
+    ('run_id', 'stale', 'deadline'), ('run_id', 'stale', 'parent'),
+])
+def test_invalid_receipt_retains_slot_until_matching_ack(driver, setup_run, field, bad, interruption):
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        value['requests'][0]['entry']['timeout_s'] = 1
+        value['requests'][1]['entry']['timeout_s'] = 10
+        config.write_text(json.dumps(value))
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        if interruption == 'after-deadline':
+            async with asyncio.timeout(3):
+                while not (run/'first/cancel-request.json').exists():
+                    await asyncio.sleep(.002)
+        raw = verdict(request)
+        malformed = receipt_for(request, raw)
+        malformed[field] = bad
+        post(run, request, raw, malformed)
+        rejected_hash = digest((run/'first/receipt.json').read_bytes())
+        await asyncio.sleep(.04)
+        retained = not task.done() and not (run/'second/request.json').exists()
+        cancel_requested = (run/'first/cancel-request.json').exists()
+        if interruption == 'deadline':
+            await asyncio.sleep(1.05)
+        elif interruption == 'parent':
+            task.cancel()
+            await asyncio.sleep(.02)
+            task.cancel()
+            await asyncio.sleep(.02)
+        retained_after_interrupt = not task.done() and not (run/'second/request.json').exists()
+        # Always repair and drain on RED, including an incorrectly dispatched second leg.
+        post(run, request, raw)
+        if interruption == 'parent':
+            if (run/'second/request.json').exists():
+                second = await wait_request(run, 'second')
+                post(run, second, verdict(second))
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        else:
+            second = await wait_request(run, 'second')
+            post(run, second, verdict(second))
+            report = await task
+            assert retained, 'invalid receipt released native custody before matching ack'
+            assert report['outcomes'][0]['status'] == ('timed_out' if interruption else 'failed')
+            assert report['observations']['first']['first_refusal']['receipt_sha256'] == rejected_hash
+            assert report['observations']['first']['receipt']['run_id'] == 'run-1'
+            assert 'cancel_publication_error' not in report['observations']['first']
+            assert not report['agreement']['agreed']
+        assert retained, 'invalid receipt released native custody before matching ack'
+        assert cancel_requested, 'receipt refusal did not request cancellation'
+        assert retained_after_interrupt, 'interruption released custody during receipt cleanup'
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('cleanup', [False, True])
+@pytest.mark.parametrize('bad_response', ['hash', 'utf8', 'missing'])
+def test_matching_terminal_ack_does_not_wait_for_repaired_response(driver, setup_run, cleanup, bad_response):
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        value['requests'][0]['entry']['timeout_s'] = 1
+        config.write_text(json.dumps(value))
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        if cleanup:
+            async with asyncio.timeout(3):
+                while not (run/'first/cancel-request.json').exists():
+                    await asyncio.sleep(.002)
+        raw = b'\xff' if bad_response == 'utf8' else verdict(request)
+        receipt = receipt_for(request, raw)
+        if bad_response == 'hash':
+            receipt['response_sha256'] = '0'*64
+        post(run, request, raw, receipt)
+        if bad_response == 'missing':
+            (run/'first/response.txt').unlink()
+        await asyncio.sleep(.08)
+        advanced_before_repair = (run/'second/request.json').exists()
+        # Repair only to drain an incorrectly blocked RED run before asserting.
+        post(run, request, verdict(request))
+        second = await wait_request(run, 'second')
+        post(run, second, verdict(second))
+        report = await task
+        assert advanced_before_repair, 'valid terminal acknowledgment waited for response repair'
+        assert report['outcomes'][0]['status'] == ('timed_out' if cleanup else 'failed')
+        assert not report['agreement']['agreed']
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('cleanup', [False, True])
+def test_cyclic_receipt_symlink_retains_custody_until_regular_ack(driver, setup_run, cleanup):
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        value['requests'][0]['entry']['timeout_s'] = 1
+        value['requests'][1]['entry']['timeout_s'] = 10
+        config.write_text(json.dumps(value))
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        receipt_path = run/'first/receipt.json'
+        try:
+            if cleanup:
+                async with asyncio.timeout(3):
+                    while not (run/'first/cancel-request.json').exists():
+                        await asyncio.sleep(.002)
+            receipt_path.symlink_to('receipt.json')
+            await asyncio.sleep(.04)
+            retained = not task.done() and not (run/'second/request.json').exists()
+        finally:
+            # Replace and drain even on RED so a refusal cannot leak callbacks.
+            receipt_path.unlink(missing_ok=True)
+            post(run, request, verdict(request))
+            second = await wait_request(run, 'second')
+            post(run, second, verdict(second))
+            report = await task
+        assert retained, 'cyclic receipt symlink released custody before regular ack'
+        assert report['outcomes'][0]['status'] == ('timed_out' if cleanup else 'failed')
+        assert report['observations']['first']['first_refusal']['validation_error'] == (
+            'Expected canonical absolute regular file')
+        assert report['observations']['first']['receipt']['run_id'] == 'run-1'
+        assert not report['agreement']['agreed']
+    asyncio.run(scenario())
+
+
+def test_regular_refuses_ancestor_symlink_loop(driver, tmp_path):
+    ancestor = tmp_path/'loop'
+    ancestor.symlink_to('loop')
+    with pytest.raises(ValueError, match='Expected canonical absolute regular file'):
+        driver.regular(ancestor/'receipt.json')
+
+
+@pytest.mark.parametrize('phase,probe,error_number', [
+    (phase, probe, number)
+    for phase in ('normal', 'cleanup')
+    for probe in ('stat', 'lstat')
+    for number in (errno.EACCES, errno.EIO)
+] + [('deadline', 'stat', errno.EACCES), ('parent', 'lstat', errno.EIO)])
+def test_receipt_readiness_error_retains_custody(
+        driver, setup_run, monkeypatch, phase, probe, error_number):
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        value['requests'][0]['entry']['timeout_s'] = 1
+        value['requests'][1]['entry']['timeout_s'] = 10
+        config.write_text(json.dumps(value))
+        receipt_path = run/'first/receipt.json'
+        original_stat = Path.stat
+        armed = False
+
+        def stat(path, *, follow_symlinks=True):
+            if armed and path == receipt_path and follow_symlinks == (probe == 'stat'):
+                raise OSError(error_number, 'synthetic readiness probe failure', str(path))
+            return original_stat(path, follow_symlinks=follow_symlinks)
+
+        monkeypatch.setattr(Path, 'stat', stat)
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        cancelled = False
+        try:
+            if phase == 'cleanup':
+                async with asyncio.timeout(3):
+                    while not (run/'first/cancel-request.json').exists():
+                        await asyncio.sleep(.002)
+            armed = True
+            await asyncio.sleep(.04)
+            retained = not task.done() and not (run/'second/request.json').exists()
+            cancellation_requested = (run/'first/cancel-request.json').exists()
+            if phase == 'deadline':
+                await asyncio.sleep(1.05)
+            elif phase == 'parent':
+                task.cancel()
+                await asyncio.sleep(.02)
+                task.cancel()
+                await asyncio.sleep(.02)
+            retained_after_interrupt = not task.done() and not (run/'second/request.json').exists()
+        finally:
+            # Disarm and acknowledge even on RED; drain any wrongly dispatched second leg.
+            armed = False
+            post(run, request, verdict(request))
+            if phase != 'parent' or (run/'second/request.json').exists():
+                second = await wait_request(run, 'second')
+                post(run, second, verdict(second))
+            try:
+                report = await task
+            except asyncio.CancelledError:
+                cancelled = True
+        assert retained, 'receipt readiness error released custody before matching ack'
+        assert cancellation_requested, 'receipt readiness refusal did not request cancellation'
+        assert retained_after_interrupt, 'interruption released readiness-failure custody'
+        if phase == 'parent':
+            assert cancelled
+            assert not (run/'second/request.json').exists()
+        else:
+            assert not cancelled
+            assert report['outcomes'][0]['status'] == (
+                'timed_out' if phase in ('cleanup', 'deadline') else 'failed')
+            observation = report['observations']['first']
+            assert 'synthetic readiness probe failure' in observation['first_refusal']['validation_error']
+            assert observation['first_refusal']['receipt_sha256'] is None
+            assert observation['first_refusal']['receipt_length'] is None
+            assert observation['receipt']['run_id'] == 'run-1'
+            assert 'cancel_publication_error' not in observation
+            assert not report['agreement']['agreed']
     asyncio.run(scenario())
 
 
@@ -250,6 +582,10 @@ def test_original_response_and_terminal_guards(driver, setup_run, kind):
         if kind == 'cancelled': receipt['status'] = 'cancelled'
         if kind == 'extra-field': receipt['extra'] = True
         post(run,request,raw,receipt)
+        if kind == 'extra-field':
+            await asyncio.sleep(.04)
+            if (run/'first/cancel-request.json').exists():
+                post(run, request, raw)
         report = await task
         assert not report['agreement']['agreed']
         if kind != 'fenced-json': assert report['outcomes'][0]['status'] == 'failed'
@@ -273,8 +609,13 @@ def test_preexisting_receipt_for_queued_leg_never_publishes_request(driver, setu
 def test_failed_receipt_retains_original_evidence_hash(driver, setup_run):
     report = asyncio.run(exchange(driver, setup_run, lambda r,q: r.update(run_id='stale')))
     observation = report['observations']['first']
+    request = json.loads((setup_run[2]/'first/request.json').read_text())
+    request['_hash'] = digest((setup_run[2]/'first/request.json').read_bytes())
+    rejected = receipt_for(request, verdict(request))
+    rejected['run_id'] = 'stale'
+    assert observation['first_refusal']['receipt_sha256'] == digest(json.dumps(rejected).encode())
+    assert observation['first_refusal']['validation_error'] == 'Receipt binding mismatch'
     assert observation['receipt_sha256'] == digest((setup_run[2]/'first/receipt.json').read_bytes())
-    assert observation['validation_error'] == 'Receipt binding mismatch'
 
 
 def test_investigation_cleanup_retries_preserve_duplicate_identity_evidence(driver, setup_run):
