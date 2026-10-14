@@ -429,3 +429,107 @@ reference receipt is `r16-map-audit/`. Both rebuilt wheels have SHA-256
 `b3123bfce42e03e3bb0de945b37e5ab40265e4b36583da7ba563ec5827db79df`.
 These measurements precede only this documentation result recording. Actual
 committed-head CI and the next full review remain external post-freeze evidence.
+
+## R16 CLI interruption and portable preflight
+
+R16 `20261015-lib-spec-r16-b81fbc` completed AGREED on
+`89504bef340b45c4852b530e8f3aebbfe0fa4c19`. All three required entries were
+COMPLETE and SAFE, with no missing entry or selection deviation. Sol and Argon
+reported no findings; separate Astra reported no actionable defect. Opus retained
+one Minor and two hardening suggestions. Originals, host receipts and runtime
+observations were exported before all owned review roots were removed.
+
+[CI run 38621985362](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38621985362)
+asserted that head and tree `6a9fd0bf7b2578a57d8593ba50d646e91e5a5f0a` in all
+four Ubuntu/macOS Python 3.12/3.14 jobs. Each passed 813 source and archive tests,
+without skips, and all four installed-wheel paths. Those results belong to the
+R16 candidate and do not approve later corrections.
+
+The native CLI's outer installed-wheel process uses `subprocess.run`; on an
+operator interrupt this may terminate the inner driver while it awaits a
+synthetic parent's terminal acknowledgement. Existing in-process cancellation
+tests do not establish the outer CLI guarantee. The root checked current
+[CPython subprocess source](https://raw.githubusercontent.com/python/cpython/3.14/Lib/subprocess.py)
+and [asyncio interrupt handling](https://docs.python.org/3.14/library/asyncio-runner.html#handling-keyboard-interruption)
+on 2026-10-14 UTC. Actual subprocess reproduction and correction measurements
+follow; these sources alone do not demonstrate a real provider incident.
+
+Generator following-type/presence checks also retain Python-version-dependent
+error suppression after the prior non-following inventory fixes. External
+split-syscall tests on Python 3.14.6 reproduce 14 misleading refusal diagnostics
+and eight suppressed one-shot errors at sibling presence checks. Four of the
+latter return success in check mode; four write the authorized changed canonical
+bytes. Python 3.12.13 preserves the original errno in all 22 scenarios. These
+are static canonical layouts and injected errors, not a symlink escape or
+concurrent-writer experiment. The correction must preserve fresh observations,
+their short-circuit order and existing missing-path diagnostics.
+
+The driver also maps exact-case entry names directly to directories; case-only
+names can collide on case-insensitive filesystems. A portable driver-only
+preflight refusal is proposed, without changing shared roster identity. Exact
+RED/GREEN results, commands and cleanup receipts are retained under
+`20261015-lib-reference-closure/r16-native-cli/` and
+`r16-generator-diagnostics/`. New code requires fresh integrated verification
+and a complete independent review.
+
+### R16 generator correction results
+
+A small uncached following-mode helper preserves every original observation and
+short-circuit, including separate presence and type checks. Only missing or
+nondirectory path errors become the prior false result; other errors propagate.
+The production change is +11/-4 (net +7), and 52 test lines add 26 cases.
+Original Python 3.14 has 22 failures/94 passes; Python 3.12 passes all 116.
+Corrected full asset suites pass 116 on both versions, actual generator checks
+exit zero, and all 22 external fault scenarios per interpreter preserve the
+original errno and output bytes. Existing absence, occupied-path, drift and
+initial-generation controls remain covered. All eight owned test environments
+were removed and every command reached a consumed terminal result.
+
+### R16 native CLI correction results
+
+Actual outer CLI runs on Python 3.12.13 and 3.14.6 reproduce premature process
+and environment cleanup before a synthetic acknowledgement delayed by 0.8 seconds.
+PID-only SIGINT produces no cancellation notice; process-group SIGINT produces
+the notice but still loses custody before acknowledgement. Normal wheel-install,
+identity and exchange controls exit zero. An actual case-insensitive APFS fixture
+also reproduces the case-only name collision after the first prompt is created
+but before any request is published.
+
+The driver now isolates the inner process, installs a temporary non-raising
+SIGINT handler before child creation, and forwards the first pending interrupt
+once. Reentrant interrupts cannot abort forwarding. It restores the prior handler
+after terminal wait and retains the installed environment throughout. Cooperative
+outer interruption exits 130; normal exit codes remain propagated. Case-only
+names are refused during driver preparation; a regression separately confirms
+the shared roster still accepts distinct exact-case identities.
+
+Four real outer/inner interrupt regression variants and the name case failed
+before correction, while normal/error controls passed. A separate deterministic
+test reproduces interruption during child publication and exercises reentry at
+the forwarding boundary. Final focused GREEN passes eight cases on each Python
+version. These subprocess tests substitute only the installation bootstrap with
+a copied installed runtime. Separate actual-wheel CLI replay on both versions
+confirms cancellation publication, live child/environment before acknowledgement,
+terminal cleanup afterward, no cancelled report and exit 130. Those replays use
+a retained unpublished dev3 wheel; they verify the changed repository driver,
+not a newly built package or a real backend. Exact rebuilt-package measurements
+follow in integrated verification. Forced process death remains outside the
+cooperative guarantee.
+
+The complete native file passes 101 tests on each interpreter. Its production
+change is +29/-2, with 221 test lines and eight cases; the generator adds
+26 cases, for 34 total new regressions. Test failure cleanup also resolves
+the exact recorded isolated child before fixture teardown. All six actual
+outer/inner replay processes and their environments are gone; this task did
+not signal any provider or unrelated process.
+
+Integrated local macOS ARM64 measurements pass **847 source and 847 unpacked-sdist
+tests** on each of Python 3.12.13 and 3.14.6. Authoring, generator, diff and API-map
+checks plus all four isolated installed-wheel paths pass. Both rebuilt wheels
+have SHA-256 `1ec8bb18b2925e372d29ffa23ef778c12e59631c9b67c742cca884b283dd24ae`.
+Exact commands, logs, sdist hashes and successful owned cleanup are in
+`final-{3.12,3.14}-r11/`. The fresh `r17-map-audit/` resolves 203 occurrences
+(126 unique references in 18 files), retaining the six documented prose
+exclusions. These measurements precede only this documentation result update;
+actual committed-head native CI and the fresh full review are external evidence
+recorded after freeze. No previous approval transfers to the changed bytes.

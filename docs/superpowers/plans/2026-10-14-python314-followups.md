@@ -269,7 +269,7 @@ The round was exported and cleaned before follow-up work.
   the reference map. The separate remaining-code audit covered all 12 production
   modules beyond the five tools and found only the authoring no-link gap; it
   distinguished intentional resource abstractions and already-refusing checks.
-- [ ] Run focused RED/GREEN and full source/archive/wheel checks on Python
+- [x] Run focused RED/GREEN and full source/archive/wheel checks on Python
   3.12/3.14, then actual-head native CI and the same complete review profile.
 
 Estimate: approximately +16/-2 production lines across two support tools, with
@@ -290,3 +290,45 @@ and 813 archive tests, authoring/generator/interface checks and all four wheel
 paths. The authoring file passes 36 and driver files 145 tests on each version;
 198 scoped references resolve. Committed-head CI and fresh review are the
 remaining post-freeze steps, recorded externally.
+
+## R16 CLI interruption and portable preflight closure
+
+R16 completed AGREED on `89504be`; all required reviewers returned SAFE. Sol,
+Argon and the separate Astra comparison reported no new findings. Opus retained
+one Minor concerning the outer CLI interruption boundary and two hardening
+suggestions concerning generator diagnostics and case-insensitive entry names.
+Native CI run 38621985362 asserted the exact head/tree and passed 813 source and
+archive tests, without skips, in all four platform/Python jobs. The round was
+exported and cleaned before these follow-ups.
+
+- [x] Reproduce interruption of the actual outer native CLI while a request is
+  outstanding. Forward the first interrupt to an isolated inner process and
+  retain its installed environment until terminal exit, including repeated
+  wrapper interrupts and delayed synthetic parent acknowledgement.
+- [x] Reproduce case-only entry-name collisions on the local filesystem and
+  reject them during driver preparation before any run artifact is created.
+  Keep shared roster names case-sensitive; document this portable driver limit.
+- [x] Reproduce remaining generator following-status faults and retain their
+  original errors at every existing presence/type query. Preserve missing-path
+  diagnostics, fresh observations, short-circuit behavior and unchanged files
+  on refusal; avoid a cached inventory or new concurrency guarantee.
+- [ ] Add targeted regressions and conformance links, then verify Python
+  3.12/3.14 source/archive/wheel paths and actual-head Ubuntu/macOS CI. Run the
+  same three required reviewers and separate Astra comparison with 40-minute
+  budgets and current official web evidence.
+
+Estimated production change: approximately +40/-8 across two repository tools;
+tests and documentation are separate. The native change affects cooperative
+CLI interruption, not forced process death or native backend termination. The
+generator change preserves existing observations and error semantics, with no
+shared API, payload, dependency, model setting or host-distribution change.
+
+
+The measured production change is +40/-6 (net +34) across the two tools;
+tests add 273 lines and 34 cases. The interrupt handler covers pending child
+publication and reentry while forwarding, with prior-handler restoration.
+The complete native file passes 101 and asset file 116 tests on both local
+interpreters. Final local source and unpacked-sdist suites pass 847 tests each
+on Python 3.12.13 and 3.14.6, all four wheel paths pass, and 203 scoped references
+resolve. Actual committed-head CI and the next complete review remain the
+post-freeze steps; their outcomes are recorded externally.

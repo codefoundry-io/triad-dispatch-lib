@@ -3,10 +3,16 @@ import asyncio
 import errno
 import hashlib
 import importlib.util
+import importlib.metadata
 import json
 import os
 from pathlib import Path
+import shutil
+import signal
+import subprocess
 import sys
+import time
+import venv
 
 import pytest
 
@@ -130,6 +136,221 @@ def test_review_dissent_order_and_two_slots(driver, setup_run):
         assert all(o['value']['exit_code'] is None for o in report['outcomes'])
         assert report == json.loads((run / 'report.json').read_text())
     asyncio.run(scenario())
+
+
+@pytest.fixture(scope='module')
+def cli_runtime(tmp_path_factory):
+    """Copy real package/dependencies into one isolated runtime; no wheel build."""
+    import jsonschema
+    import triad_dispatch_lib as lib
+
+    root = tmp_path_factory.mktemp('native-cli-runtime').resolve()
+    prefix = root/'venv'
+    venv.EnvBuilder(with_pip=False, symlinks=True).create(prefix)
+    site = prefix/'lib'/('python%d.%d' % sys.version_info[:2])/'site-packages'
+    shutil.copytree(Path(lib.__file__).parent, site/'triad_dispatch_lib')
+    distribution = importlib.metadata.distribution('triad-dispatch-lib')
+    metadata = site/('triad_dispatch_lib-' + distribution.version + '.dist-info')
+    metadata.mkdir()
+    (metadata/'METADATA').write_text(distribution.read_text('METADATA'))
+    (site/'test-dependencies.pth').write_text(str(Path(jsonschema.__file__).parent.parent) + '\n')
+    try:
+        yield prefix/'bin/python', prefix, distribution.version
+    finally:
+        shutil.rmtree(root)
+
+
+@pytest.mark.parametrize('mode,repeated,expected', [
+    ('normal', False, 0), ('invalid', False, 2),
+    ('wrapper', False, 130), ('wrapper', True, 130),
+    ('group', False, 130), ('group', True, 130),
+])
+def test_outer_cli_retains_child_and_environment_until_terminal_ack(
+        driver, setup_run, cli_runtime, mode, repeated, expected):
+    config, wheel, run = setup_run
+    python, prefix, version = cli_runtime
+    root = config.parent
+    value = json.loads(config.read_text())
+    value['requests'] = value['requests'][:1]
+    value['requests'][0]['entry']['timeout_s'] = 30
+    if mode == 'invalid':
+        value['requests'][0]['context']['criteria'] = []
+    config.write_text(json.dumps(value))
+    bootstrap = root/'outer.py'
+    bootstrap.write_text('''import importlib.util, json, subprocess, sys, tempfile
+from contextlib import contextmanager
+from pathlib import Path
+source, python, prefix, root = map(Path, sys.argv[1:5])
+sys.argv = [str(source), *sys.argv[5:]]
+spec = importlib.util.spec_from_file_location('native_outer', source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+real_popen = subprocess.Popen
+children = []
+class ObservedPopen(real_popen):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        children.append(self)
+        (root/'child.pid').write_text(str(self.pid))
+subprocess.Popen = ObservedPopen
+@contextmanager
+def installed(wheel):
+    with tempfile.TemporaryDirectory(prefix='install-scope-', dir=root) as temporary:
+        (root/'scope.json').write_text(json.dumps({'neutral': temporary}))
+        try:
+            yield python, prefix, Path(temporary)
+        finally:
+            (root/'cleanup.json').write_text(json.dumps({'child_returncode': children[-1].poll()}))
+original_helper = module.helper
+def helper(name):
+    return {'installed_wheel': installed} if name == 'verify_wheel' else original_helper(name)
+module.helper = helper
+raise SystemExit(module.main())
+''')
+    with (root/'outer.stdout').open('w') as out, (root/'outer.stderr').open('w') as err:
+        process = subprocess.Popen([sys.executable, str(bootstrap), str(Path(driver.__file__)),
+            str(python), str(prefix), str(root), '--wheel', str(wheel), '--expected-version', version,
+            '--config', str(config), '--run-dir', str(run)], stdout=out, stderr=err, start_new_session=True)
+        request = None
+        try:
+            if mode != 'invalid':
+                deadline = time.monotonic() + 10
+                while not (run/'first/request.json').exists():
+                    if process.poll() is not None or time.monotonic() >= deadline:
+                        pytest.fail('outer/inner CLI failed before request: ' + (root/'outer.stderr').read_text())
+                    time.sleep(.01)
+                request = asyncio.run(wait_request(run, 'first'))
+                child = int((root/'child.pid').read_text())
+                neutral = Path(json.loads((root/'scope.json').read_text())['neutral'])
+                if mode in ('wrapper', 'group'):
+                    interrupt = (lambda: process.send_signal(signal.SIGINT)) if mode == 'wrapper' else (
+                        lambda: os.killpg(process.pid, signal.SIGINT))
+                    interrupt()
+                    if repeated:
+                        time.sleep(.05)
+                        if process.poll() is None:
+                            interrupt()
+                    time.sleep(.8)  # Deliberately beyond subprocess.run's 0.25s SIGINT grace.
+                    held_until_ack = process.poll() is None and neutral.is_dir() and prefix.is_dir()
+                    child_status = subprocess.run(['ps', '-p', str(child), '-o', 'stat='],
+                                                  capture_output=True, text=True)
+                    child_live = child_status.returncode == 0 and not child_status.stdout.strip().startswith('Z')
+                    cancellation_requested = (run/'first/cancel-request.json').exists()
+                post(run, request, verdict(request))
+            status = process.wait(timeout=10)
+        finally:
+            if process.poll() is None:
+                if request is not None:
+                    post(run, request, verdict(request))
+                process.send_signal(signal.SIGINT)
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    os.killpg(process.pid, signal.SIGTERM)
+                    process.wait(timeout=5)
+            # The inner has its own session; failing-test cleanup must drain it too.
+            if (root/'child.pid').exists():
+                owned_child = int((root/'child.pid').read_text())
+
+                def child_alive():
+                    result = subprocess.run(['ps', '-p', str(owned_child), '-o', 'stat='],
+                                            capture_output=True, text=True)
+                    return result.returncode == 0 and not result.stdout.strip().startswith('Z')
+
+                if child_alive():
+                    try:
+                        os.kill(owned_child, signal.SIGTERM)
+                    except ProcessLookupError:
+                        pass
+                    deadline = time.monotonic() + 5
+                    while child_alive() and time.monotonic() < deadline:
+                        time.sleep(.01)
+                    if child_alive():
+                        try:
+                            os.kill(owned_child, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+                        deadline = time.monotonic() + 3
+                        while child_alive() and time.monotonic() < deadline:
+                            time.sleep(.01)
+                    assert not child_alive(), 'owned inner CLI survived failing-test cleanup'
+        if mode in ('wrapper', 'group'):
+            assert held_until_ack and child_live, 'CLI released child/environment before delayed terminal ack'
+            assert cancellation_requested
+            assert not (run/'report.json').exists()
+        elif mode == 'normal':
+            assert json.loads((run/'report.json').read_text())['agreement']['agreed']
+        else:
+            assert not run.exists()
+        assert status == expected
+        assert not Path(json.loads((root/'scope.json').read_text())['neutral']).exists()
+        assert json.loads((root/'cleanup.json').read_text())['child_returncode'] is not None
+
+
+def test_driver_refuses_casefold_name_collision_before_artifacts(driver, setup_run):
+    import triad_dispatch_lib as lib
+
+    config, wheel, run = setup_run
+    value = json.loads(config.read_text())
+    value['requests'] = value['requests'][:2]
+    for item, name in zip(value['requests'], ('codex', 'Codex')):
+        item['entry']['name'] = name
+        item['context']['expected']['leg_name'] = name
+    roster = lib.resolve_roster(dict(schema='triad-review-legs.v2',
+                                    legs=[item['entry'] for item in value['requests']]))
+    assert [entry['name'] for entry in lib.select_entries(roster)] == ['codex', 'Codex']
+    with pytest.raises(ValueError, match='[Cc]ase'):
+        driver.prepare(value)
+    assert not run.exists()
+
+
+def test_outer_cli_preserves_pending_interrupt_and_forwards_once_on_reentry(
+        driver, setup_run, monkeypatch):
+    from contextlib import contextmanager
+
+    _, wheel, _ = setup_run
+    original_handler = signal.getsignal(signal.SIGINT)
+    forwarded = []
+    active = []
+
+    @contextmanager
+    def installed(_):
+        active.append(True)
+        try:
+            yield Path(sys.executable), wheel.parent, wheel.parent
+        finally:
+            active.pop()
+
+    class Child:
+        def __init__(self, *args, **kwargs):
+            # Interrupt while Popen has not yet returned the child binding.
+            handler = signal.getsignal(signal.SIGINT)
+            handler(signal.SIGINT, None)
+            handler(signal.SIGINT, None)
+
+        def send_signal(self, number):
+            # A repeat at the forward boundary must neither abort nor duplicate it.
+            signal.getsignal(signal.SIGINT)(signal.SIGINT, None)
+            forwarded.append(number)
+
+        def wait(self):
+            assert active and forwarded == [signal.SIGINT]
+            return -signal.SIGINT
+
+    monkeypatch.setattr(driver, 'helper', lambda _: {'installed_wheel': installed})
+    monkeypatch.setattr(driver.subprocess, 'Popen', Child)
+    monkeypatch.setattr(sys, 'argv', ['native', '--wheel', str(wheel),
+                                    '--expected-version', 'test', '--self-test'])
+    try:
+        try:
+            assert driver.main() == 130
+        except KeyboardInterrupt:
+            pytest.fail('SIGINT escaped before child binding or during forwarding')
+        assert forwarded == [signal.SIGINT]
+        assert signal.getsignal(signal.SIGINT) is original_handler
+        assert not active
+    finally:
+        signal.signal(signal.SIGINT, original_handler)
 
 
 @pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])

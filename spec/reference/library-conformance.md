@@ -29,7 +29,7 @@ actual cases to partial library evidence and remaining owners.
 | R-BIND, R-TERMINAL; C14, C30, C78 (partial) | `output.extract_final`, `admit_output`: typed terminal guards and original member spans | `tests/test_output.py::test_admit_all_carriers`, `test_extraction_preserves_original_representation`, `test_full_envelope_is_strict`, `test_terminal_guards_precede_payload`, `test_google_sibling_carrier_cannot_swap` | Truthful execution observations and unsupported envelope adaptation |
 | R-CONTAIN; C23 (strict subset only) | Strict successful AGY stream admission; no finish-recovery analyzer | `tests/test_output.py::test_agy_missing_or_failed_result_refused`, `test_agy_exit_three_refuses_partial_valid_result_before_parse` | Preserve qualifying same-run recovery and all its structured evidence/guards |
 | R-CLASSIFY, R-AUTH, R-TOKENS, R-NOCOST; C8, C11, C17, C37, C43, C74-C77 | No extracted classifier/auth/token API | `tests/test_output.py::test_quota_looking_evidence_is_ordinary_data` covers only the no-keyword-classification boundary | Vendor sentence carriers, credentials, STOP precedence, exit tokens and repair |
-| R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside`, `test_symlink_status_errors_refuse_before_writes`, `test_tree_enumeration_errors_refuse_before_writes`, `test_unreadable_output_directory_refuses_before_following_link`, `test_output_root_observation_error_never_skips_inventory`, `test_output_root_missing_and_occupied_controls` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
+| R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside`, `test_symlink_status_errors_refuse_before_writes`, `test_tree_enumeration_errors_refuse_before_writes`, `test_unreadable_output_directory_refuses_before_following_link`, `test_output_root_observation_error_never_skips_inventory`, `test_output_root_missing_and_occupied_controls`, `test_following_metadata_errors_preserve_errno_before_writes`, `test_source_root_missing_and_file_preserve_diagnostics` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
 
 ## Remaining normative groups and ownership
 
@@ -79,6 +79,17 @@ The supervised driver in `tools/native_codex_smoke.py` is repository test suppor
 not an installed host adapter. Its cancellation acknowledgement regressions live
 in `tests/test_native_codex_smoke.py`; they prove the file-exchange protocol with
 synthetic parent evidence, not native backend termination.
+
+`tests/test_native_codex_smoke.py::test_outer_cli_retains_child_and_environment_until_terminal_ack`
+exercises the real outer/inner driver processes, PID/process-group SIGINT,
+repeated interrupts and delayed synthetic acknowledgement. Its regression
+fixture substitutes only installed-runtime bootstrap; separate CLI experiments
+exercise wheel installation. `tests/test_native_codex_smoke.py::test_driver_refuses_casefold_name_collision_before_artifacts`
+checks portable driver-name refusal before artifact creation while the shared
+roster keeps exact-case identities.
+`tests/test_native_codex_smoke.py::test_outer_cli_preserves_pending_interrupt_and_forwards_once_on_reentry`
+covers interruption before child binding, repeated handler entry and restoration
+of the prior signal handler.
 
 `test_invalid_receipt_retains_slot_until_matching_ack` covers malformed/stale
 acknowledgements, timestamp overflow and interruption while waiting for a valid

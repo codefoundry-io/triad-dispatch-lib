@@ -274,7 +274,10 @@ A supervised config has exactly `mode` (`review` or `investigation`), a fresh sa
 ASCII `run_id`, positive integer `max_concurrency`, `host`, and nonempty `requests`.
 Each request has `entry` and the existing [Codex context](#codex-response-experiment);
 investigations also require a nonempty `perspective`. Names/run IDs match
-`[A-Za-z0-9][A-Za-z0-9_-]{0,127}`. Entries must be enabled canonical Codex entries,
+`[A-Za-z0-9][A-Za-z0-9_-]{0,127}`. The driver also rejects entry names that differ
+only by letter case before creating artifacts, so its directory exchange works
+consistently on case-sensitive and case-insensitive filesystems. Shared library
+roster names remain case-sensitive. Entries must be enabled canonical Codex entries,
 with explicit `codex.model`/`codex.reasoning` and timeout 1..3600 seconds. Formal
 contexts share the complete basis, packet and scope, except `expected.leg_name`.
 All inputs are preflighted before any request is published. Use canonical absolute
@@ -322,6 +325,13 @@ receipt as cleanup acknowledgement. A completed receipt after cancellation is
 cleanup evidence only. This cooperative wait can continue indefinitely if the
 parent fails or posts malformed acknowledgement; the driver has no process or
 native cancellation API. The parent must finish or interrupt/await every owned child.
+
+For a cooperative CLI interrupt, the outer process forwards the first SIGINT to
+its isolated inner driver and waits for it to exit. Repeated interrupts to the
+outer process keep waiting; they do not kill the driver or remove its installed
+environment before terminal acknowledgement. Forced process death is outside
+this cooperative protocol, and this behavior does not establish native backend
+termination.
 
 Malformed or stale receipts retain the slot until a valid replacement establishes
 terminal custody. The original refusal remains a failed observation; replacement

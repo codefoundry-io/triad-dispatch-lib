@@ -69,6 +69,11 @@ result fields, emitted errors, input copies and shallow result mutability.
   acknowledgement still fail admission, but do not undo observed termination.
   An expired review timeout starts cancellation; it is not proof of native cleanup.
   A late affirmative response remains timed out and cannot approve.
+  A CLI re-exec boundary must also preserve cooperative cancellation and keep
+  resources available until the supervised callback process terminates. The
+  repository driver forwards one SIGINT to its isolated child and continues
+  waiting through repeated outer interrupts; forced process death remains
+  outside that cooperative guarantee.
 - **Dissent records (R-AGREE):** the reducer retains valid negative verdicts and
   emits `negative_verdict`; it does not classify a Minor-only negative as a
   selection deviation. The host collector/leader must preserve that required

@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import runpy
+import signal
 import stat
 import subprocess
 import tempfile
@@ -115,7 +116,7 @@ def prepare(config):
     items = config['requests']
     if not isinstance(items, list) or not items:
         raise ValueError('Empty requests')
-    prepared, common = [], None
+    prepared, common, names = [], None, set()
     for item in items:
         exact(item, ('entry', 'context', 'perspective') if config['mode'] == 'investigation'
               else ('entry', 'context'))
@@ -123,6 +124,10 @@ def prepare(config):
         if not isinstance(entry, dict):
             raise ValueError('Invalid entry')
         safe(entry.get('name'))
+        name = entry['name'].casefold()
+        if name in names:
+            raise ValueError('Case-insensitive entry name collision')
+        names.add(name)
         timeout = entry.get('timeout_s')
         if (entry.get('vendor') != 'codex' or entry.get('enabled') is not True
                 or type(timeout) not in (int, float) or not 0 < timeout <= 3600
@@ -463,7 +468,29 @@ def main():
                 forwarded = ['--wheel',str(wheel),'--expected-version',args.expected_version,
                              '--installed-prefix',str(prefix)]
                 forwarded += ['--self-test'] if args.self_test else ['--config',str(args.config),'--run-dir',str(args.run_dir)]
-                return subprocess.run([str(python),'-I',str(Path(__file__).resolve()),*forwarded],cwd=neutral).returncode
+                child = None
+                interrupted = interrupt_forwarded = False
+
+                def interrupt(signum, frame):
+                    nonlocal interrupted, interrupt_forwarded
+                    interrupted = True
+                    if child is not None and not interrupt_forwarded:
+                        interrupt_forwarded = True
+                        try:
+                            child.send_signal(signal.SIGINT)
+                        except ProcessLookupError:
+                            pass
+
+                previous = signal.signal(signal.SIGINT, interrupt)
+                try:
+                    child = subprocess.Popen([str(python),'-I',str(Path(__file__).resolve()),*forwarded],
+                                             cwd=neutral, start_new_session=True)
+                    if interrupted:
+                        interrupt(signal.SIGINT, None)
+                    status = child.wait()
+                    return 130 if interrupted else status
+                finally:
+                    signal.signal(signal.SIGINT, previous)
         runtime = helper('four_route_smoke')['identity'](args.installed_prefix,args.expected_version)
         report = (self_test(wheel,runtime) if args.self_test else
                   asyncio.run(run(args.config,wheel,args.run_dir,runtime_identity=runtime)))

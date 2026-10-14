@@ -212,6 +212,23 @@ and 3.14.6 each pass 813 source/archive tests plus all four installed-wheel path
 All 198 scoped test references resolve. Committed-head native CI and fresh review
 outcomes remain recorded externally after source freeze.
 
+R16 (`20261015-lib-spec-r16-b81fbc`) completed AGREED on `89504be`; all
+three required entries were SAFE. Sol, Argon and the separate Astra comparison
+reported no new findings. Its [native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38621985362)
+asserted the actual head/tree and passed 813 source/archive tests without skips
+in all four jobs, plus all installed-wheel paths. Opus retained a CLI interrupt
+custody Minor and generator-diagnostic/case-insensitive-name suggestions.
+The round was exported and cleaned. Bounded reproduction and corrections
+continue under the existing quality-convergence instruction; see the
+[R16 closure record](verification/2026-10-15-review-closure.md#r16-cli-interruption-and-portable-preflight).
+The corrections add 34 regressions. Local Python 3.12.13 and 3.14.6 each pass
+847 source/archive tests and all four installed-wheel paths; 203 scoped
+test references resolve. Native CLI interruption now retains the inner process
+until acknowledgement, and portable name preflight precedes artifact creation.
+Generator following-status errors retain their errno at every original query.
+Actual committed-head native CI and fresh review outcomes are recorded externally.
+
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

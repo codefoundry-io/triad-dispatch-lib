@@ -330,6 +330,58 @@ def test_output_root_missing_and_occupied_controls(generated, kind, write):
             assert not data.exists()
 
 
+@pytest.mark.parametrize('stage,observation,write', [
+    (stage, observation, write)
+    for stage, observation in [('source_root', 1), ('directory_presence', 1),
+                               ('directory_type', 2), ('file_presence', 1), ('file_type', 2)]
+    for write in [True, False]
+] + [('file_check', 3, False)])
+@pytest.mark.parametrize('error_number', [errno.EACCES, errno.EIO])
+def test_following_metadata_errors_preserve_errno_before_writes(generated, monkeypatch,
+                                                               stage, observation, write,
+                                                               error_number):
+    root, sync = generated
+    sync(root, write=True)
+    data = root / 'src/triad_dispatch_lib/data'
+    target = (root / 'spec' if stage == 'source_root' else
+              data / 'roster-bundle/contracts' if stage.startswith('directory') else
+              data / 'leg-verdict.schema.json')
+    if write:
+        (root / 'spec/contracts/leg-verdict.schema.json').write_bytes(b'new canonical bytes')
+    before = snapshot(root)
+    original_stat = os.stat
+    following_observations = 0
+
+    def stat(path, *args, **kwargs):
+        nonlocal following_observations
+        if os.fspath(path) == str(target) and kwargs.get('follow_symlinks', True):
+            following_observations += 1
+            if following_observations == observation:
+                raise OSError(error_number, 'injected following metadata error')
+        return original_stat(path, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'stat', stat)
+        with pytest.raises(OSError) as error:
+            sync(root, write=write)
+        assert error.value.errno == error_number
+    assert snapshot(root) == before
+
+
+@pytest.mark.parametrize('kind', ['missing', 'file'])
+@pytest.mark.parametrize('write', [True, False])
+def test_source_root_missing_and_file_preserve_diagnostics(generated, kind, write):
+    root, sync = generated
+    source = root / 'spec'
+    shutil.rmtree(source)
+    if kind == 'file':
+        source.write_bytes(b'preserve occupied source')
+    before = snapshot(root)
+    with pytest.raises(ValueError, match='Missing canonical specification tree'):
+        sync(root, write=write)
+    assert snapshot(root) == before
+
+
 def test_packaged_schema_ids_remain_in_original_namespace():
     from triad_dispatch_lib.contracts import load_contract, load_roster_contract
     namespace = 'https://github.com/codefoundry-io/triad-dispatch-spec/contracts/'

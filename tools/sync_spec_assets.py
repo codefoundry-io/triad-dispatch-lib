@@ -45,13 +45,20 @@ def tree_entries(directory: Path):
                 yield from tree_entries(path)
 
 
+def _following_mode(path: Path) -> int:
+    try:
+        return path.stat().st_mode
+    except (FileNotFoundError, NotADirectoryError):
+        return 0
+
+
 def sync_assets(repo: Path, *, write: bool) -> None:
     """Validate the entire owned output tree before writing any resource."""
     source = repo / "spec"
     data = repo / "src/triad_dispatch_lib/data"
     refuse_symlinks(source)
     refuse_symlinks(data)
-    if not source.is_dir():
+    if not stat.S_ISDIR(_following_mode(source)):
         raise ValueError("Missing canonical specification tree")
     for _ in tree_entries(source):
         pass
@@ -81,16 +88,16 @@ def sync_assets(repo: Path, *, write: bool) -> None:
                 raise ValueError(f"Unexpected generated path: {relative}")
     for relative in directories:
         path = data / relative
-        if path.exists() and not path.is_dir():
+        if _following_mode(path) != 0 and not stat.S_ISDIR(_following_mode(path)):
             raise ValueError(f"Generated directory occupied: {relative}")
     for relative in expected:
         path = data / relative
-        if path.exists() and not path.is_file():
+        if _following_mode(path) != 0 and not stat.S_ISREG(_following_mode(path)):
             raise ValueError(f"Generated file occupied: {relative}")
     if not write:
         for relative, raw in expected.items():
             path = data / relative
-            if not path.is_file() or path.read_bytes() != raw:
+            if not stat.S_ISREG(_following_mode(path)) or path.read_bytes() != raw:
                 raise ValueError(f"Generated resource drift: {relative}")
         return
     for relative, raw in expected.items():
