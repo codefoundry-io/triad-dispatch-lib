@@ -94,9 +94,28 @@ hardening suggestion identified the help test's color control under `-E`/`-I`.
 - [x] Verify the existing help regression on both interpreters and with actual
   isolated-interpreter forced-color execution.
 - [x] Repeat integrated source/archive/wheel checks on both interpreters.
-- [ ] Commit the bounded snapshot, await exact-head native CI and run the same
+- [x] Commit the bounded snapshot, await exact-head native CI and run the same
   complete review profile with 40-minute budgets and current official sources.
 
 No runtime or normative case change is intended. Do not add a new inventory
 framework or duplicate tests for the documentation edits. Record current outcomes
 externally after the frozen commit, preserving the historical evidence boundary.
+
+## R11 reference closure
+
+R11 completed AGREED on `c7bf2bc`; native CI run 38595740079 passed all four
+Python/platform jobs. Opus identified one C68 file-qualified test reference
+missing its `spec/tests/` prefix. On 2026-10-15 the owner authorized continuing
+verified quality corrections to convergence.
+
+- [x] Correct the C68 path and independently audit the other explicit
+  file-qualified references in the case and conformance maps. The read-only
+  audit checked 94 references with no additional unresolved path or function.
+- [x] Verify all 95 references after correction and run the required source and
+  package checks on Python 3.12 and 3.14.
+- [ ] Await exact-head native CI and a fresh complete review; record outcomes
+  externally after source freeze, alongside the draft PR.
+
+Production/test delta: zero; one reference correction plus evidence records.
+No new inventory framework or duplicate regression test is needed. Review
+budgets, current official-source authorization and host boundaries are unchanged.

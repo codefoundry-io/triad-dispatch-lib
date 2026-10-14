@@ -226,3 +226,46 @@ under the same owner evidence root; focused reproduction is in
 documentation-only recording. No runtime/test/asset changed afterward. Native CI
 will build the exact resulting commit independently. Its result and the fresh
 full review are recorded externally with the frozen head and draft PR.
+
+## R11 outcome and reference closure
+
+R11 `20261014-lib-spec-r11-63f374` completed AGREED on
+`c7bf2bc2bcacfa3fa9c2d4b28cc8e58986a7c072`, digest
+`0a1809391f7eea7445c0afa918a135de19a7bb2d9155d01c99adf02f4b0f757a`.
+All three required reviewers returned SAFE TO MERGE; Sol, Argon and the separate
+Astra comparison had no actionable finding. Opus identified one Minor: the C68
+case-map reference used a bare `test_spec_records.py` path even though the map
+defines bare filenames as `tests/` paths. The actual function belongs to
+`spec/tests/test_spec_records.py`; the reference now includes that prefix.
+
+[Native CI run 38595740079](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38595740079)
+passed all four jobs on the reviewed head: each passed 706 source and 706
+unpacked-sdist tests, interpreter assertions, authoring/assets, wheel rebuilding
+and all four installed-wheel checks. Actual Python versions were macOS
+3.12.10/3.14.7 and Ubuntu 3.12.15/3.14.8. R11 was exported and its exact owned
+roots cleaned after every reviewer and producer reached terminal state.
+
+The owner authorized further verified quality corrections on 2026-10-15. A
+separate read-only AST audit checked the other 94 explicit file-qualified test
+references across the case and conformance maps: 93 exact function names and
+one intentional C32 wildcard matching six definitions. All resolve under the
+maps' documented conventions; no additional missing or misassigned reference
+was found. This checks reference identity, not semantic coverage, unqualified
+shorthand, runtime behavior or every host-owned requirement. The audit imports
+no candidate code and is external verification, not a new repository framework.
+Commands, source hashes and per-reference definition locations are retained in
+the owner evidence under `_runs/reviews/20261015-lib-reference-closure/audit/`.
+
+Only the reference and progress records change in this follow-up. Post-correction
+verification passes all 95 references, including corrected C68 (94 exact names
+and one wildcard, across 17 files). Local Python 3.12.13 and 3.14.6 each pass
+706 source and 706 unpacked-sdist tests, authoring/assets, diff checks and all
+four installed-wheel paths. Commands, terminal results, artifact hashes and
+successful owned-stage cleanup are retained in `final-{3.12,3.14}-r5/` under
+the earlier Python follow-up evidence root; the corrected-reference receipt is
+under `20261015-lib-reference-closure/post-fix/`. These builds precede this
+documentation-only result recording; runtime/tests/assets are unchanged.
+The resulting commit requires its own native CI and full review with the same three required
+entries, separate Astra comparison, 2400-second budgets and current official
+web authorization. Those outcomes are recorded externally after source freeze;
+no earlier approval or platform result transfers to the new snapshot.

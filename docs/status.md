@@ -135,6 +135,17 @@ same [follow-up record](verification/2026-10-14-python314-followups.md).
 The completed round was exported and cleaned before edits. Changed bytes need
 new exact-head CI and a fresh complete review, recorded with the draft PR.
 
+R11 (`20261014-lib-spec-r11-63f374`) completed AGREED on `c7bf2bc` after
+[native CI run 38595740079](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38595740079)
+passed 706 source and 706 archive tests plus four installed-wheel checks in all
+four Python/platform jobs. Opus retained one C68 test-path Minor; Sol, Argon
+and the separate Astra comparison found no actionable defect. The completed
+round was exported and cleaned. The C68 reference now includes `spec/tests/`;
+an independent static audit found no additional invalid file-qualified test
+references in either coverage map. This documentation-only correction changes
+no runtime, test or normative case. New exact-head verification and full review
+follow, with outcomes retained beside the draft PR.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification
