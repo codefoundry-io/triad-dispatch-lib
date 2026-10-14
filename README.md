@@ -195,7 +195,7 @@ uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_l
 git diff --check
 ```
 
-Use Python 3.12 (selected by `.python-version`) and uv 0.11.8 as in CI. The package
+Use Python 3.12 (selected by `.python-version`) and uv 0.11.8 by default. The package
 metadata permits Python 3.12+; tested combinations are recorded in verification
 evidence. `uv.lock` pins development dependencies. The wheel probe creates a
 temporary environment outside the checkout and installs the wheel and allowed
@@ -214,7 +214,9 @@ the same pytest/checker/generator commands there, and `uv build --wheel`. Pass
 that rebuilt wheel to all four drivers above. CI performs this full sequence.
 
 CI uses [native GitHub runners](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
-for Ubuntu 24.04 x86-64 and macOS 15 ARM64 with Python 3.12. Platform claims require
+for Ubuntu 24.04 x86-64 and macOS 15 ARM64 with Python 3.12 and 3.14. Each job sets
+`UV_PYTHON` and checks the actual source/archive interpreter, overriding the
+repository's 3.12 development default. Platform claims require
 successful runs, not merely the presence of the workflow. For multiple local
 build versions, pass specific sdist and wheel paths instead of wildcards.
 
@@ -327,6 +329,11 @@ does not retry the review or turn it into approval. Terminal acknowledgement and
 response admission are separate: after valid unique terminal metadata, unreadable,
 invalid UTF-8 or hash-mismatched response bytes fail output admission but do not
 require another terminal event. Cleanup records that response error and completes.
+
+Receipt readiness uses `lstat()` so only `FileNotFoundError` means pending work.
+Other filesystem errors retain the first refusal and enter the same cancellation
+and acknowledgement path on every supported Python version. Present links still
+reach the regular-file custody checks and are refused, including dangling links.
 
 `report.json` retains ordered callback start/finish times and active/peak counts,
 actual outcomes, observations and original artifact hashes. Bytes in dataclass

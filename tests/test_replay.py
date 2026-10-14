@@ -116,3 +116,20 @@ def test_cli_wheel_oserror_refused(operation, error_number, tmp_path, monkeypatc
     assert captured.out == ""
     assert "provide one existing wheel path" in captured.err
     assert "Traceback" not in captured.err
+
+
+def test_public_help_hides_internal_probe_without_installation(monkeypatch, capsys):
+    module = verifier()
+
+    def forbidden_install(wheel):
+        raise AssertionError("help attempted wheel installation")
+
+    monkeypatch.setattr(module, "installed_wheel", forbidden_install)
+    monkeypatch.setattr(sys, "argv", ["verify_wheel.py", "--help"])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert "  wheel\n" in captured.out
+    assert "--probe" not in captured.out

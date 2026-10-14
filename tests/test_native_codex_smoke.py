@@ -4,6 +4,7 @@ import errno
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -471,14 +472,13 @@ def test_regular_refuses_ancestor_symlink_loop(driver, tmp_path):
         driver.regular(ancestor/'receipt.json')
 
 
-@pytest.mark.parametrize('phase,probe,error_number', [
-    (phase, probe, number)
+@pytest.mark.parametrize('phase,error_number', [
+    (phase, number)
     for phase in ('normal', 'cleanup')
-    for probe in ('stat', 'lstat')
     for number in (errno.EACCES, errno.EIO)
-] + [('deadline', 'stat', errno.EACCES), ('parent', 'lstat', errno.EIO)])
+] + [('deadline', errno.EACCES), ('parent', errno.EIO)])
 def test_receipt_readiness_error_retains_custody(
-        driver, setup_run, monkeypatch, phase, probe, error_number):
+        driver, setup_run, monkeypatch, phase, error_number):
     async def scenario():
         config, wheel, run = setup_run
         value = json.loads(config.read_text())
@@ -488,15 +488,21 @@ def test_receipt_readiness_error_retains_custody(
         value['requests'][1]['entry']['timeout_s'] = 10
         config.write_text(json.dumps(value))
         receipt_path = run/'first/receipt.json'
-        original_stat = Path.stat
+        original_stat, original_lstat = os.stat, os.lstat
         armed = False
 
-        def stat(path, *, follow_symlinks=True):
-            if armed and path == receipt_path and follow_symlinks == (probe == 'stat'):
+        def stat(path, *args, **kwargs):
+            if armed and path == receipt_path and not kwargs.get('follow_symlinks', True):
                 raise OSError(error_number, 'synthetic readiness probe failure', str(path))
-            return original_stat(path, follow_symlinks=follow_symlinks)
+            return original_stat(path, *args, **kwargs)
 
-        monkeypatch.setattr(Path, 'stat', stat)
+        def lstat(path, *args, **kwargs):
+            if armed and path == receipt_path:
+                raise OSError(error_number, 'synthetic readiness probe failure', str(path))
+            return original_lstat(path, *args, **kwargs)
+
+        monkeypatch.setattr(os, 'stat', stat)
+        monkeypatch.setattr(os, 'lstat', lstat)
         task = asyncio.create_task(driver.run(config, wheel, run))
         request = await wait_request(run, 'first')
         cancelled = False
@@ -545,6 +551,44 @@ def test_receipt_readiness_error_retains_custody(
             assert observation['receipt']['run_id'] == 'run-1'
             assert 'cancel_publication_error' not in observation
             assert not report['agreement']['agreed']
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize('dangling', [False, True])
+def test_receipt_readiness_distinguishes_absence_from_dangling_link(driver, setup_run, dangling):
+    async def scenario():
+        config, wheel, run = setup_run
+        value = json.loads(config.read_text())
+        value['requests'] = value['requests'][:2]
+        value['max_concurrency'] = 1
+        config.write_text(json.dumps(value))
+        task = asyncio.create_task(driver.run(config, wheel, run))
+        request = await wait_request(run, 'first')
+        receipt_path = run/'first/receipt.json'
+        try:
+            if dangling:
+                receipt_path.symlink_to('missing-receipt.json')
+            await asyncio.sleep(.04)
+            held = not task.done() and not (run/'second/request.json').exists()
+            cancel_requested = (run/'first/cancel-request.json').exists()
+        finally:
+            receipt_path.unlink(missing_ok=True)
+            post(run, request, verdict(request))
+            second = await wait_request(run, 'second')
+            post(run, second, verdict(second))
+            report = await task
+        assert held
+        assert cancel_requested is dangling
+        observation = report['observations']['first']
+        if dangling:
+            assert report['outcomes'][0]['status'] == 'failed'
+            assert observation['first_refusal']['validation_error'] == (
+                'Expected canonical absolute regular file')
+            assert not report['agreement']['agreed']
+        else:
+            assert report['outcomes'][0]['status'] == 'completed'
+            assert 'first_refusal' not in observation
+            assert report['agreement']['agreed']
     asyncio.run(scenario())
 
 

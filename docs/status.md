@@ -101,6 +101,20 @@ Minor correction record identifies exact measurements. R6 approval does not
 transfer to these changed bytes; current native CI and fresh review outcomes
 are recorded with the owner-managed round evidence and PR.
 
+R8 (`20261014-lib-spec-r8-a49108`) completed `AGREED` on `00ed792`, with native
+Ubuntu/macOS Python 3.12 CI passing 700 source and 700 archive tests per runner.
+The owner then authorized its three nonblocking follow-ups: automated public-help
+coverage, exception-preserving receipt readiness on Python 3.14, and per-call
+import-verifier loading. The [Python 3.14 follow-up record](verification/2026-10-14-python314-followups.md)
+tracks these changes, regression evidence and the expanded native CI matrix.
+Local Python 3.12.13 and 3.14.6 each pass 704 source and 704 sdist tests, all four
+installed-wheel paths, authoring/assets and interface-map checks. A pre-existing
+decoder test's interpreter-dependent depth assumption was corrected without
+changing the library contract. Exact-head CI and review outcomes are retained
+with the owner-managed evidence and draft PR after this source record.
+The default development interpreter remains Python 3.12; a new complete review
+must assess the corrected bytes.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification
@@ -215,7 +229,8 @@ separate candidate. The earlier Codex integration experiment
 used parent-dispatched native children; the library and driver do not spawn
 native agents or provider processes. No global installation,
 package-index publication, final merge or release occurred.
-Platform proof covers the recorded native Python 3.12 combinations only.
+Platform proof covers only the combinations measured in the linked verification
+records and exact-head CI evidence; a configured matrix alone is not proof.
 The historical library slices above used ordinary independent Codex review;
 they do not become formal TRIAD admission under the newly selected project
 profile. Consumer adoption requires separate scoped work.

@@ -53,13 +53,33 @@ def test_errors_do_not_echo_input():
     assert "PRIVATE_TOKEN" not in str(caught.value)
 
 
-def test_decoder_limits():
-    assert callable(getattr(lib, "parse_json", None)), "parse_json API is missing"
+def test_decoder_limits(monkeypatch):
+    from triad_dispatch_lib import json_input
+
+    def exhausted_decoder(raw, **kwargs):
+        raise RecursionError("PRIVATE_DECODER_DETAIL")
+
+    # Interpreter stack thresholds vary; the contract translates decoder errors.
+    monkeypatch.setattr(json_input.json, "loads", exhausted_decoder)
     with pytest.raises(lib.AdmissionError) as caught:
-        parse("[" * 10000 + "0" + "]" * 10000)
+        parse("[0]")
     assert caught.value.code == "nesting_limit"
+    assert "PRIVATE_DECODER_DETAIL" not in str(caught.value)
+    assert caught.value.__suppress_context__ is True
+
+
+def test_integer_conversion_limit():
     limit = sys.get_int_max_str_digits()
-    if limit:
-        with pytest.raises(lib.AdmissionError) as caught:
-            parse("1" * (limit + 1))
-        assert caught.value.code == "invalid_json"
+    if not limit:
+        pytest.skip("Interpreter integer conversion limit is disabled")
+    with pytest.raises(lib.AdmissionError) as caught:
+        parse("1" * (limit + 1))
+    assert caught.value.code == "invalid_json"
+
+
+def test_bounded_nested_json_decodes():
+    value = parse("[" * 32 + "0" + "]" * 32)
+    for _ in range(32):
+        assert isinstance(value, list) and len(value) == 1
+        value = value[0]
+    assert value == 0

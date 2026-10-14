@@ -19,13 +19,14 @@ def identity(prefix, expected_version):
     import triad_dispatch_lib as lib
     if version('triad-dispatch-lib') != expected_version:
         raise ValueError('Installed version mismatch')
+    verify_import = helpers()['verify_import']
     paths = {}
     for name in lib.__all__:
         value = getattr(lib, name)
         path = Path(inspect.getfile(value))
-        helpers()['verify_import'](path, prefix)
+        verify_import(path, prefix)
         paths[name] = str(path)
-    helpers()['verify_import'](Path(lib.__file__), prefix)
+    verify_import(Path(lib.__file__), prefix)
     return dict(version=version('triad-dispatch-lib'), package_path=lib.__file__,
                 runtime_paths=paths, python=platform.python_version(),
                 platform=platform.platform(), machine=platform.machine())

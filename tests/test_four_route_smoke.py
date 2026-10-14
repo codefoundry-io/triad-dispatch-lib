@@ -1,7 +1,10 @@
 """Behavioral checks for the synthetic installed-feature verification harness."""
 import importlib.util
 import errno
+import json
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 
 import pytest
@@ -93,3 +96,62 @@ def test_cli_wheel_oserror_refused(operation, error_number, tmp_path, monkeypatc
     assert captured.out == ''
     assert 'wheel must be an existing regular file' in captured.err
     assert 'Traceback' not in captured.err
+
+
+@pytest.mark.parametrize('invalid_origin', [None, 'export', 'package'])
+def test_identity_loads_helper_once_per_call_and_checks_real_origins(tmp_path, invalid_origin):
+    root = Path(__file__).resolve().parents[1]
+    prefix = tmp_path.resolve() / 'environment'
+    site = prefix / 'lib' / 'site-packages'
+    shutil.copytree(root / 'src' / 'triad_dispatch_lib', site / 'triad_dispatch_lib')
+    # A fresh interpreter avoids replacing the suite's imported library modules.
+    code = '''
+import inspect, json, pathlib, runpy, sys
+prefix, site, driver, invalid_origin = sys.argv[1:]
+sys.path.insert(0, site)
+import triad_dispatch_lib as lib
+module = runpy.run_path(driver)
+identity = module['identity']
+namespace = identity.__globals__
+original_helpers = namespace['helpers']
+original_getfile = inspect.getfile
+expected = [str(pathlib.Path(original_getfile(getattr(lib, name)))) for name in lib.__all__]
+expected.append(str(pathlib.Path(lib.__file__)))
+outside = pathlib.Path(prefix).parent / 'outside.py'
+outside.write_text('# external origin fixture\\n')
+if invalid_origin == 'export':
+    first = getattr(lib, lib.__all__[0])
+    inspect.getfile = lambda value: str(outside) if value is first else original_getfile(value)
+    expected = [str(outside)]
+elif invalid_origin == 'package':
+    lib.__file__ = str(outside)
+    expected[-1] = str(outside)
+loads, checks, refusals = [], [], []
+def counted_helpers():
+    loads.append(True)
+    helper = original_helpers()
+    verify = helper['verify_import']
+    def observed_verify(path, wanted_prefix):
+        checks.append(str(path))
+        return verify(path, wanted_prefix)
+    helper['verify_import'] = observed_verify
+    return helper
+namespace['helpers'] = counted_helpers
+for _ in range(2):
+    try:
+        report = identity(pathlib.Path(prefix), namespace['version']('triad-dispatch-lib'))
+        assert set(report['runtime_paths']) == set(lib.__all__)
+    except ValueError as error:
+        assert str(error) == 'package must load from isolated environment site-packages'
+        refusals.append(True)
+print(json.dumps(dict(loads=len(loads), checks=checks, expected=expected * 2,
+                     refusals=len(refusals), exports=len(lib.__all__))))
+'''
+    completed = subprocess.run([sys.executable, '-I', '-c', code, str(prefix), str(site),
+                                str(root / 'tools' / 'four_route_smoke.py'), str(invalid_origin)],
+                               check=True, capture_output=True, text=True)
+    observed = json.loads(completed.stdout)
+    assert observed['checks'] == observed['expected']
+    assert observed['exports'] == 27
+    assert observed['refusals'] == (0 if invalid_origin is None else 2)
+    assert observed['loads'] == 2

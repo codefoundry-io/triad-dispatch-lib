@@ -264,7 +264,12 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         first_error = None
         while True:
             try:
-                ready = (run_dir/name/'receipt.json').exists() or (run_dir/name/'receipt.json').is_symlink()
+                try:
+                    (run_dir/name/'receipt.json').lstat()
+                except FileNotFoundError:
+                    ready = False
+                else:
+                    ready = True
                 if ready:
                     result = consume(name, raw, cleanup=cleanup)
             except (ValueError, OSError) as error:
