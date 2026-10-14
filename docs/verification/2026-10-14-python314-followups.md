@@ -6,6 +6,11 @@ Python 3.14 verification and a fresh complete review. R8
 not transfer to changed bytes. Its required Opus/Sol/Argon entries and separate
 Astra comparison remain the selected profile, each with a 2400-second budget.
 
+CI identity clarification: the R9–R12 PR runs checked out merge commits with
+tracked trees verified identical to their reviewed heads. Historical "exact-head"
+wording below identifies the head-associated results, not an exact checkout SHA.
+See the [checkout identities and subsequent correction](2026-10-15-review-closure.md#native-ci-source-identity).
+
 ## Corrections and regression evidence
 
 - The native repository driver now observes receipt readiness with `lstat()`.

@@ -113,9 +113,54 @@ verified quality corrections to convergence.
   audit checked 94 references with no additional unresolved path or function.
 - [x] Verify all 95 references after correction and run the required source and
   package checks on Python 3.12 and 3.14.
-- [ ] Await exact-head native CI and a fresh complete review; record outcomes
+- [x] Await native CI and a fresh complete review; record outcomes
   externally after source freeze, alongside the draft PR.
 
 Production/test delta: zero; one reference correction plus evidence records.
 No new inventory framework or duplicate regression test is needed. Review
 budgets, current official-source authorization and host boundaries are unchanged.
+
+## R12 bounded follow-ups
+
+R12 completed AGREED on `8ceaa7d`, with three Minor findings and no Astra
+comparison defect. The round was exported and cleaned before these changes.
+
+- [x] Reproduce Python 3.14 suppression of pre-publication receipt-status errors
+  using real predicates and syscall EIO/EACCES injection. Replace that check
+  with `lstat`, treating only FileNotFoundError as absence; extend the queued
+  receipt regression and verify both Python versions.
+- [x] Qualify C12/C14 canonical schema wildcard references explicitly.
+- [x] Audit explicit and in-cell shorthand test references with a bounded
+  external static checker; retain the distinction from semantic coverage.
+- [x] Select the pull-request head SHA explicitly in CI, with a logged actual
+  SHA assertion before tests; preserve the push-to-main path via github.sha.
+- [x] Record actual earlier merge/tree identities and verify source/archive/wheel
+  behavior on both Python versions: 723 source and 723 archive tests each.
+- [ ] Run fresh native CI and the complete review profile; retain outcomes
+  externally after source freeze alongside the draft PR.
+
+Expected production delta: +4/-1 in the repository-only native driver, no new
+shared-library logic; one existing test gains syscall error variants. Workflow
+adds nine lines for revision selection/assertion. Documentation and external
+evidence are separate. Current R12 CI ran a merge commit whose tracked tree is
+verified identical to `8ceaa7d`; it did not check out that head SHA itself.
+
+The same-class audit reproduced two further existing-contract failures on actual
+Python 3.14: `atomic()` could replace an existing destination after a status
+error, and the asset generator could follow an output symlink after suppressing
+its link-status error. Both are bounded preservation fixes under the owner's
+quality-continuation instruction, with RED before correction. The output-root
+error control already stopped before writes, so it needs no separate change.
+
+- [x] Preserve existing atomic destinations/links on EIO/EACCES; retain missing
+  destination publication. Verify seven focused cases on both interpreters.
+- [x] Use exception-preserving non-following status for generator symlink checks;
+  retain absent-output generation. Verify source/output errors in both modes,
+  eight new regressions and the complete 44-case asset suite on both versions.
+- [x] Remove the queued-receipt regression's fixed-delay assumption by waiting
+  for the injected syscall error before disarming it; drain any RED request.
+
+Revised measured production delta: +17/-5 (net +12) across the two tools, no new
+shared-library code or interface. Tests: +135/-4 (net +131), adding 17 cases.
+Workflow: +9/-0. Docs and external evidence remain separate. Integrated
+source/archive/wheel, native CI and fresh review follow the final snapshot.

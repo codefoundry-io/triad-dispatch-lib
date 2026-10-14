@@ -132,6 +132,60 @@ def test_review_dissent_order_and_two_slots(driver, setup_run):
     asyncio.run(scenario())
 
 
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+@pytest.mark.parametrize('dangling', [False, True])
+def test_atomic_refuses_existing_destination_without_overwriting(
+        driver, tmp_path, monkeypatch, error_number, dangling):
+    destination = tmp_path/'request.json'
+    sentinel = b'Existing artifact must remain unchanged.\n'
+    if dangling:
+        destination.symlink_to('missing-target.json')
+    else:
+        destination.write_bytes(sentinel)
+    original_stat, original_lstat = os.stat, os.lstat
+    armed = error_number is not None
+
+    def stat(path, *args, **kwargs):
+        if armed and path == destination:
+            raise OSError(error_number, 'synthetic destination probe failure', str(path))
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if armed and path == destination:
+            raise OSError(error_number, 'synthetic destination probe failure', str(path))
+        return original_lstat(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, 'stat', stat)
+    monkeypatch.setattr(os, 'lstat', lstat)
+    failure = None
+    try:
+        driver.atomic(destination, {'new': 'artifact'})
+    except (ValueError, OSError) as error:
+        failure = error
+    finally:
+        armed = False
+    if dangling:
+        assert destination.is_symlink(), 'artifact reuse replaced a dangling destination link'
+        assert destination.readlink() == Path('missing-target.json')
+    else:
+        assert destination.read_bytes() == sentinel, 'artifact reuse overwrote its destination'
+    assert not destination.with_name('request.json.tmp').exists()
+    if error_number is None:
+        assert isinstance(failure, ValueError)
+        assert str(failure) == 'Refusing artifact reuse'
+    else:
+        assert isinstance(failure, OSError)
+        assert failure.errno == error_number
+
+
+def test_atomic_publishes_missing_destination(driver, tmp_path):
+    destination = tmp_path/'request.json'
+    raw = driver.atomic(destination, {'new': 'artifact'})
+    assert destination.read_bytes() == raw
+    assert json.loads(raw) == {'new': 'artifact'}
+    assert not destination.with_name('request.json.tmp').exists()
+
+
 def test_preflight_helper_loads_are_bounded_per_run(driver, setup_run, monkeypatch):
     original_helper = driver.helper
     loads = []
@@ -691,16 +745,55 @@ def test_original_response_and_terminal_guards(driver, setup_run, kind):
     asyncio.run(scenario())
 
 
-def test_preexisting_receipt_for_queued_leg_never_publishes_request(driver, setup_run):
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+def test_preexisting_receipt_for_queued_leg_never_publishes_request(
+        driver, setup_run, monkeypatch, error_number):
     async def scenario():
         config,wheel,run = setup_run
+        receipt_path = run/'third/receipt.json'
+        original_stat, original_lstat = os.stat, os.lstat
+        armed = False
+        probe_failed = asyncio.Event()
+
+        def stat(path, *args, **kwargs):
+            if armed and path == receipt_path:
+                probe_failed.set()
+                raise OSError(error_number, 'synthetic pre-publication receipt failure', str(path))
+            return original_stat(path, *args, **kwargs)
+
+        def lstat(path, *args, **kwargs):
+            if armed and path == receipt_path:
+                probe_failed.set()
+                raise OSError(error_number, 'synthetic pre-publication receipt failure', str(path))
+            return original_lstat(path, *args, **kwargs)
+
+        monkeypatch.setattr(os, 'stat', stat)
+        monkeypatch.setattr(os, 'lstat', lstat)
         task = asyncio.create_task(driver.run(config,wheel,run))
         first,second = await asyncio.gather(wait_request(run,'first'),wait_request(run,'second'))
-        (run/'third/receipt.json').write_text('{}')
-        post(run,first,verdict(first)); post(run,second,verdict(second))
-        report = await task
+        try:
+            receipt_path.write_text('{}')
+            armed = error_number is not None
+            post(run,first,verdict(first)); post(run,second,verdict(second))
+            if error_number is None:
+                await task
+            else:
+                async with asyncio.timeout(3):
+                    await probe_failed.wait()
+            published_before_refusal = (run/'third/request.json').exists()
+        finally:
+            # Disarm and acknowledge a wrongly published RED request before asserting.
+            armed = False
+            if (run/'third/request.json').exists():
+                third = await wait_request(run, 'third')
+                post(run, third, verdict(third))
+            report = await task
+        assert not published_before_refusal, 'receipt probe error allowed queued request publication'
         assert not (run/'third/request.json').exists()
+        assert not (run/'third/cancel-request.json').exists()
+        assert receipt_path.read_text() == '{}'
         assert report['outcomes'][2]['status'] == 'failed'
+        assert not report['agreement']['agreed']
     asyncio.run(scenario())
 
 

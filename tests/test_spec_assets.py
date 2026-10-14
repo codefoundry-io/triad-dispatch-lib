@@ -1,8 +1,10 @@
 """Exercise bundle integrity and offline generation against real temporary trees."""
+import errno
 import hashlib
 import importlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import runpy
 import shutil
@@ -138,6 +140,42 @@ def test_symlinks_refused_without_touching_outside(generated, location, write):
     before = snapshot(outside)
     with pytest.raises(ValueError): sync(root, write=write)
     assert snapshot(outside) == before
+
+
+@pytest.mark.parametrize('location', ['source_file', 'output_file'])
+@pytest.mark.parametrize('write', [True, False])
+@pytest.mark.parametrize('error_number', [errno.EIO, errno.EACCES])
+def test_symlink_status_errors_refuse_before_writes(generated, monkeypatch, location, write, error_number):
+    root, sync = generated
+    sync(root, write=True)
+    data = root / 'src/triad_dispatch_lib/data'
+    target = ((root / 'spec/contracts/leg-verdict.schema.json') if location == 'source_file'
+              else data / 'leg-verdict.schema.json')
+    sentinel = root / 'outside-sentinel'
+    sentinel.write_bytes(b'preserve outside bytes')
+    target.unlink()
+    target.symlink_to(sentinel)
+    before = snapshot(data)
+    original_stat, original_lstat = os.stat, os.lstat
+
+    def stat(path, *args, **kwargs):
+        if os.fspath(path) == str(target) and not kwargs.get('follow_symlinks', True):
+            raise OSError(error_number, 'injected link-status error')
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if os.fspath(path) == str(target):
+            raise OSError(error_number, 'injected link-status error')
+        return original_lstat(path, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'stat', stat)
+        patch.setattr(os, 'lstat', lstat)
+        with pytest.raises(OSError) as error:
+            sync(root, write=write)
+        assert error.value.errno == error_number
+    assert sentinel.read_bytes() == b'preserve outside bytes'
+    assert snapshot(data) == before
 
 
 def test_missing_canonical_input_does_not_partially_write(generated):

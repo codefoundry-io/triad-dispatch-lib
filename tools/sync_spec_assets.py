@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import stat
 import sys
 
 # Also works directly from a source archive before the library is installed.
@@ -22,7 +23,11 @@ BUNDLES = {
 
 def refuse_symlinks(path: Path) -> None:
     for component in (path, *path.parents):
-        if component.is_symlink():
+        try:
+            mode = component.lstat().st_mode
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(mode):
             raise ValueError(f"Symlink refused: {component}")
 
 
@@ -35,8 +40,7 @@ def sync_assets(repo: Path, *, write: bool) -> None:
     if not source.is_dir():
         raise ValueError("Missing canonical specification tree")
     for path in source.rglob("*"):
-        if path.is_symlink():
-            raise ValueError(f"Symlink refused: {path}")
+        refuse_symlinks(path)
     expected = {}
     for bundle, mapping in BUNDLES.items():
         digests = {}

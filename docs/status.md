@@ -146,6 +146,19 @@ references in either coverage map. This documentation-only correction changes
 no runtime, test or normative case. New exact-head verification and full review
 follow, with outcomes retained beside the draft PR.
 
+R12 (`20261015-lib-spec-r12-9cedd4`) completed AGREED on `8ceaa7d`; Astra
+again reported no actionable defect. Three Minor findings led to bounded
+follow-ups: error-preserving receipt checks before request publication, explicit
+C12/C14 schema-test references and CI checkout identity. The expanded static
+table audit resolves all 184 explicit/shorthand references. Earlier R9–R12 CI
+used merge commits with tracked trees verified identical to the reviewed heads;
+the workflow now selects and asserts the actual head SHA. The
+[R12 verification record](verification/2026-10-15-review-closure.md) preserves
+the correction, historical identity qualification and verification boundaries.
+The same-class audit also reproduced and corrected suppressed status errors in
+native artifact reuse and generator symlink checks, with preservation regressions
+on both Python versions. Shared-library interfaces and payload bytes are unchanged.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

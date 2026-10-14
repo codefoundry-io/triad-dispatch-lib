@@ -61,7 +61,11 @@ def atomic(path, value):
     """Readiness is published last, by atomic rename in its own directory."""
     raw = json.dumps(value, sort_keys=True, indent=2, allow_nan=False).encode() + b'\n'
     temporary = path.with_name(path.name + '.tmp')
-    if path.exists() or path.is_symlink():
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        pass
+    else:
         raise ValueError('Refusing artifact reuse')
     with temporary.open('xb') as stream:
         stream.write(raw)
@@ -311,7 +315,11 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
         raw = None
         try:
             receipt_path = run_dir/name/'receipt.json'
-            if receipt_path.exists() or receipt_path.is_symlink():
+            try:
+                receipt_path.lstat()
+            except FileNotFoundError:
+                pass
+            else:
                 raise ValueError('Refusing preexisting receipt')
             value = dict(run_id=config['run_id'], leg_name=name, mode=config['mode'],
                          entry=item['entry'], expected=item['context']['expected'],
