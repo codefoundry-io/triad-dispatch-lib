@@ -199,3 +199,18 @@ enumeration/classification suppression; a narrow ELOOP branch preserves the
 native driver's existing canonical-path refusal. This explains the bounded
 increase from the estimate. Documentation-only result recording follows local
 builds; exact committed native CI and fresh review outcomes are external.
+
+The leader's pre-review ancestor-path countercheck also reproduced non-strict
+resolution suppressing ancestor-only metadata errors on both Python versions.
+This is the same canonical-file contract; `lstat()` of the final leaf alone
+cannot observe its ancestors. Add a one-line strict-resolution correction and
+three ancestor variants to the existing new regression, then repeat integrated
+verification before the next review. Preserve the preceding 760-test CI as
+intermediate evidence for its actual commit, not the final candidate.
+
+This follow-up is complete: RED reproduces both injected ancestor errors on
+both interpreters; the native file passes 84 tests each. Final integrated runs
+pass 763 source/archive tests per interpreter, all four wheel paths and 184
+reference checks. Production follow-up +1/-1, tests +12/-4, three additional
+cases. Final native CI and a fresh complete review remain externally recorded
+steps after the documentation-only result update.

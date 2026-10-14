@@ -174,6 +174,12 @@ The bounded corrections add 37 regressions. Local Python 3.12.13 and 3.14.6
 each now pass 760 source and 760 archive tests plus all four installed-wheel
 checks; all 184 scoped table references resolve. Native CI and fresh review
 outcomes for the committed snapshot are recorded externally after source freeze.
+Before review, the same check at symlinked ancestors also exposed non-strict
+resolution hiding injected errors on both interpreters. Strict resolution and
+three added cases close that canonical-path boundary. Final local suites pass
+763 source/archive tests each, all four wheel paths and 184 reference checks.
+The preceding `f9f0367` CI passed 760 tests per source/archive job without skips;
+it is retained only as intermediate evidence. Final CI/review follow the new SHA.
 
 ## Consolidation slice (historical verification)
 

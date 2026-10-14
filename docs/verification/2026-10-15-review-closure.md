@@ -216,3 +216,43 @@ Both local rebuilt wheels have SHA-256
 These measurements precede this documentation-only result recording. The new
 committed snapshot still needs actual-head native CI and a complete fresh review,
 recorded externally after freeze; R13 approval is not inferred.
+
+### Canonical ancestor observation follow-up
+
+Before starting the next review, the leader checked the same metadata boundary
+at a symlinked ancestor. On both Python 3.12.13 and 3.14.6, final-leaf `lstat()`
+succeeds while injected EIO/EACCES on an ancestor is suppressed by non-strict
+resolution. The resulting unchanged alias path incorrectly passes the canonical
+path comparison and allows target bytes to be read. Ordinary canonical files
+pass and ordinary aliases are refused; fixtures remain unchanged and are removed.
+
+Strict resolution raises the original ancestor error on both interpreters.
+The bounded follow-up therefore uses `resolve(strict=True)` in `regular()`;
+final-leaf observation already requires an existing file. Existing absolute-path,
+link, file-type and ELOOP refusal behavior remains. This is the same injected
+fault model, not an observed permission-only layout or live-provider incident.
+The earlier 760-test measurements belong to the preceding snapshot. New
+regression and integrated results follow below; no R14 review started on it.
+
+The existing metadata-failure test now covers final-link and ancestor-link paths.
+In the ancestor variant it explicitly confirms that leaf metadata is available
+while the ancestor fault is armed. Both interpreters reproduce two failing
+ancestor cases before correction; the six variants plus existing ancestor-loop
+case pass afterward. The complete native file passes 84 cases on each version.
+The follow-up adds one changed production line (+1/-1) and three test cases
+(+12/-4 test lines). Its report and raw evidence are retained in
+`r13-regular-diagnosis/ancestor-correction-report.md` beside the original diagnosis.
+
+Final local runs each pass **763 source and 763 unpacked-sdist tests**, authoring,
+generator, interface checks and all four installed-wheel paths on Python 3.12.13
+and 3.14.6. The final table-reference audit still resolves 184 references.
+Logs, commands, hashes and successful cleanup are in `final-{3.12,3.14}-r8/`;
+reference receipts are in `20261015-lib-reference-closure/r14-final-map-audit/`.
+These measurements again precede only their documentation result recording.
+
+Intermediate [CI run 38612676070](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38612676070)
+tested the preceding `f9f03677845550d36cf14a2ae2421f4491577fa6` exactly. All four
+jobs passed 760 source/archive tests with no skips and all four wheel paths.
+This remains useful evidence for that commit, but does not cover strict ancestor
+resolution. Final committed CI and R14 outcomes are recorded externally after
+source freeze; no result is transferred from the intermediate candidate.

@@ -35,7 +35,7 @@ def regular(path):
     path = Path(path)
     try:
         if (not path.is_absolute() or stat.S_ISLNK(path.lstat().st_mode)
-                or path.resolve() != path or not path.is_file()):
+                or path.resolve(strict=True) != path or not path.is_file()):
             raise ValueError('Expected canonical absolute regular file')
     except RuntimeError:  # Python 3.12 resolve() reports ancestor symlink loops this way.
         raise ValueError('Expected canonical absolute regular file') from None
