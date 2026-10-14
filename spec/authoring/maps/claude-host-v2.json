@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "prd": {
+    "document": "decisions/claude-host-v2-implementation-prd.md",
+    "status": "candidate",
+    "purpose_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-PURPOSE",
+    "scope_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-SCOPE",
+    "acceptance_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-ACCEPTANCE"
+  },
+  "specs": [
+    {
+      "document": "decisions/rev-2-implementation-spec.md",
+      "status": "candidate",
+      "scope_ref": "decisions/rev-2-implementation-spec.md#SPEC-SCOPE"
+    },
+    {
+      "document": "decisions/codex-google-four-leg-operating-spec.md",
+      "status": "candidate",
+      "scope_ref": "decisions/codex-google-four-leg-operating-spec.md#SPEC-FOUR-LEG-SCOPE"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-ROSTER",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-ROSTER",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-ROSTER"],
+      "rule_refs": ["reference/review-rules.md#R-ROSTER","reference/review-rules.md#R-GOOGLE","reference/review-rules.md#R-PREPARE","reference/review-rules.md#R-NOCOST"],
+      "contract_refs": ["contracts/review-legs.schema.json"],
+      "case_ids": ["C11","C12","C16","C17","C18","C22","C27","C35"],
+      "unit_ids": ["roster","google-resolution","engine-transport","gemini-policy"]
+    },
+    {
+      "id": "REQ-REVIEW",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-REVIEW",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-VERDICT"],
+      "rule_refs": ["reference/review-rules.md#R-BIND","reference/review-rules.md#R-CONTAIN","reference/review-rules.md#R-REVIEW-WEB","reference/review-rules.md#R-SMELL","reference/review-rules.md#R-PROMPT","reference/review-rules.md#R-CONTEXT","reference/review-rules.md#R-THREAT"],
+      "contract_refs": ["contracts/leg-verdict.schema.json","contracts/gemini-readonly.toml","contracts/gemini-readonly-b.toml","contracts/gemini-readonly-web.toml","contracts/gemini-readonly-web-b.toml","contracts/gemini-readonly-web.verify.toml","contracts/gemini-readonly-web-b.verify.toml","contracts/review-web.verify.toml","contracts/review-kind.schema.json","contracts/review-strategy.verify.toml"],
+      "case_ids": ["C13","C14","C15","C30","C32","C60","C61","C62","C67","C68"],
+      "unit_ids": ["verdict-wire","prompts","gemini-policy","agy-containment","review-web-authorization","review-lifecycle"]
+    },
+    {
+      "id": "REQ-AGREEMENT",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-AGREEMENT",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-RETRY","decisions/codex-google-four-leg-operating-spec.md#SPEC-FOUR-LEG-COLLECTION"],
+      "rule_refs": ["reference/review-rules.md#R-AGREE","reference/review-rules.md#R-RETRY","reference/review-rules.md#R-REREVIEW","reference/review-rules.md#R-STOP"],
+      "contract_refs": ["contracts/leg-verdict.schema.json"],
+      "case_ids": ["C19","C20","C21","C23","C33","C64","C66"],
+      "unit_ids": ["verdict-wire","review-lifecycle","agy-containment","roster"]
+    },
+    {
+      "id": "REQ-INVESTIGATION",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-INVESTIGATION",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-INVESTIGATION"],
+      "rule_refs": ["reference/review-rules.md#R-INVEST"],
+      "contract_refs": [],
+      "case_ids": ["C25","C28","C29","C31"],
+      "unit_ids": ["selected-investigations","engine-transport"]
+    },
+    {
+      "id": "REQ-CUSTODY",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-CUSTODY",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-CUSTODY","decisions/rev-2-implementation-spec.md#SPEC-RETRY"],
+      "rule_refs": ["reference/review-rules.md#R-TERMINAL","reference/review-rules.md#R-RECEIPT","reference/review-rules.md#R-PREPARE","reference/review-rules.md#R-CLEANUP","reference/review-rules.md#R-TOKENS","reference/review-rules.md#R-CLASSIFY","reference/review-rules.md#R-NOCOST","reference/review-rules.md#R-AUTH","reference/review-rules.md#R-CLI-VERSION"],
+      "contract_refs": ["contracts/receipt-fields.json","contracts/exit-tokens.json","contracts/vendor-failure-lines.json"],
+      "case_ids": ["C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","C26","C28","C36","C37","C43","C65","C74","C75"],
+      "unit_ids": ["engine-transport","exit-tokens","review-lifecycle","cleanup"]
+    },
+    {
+      "id": "REQ-ACCEPTANCE",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-ACCEPTANCE",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-VERIFICATION"],
+      "rule_refs": ["reference/review-rules.md#R-PLATFORM","reference/review-rules.md#R-BIND","reference/review-rules.md#R-VERIFY"],
+      "contract_refs": ["contracts/leg-verdict.schema.json"],
+      "case_ids": ["C24","C30"],
+      "unit_ids": ["verdict-wire","review-lifecycle","engine-transport"]
+    },
+    {
+      "id": "REQ-OPERATIONS",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-OPERATIONS",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-CUSTODY","decisions/rev-2-implementation-spec.md#SPEC-RETRY"],
+      "rule_refs": ["reference/review-rules.md#R-PREPARE","reference/review-rules.md#R-RECEIPT","reference/review-rules.md#R-CLEANUP"],
+      "contract_refs": ["contracts/receipt-fields.json"],
+      "case_ids": ["C3","C7","C9","C10","C19","C20","C23"],
+      "unit_ids": ["review-lifecycle","cleanup","engine-transport","agy-containment"]
+    },
+    {
+      "id": "REQ-RETENTION",
+      "prd_ref": "decisions/claude-host-v2-implementation-prd.md#PRD-RETENTION",
+      "spec_refs": ["decisions/rev-2-implementation-spec.md#SPEC-CUSTODY","decisions/rev-2-implementation-spec.md#SPEC-RETRY"],
+      "rule_refs": ["reference/review-rules.md#R-CLEANUP","reference/review-rules.md#R-CONTEXT"],
+      "contract_refs": ["contracts/cleanup-roots.schema.json"],
+      "case_ids": ["C4","C5","C7","C63","C69"],
+      "unit_ids": ["cleanup"]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "review_id": "replay-1",
+  "family": "codex",
+  "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "leg_name": "codex-leg",
+  "attempt": 1e400,
+  "route": null,
+  "verdict": "SAFE TO MERGE",
+  "criteria_checked": [
+    "correctness"
+  ],
+  "findings": [],
+  "affected_surfaces_inspected": [
+    "src/main.py"
+  ],
+  "open_questions": []
+}

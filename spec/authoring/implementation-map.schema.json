@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Authoring implementation map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "prd", "specs", "requirements"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "prd": {"$ref": "#/$defs/prd"},
+    "specs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/spec"}
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/requirement"}
+    }
+  },
+  "$defs": {
+    "repoPath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*\\s)[^/]+(?:/[^/]+)*$"
+    },
+    "markdownPath": {
+      "allOf": [
+        {"$ref": "#/$defs/repoPath"},
+        {"pattern": "\\.md$"}
+      ]
+    },
+    "anchorRef": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*\\s)[^/#]+(?:/[^/#]+)*\\.md#[A-Za-z][A-Za-z0-9_.:-]*$"
+    },
+    "status": {
+      "enum": ["candidate", "draft", "accepted", "superseded"]
+    },
+    "stringList": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "prd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document", "status", "purpose_ref", "scope_ref", "acceptance_ref"],
+      "properties": {
+        "document": {"$ref": "#/$defs/markdownPath"},
+        "status": {"$ref": "#/$defs/status"},
+        "purpose_ref": {"$ref": "#/$defs/anchorRef"},
+        "scope_ref": {"$ref": "#/$defs/anchorRef"},
+        "acceptance_ref": {"$ref": "#/$defs/anchorRef"}
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document", "status", "scope_ref"],
+      "properties": {
+        "document": {"$ref": "#/$defs/markdownPath"},
+        "status": {"$ref": "#/$defs/status"},
+        "scope_ref": {"$ref": "#/$defs/anchorRef"}
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "prd_ref", "spec_refs", "rule_refs", "contract_refs", "case_ids", "unit_ids"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^(?!.*\\s)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*$"},
+        "prd_ref": {"$ref": "#/$defs/anchorRef"},
+        "spec_refs": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/anchorRef"}
+        },
+        "rule_refs": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/anchorRef"}
+        },
+        "contract_refs": {
+          "type": "array", "uniqueItems": true,
+          "items": {"$ref": "#/$defs/repoPath"}
+        },
+        "case_ids": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^C[1-9][0-9]*$"}
+        },
+        "unit_ids": {"$ref": "#/$defs/stringList"}
+      }
+    }
+  }
+}

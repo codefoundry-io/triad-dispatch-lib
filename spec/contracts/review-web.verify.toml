@@ -1,0 +1,55 @@
+# Owner-authorized REVIEW web (standing authorization, D-REVIEW-LEGS-20261003); live host service checks. A service
+# manifest (not a policy manifest): its result channel is its own field below. WEB-A-2 runs through the policy manifest
+# contracts/gemini-readonly-web.verify.toml (WA1-WA2), the R-GOOGLE owner-briefing route.
+schema = "triad-review-web-verification.v1"
+rule = "R-REVIEW-WEB"
+case = "C32"
+result_channel = "decisions/owner-register.md (one record per check) and the case column (cases/cases.json C32)"
+
+[[check]]
+id = "WEB-B-1"
+case = "C32"
+host = "B"
+policy = "contracts/gemini-readonly-web-b.toml"
+manifest = "contracts/gemini-readonly-web-b.verify.toml"
+what = "On B, the gemini review leg selects the complete web profile only for a true condition, and the selected profile allows web search and fetch while mutation, shell and mode-transition controls stay denied."
+brief = "On a configured Gemini Enterprise host, compare a false (no-web profile) and a true (web profile) review condition in preflight/dispatch; verify the complete selected policy through the manifest checks WB1-WB2. Preserve native admin denies."
+expect = "The true condition selects contracts/gemini-readonly-web-b.toml and WB1-WB2 hold; the false condition selects the no-web profile."
+on_fail = "Preserve exact policy, preflight and engine evidence; distinguish policy precedence from auth/transport failures. Do not weaken settings."
+status = "NOT RUN"
+
+[[check]]
+id = "WEB-A-1"
+case = "C32"
+host = "A"
+what = "With a true bound condition, every participating native and CLI route of host A reviews with web, and all existing read-only and admission controls remain."
+brief = "Prepare one real v2 round under the standing authorization and run every selected route; check each route's launch switch, prompt clause and evidence, then verify and collect the round."
+expect = "Every route launches with its web switch or web twin and the review-web-permission clause; integrity verifies; the round collects on its own merits."
+on_fail = "Preserve the round packet, dispatch records and evidence; diagnose the route that did not receive web."
+status = "RUN"
+evidence = "decisions/owner-register.md#review-web-a1-20261003 (RUN 2026-10-03, host A b53409b)"
+
+[[check]]
+id = "WEB-A-3"
+case = "C32"
+host = "A"
+what = "Live on host A: an absent or false bound condition leaves every route without web, and a launch switch that disagrees with the bound condition is refused."
+brief = "In a round bound false (after a revocation), run every selected route and check that none carries a web switch, a web twin or the permission clause; separately adopt an attempt whose recorded launch switch disagrees with the bound condition."
+expect = "No route receives web under false; the disagreeing attempt is refused by name."
+on_fail = "Preserve the round packet and dispatch records; diagnose the route or the adoption check."
+status = "NOT RUN"
+not_run_reason = "Only the bound-false half needs an owner revocation (only the owner revokes the standing authorization); until then it is unit-tested on host A (t23, t62). The mismatched-launch-switch half can be run live in a round bound true; it has not been run."
+unit_evidence = "Host A unit tests only: tests/unit/skills/t23-review-web-c32.sh, tests/unit/wrappers/t62-review-web-option-c32.sh (triad b53409b)."
+
+[[check]]
+id = "WEB-A-2"
+case = "C32"
+host = "A"
+policy = "contracts/gemini-readonly-web.toml"
+manifest = "contracts/gemini-readonly-web.verify.toml"
+what = "On A, the gemini review leg attaches the complete web profile only for a true condition, and the profile allows web search and fetch while mutation and shell stay denied."
+brief = "Run the profile checks WA1-WA2 in the manifest, then run host A's gemini review leg with a true and a false condition and check which profile the wrapper attaches. Preserve native admin denies."
+expect = "The true condition attaches contracts/gemini-readonly-web.toml and WA1-WA2 hold; the false condition attaches the no-web profile."
+on_fail = "Preserve exact policy and engine evidence; distinguish policy precedence from auth/transport failures. Do not weaken settings."
+status = "NOT RUN"
+not_run_reason = "Host A's Google review route is agy by default and gemini its compatibility route (owner 2026-10-03, decisions/owner-register.md#D-ONE-ENVIRONMENT-20261003); the gemini route has not been run on host A."

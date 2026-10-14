@@ -2,22 +2,24 @@
 
 - Work in this repository's Git root. Read [current status](docs/status.md)
   before continuing; historical research is evidence, not an execution plan.
-- Implement shared deterministic behavior against the adopted
-  [TRIAD specification](https://github.com/codefoundry-io/triad-dispatch-spec).
-  Preserve canonical schemas, pinned source provenance, and explicit host exceptions.
-- Keep native agent spawning, model/effort integration, installation, and host
-  configuration in their owning projects. Changes to either consumer or the
-  specification require their own scoped work; do not modify them as a side effect.
+- Implement shared deterministic behavior against the canonical [specification](spec/README.md)
+  in this repository. Edit `spec/contracts/` and `spec/prompts/`; generate package
+  assets with `tools/sync_spec_assets.py --write` and verify with `--check`.
+  Preserve canonical schema identities and historical import ancestry.
+- Keep native spawning, model/effort integration, installation and configuration
+  in their owning host projects. Follow [independent adoption](docs/host-adoption.md);
+  consumer ports and the old repository notice require separate scoped work.
 - Preserve existing work and make the smallest coherent change. State the issue,
   proposed change, and impact before material edits. Write repository documentation
   in English and use the owner's language in conversation.
-- This repository currently has documentation only. Use `git diff --check` for
-  whitespace checks; no runtime test/build command is defined. Add reproducible
-  setup and meaningful tests with the first executable slice. Do not claim
-  macOS/Ubuntu compatibility without results from the relevant native platform.
+- Use `uv sync --locked`, `uv run --locked pytest -q`, and `git diff --check`.
+  For package changes also build an sdist, rebuild its wheel and run
+  `uv run --locked python tools/verify_wheel.py <wheel>`; see README commands.
+  Do not claim macOS/Ubuntu compatibility without native platform results.
 - Keep changing progress in `docs/status.md` and research/design records under
-  `docs/`; keep this instruction file small. No formal review profile is selected
-  by this initialization; resolve an applicable profile before work requiring one.
+  `docs/`; keep this instruction file small. For owner-managed project reviews,
+  use the [project review trial](docs/review-profile.md): explicit public v2,
+  three required reviewers and a separate Astra comparison without a vote.
 
 ## Owner-managed workspace
 

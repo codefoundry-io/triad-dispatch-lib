@@ -1,0 +1,124 @@
+"""Generate runtime resources from canonical local bytes, without Git or network."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import stat
+import sys
+
+# Also works directly from a source archive before the library is installed.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from triad_dispatch_lib.bundle_manifest import make_manifest
+
+BUNDLES = {
+    "": {"leg-verdict.schema.json": "contracts/leg-verdict.schema.json"},
+    "roster-bundle": {"contracts/review-legs.schema.json": "contracts/review-legs.schema.json"},
+    "prompt-bundle": {
+        "contracts/review-kind.schema.json": "contracts/review-kind.schema.json",
+        **{f"prompts/{name}.md": f"prompts/{name}.md" for name in
+           ("common-clauses", "leg-codex", "leg-claude", "leg-google", "investigation")},
+    },
+}
+
+
+def refuse_symlinks(path: Path) -> None:
+    for component in (path, *path.parents):
+        try:
+            mode = component.lstat().st_mode
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"Symlink refused: {component}")
+
+
+def tree_entries(directory: Path):
+    """Enumerate every descendant, propagating scan/status errors without following links."""
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            path = directory / entry.name
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"Symlink refused: {path}")
+            yield path, mode
+            if stat.S_ISDIR(mode):
+                yield from tree_entries(path)
+
+
+def _following_mode(path: Path) -> int:
+    try:
+        return path.stat().st_mode
+    except (FileNotFoundError, NotADirectoryError):
+        return 0
+
+
+def sync_assets(repo: Path, *, write: bool) -> None:
+    """Validate the entire owned output tree before writing any resource."""
+    source = repo / "spec"
+    data = repo / "src/triad_dispatch_lib/data"
+    refuse_symlinks(source)
+    refuse_symlinks(data)
+    if not stat.S_ISDIR(_following_mode(source)):
+        raise ValueError("Missing canonical specification tree")
+    for _ in tree_entries(source):
+        pass
+    expected = {}
+    for bundle, mapping in BUNDLES.items():
+        digests = {}
+        for name, canonical in mapping.items():
+            path = source / canonical
+            refuse_symlinks(path)
+            raw = path.read_bytes()
+            expected[Path(bundle) / name] = raw
+            digests[name] = hashlib.sha256(raw).hexdigest()
+        expected[Path(bundle) / "source-manifest.json"] = (
+            json.dumps(make_manifest(digests), indent=2, sort_keys=True) + "\n").encode("utf-8")
+    directories = {parent for path in expected for parent in path.parents if parent != Path('.')}
+    try:
+        data_mode = data.lstat().st_mode
+    except FileNotFoundError:
+        pass
+    else:
+        if not stat.S_ISDIR(data_mode):
+            raise ValueError("Generated resource root is not a directory")
+        for path, mode in tree_entries(data):
+            relative = path.relative_to(data)
+            if not ((stat.S_ISREG(mode) and relative in expected)
+                    or (stat.S_ISDIR(mode) and relative in directories)):
+                raise ValueError(f"Unexpected generated path: {relative}")
+    for relative in directories:
+        path = data / relative
+        if _following_mode(path) != 0 and not stat.S_ISDIR(_following_mode(path)):
+            raise ValueError(f"Generated directory occupied: {relative}")
+    for relative in expected:
+        path = data / relative
+        if _following_mode(path) != 0 and not stat.S_ISREG(_following_mode(path)):
+            raise ValueError(f"Generated file occupied: {relative}")
+    if not write:
+        for relative, raw in expected.items():
+            path = data / relative
+            if not stat.S_ISREG(_following_mode(path)) or path.read_bytes() != raw:
+                raise ValueError(f"Generated resource drift: {relative}")
+        return
+    for relative, raw in expected.items():
+        path = data / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(raw)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--check", action="store_true")
+    mode.add_argument("--write", action="store_true")
+    args = parser.parse_args()
+    try:
+        sync_assets(Path(__file__).resolve().parents[1], write=args.write)
+    except (OSError, ValueError) as error:
+        print(f"Spec asset synchronization failed: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

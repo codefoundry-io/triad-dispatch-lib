@@ -1,0 +1,135 @@
+{
+  "source": "synthetic",
+  "cases": [
+    {
+      "name": "valid",
+      "raw": "valid.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "admit"
+    },
+    {
+      "name": "duplicate",
+      "raw": "duplicate.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "duplicate_member"
+    },
+    {
+      "name": "nested-duplicate",
+      "raw": "nested-duplicate.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "duplicate_member"
+    },
+    {
+      "name": "invalid-utf8",
+      "raw": "invalid-utf8.bin",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "invalid_utf8"
+    },
+    {
+      "name": "nonfinite",
+      "raw": "nonfinite.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "nonfinite_number"
+    },
+    {
+      "name": "overflow",
+      "raw": "overflow.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "nonfinite_number"
+    },
+    {
+      "name": "stale-binding",
+      "raw": "stale-binding.json",
+      "expected": {
+        "review_id": "stale",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "binding_mismatch"
+    },
+    {
+      "name": "v1",
+      "raw": "v1.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "schema_violation"
+    },
+    {
+      "name": "empty-negative",
+      "raw": "empty-negative.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "schema_violation"
+    },
+    {
+      "name": "valid-negative",
+      "raw": "valid-negative.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "admit"
+    }
+  ]
+}
