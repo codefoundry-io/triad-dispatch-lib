@@ -328,6 +328,44 @@ def test_cli_invalid_timeout_and_run_parent_exit_before_publication(
     assert not original_run.exists()
 
 
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+def test_run_parent_alias_refused_before_creating_artifacts(driver, setup_run, monkeypatch, error_number):
+    from triad_dispatch_lib import DispatchError
+
+    config, wheel, _ = setup_run
+    actual = config.parent/'actual-parent'
+    actual.mkdir()
+    alias = config.parent/'parent-alias'
+    alias.symlink_to(actual, target_is_directory=True)
+    original_stat, original_lstat = os.stat, os.lstat
+
+    def stat(path, *args, **kwargs):
+        if error_number and Path(path) == alias and not kwargs.get('follow_symlinks', True):
+            raise OSError(error_number, 'synthetic run-parent metadata failure', str(alias))
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if error_number and Path(path) == alias:
+            raise OSError(error_number, 'synthetic run-parent metadata failure', str(alias))
+        return original_lstat(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, 'stat', stat)
+    monkeypatch.setattr(os, 'lstat', lstat)
+    failure = None
+    try:
+        asyncio.run(driver.run(config, wheel, alias/'run'))
+    except (ValueError, OSError, DispatchError) as error:
+        failure = error
+    assert not (actual/'run').exists(), 'noncanonical parent allowed run artifact creation'
+    assert not list(actual.iterdir())
+    if error_number:
+        assert isinstance(failure, OSError)
+        assert failure.errno == error_number
+    else:
+        assert isinstance(failure, ValueError)
+        assert str(failure) == 'Run parent must be canonical'
+
+
 def test_duplicate_receipt_members_and_altered_response(driver, setup_run):
     async def scenario():
         config,wheel,run = setup_run

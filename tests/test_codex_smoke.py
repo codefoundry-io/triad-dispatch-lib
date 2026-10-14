@@ -3,6 +3,7 @@ import errno
 import hashlib
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import sys
@@ -93,6 +94,80 @@ def test_packet_path_boundaries(context, tmp_path):
             module.prepare_context(context | {"packet_files": [context["brief_file"], str(alias)]})
     finally:
         outside.unlink()
+
+
+@pytest.mark.parametrize("surface", ["worktree", "packet-ancestor", "packet-leaf"])
+@pytest.mark.parametrize("error_number", [None, errno.EIO, errno.EACCES])
+def test_context_alias_metadata_failure_refused_before_packet_read(
+        context, tmp_path, monkeypatch, surface, error_number):
+    module = driver()
+    root = Path(context["worktree"])
+    changed = copy.deepcopy(context)
+    alias = root/"alias"
+    if surface == "worktree":
+        alias.symlink_to(root, target_is_directory=True)
+        changed["worktree"] = str(alias)
+        paths = [alias/Path(value).name for value in context["packet_files"]]
+    elif surface == "packet-ancestor":
+        actual = root/"actual"
+        actual.mkdir()
+        for value in context["packet_files"]:
+            shutil.copyfile(value, actual/Path(value).name)
+        alias.symlink_to(actual, target_is_directory=True)
+        paths = [alias/Path(value).name for value in context["packet_files"]]
+    else:
+        alias.symlink_to(Path(context["brief_file"]))
+        paths = [alias, Path(context["packet_files"][1])]
+    changed["brief_file"] = str(paths[0])
+    changed["packet_files"] = [str(path) for path in paths]
+    records = [{"path": path.relative_to(Path(changed["worktree"])).as_posix(),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest()} for path in sorted(paths)]
+    changed["expected"]["content_digest"] = hashlib.sha256(
+        json.dumps(records, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    original_stat, original_lstat, original_read = os.stat, os.lstat, Path.read_bytes
+    reads = []
+
+    def stat(path, *args, **kwargs):
+        if error_number and Path(path) == alias and not kwargs.get("follow_symlinks", True):
+            raise OSError(error_number, "synthetic context metadata failure", str(alias))
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if error_number and Path(path) == alias:
+            raise OSError(error_number, "synthetic context metadata failure", str(alias))
+        return original_lstat(path, *args, **kwargs)
+
+    def read(path):
+        if path in paths:
+            reads.append(path)
+        return original_read(path)
+
+    monkeypatch.setattr(os, "stat", stat)
+    monkeypatch.setattr(os, "lstat", lstat)
+    monkeypatch.setattr(Path, "read_bytes", read)
+    failure = None
+    try:
+        module.prepare_context(changed)
+    except (ValueError, OSError) as error:
+        failure = error
+    assert not reads, "context canonicality failure allowed packet bytes to be read"
+    if error_number:
+        assert isinstance(failure, OSError)
+        assert failure.errno == error_number
+    else:
+        assert isinstance(failure, ValueError)
+        assert "canonical" in str(failure)
+
+
+@pytest.mark.parametrize("surface", ["worktree", "packet"])
+@pytest.mark.parametrize("kind", ["missing", "not-directory"])
+def test_missing_context_paths_keep_canonical_refusal(context, surface, kind):
+    root = Path(context["worktree"])
+    invalid = root/"missing" if kind == "missing" else Path(context["brief_file"])/"child"
+    changed = context | ({"worktree": str(invalid)} if surface == "worktree" else
+                         {"packet_files": [context["brief_file"], str(invalid)]})
+    with pytest.raises(ValueError, match="canonical"):
+        driver().prepare_context(changed)
 
 
 def test_admission_call_through(context, monkeypatch):

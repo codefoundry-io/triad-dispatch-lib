@@ -67,8 +67,12 @@ def sync_assets(repo: Path, *, write: bool) -> None:
         expected[Path(bundle) / "source-manifest.json"] = (
             json.dumps(make_manifest(digests), indent=2, sort_keys=True) + "\n").encode("utf-8")
     directories = {parent for path in expected for parent in path.parents if parent != Path('.')}
-    if data.exists():
-        if not data.is_dir():
+    try:
+        data_mode = data.lstat().st_mode
+    except FileNotFoundError:
+        pass
+    else:
+        if not stat.S_ISDIR(data_mode):
             raise ValueError("Generated resource root is not a directory")
         for path, mode in tree_entries(data):
             relative = path.relative_to(data)

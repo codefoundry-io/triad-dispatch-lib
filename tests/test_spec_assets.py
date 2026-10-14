@@ -260,6 +260,76 @@ def test_unreadable_output_directory_refuses_before_following_link(generated, wr
     assert snapshot(root) == before
 
 
+@pytest.mark.parametrize('persistent', [False, True])
+@pytest.mark.parametrize('write', [True, False])
+@pytest.mark.parametrize('error_number', [errno.EACCES, errno.EIO])
+def test_output_root_observation_error_never_skips_inventory(generated, monkeypatch,
+                                                            persistent, write, error_number):
+    root, sync = generated
+    sync(root, write=True)
+    data = root / 'src/triad_dispatch_lib/data'
+    sentinel = root / 'outside-sentinel'
+    sentinel.write_bytes(b'preserve outside bytes')
+    if write:
+        target = data / 'leg-verdict.schema.json'
+        target.unlink()
+        target.symlink_to(sentinel)
+    else:
+        (data / 'unowned').write_bytes(b'preserve unexpected bytes')
+    before = snapshot(root)
+    original_stat, original_lstat = os.stat, os.lstat
+    root_observed = failed = False
+
+    def observe(path, follow_symlinks):
+        nonlocal root_observed, failed
+        if os.fspath(path) != str(data):
+            return
+        if not follow_symlinks and not root_observed:
+            root_observed = True
+        elif persistent or not failed:
+            failed = True
+            raise OSError(error_number, 'injected output-root observation error')
+
+    def stat(path, *args, **kwargs):
+        observe(path, kwargs.get('follow_symlinks', True))
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        observe(path, False)
+        return original_lstat(path, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'stat', stat)
+        patch.setattr(os, 'lstat', lstat)
+        with pytest.raises(OSError) as error:
+            sync(root, write=write)
+        assert error.value.errno == error_number
+    assert sentinel.read_bytes() == b'preserve outside bytes'
+    assert snapshot(root) == before
+
+
+@pytest.mark.parametrize('kind', ['missing', 'file'])
+@pytest.mark.parametrize('write', [True, False])
+def test_output_root_missing_and_occupied_controls(generated, kind, write):
+    root, sync = generated
+    data = root / 'src/triad_dispatch_lib/data'
+    if kind == 'file':
+        data.parent.mkdir(parents=True)
+        data.write_bytes(b'preserve occupied root')
+    before = snapshot(root)
+    if kind == 'missing' and write:
+        sync(root, write=True)
+        sync(root, write=False)
+        for target, source in MAPPING.items():
+            assert (data / target).read_bytes() == (root / 'spec' / source).read_bytes()
+    else:
+        with pytest.raises(ValueError):
+            sync(root, write=write)
+        assert snapshot(root) == before
+        if kind == 'missing':
+            assert not data.exists()
+
+
 def test_packaged_schema_ids_remain_in_original_namespace():
     from triad_dispatch_lib.contracts import load_contract, load_roster_contract
     namespace = 'https://github.com/codefoundry-io/triad-dispatch-spec/contracts/'

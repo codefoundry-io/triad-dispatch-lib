@@ -172,7 +172,7 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     prepare_context = helper('codex_smoke')['prepare_context']
     try:
         if (not run_dir.is_absolute() or not run_dir.parent.is_dir()
-                or run_dir.parent.resolve() != run_dir.parent):
+                or run_dir.parent.resolve(strict=True) != run_dir.parent):
             raise ValueError('Run parent must be canonical')
     except RuntimeError:
         raise ValueError('Run parent must be canonical') from None

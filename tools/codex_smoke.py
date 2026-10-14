@@ -1,6 +1,7 @@
 """Test adapter for pinned Codex prompts and raw responses, without spawning."""
 
 import argparse
+import errno
 import hashlib
 from importlib.metadata import version
 from importlib.resources import files
@@ -57,8 +58,12 @@ def prepare_context(context: dict) -> dict:
     root = Path(context["worktree"])
     paths = [Path(value) for value in context["packet_files"]]
     try:
-        resolved_root = root.resolve() if root.is_absolute() else None
+        resolved_root = root.resolve(strict=True) if root.is_absolute() else None
     except RuntimeError:
+        raise ValueError("Worktree must be a canonical absolute directory.") from None
+    except OSError as error:
+        if error.errno not in (errno.ENOENT, errno.ENOTDIR, errno.ELOOP):
+            raise
         raise ValueError("Worktree must be a canonical absolute directory.") from None
     if resolved_root != root or not root.is_dir():
         raise ValueError("Worktree must be a canonical absolute directory.")
@@ -66,8 +71,12 @@ def prepare_context(context: dict) -> dict:
         raise ValueError("Brief must belong to a unique bound packet.")
     for path in paths:
         try:
-            resolved_path = path.resolve() if path.is_absolute() else None
+            resolved_path = path.resolve(strict=True) if path.is_absolute() else None
         except RuntimeError:
+            raise ValueError("Packet must contain canonical regular files inside the worktree.") from None
+        except OSError as error:
+            if error.errno not in (errno.ENOENT, errno.ENOTDIR, errno.ELOOP):
+                raise
             raise ValueError("Packet must contain canonical regular files inside the worktree.") from None
         if (resolved_path != path or not path.is_relative_to(root)
                 or path.is_symlink() or not path.is_file()):

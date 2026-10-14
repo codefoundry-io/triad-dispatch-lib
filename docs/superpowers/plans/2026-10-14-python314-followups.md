@@ -185,7 +185,7 @@ The round was exported and cleaned before implementation continued.
 - [x] Run focused RED/GREEN regressions on Python 3.12 and 3.14, then integrated
   source/archive/wheel verification: 760 source and 760 archive tests per version,
   all four wheel paths and all 184 scoped table references pass.
-- [ ] Run native CI and a fresh full review with the
+- [x] Run native CI and a fresh full review with the
   same three required entries, Astra comparison and 40-minute budgets.
 
 Estimated production delta: approximately +15/-4 across the two repository
@@ -214,3 +214,38 @@ pass 763 source/archive tests per interpreter, all four wheel paths and 184
 reference checks. Production follow-up +1/-1, tests +12/-4, three additional
 cases. Final native CI and a fresh complete review remain externally recorded
 steps after the documentation-only result update.
+
+## R14 complete path-observation boundary
+
+R14 completed on `0e7375c`: all required entries were admitted, but Sol's
+generator finding kept collection BLOCKED. Opus and the separate Astra
+comparison identified the same output-root gate; Astra and Opus also identified
+remaining non-strict context/run-parent resolution. An independent read-only
+audit of all five tools separated these three boundary groups from intentional
+wheel aliases and already-refusing checks. Native CI run 38613737116 tested the
+actual head in four jobs, each passing 763 source/archive tests without skips.
+The round was exported and cleaned before these corrections began.
+
+- [x] Reproduce transient output-root status errors and check-mode incomplete
+  inventory, then use a non-following root observation with only missing-root
+  absence permitted. Preserve initial generation and untouched output/sentinels.
+- [x] Reproduce context reads and run creation through unresolved aliases under
+  ancestor metadata faults. Require strict resolution before those effects,
+  preserving existing missing/cyclic-path diagnostics and ordinary controls.
+- [x] Add the preceding and new regressions to their owning conformance entries;
+  verify actual definitions, not only that existing references still resolve.
+- [ ] Run RED/GREEN on Python 3.12/3.14, then source/archive/wheel verification,
+  actual-head native macOS/Ubuntu CI and a fresh full review with the same roster,
+  separate Astra comparison, current official web evidence and 40-minute budgets.
+
+Estimated production delta: approximately +15/-5 across three repository tools,
+with tests and documentation counted separately. No shared-core/API, dependency,
+payload or host-adoption change. Fault injection establishes error propagation
+and refusal ordering, not a live-provider incident or concurrency guarantee.
+
+Measured production delta is +18/-5 (net +13); tests add 183 lines and 28 cases.
+The output-root regression file passes 90 cases and the two driver files pass
+133 on each interpreter. Integrated local runs pass 791 source/archive tests
+per version and all four wheel paths. The updated reference audit resolves
+193 occurrences. Native CI and the next full review remain post-freeze steps;
+their result does not require another tracked documentation-only review cycle.

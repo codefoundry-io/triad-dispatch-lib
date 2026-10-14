@@ -29,7 +29,7 @@ actual cases to partial library evidence and remaining owners.
 | R-BIND, R-TERMINAL; C14, C30, C78 (partial) | `output.extract_final`, `admit_output`: typed terminal guards and original member spans | `tests/test_output.py::test_admit_all_carriers`, `test_extraction_preserves_original_representation`, `test_full_envelope_is_strict`, `test_terminal_guards_precede_payload`, `test_google_sibling_carrier_cannot_swap` | Truthful execution observations and unsupported envelope adaptation |
 | R-CONTAIN; C23 (strict subset only) | Strict successful AGY stream admission; no finish-recovery analyzer | `tests/test_output.py::test_agy_missing_or_failed_result_refused`, `test_agy_exit_three_refuses_partial_valid_result_before_parse` | Preserve qualifying same-run recovery and all its structured evidence/guards |
 | R-CLASSIFY, R-AUTH, R-TOKENS, R-NOCOST; C8, C11, C17, C37, C43, C74-C77 | No extracted classifier/auth/token API | `tests/test_output.py::test_quota_looking_evidence_is_ordinary_data` covers only the no-keyword-classification boundary | Vendor sentence carriers, credentials, STOP precedence, exit tokens and repair |
-| R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
+| R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside`, `test_symlink_status_errors_refuse_before_writes`, `test_tree_enumeration_errors_refuse_before_writes`, `test_unreadable_output_directory_refuses_before_following_link`, `test_output_root_observation_error_never_skips_inventory`, `test_output_root_missing_and_occupied_controls` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
 
 ## Remaining normative groups and ownership
 
@@ -89,9 +89,19 @@ covers failed cancellation publication and repeated parent cancellation.
 `test_cyclic_receipt_symlink_retains_custody_until_regular_ack` and
 `test_regular_refuses_ancestor_symlink_loop` cover Python 3.12 cyclic-link
 resolution failures without treating them as terminal acknowledgements.
+`tests/test_native_codex_smoke.py::test_regular_never_reads_symlink_when_link_metadata_fails` covers failed
+non-following observations at the leaf and ancestors, refusing before target
+bytes are read. Its EIO/EACCES cases inject syscall errors; they do not establish
+an ordinary permission arrangement or actual backend behavior.
 
 `test_receipt_readiness_error_retains_custody` covers stat/lstat EACCES/EIO
 before receipt consumption, including deadline and repeated parent cancellation.
 The separate pre-publication context regressions in `tests/test_codex_smoke.py`
 exercise cyclic worktree/packet paths and controlled CLI refusal without output
 publication. These driver refusal tests do not establish installed host custody.
+`tests/test_codex_smoke.py::test_context_alias_metadata_failure_refused_before_packet_read`
+exercises canonical worktree, packet ancestor and packet leaf observation before
+reading; `tests/test_codex_smoke.py::test_missing_context_paths_keep_canonical_refusal`
+preserves missing-path diagnostics.
+`tests/test_native_codex_smoke.py::test_run_parent_alias_refused_before_creating_artifacts`
+checks canonical parent refusal before any run directory or artifact is created.

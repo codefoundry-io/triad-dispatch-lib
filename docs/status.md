@@ -181,6 +181,23 @@ three added cases close that canonical-path boundary. Final local suites pass
 The preceding `f9f0367` CI passed 760 tests per source/archive job without skips;
 it is retained only as intermediate evidence. Final CI/review follow the new SHA.
 
+R14 (`20261015-lib-spec-r14-aa4570`) completed BLOCKED on `0e7375c`; Sol
+required a remaining generator output-root observation correction. Opus and
+separate Astra independently found the same gap and non-strict resolution at
+context/run-parent boundaries. Opus also identified missing links to the newest
+regressions in the conformance map. All four native CI jobs at this exact head
+passed 763 source/archive tests without skips and all four wheel paths
+([run 38613737116](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38613737116)).
+The round is exported and cleaned. Focused reproduction, bounded corrections
+and traceability updates continue under the owner's existing authorization;
+the [R14 closure record](verification/2026-10-15-review-closure.md#r14-output-root-and-canonical-input-boundaries)
+distinguishes injected faults, side effects and verification limits. A fresh
+complete review is required after the changes.
+The corrections add 28 regression cases. Local Python 3.12.13 and 3.14.6 now
+each pass 791 source and 791 unpacked-sdist tests plus all four installed-wheel
+paths; all 193 scoped references resolve, including the newly linked tests.
+Committed-head CI and fresh review outcomes remain external post-freeze evidence.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

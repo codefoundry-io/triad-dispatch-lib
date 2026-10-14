@@ -256,3 +256,93 @@ jobs passed 760 source/archive tests with no skips and all four wheel paths.
 This remains useful evidence for that commit, but does not cover strict ancestor
 resolution. Final committed CI and R14 outcomes are recorded externally after
 source freeze; no result is transferred from the intermediate candidate.
+
+## R14 output-root and canonical-input boundaries
+
+R14 `20261015-lib-spec-r14-aa4570` reviewed `0e7375c0feda9e397af9ecf5f5254b562bad7aaf`.
+All three required results were COMPLETE: Sol requested fixes, while Opus and
+Argon returned SAFE. Collection was BLOCKED, with no missing entries or
+selection deviations. Separate Astra had no vote. Original results, parent
+custody, runtime observations and adjudication were exported before owned
+temporary roots were removed. Opus took approximately 795 seconds and Argon
+479 seconds; both stayed within their 2400-second budgets. Native effective
+model identity and usage remain unexposed.
+
+Exact-head [CI run 38613737116](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38613737116)
+passed all four jobs, each asserting head and tree identity and passing 763
+source/763 archive tests without skips, authoring/generation checks and four
+installed-wheel paths. This verifies the R14 candidate; it does not cover later
+corrections or replace review findings.
+
+The remaining generator gate uses a following `data.exists()` predicate before
+inventory. Python 3.14 can suppress its status error, skipping the entire scan.
+A persistent root-status error can still make later directory creation refuse,
+as the earlier control measured. A one-shot error can recover before that call;
+check mode can also accept unexpected inventory when all expected bytes match.
+These distinct triggers require focused reproduction before assigning impact.
+Sol, Opus and Astra independently identified this boundary.
+
+Context preparation and native run-parent validation also retain non-strict
+resolution. Astra, Opus and a separate read-only audit identify the same
+ancestor-observation fault model already measured for `regular()`. The required
+ordering is canonical validation before packet reads or run creation. Later
+strict prompt validation does not undo earlier file creation. No final request
+publication or false agreement is inferred from this path.
+
+The five-tool audit distinguished these existing-contract gaps from allowed
+wheel aliases, lexical import checks and predicates whose failure already
+refuses the operation. No new general path grammar or concurrency guarantee
+is introduced. The conformance map also gains missing links to generator
+scan/status and native regular-file regressions, plus the new boundary tests.
+
+Current [Python 3.14 pathlib documentation](https://docs.python.org/3.14/library/pathlib.html)
+was checked on 2026-10-15. It documents predicate error suppression and strict
+resolution. Split syscall faults below remain injected diagnostic evidence,
+not an observed permission-only layout or real-provider incident.
+Measured correction results are recorded below after execution.
+
+### R14 correction results
+
+Original generator experiments on Python 3.14.6 reproduced sentinel overwrite
+with one-shot EIO/EACCES and false check-mode success with both one-shot and
+persistent faults. Persistent write faults instead produced a later
+FileExistsError, preserving bytes but losing the original errno. Python 3.12.13
+propagated the original error in all cases. The correction uses root `lstat()`
+mode and only FileNotFoundError for absence, retaining the existing walker.
+Twelve regressions cover those faults and missing/occupied root controls:
+original 3.14 has 8 failures/82 passes, corrected asset suites pass 90 on each
+version, and the focused 12 pass on each. Original 3.12 already passed all 90.
+The corrected external following-stat probe no longer reaches that observation;
+separate regression injection proves error propagation at the new lstat gate.
+
+Context and native-parent regressions reproduce reading packet bytes or creating
+run artifacts through aliases when non-following metadata faults are suppressed.
+Original focused results were 6 failures/8 passes on Python 3.12 and 8 failures/6
+passes on 3.14; ordinary aliases were already refused. The correction uses strict
+resolution for existing worktree, packet and run-parent paths. Context handling
+normalizes only ENOENT, ENOTDIR, ELOOP and the older cyclic-path RuntimeError to
+its existing ValueError diagnostics; EIO/EACCES propagate. Existing controls
+cover normal inputs and cyclic paths. Sixteen added cases cover three context
+alias positions, missing/nondirectory context paths and native run-parent
+refusal before creation. These are repository helper tests, not provider runs.
+The complete two affected driver files pass 133 tests on each interpreter;
+focused GREEN passes 26 on each before the two nondirectory controls were added.
+
+Production changes total +18/-5 (net +13) across three tools; tests add 183 lines
+and 28 cases. Canonical runtime payloads, shared APIs and dependencies are
+unchanged. The conformance map now points to all preceding and new scoped
+regressions. Its fresh external AST audit resolves 193 occurrences (116 unique
+test references across 17 files); six existing prose shorthands remain explicitly
+introduced by their owning filename and outside that automated audit.
+
+Exact original/corrected logs, commands and cleanup receipts are retained under
+`20261015-lib-reference-closure/r14-output-root/` and `r14-context-parent/`;
+the reference receipt is `r15-map-audit/`. Integrated measurements follow below.
+
+Integrated local macOS ARM64 runs on Python 3.12.13 and 3.14.6 each pass **791
+source and 791 unpacked-sdist tests**, authoring/generator/interface checks and
+all four isolated installed-wheel paths. Commands, logs, hashes and successful
+owned-stage cleanup are in `final-{3.12,3.14}-r9/` under the Python follow-up
+evidence root. These measurements precede this documentation-only result
+recording. Actual committed-head native CI and the fresh review are recorded
+externally after freeze; no earlier approval transfers.
