@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import stat
 import sys
@@ -31,6 +32,19 @@ def refuse_symlinks(path: Path) -> None:
             raise ValueError(f"Symlink refused: {component}")
 
 
+def tree_entries(directory: Path):
+    """Enumerate every descendant, propagating scan/status errors without following links."""
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            path = directory / entry.name
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"Symlink refused: {path}")
+            yield path, mode
+            if stat.S_ISDIR(mode):
+                yield from tree_entries(path)
+
+
 def sync_assets(repo: Path, *, write: bool) -> None:
     """Validate the entire owned output tree before writing any resource."""
     source = repo / "spec"
@@ -39,8 +53,8 @@ def sync_assets(repo: Path, *, write: bool) -> None:
     refuse_symlinks(data)
     if not source.is_dir():
         raise ValueError("Missing canonical specification tree")
-    for path in source.rglob("*"):
-        refuse_symlinks(path)
+    for _ in tree_entries(source):
+        pass
     expected = {}
     for bundle, mapping in BUNDLES.items():
         digests = {}
@@ -56,11 +70,10 @@ def sync_assets(repo: Path, *, write: bool) -> None:
     if data.exists():
         if not data.is_dir():
             raise ValueError("Generated resource root is not a directory")
-        for path in data.rglob("*"):
-            refuse_symlinks(path)
+        for path, mode in tree_entries(data):
             relative = path.relative_to(data)
-            if not ((path.is_file() and relative in expected)
-                    or (path.is_dir() and relative in directories)):
+            if not ((stat.S_ISREG(mode) and relative in expected)
+                    or (stat.S_ISDIR(mode) and relative in directories)):
                 raise ValueError(f"Unexpected generated path: {relative}")
     for relative in directories:
         path = data / relative

@@ -573,6 +573,36 @@ def test_regular_refuses_ancestor_symlink_loop(driver, tmp_path):
         driver.regular(ancestor/'receipt.json')
 
 
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+def test_regular_never_reads_symlink_when_link_metadata_fails(driver, tmp_path, monkeypatch, error_number):
+    target = tmp_path/'target.txt'
+    target.write_bytes(b'Actual target bytes.\n')
+    link = tmp_path/'link.txt'
+    link.symlink_to('target.txt')
+    assert driver.regular(target) == b'Actual target bytes.\n'
+    original_stat, original_lstat = os.stat, os.lstat
+
+    def stat(path, *args, **kwargs):
+        if error_number and path == link and not kwargs.get('follow_symlinks', True):
+            raise OSError(error_number, 'synthetic link metadata failure', str(link))
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if error_number and Path(path) == link:
+            raise OSError(error_number, 'synthetic link metadata failure', str(link))
+        return original_lstat(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, 'stat', stat)
+    monkeypatch.setattr(os, 'lstat', lstat)
+    with pytest.raises(OSError if error_number else ValueError) as caught:
+        driver.regular(link)
+    if error_number:
+        assert caught.value.errno == error_number
+    else:
+        assert str(caught.value) == 'Expected canonical absolute regular file'
+    assert target.read_bytes() == b'Actual target bytes.\n'
+
+
 @pytest.mark.parametrize('phase,error_number', [
     (phase, number)
     for phase in ('normal', 'cleanup')

@@ -189,6 +189,77 @@ def test_missing_canonical_input_does_not_partially_write(generated):
     assert snapshot(data) == before
 
 
+@pytest.mark.parametrize('location', ['output_root', 'output_nested', 'source_root', 'source_nested'])
+@pytest.mark.parametrize('payload', ['link', 'extra'])
+@pytest.mark.parametrize('write', [True, False])
+@pytest.mark.parametrize('error_number', [errno.EACCES, errno.EIO])
+def test_tree_enumeration_errors_refuse_before_writes(generated, monkeypatch, location, payload,
+                                                     write, error_number):
+    root, sync = generated
+    sync(root, write=True)
+    data = root / 'src/triad_dispatch_lib/data'
+    source = root / 'spec'
+    scans = {'output_root': data, 'output_nested': data / 'prompt-bundle/prompts',
+             'source_root': source, 'source_nested': source / 'prompts'}
+    targets = {'output_root': data / 'leg-verdict.schema.json',
+               'output_nested': data / 'prompt-bundle/prompts/investigation.md',
+               'source_root': source / 'contracts/leg-verdict.schema.json',
+               'source_nested': source / 'prompts/investigation.md'}
+    sentinel = root / 'outside-sentinel'
+    sentinel.write_bytes(b'preserve outside bytes')
+    if payload == 'link':
+        targets[location].unlink()
+        targets[location].symlink_to(sentinel)
+    else:
+        (scans[location] / 'unowned').write_bytes(b'preserve unexpected bytes')
+        (source / 'contracts/leg-verdict.schema.json').write_bytes(b'new canonical bytes')
+    before = snapshot(root)
+    original_scandir = os.scandir
+
+    def scandir(path):
+        if os.fspath(path) == str(scans[location]):
+            raise OSError(error_number, 'injected tree-enumeration error')
+        return original_scandir(path)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'scandir', scandir)
+        with pytest.raises(OSError) as error:
+            sync(root, write=write)
+        assert error.value.errno == error_number
+    assert sentinel.read_bytes() == b'preserve outside bytes'
+    assert snapshot(root) == before
+
+
+@pytest.mark.parametrize('write', [True, False])
+def test_unreadable_output_directory_refuses_before_following_link(generated, write):
+    root, sync = generated
+    sync(root, write=True)
+    data = root / 'src/triad_dispatch_lib/data'
+    directory = data / 'prompt-bundle/prompts'
+    target = directory / 'investigation.md'
+    sentinel = root / 'outside-sentinel'
+    sentinel.write_bytes(b'preserve outside bytes')
+    target.unlink()
+    target.symlink_to(sentinel)
+    before = snapshot(root)
+    original_mode = directory.stat().st_mode & 0o777
+    try:
+        directory.chmod(0o300)
+        try:
+            with os.scandir(directory) as entries:
+                list(entries)
+        except PermissionError:
+            pass
+        else:
+            pytest.skip('Current user can enumerate directories without read permission')
+        with pytest.raises(PermissionError):
+            sync(root, write=write)
+    finally:
+        directory.chmod(original_mode)
+    assert sentinel.read_bytes() == b'preserve outside bytes'
+    assert snapshot(root) == before
+
+
 def test_packaged_schema_ids_remain_in_original_namespace():
     from triad_dispatch_lib.contracts import load_contract, load_roster_contract
     namespace = 'https://github.com/codefoundry-io/triad-dispatch-spec/contracts/'

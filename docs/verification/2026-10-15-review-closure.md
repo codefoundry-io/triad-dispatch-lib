@@ -1,4 +1,4 @@
-# R12 quality follow-up verification
+# Quality follow-up verification
 
 The owner authorized continuing verified quality corrections to convergence.
 R12 `20261015-lib-spec-r12-9cedd4` reviewed `8ceaa7d10a199339cbac1a1e51fad4b7f593288a`
@@ -132,3 +132,87 @@ recorded externally after source freeze. The selected Opus/Sol/Argon profile,
 separate Astra comparison, current official web authorization and 2400-second
 budgets remain unchanged. Synthetic tests do not establish actual native backend
 termination, provider settings, consumer adoption, publication or installation.
+
+## R13 directory inventory and regular-file diagnosis
+
+R13 `20261015-lib-spec-r13-dcf36d` reviewed `d9d0055ec67a6465342acb1f09bc2c1dbe0716c5`
+with digest `576e4f23d525b0b16dfa7b74057404ce1da50aba8e7c9385ee5f1e23dd0b763c`.
+All required entries completed; Sol returned MERGE WITH FIXES, Opus and Argon
+SAFE TO MERGE. Collection was BLOCKED with no missing entries or selection
+deviations. The separate Astra comparison independently found the same generator
+issue as Sol and Opus. Original outputs, terminal observations and canonical
+export remain in the owner's R13 evidence; all review roots were cleaned.
+
+[Native CI run 38608784436](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38608784436)
+asserted actual checkout of `d9d0055` in all four jobs, with tracked tree
+`483d331f3c04b09a201e39e1f4684d7ab7cc1d50`. Each passed 723 source and 723
+archive tests plus four installed-wheel paths. macOS 15 ARM64 used Python
+3.12.10/3.14.7; Ubuntu 24.04 x86_64 used 3.12.15/3.14.8. Those passing tests
+did not cover the newly identified scan-error boundary.
+
+The generator's `rglob()` scan suppresses directory-enumeration failures.
+An expected output symlink omitted by that scan reaches following occupancy
+checks and `write_bytes()`. External experiments on actual Python 3.12.13 and
+3.14.6 reproduced this with EACCES/EIO injection. A nested directory with mode
+0300 also reproduced an outside-sentinel overwrite under the ordinary local
+account on both interpreters. Only task-owned fixtures were used; permissions
+were restored before cleanup. Check mode could refuse later for byte drift,
+but that does not establish complete inventory validation.
+
+Opus also proposed hardening `regular()` against a non-following metadata fault.
+Independent diagnosis confirmed that Python 3.14 suppresses the injected errno
+in both `is_symlink()` and non-strict `resolve()`, after which following file
+checks and reading return the target bytes. Python 3.12 refuses at the first
+predicate. Ordinary files pass and ordinary links are refused on both versions.
+This is a split syscall-fault model, not evidence that an ordinary permission
+mode produces different lstat/stat access or that a live provider was affected.
+
+Both corrections restore existing contracts: validate the whole inventory before
+writing, and refuse links or failed metadata observation before reading. They
+do not introduce concurrent-writer containment, a new public API or a provider
+mechanism. Focused and integrated results are recorded below after verification.
+
+Official references checked on 2026-10-15:
+
+- [Python 3.14 pathlib glob behavior](https://docs.python.org/3.14/library/pathlib.html#pathlib.Path.rglob)
+  explains directory-scan error suppression.
+- [Python 3.12 pathlib traversal](https://docs.python.org/3.12/library/pathlib.html#pathlib.Path.walk)
+  distinguishes ignored scan errors from explicit error propagation.
+
+### R13 correction results
+
+The generator now traverses with explicit `os.scandir()` and each child's
+non-following `lstat()` mode, rejecting links before descent and propagating
+enumeration/status errors. Output classification reuses that observed mode.
+Thirty-two injected scan cases cover source/output root/nested directories,
+link/extra-file fixtures, check/write modes and EACCES/EIO. Two further tests
+exercise mode 0300 directly and restore permissions in `finally`; they skip
+only for accounts that can still list the directory. Both ran here. All 34
+fail on frozen original code; the corrected asset file passes 78 cases on both
+interpreters. Existing initial-generation and byte-preservation tests remain.
+
+The native driver now observes link metadata through `lstat()` before reading.
+Its narrow ELOOP normalization preserves the existing canonical-file ValueError;
+other OSError values propagate. The three new ordinary-link/EIO/EACCES cases
+include a regular-file success control. Python 3.14 RED is two failures and one
+pass; focused GREEN is 14 on each interpreter, including existing cyclic-path
+and custody cases. The complete native file passes 81 tests on each interpreter.
+Detailed commands, original/corrected fixtures and cleanup receipts remain under
+`20261015-lib-reference-closure/r13-generator-scan/` and
+`20261015-lib-reference-closure/r13-regular-diagnosis/` in the owner evidence.
+
+Integrated local macOS ARM64 runs on Python 3.12.13 and 3.14.6 each pass **760
+source and 760 unpacked-sdist tests**, authoring/generator checks, interface
+checks and all four isolated installed-wheel paths. The external AST audit
+still resolves all 184 scoped table references. Production changes total
++27/-7 (net +20); tests add 101 lines and 37 cases. Shared library code, payloads,
+dependencies and default interpreter are unchanged.
+
+Raw integrated logs, commands, artifact hashes and successful cleanup are in
+`final-{3.12,3.14}-r7/` under the owner Python follow-up evidence root; current
+reference receipts are in `20261015-lib-reference-closure/r14-map-audit/`.
+Both local rebuilt wheels have SHA-256
+`ec62ab3a2816dc50473ed4ff48dc9c42c555f27d903de76cdda6635b39022955`.
+These measurements precede this documentation-only result recording. The new
+committed snapshot still needs actual-head native CI and a complete fresh review,
+recorded externally after freeze; R13 approval is not inferred.

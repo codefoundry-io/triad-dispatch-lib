@@ -2,6 +2,7 @@
 import argparse
 import asyncio
 from dataclasses import fields, is_dataclass
+import errno
 import hashlib
 import json
 import math
@@ -9,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import runpy
+import stat
 import subprocess
 import tempfile
 import time
@@ -32,9 +34,14 @@ def sha(raw):
 def regular(path):
     path = Path(path)
     try:
-        if not path.is_absolute() or path.is_symlink() or path.resolve() != path or not path.is_file():
+        if (not path.is_absolute() or stat.S_ISLNK(path.lstat().st_mode)
+                or path.resolve() != path or not path.is_file()):
             raise ValueError('Expected canonical absolute regular file')
     except RuntimeError:  # Python 3.12 resolve() reports ancestor symlink loops this way.
+        raise ValueError('Expected canonical absolute regular file') from None
+    except OSError as error:
+        if error.errno != errno.ELOOP:
+            raise
         raise ValueError('Expected canonical absolute regular file') from None
     return path.read_bytes()
 

@@ -136,7 +136,7 @@ comparison defect. The round was exported and cleaned before these changes.
   SHA assertion before tests; preserve the push-to-main path via github.sha.
 - [x] Record actual earlier merge/tree identities and verify source/archive/wheel
   behavior on both Python versions: 723 source and 723 archive tests each.
-- [ ] Run fresh native CI and the complete review profile; retain outcomes
+- [x] Run fresh native CI and the complete review profile; retain outcomes
   externally after source freeze alongside the draft PR.
 
 Expected production delta: +4/-1 in the repository-only native driver, no new
@@ -164,3 +164,38 @@ Revised measured production delta: +17/-5 (net +12) across the two tools, no new
 shared-library code or interface. Tests: +135/-4 (net +131), adding 17 cases.
 Workflow: +9/-0. Docs and external evidence remain separate. Integrated
 source/archive/wheel, native CI and fresh review follow the final snapshot.
+
+## R13 inventory and regular-file observation follow-ups
+
+R13 completed all three entries on `d9d0055` and remained BLOCKED: Sol required
+the generator enumeration correction independently identified by Opus and the
+separate Astra comparison. Native CI run 38608784436 asserted this actual head
+SHA in all four jobs, each passing 723 source/archive tests and four wheel paths.
+The round was exported and cleaned before implementation continued.
+
+- [x] Reproduce output scan EACCES/EIO with task-owned fixtures and an outside
+  sentinel. Refuse incomplete source/output inventory before any write, using
+  error-propagating traversal and non-following status checks. Cover root/nested
+  scans, both modes, inventory omissions and initial output creation.
+- [x] Preserve `regular()` link refusal when non-following metadata fails.
+  Actual Python 3.14 syscall injection showed both `is_symlink()` and non-strict
+  `resolve()` suppress the fault, allowing target bytes to be read. Keep absolute,
+  canonical-path and regular-file checks; distinguish injected split faults from
+  an observed OS permission arrangement.
+- [x] Run focused RED/GREEN regressions on Python 3.12 and 3.14, then integrated
+  source/archive/wheel verification: 760 source and 760 archive tests per version,
+  all four wheel paths and all 184 scoped table references pass.
+- [ ] Run native CI and a fresh full review with the
+  same three required entries, Astra comparison and 40-minute budgets.
+
+Estimated production delta: approximately +15/-4 across the two repository
+tools, no shared-core/API or dependency changes. Tests and records are separate.
+These restore existing inventory, link-refusal and file-preservation contracts;
+concurrent-writer containment and new host guarantees remain outside scope.
+
+Measured production delta: +27/-7 (net +20) across the two tools; tests +101/-0,
+adding 37 cases. Explicit `scandir` and non-following observed modes avoid hidden
+enumeration/classification suppression; a narrow ELOOP branch preserves the
+native driver's existing canonical-path refusal. This explains the bounded
+increase from the estimate. Documentation-only result recording follows local
+builds; exact committed native CI and fresh review outcomes are external.

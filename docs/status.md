@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-10-14
+Updated: 2026-10-15
 
 ## Owner decisions
 
@@ -158,6 +158,22 @@ the correction, historical identity qualification and verification boundaries.
 The same-class audit also reproduced and corrected suppressed status errors in
 native artifact reuse and generator symlink checks, with preservation regressions
 on both Python versions. Shared-library interfaces and payload bytes are unchanged.
+
+R13 (`20261015-lib-spec-r13-dcf36d`) completed BLOCKED on `d9d0055`, despite
+all four native CI jobs passing 723 source/archive tests on the asserted head.
+Sol, Opus and the separate Astra comparison identified suppressed directory
+enumeration in the generator. External tests reproduced outside-sentinel writes
+with scan errors and an actual non-listable directory on both Python versions.
+Opus's separate `regular()` suggestion also reproduced under Python 3.14
+non-following syscall-error injection. Bounded corrections and regressions
+continue under the owner's quality-convergence authorization; the
+[quality verification record](verification/2026-10-15-review-closure.md#r13-directory-inventory-and-regular-file-diagnosis)
+separates these observations from real-provider guarantees. Changed bytes
+require new source/package verification, native CI and a complete fresh review.
+The bounded corrections add 37 regressions. Local Python 3.12.13 and 3.14.6
+each now pass 760 source and 760 archive tests plus all four installed-wheel
+checks; all 184 scoped table references resolve. Native CI and fresh review
+outcomes for the committed snapshot are recorded externally after source freeze.
 
 ## Consolidation slice (historical verification)
 
