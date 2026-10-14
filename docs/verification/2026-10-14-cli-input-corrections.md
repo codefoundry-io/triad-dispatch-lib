@@ -63,6 +63,49 @@ must not be substituted for the project's tested 3.12 behavior.
 
 ## Evidence boundaries
 
+R6 (`20261014-lib-spec-r6-00876a`) completed with all three required entries
+returning `SAFE TO MERGE`, collector `AGREED`, no missing entry and no selection
+deviation. The separate Astra comparison also completed. Reviewers retained
+three nonblocking neighboring CLI findings: filesystem errors in public wheel
+status checks, a Python 3.13+ cyclic run-parent diagnostic difference, and the
+internal `--probe` option appearing in help. The complete required round was
+exported and cleaned before further edits; no approval transfers to later bytes.
+
+The wheel permission issue was reproduced using real non-searchable ancestor
+directories on all three public tools: exit 1 with `PermissionError` traceback,
+empty stdout, and no installation/publication. The bounded follow-up covers the
+whole wheel resolution/status input check while leaving installation/probe/identity
+failures outside it. The parent must be an existing directory; the internal probe
+is hidden from help consistently with other generated handoffs. Current official
+Python behavior and actual interpreter checks remain distinct evidence.
+
+The follow-up wheel tests cover three tools × two operations (`resolve` and
+`is_file`) × EACCES/EIO: all 12 failed before correction; the relevant three test
+files then passed 70 cases. Existing cyclic-wheel cases and actual standalone
+verifier cyclic inputs still return exit 2. The help check retains the public
+wheel argument and omits internal `--probe`; probe execution remains unchanged.
+
+On an isolated environment using the already installed Python 3.13.13, the
+existing cyclic run-parent case failed its diagnostic assertion before correction.
+Requiring an existing directory parent makes cyclic, missing and non-directory
+parents use the same controlled refusal. The expanded four CLI-input cases pass
+on 3.13.13. The project default stays Python 3.12; this focused check is not a
+claim of full-suite or real-provider coverage on 3.13.
+
+Incremental follow-up production delta is 16 additions / 10 deletions (net 6),
+across four repository-only drivers. Tests add 100 net lines and 14 cases. This
+does not change the package's public API, dependencies, schemas or host defaults.
+
+After these corrections, the complete local source and unpacked-sdist suites
+each passed 700 tests on Python 3.12.13. Authoring validation, generated assets,
+all 53 mapped test references and 27 exports, and all four installed-wheel
+verification drivers passed. The measured sdist SHA-256 is
+`cecb48f4b7146cd8b1bd775afcc8a350d20909e48b82b2df934f3a7c432c617c`;
+the wheel rebuilt from it is
+`cd740a105ac10c2d3695f4b50755034774be70952dd886d78af112cd767d5d50`.
+The temporary build tree was removed. This measurement paragraph was added
+after those runs; native CI and the fresh review bind the resulting commit.
+
 Fresh task evidence is retained under the owner's external run directory
 `_runs/reviews/20261014-lib-minor-fixes/`. RED/GREEN results, platform and package
 identities, CI URL/head, fresh review ID and adjudication are recorded there.

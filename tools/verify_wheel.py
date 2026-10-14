@@ -101,14 +101,19 @@ def installed_wheel(wheel: Path):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("wheel", type=Path, nargs="?")
-    parser.add_argument("--probe", nargs=2, type=Path, metavar=("FIXTURES", "PREFIX"))
+    parser.add_argument("--probe", nargs=2, type=Path, metavar=("FIXTURES", "PREFIX"), help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.probe:
         print(json.dumps(probe(*args.probe), indent=2))
         return
-    if args.wheel is None or not args.wheel.is_file():
+    if args.wheel is None:
         parser.error("provide one existing wheel path")
-    wheel = args.wheel.resolve()
+    try:
+        if not args.wheel.is_file():
+            parser.error("provide one existing wheel path")
+        wheel = args.wheel.resolve()
+    except (OSError, RuntimeError):  # Includes Python 3.12 resolution loops.
+        parser.error("provide one existing wheel path")
     script = Path(__file__).resolve()
     fixtures = script.parents[1] / "tests" / "fixtures" / "replay"
     with installed_wheel(wheel) as (python, prefix, neutral):

@@ -238,9 +238,9 @@ def main() -> int:
     args = parser.parse_args()
     try:
         wheel = args.wheel.resolve()
-    except RuntimeError:  # Python 3.12 reports symlink loops during resolution.
-        parser.error("wheel must be an existing regular file")
-    if not wheel.is_file():
+        if not wheel.is_file():
+            parser.error("wheel must be an existing regular file")
+    except (OSError, RuntimeError):  # Includes Python 3.12 resolution loops.
         parser.error("wheel must be an existing regular file")
     if not args.installed_prefix:
         # Resolve input/output paths before entering the neutral working directory.

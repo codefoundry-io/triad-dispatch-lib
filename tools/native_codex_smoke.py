@@ -159,7 +159,8 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     config = strict(config_raw)
     prepared = prepare(config)  # No directory/publication before complete validation.
     try:
-        if not run_dir.is_absolute() or run_dir.parent.resolve() != run_dir.parent:
+        if (not run_dir.is_absolute() or not run_dir.parent.is_dir()
+                or run_dir.parent.resolve() != run_dir.parent):
             raise ValueError('Run parent must be canonical')
     except RuntimeError:
         raise ValueError('Run parent must be canonical') from None

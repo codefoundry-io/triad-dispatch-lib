@@ -1,4 +1,5 @@
 import copy
+import errno
 import hashlib
 import importlib.util
 import json
@@ -246,6 +247,38 @@ def test_cli_cyclic_wheel_refused_before_install(ancestor, tmp_path, monkeypatch
     def forbidden_helpers():
         raise AssertionError("installation attempted for cyclic wheel")
 
+    monkeypatch.setattr(module, "helpers", forbidden_helpers)
+    monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(wheel),
+                                    "--expected-version", "0.1.0.dev3", "render",
+                                    "--context", str(tmp_path / "context.json"), "--prompt", str(prompt)])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "wheel must be an existing regular file" in captured.err
+    assert "Traceback" not in captured.err
+    assert not prompt.exists()
+
+
+@pytest.mark.parametrize("operation", ["resolve", "is_file"])
+@pytest.mark.parametrize("error_number", [errno.EACCES, errno.EIO], ids=["access", "io"])
+def test_cli_wheel_oserror_refused(operation, error_number, tmp_path, monkeypatch, capsys):
+    module = driver()
+    wheel = tmp_path.resolve() / "fixture.whl"
+    wheel.write_bytes(b"fixture")
+    prompt = tmp_path / "prompt.txt"
+    original = getattr(Path, operation)
+
+    def fail_wheel(path, *args, **kwargs):
+        if path == wheel:
+            raise OSError(error_number, "wheel observation failed")
+        return original(path, *args, **kwargs)
+
+    def forbidden_helpers():
+        raise AssertionError("installation attempted for inaccessible wheel")
+
+    monkeypatch.setattr(Path, operation, fail_wheel)
     monkeypatch.setattr(module, "helpers", forbidden_helpers)
     monkeypatch.setattr(sys, "argv", ["codex_smoke.py", "--wheel", str(wheel),
                                     "--expected-version", "0.1.0.dev3", "render",

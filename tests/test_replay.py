@@ -1,8 +1,10 @@
 import importlib.util
+import errno
 import json
 from pathlib import Path
 import subprocess
 import shutil
+import sys
 
 import pytest
 
@@ -86,3 +88,31 @@ def test_environment_interpreter_starts(tmp_path):
     result = subprocess.run([str(python), "-I", "-c", "import sys; print(sys.prefix)"],
                             check=True, capture_output=True, text=True)
     assert Path(result.stdout.strip()).resolve() == (tmp_path / "venv").resolve()
+
+
+@pytest.mark.parametrize("operation", ["resolve", "is_file"])
+@pytest.mark.parametrize("error_number", [errno.EACCES, errno.EIO], ids=["access", "io"])
+def test_cli_wheel_oserror_refused(operation, error_number, tmp_path, monkeypatch, capsys):
+    module = verifier()
+    wheel = tmp_path.resolve() / "fixture.whl"
+    wheel.write_bytes(b"fixture")
+    original = getattr(Path, operation)
+
+    def fail_wheel(path, *args, **kwargs):
+        if path == wheel:
+            raise OSError(error_number, "wheel observation failed")
+        return original(path, *args, **kwargs)
+
+    def forbidden_install(wheel):
+        raise AssertionError("installation attempted for inaccessible wheel")
+
+    monkeypatch.setattr(Path, operation, fail_wheel)
+    monkeypatch.setattr(module, "installed_wheel", forbidden_install)
+    monkeypatch.setattr(sys, "argv", ["verify_wheel.py", str(wheel)])
+    with pytest.raises(SystemExit) as caught:
+        module.main()
+    assert caught.value.code == 2
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "provide one existing wheel path" in captured.err
+    assert "Traceback" not in captured.err

@@ -182,6 +182,8 @@ def test_all_preflight_before_publish(driver, setup_run, bad):
 @pytest.mark.parametrize('bad,diagnostic', [
     ('huge-timeout', 'Invalid Codex entry or bounded timeout'),
     ('cyclic-run-parent', 'Run parent must be canonical'),
+    ('missing-run-parent', 'Run parent must be canonical'),
+    ('file-run-parent', 'Run parent must be canonical'),
 ])
 def test_cli_invalid_timeout_and_run_parent_exit_before_publication(
         driver, setup_run, monkeypatch, capsys, bad, diagnostic):
@@ -191,10 +193,15 @@ def test_cli_invalid_timeout_and_run_parent_exit_before_publication(
         value = json.loads(config.read_text())
         value['requests'][-1]['entry']['timeout_s'] = 10**400
         config.write_text(json.dumps(value))
-    else:
+    elif bad == 'cyclic-run-parent':
         loop = config.parent/'loop'
         loop.symlink_to('loop')
         run = loop/'run'
+    else:
+        parent = config.parent/'invalid-parent'
+        if bad == 'file-run-parent':
+            parent.write_text('This is a file, not a directory.\n')
+        run = parent/'run'
     original_helper = driver.helper
 
     def helper(name):

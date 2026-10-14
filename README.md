@@ -276,7 +276,8 @@ investigations also require a nonempty `perspective`. Names/run IDs match
 with explicit `codex.model`/`codex.reasoning` and timeout 1..3600 seconds. Formal
 contexts share the complete basis, packet and scope, except `expected.leg_name`.
 All inputs are preflighted before any request is published. Use canonical absolute
-regular input paths and a new canonical run directory. No run or receipt reuse.
+regular input paths and a new canonical run directory whose parent already exists
+as a directory. No run or receipt reuse.
 
 The exact `host` object is:
 

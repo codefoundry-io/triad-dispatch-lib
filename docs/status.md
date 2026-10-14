@@ -92,6 +92,15 @@ source/package verification and another complete review. These results do not
 certify host-only case axes. See the [Minor correction record](verification/2026-10-14-cli-input-corrections.md)
 for the new verification boundary and current evidence.
 
+The original two Minor corrections passed 686 source/sdist tests locally and
+on native Ubuntu/macOS CI at `174bf13`. R6 then completed `AGREED`, with three
+nonblocking neighboring CLI findings. Their bounded corrections now pass 700
+source/sdist tests locally and all four installed-wheel checks; focused Python
+3.13 checks also pass without changing the 3.12 project baseline. The linked
+Minor correction record identifies exact measurements. R6 approval does not
+transfer to these changed bytes; current native CI and fresh review outcomes
+are recorded with the owner-managed round evidence and PR.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification
