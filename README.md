@@ -328,10 +328,12 @@ native cancellation API. The parent must finish or interrupt/await every owned c
 
 For a cooperative CLI interrupt, the outer process forwards the first SIGINT to
 its isolated inner driver and waits for it to exit. Repeated interrupts to the
-outer process keep waiting; they do not kill the driver or remove its installed
-environment before terminal acknowledgement. Forced process death is outside
-this cooperative protocol, and this behavior does not establish native backend
-termination.
+outer process do not interrupt that cleanup. In `--self-test`, the synthetic
+supervisor finishes the current scenario's receipt exchange before cancellation
+propagates, so its temporary directory is cleaned along with the installed
+environment. The normal supervised path still requires the parent's terminal
+acknowledgement. Forced process death is outside this cooperative protocol,
+and this behavior does not establish native backend termination.
 
 Malformed or stale receipts retain the slot until a valid replacement establishes
 terminal custody. The original refusal remains a failed observation; replacement

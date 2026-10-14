@@ -228,6 +228,21 @@ until acknowledgement, and portable name preflight precedes artifact creation.
 Generator following-status errors retain their errno at every original query.
 Actual committed-head native CI and fresh review outcomes are recorded externally.
 
+R17 (`20261015-lib-spec-r17-855a0c`) completed AGREED on `ef748ee`; all
+three required entries were SAFE. Sol, Argon and separate Astra found no new
+issues. [Native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38627294936)
+asserted the actual head/tree and passed 847 source/archive tests without skips
+in all four jobs. Opus identified a synthetic self-test interruption Minor.
+The round was exported and cleaned. The bounded correction keeps the synthetic
+receipt supervisor alive until the current scenario finishes, then propagates
+cancellation and cleans its temporary directory. Shared runtime and supervised
+native contracts are unchanged. See the
+[R17 closure record](verification/2026-10-15-review-closure.md#r17-synthetic-self-test-interruption).
+Five new regression cases pass; local Python 3.12.13 and 3.14.6 each pass 852
+source/archive tests plus all four installed-wheel paths. The conformance audit
+resolves 204 scoped references. Actual committed-head CI and the next complete
+review remain separately recorded post-freeze evidence.
+
 
 ## Consolidation slice (historical verification)
 

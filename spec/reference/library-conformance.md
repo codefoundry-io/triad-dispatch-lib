@@ -90,6 +90,13 @@ roster keeps exact-case identities.
 `tests/test_native_codex_smoke.py::test_outer_cli_preserves_pending_interrupt_and_forwards_once_on_reentry`
 covers interruption before child binding, repeated handler entry and restoration
 of the prior signal handler.
+`tests/test_native_codex_smoke.py::test_self_test_interrupt_drains_synthetic_supervisor_and_cleans_environment`
+covers normal self-test completion and repeated PID/process-group interrupts
+during review and investigation. A scheduler-only gate holds a published
+request pending while the real outer/inner processes run; after release, the
+synthetic supervisor drains before cancellation propagates and both temporary
+directories are removed. This is synthetic lifecycle evidence, not provider
+termination or a claim about ordinary scheduler frequency.
 
 `test_invalid_receipt_retains_slot_until_matching_ack` covers malformed/stale
 acknowledgements, timestamp overflow and interruption while waiting for a valid

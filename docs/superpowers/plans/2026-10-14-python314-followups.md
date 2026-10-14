@@ -312,7 +312,7 @@ exported and cleaned before these follow-ups.
   original errors at every existing presence/type query. Preserve missing-path
   diagnostics, fresh observations, short-circuit behavior and unchanged files
   on refusal; avoid a cached inventory or new concurrency guarantee.
-- [ ] Add targeted regressions and conformance links, then verify Python
+- [x] Add targeted regressions and conformance links, then verify Python
   3.12/3.14 source/archive/wheel paths and actual-head Ubuntu/macOS CI. Run the
   same three required reviewers and separate Astra comparison with 40-minute
   budgets and current official web evidence.
@@ -332,3 +332,34 @@ interpreters. Final local source and unpacked-sdist suites pass 847 tests each
 on Python 3.12.13 and 3.14.6, all four wheel paths pass, and 203 scoped references
 resolve. Actual committed-head CI and the next complete review remain the
 post-freeze steps; their outcomes are recorded externally.
+
+## R17 synthetic self-test interruption
+
+R17 completed AGREED on `ef748ee`; all required entries returned SAFE. Sol,
+Argon and the separate Astra comparison found no new issues. Opus identified a
+Minor in the repository driver's synthetic self-test: cancellation can stop its
+in-process supervisor before it delivers receipts, leaving callback cleanup
+waiting for that same supervisor. Native CI run 38627294936 asserted the exact
+head/tree and passed 847 source/archive tests in all four jobs. The review was
+exported and cleaned before this correction.
+
+- [x] Reproduce interruption after a synthetic request is published, using real
+  outer/inner CLI processes on Python 3.12 and 3.14. Distinguish interpreter
+  behavior and scheduler instrumentation from an actual provider run.
+- [x] Shield each synthetic scenario from main-task cancellation, await its
+  remaining receipt work, then propagate cancellation. Retain the existing
+  supervised CLI interrupt handler and clean both temporary directories.
+- [ ] Add real-process regression coverage and normal controls; link the tests
+  to the driver conformance boundary. Verify both local interpreters and
+  exact-head Ubuntu/macOS CI, then run the same full review and Astra comparison.
+
+Estimate: approximately +10/-2 production lines in `tools/native_codex_smoke.py`,
+with tests and documentation separate. This repairs synthetic self-test cleanup;
+it introduces no shared API, provider cancellation mechanism or host-port change.
+
+Measured delta: +10/-2 production (net +8), +131 test lines and five cases.
+The native file passes 106 tests on each local interpreter; final focused
+checks cover the last test-cleanup edit. Integrated source and unpacked-sdist
+suites pass 852 tests each on both versions, with four installed-wheel paths
+and 204 scoped references passing. Actual committed-head CI and the next full
+review are post-freeze evidence, recorded externally.

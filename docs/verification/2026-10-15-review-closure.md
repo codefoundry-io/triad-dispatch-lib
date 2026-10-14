@@ -533,3 +533,66 @@ Exact commands, logs, sdist hashes and successful owned cleanup are in
 exclusions. These measurements precede only this documentation result update;
 actual committed-head native CI and the fresh full review are external evidence
 recorded after freeze. No previous approval transfers to the changed bytes.
+
+## R17 synthetic self-test interruption
+
+R17 `20261015-lib-spec-r17-855a0c` completed AGREED on
+`ef748eec5456923b64a4dee7e68dffc843361c70`; all required entries returned SAFE.
+Sol, Argon and the separate Astra comparison reported no new issues. Opus
+identified one Minor: the self-test's receipt supervisor is the asyncio main
+task, so SIGINT may cancel it before its callbacks receive terminal receipts.
+The outer process then waits for a child that is itself waiting for that stopped
+supervisor. The round was exported and cleaned before follow-up edits.
+[Native CI run 38627294936](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38627294936)
+asserted this actual head/tree in all four jobs and passed 847 source and archive
+tests without skips; it does not approve the later correction.
+
+An external real-process replay, with a widened synthetic polling window,
+reproduced the hang on Python 3.12.13. Python 3.14.6 exited 130 under that same
+replay; no universal cross-version hang is claimed. The regression's explicit
+poll gate also detects early supervisor cancellation on that version. Before
+the correction, all four interrupted review/investigation and PID/process-group
+cases failed on each interpreter, while the normal self-test control passed.
+The fixtures confirm a published request, send repeated outer SIGINT, then
+release the gate. They substitute installed-runtime bootstrap and instrument
+only scheduling and temporary-directory placement; the driver and shared
+runtime execute in actual outer/inner processes. This is neither an observed
+normal-scheduling frequency nor a real-provider cancellation experiment.
+
+The correction gives each synthetic scenario a retained task, shields it from
+main-task cancellation, awaits its receipt work, and re-raises cancellation.
+It preserves the cooperative outer handler and supervised configuration path.
+There is no forced-kill fallback or synthetic cancellation protocol. The
+[Python 3.14 shield documentation](https://docs.python.org/3.14/library/asyncio-task.html#shielding-from-cancellation)
+and [Python 3.12 Runner interrupt documentation](https://docs.python.org/3.12/library/asyncio-runner.html#handling-keyboard-interruption),
+accessed 2026-10-15, describe the separate protected-task and cancelled-caller
+semantics used here. Local executable evidence remains the version-specific
+compatibility proof.
+
+The production change is +10/-2 (net +8) in the repository driver. Five new
+regression cases cover normal completion, review/investigation interruption,
+repeated outer PID/group signals, terminal child state and cleanup of both
+synthetic and installed-environment lifecycles. Exact test and integrated
+verification results follow below; source-package and exact-head native CI
+remain separate from substituted-bootstrap regression evidence.
+
+Focused GREEN passes all 12 new/previous outer CLI cases on each interpreter;
+the complete native file passes 106 each. After the final test-only cleanup
+fallback edit, all five new cases pass again on each version. The test cleanup
+resolves only its exact recorded child even if the wrapper has already exited.
+Separate actual-installation probes with current candidate core also exit 130
+and remove the environment and synthetic root; they do not establish provider
+behavior. External commands, RED/GREEN and cleanup receipts are retained in
+`20261015-lib-reference-closure/r17-self-test-interrupt/`.
+
+Final local integrated verification passes **852 source and 852 unpacked-sdist
+tests** each on macOS ARM64/Python 3.12.13 and 3.14.6, plus authoring, generator,
+diff/interface checks and all four installed-wheel paths. Rebuilt wheel SHA-256:
+3.12 `1deed617917b92781aab4f89da2be7f293041ec8d714601ad96d043d4852b2f6`;
+3.14 `fcc55533cf94cb519e0992d0b02cf09ea30b493453ee2b1bfe0a22ef5bccbf86`.
+Exact commands, sdist hashes and successful cleanup are in
+`final-{3.12,3.14}-r12/`. The external `r18-map-audit/` resolves 204 occurrences,
+127 unique references in 18 files, with the same six documented prose exclusions.
+These measurements precede only documentation result recording. Actual-head
+native CI and the next complete review are external post-freeze evidence; no
+prior vote transfers.

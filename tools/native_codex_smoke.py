@@ -440,8 +440,16 @@ def self_test(wheel, runtime):
                 assert 'agreement' not in report and report['integrity_ok'] is True
                 assert report['outcomes'][0]['value']['sha256'] == sha(raw)
             return report
-        return dict(capture_label='synthetic', review=asyncio.run(scenario('review')),
-                    investigation=asyncio.run(scenario('investigation')))
+        async def drain_scenario(mode):
+            task = asyncio.create_task(scenario(mode))
+            try:
+                return await asyncio.shield(task)
+            except asyncio.CancelledError:
+                await task
+                raise
+
+        return dict(capture_label='synthetic', review=asyncio.run(drain_scenario('review')),
+                    investigation=asyncio.run(drain_scenario('investigation')))
 
 
 def main():

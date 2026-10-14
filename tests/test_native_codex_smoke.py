@@ -304,6 +304,137 @@ def test_driver_refuses_casefold_name_collision_before_artifacts(driver, setup_r
     assert not run.exists()
 
 
+@pytest.mark.parametrize('mode,scope', [
+    (None, None), ('review', 'wrapper'), ('review', 'group'),
+    ('investigation', 'wrapper'), ('investigation', 'group'),
+])
+def test_self_test_interrupt_drains_synthetic_supervisor_and_cleans_environment(
+        driver, setup_run, cli_runtime, mode, scope):
+    _, wheel, _ = setup_run
+    python, prefix, version = cli_runtime
+    root = wheel.parent
+    inner = root/'synthetic-inner.py'
+    inner.write_text('''import asyncio, importlib.util, json, sys, tempfile
+from pathlib import Path
+source, root = map(Path, sys.argv[1:3])
+target = sys.argv[3]
+sys.argv = [str(source), *sys.argv[4:]]
+spec = importlib.util.spec_from_file_location('native_inner', source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+real_temporary = tempfile.TemporaryDirectory
+def temporary(*args, **kwargs):
+    if kwargs.get('prefix') == 'triad-native-synthetic-':
+        kwargs['dir'] = root
+    return real_temporary(*args, **kwargs)
+tempfile.TemporaryDirectory = temporary
+real_sleep = asyncio.sleep
+async def sleep(delay, *args, **kwargs):
+    if delay == .002:
+        frame = asyncio.current_task().get_coro().cr_frame
+        if frame.f_locals.get('mode') == target and not (root/'poll.json').exists():
+            directory = frame.f_locals['directory']
+            (root/'poll.json').write_text(json.dumps({'directory': str(directory)}))
+            while not (root/'release').exists():
+                await real_sleep(.01)
+    return await real_sleep(delay, *args, **kwargs)
+asyncio.sleep = sleep
+raise SystemExit(module.main())
+''')
+    outer = root/'synthetic-outer.py'
+    outer.write_text('''import importlib.util, json, subprocess, sys, tempfile
+from contextlib import contextmanager
+from pathlib import Path
+source, inner, python, prefix, root = map(Path, sys.argv[1:6])
+target = sys.argv[6]
+sys.argv = [str(source), *sys.argv[7:]]
+spec = importlib.util.spec_from_file_location('native_outer', source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+real_popen = subprocess.Popen
+class Observed(real_popen):
+    def __init__(self, args, **kwargs):
+        args = [args[0], '-I', str(inner), str(source), str(root), target, *args[3:]]
+        super().__init__(args, **kwargs)
+        (root/'child.pid').write_text(str(self.pid))
+subprocess.Popen = Observed
+@contextmanager
+def installed(wheel):
+    with tempfile.TemporaryDirectory(prefix='synthetic-install-', dir=root) as neutral:
+        (root/'neutral').write_text(neutral)
+        try:
+            yield python, prefix, Path(neutral)
+        finally:
+            (root/'environment-cleaned').touch()
+original = module.helper
+module.helper = lambda name: {'installed_wheel': installed} if name == 'verify_wheel' else original(name)
+raise SystemExit(module.main())
+''')
+    with (root/'synthetic.stdout').open('w') as out, (root/'synthetic.stderr').open('w') as err:
+        process = subprocess.Popen([sys.executable, str(outer), str(Path(driver.__file__)),
+            str(inner), str(python), str(prefix), str(root), mode or 'none', '--wheel', str(wheel),
+            '--expected-version', version, '--self-test'], stdout=out, stderr=err, start_new_session=True)
+        try:
+            if mode is not None:
+                deadline = time.monotonic()+10
+                while not (root/'poll.json').exists():
+                    if process.poll() is not None or time.monotonic() >= deadline:
+                        pytest.fail('No synthetic poll: ' + (root/'synthetic.stderr').read_text())
+                    time.sleep(.01)
+                directory = Path(json.loads((root/'poll.json').read_text())['directory'])
+                deadline = time.monotonic()+3
+                while not list(directory.glob('*/request.json')) and time.monotonic() < deadline:
+                    time.sleep(.01)
+                assert list(directory.glob('*/request.json'))
+                child = int((root/'child.pid').read_text())
+                descendants = subprocess.run(['pgrep', '-P', str(child)], capture_output=True, text=True)
+                assert not descendants.stdout.strip(), 'Synthetic driver launched a child process'
+                interrupt = (lambda: process.send_signal(signal.SIGINT)) if scope == 'wrapper' else (
+                    lambda: os.killpg(process.pid, signal.SIGINT))
+                interrupt()
+                time.sleep(.05)
+                if process.poll() is None:
+                    interrupt()
+                time.sleep(.1)
+                held = process.poll() is None and directory.parent.exists()
+                (root/'release').touch()
+            try:
+                status = process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pytest.fail('Synthetic supervisor did not drain after its polling window was released')
+            if mode is not None:
+                assert held, 'Synthetic supervisor was cancelled before it could deliver receipts'
+                assert status == 130
+            else:
+                assert status == 0, (root/'synthetic.stderr').read_text()
+                assert json.loads((root/'synthetic.stdout').read_text())['capture_label'] == 'synthetic'
+            assert not list(root.glob('triad-native-synthetic-*'))
+            assert (root/'environment-cleaned').exists()
+            assert not Path((root/'neutral').read_text()).exists()
+            child_status = subprocess.run(['ps', '-p', (root/'child.pid').read_text(), '-o', 'stat='],
+                                          capture_output=True, text=True)
+            assert child_status.returncode != 0, 'Inner self-test was not reaped'
+        finally:
+            (root/'release').touch()
+            if (root/'child.pid').exists():
+                owned_child = int((root/'child.pid').read_text())
+                child_status = subprocess.run(['ps', '-p', str(owned_child), '-o', 'stat='],
+                                              capture_output=True, text=True)
+                if child_status.returncode == 0 and not child_status.stdout.strip().startswith('Z'):
+                    try:
+                        os.kill(owned_child, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+            if process.poll() is None:
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+            for temporary in root.glob('triad-native-synthetic-*'):
+                shutil.rmtree(temporary)
+
+
 def test_outer_cli_preserves_pending_interrupt_and_forwards_once_on_reentry(
         driver, setup_run, monkeypatch):
     from contextlib import contextmanager
