@@ -329,6 +329,32 @@ def test_cli_invalid_timeout_and_run_parent_exit_before_publication(
 
 
 @pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+def test_run_parent_status_error_preserves_errno_before_artifacts(driver, setup_run, monkeypatch, error_number):
+    config, wheel, run = setup_run
+    parent = run.parent
+    original_stat = os.stat
+
+    def stat(path, *args, **kwargs):
+        if error_number and Path(path) == parent and kwargs.get('follow_symlinks', True):
+            raise OSError(error_number, 'synthetic following parent status failure', str(parent))
+        return original_stat(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, 'stat', stat)
+    if error_number is None:
+        report = asyncio.run(exchange(driver, setup_run))
+        assert all(outcome['status'] == 'completed' for outcome in report['outcomes'])
+    else:
+        failure = None
+        try:
+            asyncio.run(driver.run(config, wheel, run))
+        except (ValueError, OSError) as error:
+            failure = error
+        assert not run.exists()
+        assert isinstance(failure, OSError), 'run-parent status error lost its original errno'
+        assert failure.errno == error_number
+
+
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
 def test_run_parent_alias_refused_before_creating_artifacts(driver, setup_run, monkeypatch, error_number):
     from triad_dispatch_lib import DispatchError
 
@@ -647,6 +673,30 @@ def test_regular_never_reads_symlink_when_link_metadata_fails(
     else:
         assert str(caught.value) == 'Expected canonical absolute regular file'
     assert target.read_bytes() == b'Actual target bytes.\n'
+
+
+@pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])
+def test_regular_following_status_failure_preserves_errno(driver, tmp_path, monkeypatch, error_number):
+    path = tmp_path/'canonical.txt'
+    path.write_bytes(b'Canonical file bytes.\n')
+    original_stat = os.stat
+
+    def stat(value, *args, **kwargs):
+        if error_number and Path(value) == path and kwargs.get('follow_symlinks', True):
+            raise OSError(error_number, 'synthetic regular type-status failure', str(path))
+        return original_stat(value, *args, **kwargs)
+
+    monkeypatch.setattr(os, 'stat', stat)
+    if error_number is None:
+        assert driver.regular(path) == b'Canonical file bytes.\n'
+    else:
+        failure = None
+        try:
+            driver.regular(path)
+        except (ValueError, OSError) as error:
+            failure = error
+        assert isinstance(failure, OSError), 'regular type-status failure lost its original errno'
+        assert failure.errno == error_number
 
 
 @pytest.mark.parametrize('phase,error_number', [

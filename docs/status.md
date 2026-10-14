@@ -198,6 +198,20 @@ each pass 791 source and 791 unpacked-sdist tests plus all four installed-wheel
 paths; all 193 scoped references resolve, including the newly linked tests.
 Committed-head CI and fresh review outcomes remain external post-freeze evidence.
 
+R15 (`20261015-lib-spec-r15-d50127`) completed AGREED on `10f1795`, with all
+three required reviewers SAFE. Its [native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38617685314)
+passed 791 source/archive tests without skips in each of four jobs and all four
+wheel paths. Remaining nonblocking findings concern authoring reference link
+observation and native run-parent errno diagnostics; separate Astra also found
+the authoring gap. Both receive bounded reproduction and regression coverage
+under the owner's quality-continuation instruction. See the
+[R15 correction record](verification/2026-10-15-review-closure.md#r15-authoring-reference-and-run-parent-diagnostics).
+The corrections also preserve the same status errors at canonical file/context
+and authoring type checks. They add 22 regression cases; local Python 3.12.13
+and 3.14.6 each pass 813 source/archive tests plus all four installed-wheel paths.
+All 198 scoped test references resolve. Committed-head native CI and fresh review
+outcomes remain recorded externally after source freeze.
+
 ## Consolidation slice (historical verification)
 
 The unpublished development package is `0.1.0.dev3`. The shared specification

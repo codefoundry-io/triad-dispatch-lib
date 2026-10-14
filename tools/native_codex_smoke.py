@@ -35,7 +35,7 @@ def regular(path):
     path = Path(path)
     try:
         if (not path.is_absolute() or stat.S_ISLNK(path.lstat().st_mode)
-                or path.resolve(strict=True) != path or not path.is_file()):
+                or path.resolve(strict=True) != path or not stat.S_ISREG(path.stat().st_mode)):
             raise ValueError('Expected canonical absolute regular file')
     except RuntimeError:  # Python 3.12 resolve() reports ancestor symlink loops this way.
         raise ValueError('Expected canonical absolute regular file') from None
@@ -171,10 +171,14 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     prepared = prepare(config)  # No directory/publication before complete validation.
     prepare_context = helper('codex_smoke')['prepare_context']
     try:
-        if (not run_dir.is_absolute() or not run_dir.parent.is_dir()
+        if (not run_dir.is_absolute() or not stat.S_ISDIR(run_dir.parent.stat().st_mode)
                 or run_dir.parent.resolve(strict=True) != run_dir.parent):
             raise ValueError('Run parent must be canonical')
     except RuntimeError:
+        raise ValueError('Run parent must be canonical') from None
+    except OSError as error:
+        if error.errno not in (errno.ENOENT, errno.ENOTDIR, errno.ELOOP):
+            raise
         raise ValueError('Run parent must be canonical') from None
     if run_dir.exists() or run_dir.is_symlink():
         raise ValueError('Run directory already exists')

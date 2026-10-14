@@ -346,3 +346,86 @@ owned-stage cleanup are in `final-{3.12,3.14}-r9/` under the Python follow-up
 evidence root. These measurements precede this documentation-only result
 recording. Actual committed-head native CI and the fresh review are recorded
 externally after freeze; no earlier approval transfers.
+
+## R15 authoring reference and run-parent diagnostics
+
+R15 `20261015-lib-spec-r15-d50127` completed AGREED on
+`10f179504b31b2da4c5e088399139fed094ea723`. All three required entries were
+COMPLETE and SAFE, without missing entries or selection deviations. Sol
+reported one Minor; Opus one Minor and one hardening suggestion; Argon none.
+Separate Astra reported the same authoring gap as a P2 without a vote.
+Original verdicts, runtime observations and parent custody were exported before
+owned roots were removed. Opus took approximately 758 seconds and Argon 399;
+both remained within 2400 seconds. Native effective identity stays unexposed.
+
+[CI run 38617685314](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38617685314)
+asserted the exact head and tree in all four native jobs. Each passed 791 source
+and 791 unpacked-sdist tests without skips, authoring/generation checks, rebuild
+and all four installed-wheel paths. Actual Python versions were macOS 3.12.10
+and 3.14.7, Ubuntu 3.12.15 and 3.14.8. These results belong to the R15 candidate.
+
+The offline authoring checker still uses a suppressing link predicate before
+reading local references. Its documented contract forbids reference traversal
+through symlinks. The proposed lstat correction must retain missing-reference
+error lists while refusing genuine observation errors before a target read.
+This applies to document/anchor and catalog consumers of the same helper; no
+runtime library agreement or generator bypass is inferred. A separate audit
+of all 12 remaining production modules found this one no-link contract gap.
+Flat empty map discovery already fails, and runtime resource abstractions
+promise content validation rather than general filesystem link containment.
+
+The native run-parent check already refuses following status errors before
+creation, but Python 3.14 converts EIO/EACCES into a misleading canonical-path
+ValueError where Python 3.12 retains the original error. This is diagnostic
+parity, distinct from the earlier validation bypass. Reordering strict
+resolution alone does not cover an error confined to the subsequent following
+status query; the type observation must also preserve genuine errors while
+retaining existing missing/nondirectory/cyclic-path diagnostics.
+
+Current official [Python 3.14 pathlib documentation](https://docs.python.org/3.14/library/pathlib.html#querying-file-type-and-status)
+and [CPython v3.14.8 source](https://raw.githubusercontent.com/python/cpython/v3.14.8/Lib/pathlib/__init__.py)
+were fetched during the review on 2026-10-15. The authoring split-fault scenario
+still requires focused reproduction; it is not an observed ordinary permission
+layout or provider incident. Correction measurements follow below.
+
+### R15 correction results
+
+Actual Python 3.14.6 authoring tests reproduced target reads and no validation
+errors for all four leaf/ancestor EIO/EACCES cases. Python 3.12.13 preserved
+the original errors and read nothing. Component lstat/mode checks now refuse
+before reading, with FileNotFoundError/NotADirectoryError preserving existing
+missing-reference diagnostics. A subsequent following-only type query also
+reproduced misleading missing-file errors on 3.14; explicit stat/mode preserves
+the original errno. Neither version read target content in that diagnostic-only
+variant. The final authoring file passes 36 cases and the actual checker reports
+one valid map on both versions. Ten new cases include canonical/missing controls.
+
+Native parent status injection first reproduced two lost-errno failures on
+Python 3.14, while all three new cases passed on 3.12. The same bounded check
+then reproduced six diagnostic failures across final regular-file, context-root
+and context-packet type observations on 3.14; their three ordinary controls pass,
+and 3.12 already passes all nine. These paths already refused access and created
+no run artifacts; the correction preserves the reason for refusal. Existing
+following queries now use stat/mode classification, with no extra queries or
+new path grammar. The parent retains narrow missing/nondirectory/cyclic error
+normalization. Final focused GREEN passes 37 cases on each interpreter, including
+existing alias and cyclic-path controls.
+The two affected driver files pass 145 tests on each interpreter. The updated
+AST reference audit resolves 198 occurrences (121 unique test references in
+18 files), retaining the six documented prose exclusions.
+
+Production changes total +17/-6 (net +11) across the authoring and two smoke
+tools; tests add 148 lines and 22 cases. Shared runtime APIs, generated payloads,
+dependencies and host ownership are unchanged. Raw original/corrected evidence,
+commands and owned cleanup receipts are retained in
+`20261015-lib-reference-closure/r15-authoring-ref/` and
+`r15-run-parent-diagnostic/`. Conformance links include the new regressions.
+
+Integrated local macOS ARM64 runs on Python 3.12.13 and 3.14.6 each pass **813
+source and 813 unpacked-sdist tests**, authoring/generator/interface checks and
+all four installed-wheel paths. External `final-{3.12,3.14}-r10/` records exact
+commands, logs, artifact hashes and successful owned-stage cleanup; the current
+reference receipt is `r16-map-audit/`. Both rebuilt wheels have SHA-256
+`b3123bfce42e03e3bb0de945b37e5ab40265e4b36583da7ba563ec5827db79df`.
+These measurements precede only this documentation result recording. Actual
+committed-head CI and the next full review remain external post-freeze evidence.

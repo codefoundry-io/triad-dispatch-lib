@@ -1,7 +1,9 @@
 """Offline checks for authoring implementation maps."""
 import copy
+import errno
 import importlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -180,6 +182,67 @@ def test_symlink_reference_is_rejected(authoring_repo):
     data["requirements"][0]["prd_ref"] = "decisions/alias/prd.md#PRD-ONE"
     assert any("symlink traversal" in error
                for error in checker().validate_map(authoring_repo, data))
+
+
+@pytest.mark.parametrize('location', ['leaf', 'ancestor', 'canonical_following'])
+@pytest.mark.parametrize('error_number', [errno.EACCES, errno.EIO])
+def test_reference_metadata_error_refuses_before_read(authoring_repo, monkeypatch,
+                                                      location, error_number):
+    outside = authoring_repo / 'outside'
+    write(outside / 'document.md', '<a id="ANCHOR"></a>\n')
+    if location == 'leaf':
+        alias = authoring_repo / 'document.md'
+        alias.symlink_to(outside / 'document.md')
+        document = alias
+    elif location == 'ancestor':
+        alias = authoring_repo / 'alias'
+        alias.symlink_to(outside, target_is_directory=True)
+        document = alias / 'document.md'
+    else:
+        alias = document = outside / 'document.md'
+    original_stat, original_lstat, original_read = os.stat, os.lstat, Path.read_text
+    reads = []
+
+    def stat(path, *args, **kwargs):
+        if (os.fspath(path) == str(alias)
+                and kwargs.get('follow_symlinks', True) == (location == 'canonical_following')):
+            raise OSError(error_number, 'injected reference metadata error')
+        return original_stat(path, *args, **kwargs)
+
+    def lstat(path, *args, **kwargs):
+        if os.fspath(path) == str(alias) and location != 'canonical_following':
+            raise OSError(error_number, 'injected reference metadata error')
+        return original_lstat(path, *args, **kwargs)
+
+    def read(path, *args, **kwargs):
+        reads.append(path)
+        return original_read(path, *args, **kwargs)
+
+    module = checker()
+    errors = []
+    with monkeypatch.context() as patch:
+        patch.setattr(os, 'stat', stat)
+        patch.setattr(os, 'lstat', lstat)
+        patch.setattr(Path, 'read_text', read)
+        with pytest.raises(OSError) as error:
+            module.check_ref(authoring_repo, str(document.relative_to(authoring_repo)) + '#ANCHOR',
+                             'reference', errors)
+        assert error.value.errno == error_number
+    assert reads == []
+
+
+@pytest.mark.parametrize('kind', ['canonical', 'missing_leaf', 'missing_ancestor', 'file_ancestor'])
+def test_local_reference_controls_preserve_missing_diagnostics(authoring_repo, kind):
+    document = {'canonical': 'decisions/prd.md', 'missing_leaf': 'decisions/missing.md',
+                'missing_ancestor': 'missing/document.md',
+                'file_ancestor': 'decisions/prd.md/document.md'}[kind]
+    errors = []
+    checker().check_ref(authoring_repo, document + '#PRD-ONE', 'reference', errors)
+    if kind == 'canonical':
+        assert errors == []
+    else:
+        assert len(errors) == 1
+        assert 'missing file' in errors[0]
 
 
 def test_duplicate_json_members_are_rejected(authoring_repo):

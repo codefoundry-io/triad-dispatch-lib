@@ -234,7 +234,7 @@ The round was exported and cleaned before these corrections began.
   preserving existing missing/cyclic-path diagnostics and ordinary controls.
 - [x] Add the preceding and new regressions to their owning conformance entries;
   verify actual definitions, not only that existing references still resolve.
-- [ ] Run RED/GREEN on Python 3.12/3.14, then source/archive/wheel verification,
+- [x] Run RED/GREEN on Python 3.12/3.14, then source/archive/wheel verification,
   actual-head native macOS/Ubuntu CI and a fresh full review with the same roster,
   separate Astra comparison, current official web evidence and 40-minute budgets.
 
@@ -249,3 +249,44 @@ The output-root regression file passes 90 cases and the two driver files pass
 per version and all four wheel paths. The updated reference audit resolves
 193 occurrences. Native CI and the next full review remain post-freeze steps;
 their result does not require another tracked documentation-only review cycle.
+
+## R15 authoring reference and parent diagnostic closure
+
+R15 completed AGREED on `10f1795`, with all required entries SAFE. Sol and
+separate Astra identified the authoring checker's remaining symlink observation
+gap; Opus reported it as hardening and separately identified a run-parent errno
+diagnostic mismatch on Python 3.14. All four native CI jobs in run 38617685314
+asserted the actual head and passed 791 source/archive tests without skips.
+The round was exported and cleaned before follow-up work.
+
+- [x] Reproduce failed non-following authoring reference observations before
+  target reads, then use component lstat modes. Preserve missing/nondirectory
+  reference error-list behavior; test leaf/ancestor EIO/EACCES and controls.
+- [x] Reproduce following run-parent status errors losing their errno on 3.14.
+  Preserve original errors and refusal before creation, retaining existing
+  missing/nondirectory/cyclic-parent diagnostics and strict alias refusal.
+- [x] Link the new regressions to their owning conformance entries and verify
+  the reference map. The separate remaining-code audit covered all 12 production
+  modules beyond the five tools and found only the authoring no-link gap; it
+  distinguished intentional resource abstractions and already-refusing checks.
+- [ ] Run focused RED/GREEN and full source/archive/wheel checks on Python
+  3.12/3.14, then actual-head native CI and the same complete review profile.
+
+Estimate: approximately +16/-2 production lines across two support tools, with
+tests and documentation separate. These preserve existing authoring and CLI
+contracts; they change no shared API, normative payload, dependency or host port.
+
+The same diagnostic fault was reproduced at final regular-file type checking,
+context root/packet type checking and authoring final-file checking. These
+already refused access, but lost the original errno on Python 3.14. The bounded
+correction replaces only the existing following predicate queries with explicit
+stat/mode classification; no abstraction or additional query is introduced.
+Measured production delta is +17/-6 (net +11) across three support tools;
+tests add 148 lines and 22 cases. Focused GREEN passes on both interpreters.
+Full integrated measurements, native CI and the next full review follow.
+
+Local integrated verification is complete: each interpreter passes 813 source
+and 813 archive tests, authoring/generator/interface checks and all four wheel
+paths. The authoring file passes 36 and driver files 145 tests on each version;
+198 scoped references resolve. Committed-head CI and fresh review are the
+remaining post-freeze steps, recorded externally.

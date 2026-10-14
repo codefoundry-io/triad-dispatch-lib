@@ -2,6 +2,7 @@
 """Validate local authoring maps without fetching or executing host code."""
 import json
 import re
+import stat
 import sys
 from pathlib import Path
 
@@ -38,10 +39,15 @@ def local_file(root, relative, label, errors):
     path = root
     for part in Path(relative).parts:
         path /= part
-        if path.is_symlink():
+        try:
+            mode = path.lstat().st_mode
+        except (FileNotFoundError, NotADirectoryError):
+            errors.append(f"{label}: missing file: {relative}")
+            return None
+        if stat.S_ISLNK(mode):
             errors.append(f"{label}: symlink traversal: {relative}")
             return None
-    if not path.is_file():
+    if not stat.S_ISREG(path.stat().st_mode):
         errors.append(f"{label}: missing file: {relative}")
         return None
     return path

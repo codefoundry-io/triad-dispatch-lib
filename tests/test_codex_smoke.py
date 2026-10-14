@@ -170,6 +170,41 @@ def test_missing_context_paths_keep_canonical_refusal(context, surface, kind):
         driver().prepare_context(changed)
 
 
+@pytest.mark.parametrize("surface", ["worktree", "packet"])
+@pytest.mark.parametrize("error_number", [None, errno.EIO, errno.EACCES])
+def test_context_following_status_failure_preserves_errno(context, monkeypatch, surface, error_number):
+    module = driver()
+    target = Path(context["worktree"] if surface == "worktree" else context["brief_file"])
+    original_stat, original_read = os.stat, Path.read_bytes
+    reads = []
+
+    def stat(path, *args, **kwargs):
+        if error_number and Path(path) == target and kwargs.get("follow_symlinks", True):
+            raise OSError(error_number, "synthetic context type-status failure", str(target))
+        return original_stat(path, *args, **kwargs)
+
+    def read(path):
+        if str(path) in context["packet_files"]:
+            reads.append(path)
+        return original_read(path)
+
+    monkeypatch.setattr(os, "stat", stat)
+    monkeypatch.setattr(Path, "read_bytes", read)
+    if error_number is None:
+        prepared = module.prepare_context(context)
+        assert prepared["packet_hashes"][0]["path"] == "brief.md"
+        assert len(reads) == 2
+    else:
+        failure = None
+        try:
+            module.prepare_context(context)
+        except (ValueError, OSError) as error:
+            failure = error
+        assert not reads
+        assert isinstance(failure, OSError), "context type-status failure lost its original errno"
+        assert failure.errno == error_number
+
+
 def test_admission_call_through(context, monkeypatch):
     module = driver()
     prompt = module.render_prompt(context).encode()

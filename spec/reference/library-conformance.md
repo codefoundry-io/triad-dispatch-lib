@@ -50,7 +50,7 @@ axis. Historical duplicate headings are not additional rules.
 | [R-CLI-VERSION](review-rules.md#R-CLI-VERSION) | Host observes binaries/versions and enforces justified route floors | No library CLI catalog, probe or auto-upgrade |
 | [R-PARITY](review-rules.md#R-PARITY) | Common semantics live here; native exceptions and adoption belong to each host | Library tests plus each host's conformance evidence are needed |
 | [R-DIAG](process.md#R-DIAG) | Leader diagnoses failures, retains evidence and makes scoped decisions | Typed parser/coordinator errors are not the operational diagnosis workflow |
-| [R-PRD-SPEC](spec-authoring.md#R-PRD-SPEC) | Source authoring maps/schema/checker and `spec/tests/test_authoring.py` | Source development check; absent from installed runtime intentionally |
+| [R-PRD-SPEC](spec-authoring.md#R-PRD-SPEC) | Source authoring maps/schema/checker; `spec/tests/test_authoring.py::test_reference_metadata_error_refuses_before_read`, `test_local_reference_controls_preserve_missing_diagnostics` | Source development check; reference observation errors refuse before reads and missing-path diagnostics remain; absent from installed runtime intentionally |
 | [R-AUTHORING-SYNC](spec-authoring.md#R-AUTHORING-SYNC) | Maintainers reconcile current sources and notify affected hosts | Runtime does not fetch mutable specification revisions |
 | [R-DECISION-ORDER](spec-authoring.md#R-DECISION-ORDER) | Maintainers resolve shared gaps before host-specific implementation | New common semantics require a specification decision, not a private host fork |
 | [R-DEV-LOG](../authoring/shared-dev-log.md#R-DEV-LOG) | Maintainers record common drift/defects and affected host/case ownership | Historical host records are not current library execution proof |
@@ -105,3 +105,9 @@ reading; `tests/test_codex_smoke.py::test_missing_context_paths_keep_canonical_r
 preserves missing-path diagnostics.
 `tests/test_native_codex_smoke.py::test_run_parent_alias_refused_before_creating_artifacts`
 checks canonical parent refusal before any run directory or artifact is created.
+`tests/test_native_codex_smoke.py::test_run_parent_status_error_preserves_errno_before_artifacts`
+preserves following status errors before creation, independently of alias checks.
+`tests/test_native_codex_smoke.py::test_regular_following_status_failure_preserves_errno`
+and `tests/test_codex_smoke.py::test_context_following_status_failure_preserves_errno`
+cover the same diagnostic boundary for canonical file and context type checks;
+these errors already refused access before the diagnostic correction.

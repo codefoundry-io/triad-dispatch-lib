@@ -11,6 +11,7 @@ from pathlib import Path
 import platform
 import runpy
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -65,7 +66,7 @@ def prepare_context(context: dict) -> dict:
         if error.errno not in (errno.ENOENT, errno.ENOTDIR, errno.ELOOP):
             raise
         raise ValueError("Worktree must be a canonical absolute directory.") from None
-    if resolved_root != root or not root.is_dir():
+    if resolved_root != root or not stat.S_ISDIR(root.stat().st_mode):
         raise ValueError("Worktree must be a canonical absolute directory.")
     if len(set(paths)) != len(paths) or Path(context["brief_file"]) not in paths:
         raise ValueError("Brief must belong to a unique bound packet.")
@@ -79,7 +80,7 @@ def prepare_context(context: dict) -> dict:
                 raise
             raise ValueError("Packet must contain canonical regular files inside the worktree.") from None
         if (resolved_path != path or not path.is_relative_to(root)
-                or path.is_symlink() or not path.is_file()):
+                or path.is_symlink() or not stat.S_ISREG(path.stat().st_mode)):
             raise ValueError("Packet must contain canonical regular files inside the worktree.")
     records = packet_records(root, paths)
     if packet_digest(records) != context["expected"]["content_digest"]:
