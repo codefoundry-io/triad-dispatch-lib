@@ -304,21 +304,22 @@ def test_driver_refuses_casefold_name_collision_before_artifacts(driver, setup_r
     assert not run.exists()
 
 
-@pytest.mark.parametrize('mode,scope', [
-    (None, None), ('review', 'wrapper'), ('review', 'group'),
-    ('investigation', 'wrapper'), ('investigation', 'group'),
+@pytest.mark.parametrize('mode,scope,publication_fault', [
+    (None, None, None), ('review', 'wrapper', None), ('review', 'group', None),
+    ('investigation', 'wrapper', None), ('investigation', 'group', None),
+    ('review', 'wrapper', 'response'), ('investigation', 'group', 'receipt'),
 ])
 def test_self_test_interrupt_drains_synthetic_supervisor_and_cleans_environment(
-        driver, setup_run, cli_runtime, mode, scope):
+        driver, setup_run, cli_runtime, mode, scope, publication_fault):
     _, wheel, _ = setup_run
     python, prefix, version = cli_runtime
     root = wheel.parent
     inner = root/'synthetic-inner.py'
-    inner.write_text('''import asyncio, importlib.util, json, sys, tempfile
+    inner.write_text('''import asyncio, errno, importlib.util, json, sys, tempfile
 from pathlib import Path
 source, root = map(Path, sys.argv[1:3])
-target = sys.argv[3]
-sys.argv = [str(source), *sys.argv[4:]]
+target, fault = sys.argv[3:5]
+sys.argv = [str(source), *sys.argv[5:]]
 spec = importlib.util.spec_from_file_location('native_inner', source)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -328,6 +329,18 @@ def temporary(*args, **kwargs):
         kwargs['dir'] = root
     return real_temporary(*args, **kwargs)
 tempfile.TemporaryDirectory = temporary
+real_write = Path.write_bytes
+real_atomic = module.atomic
+def write(path, raw):
+    if fault == 'response' and path.name == 'response.txt' and path.parent.parent.name == target:
+        raise OSError(errno.EIO, 'Injected publication failure during interrupt drain')
+    return real_write(path, raw)
+def atomic(path, value):
+    if fault == 'receipt' and path.name == 'receipt.json' and path.parent.parent.name == target:
+        raise OSError(errno.ENOSPC, 'Injected publication failure during interrupt drain')
+    return real_atomic(path, value)
+Path.write_bytes = write
+module.atomic = atomic
 real_sleep = asyncio.sleep
 async def sleep(delay, *args, **kwargs):
     if delay == .002:
@@ -346,15 +359,15 @@ raise SystemExit(module.main())
 from contextlib import contextmanager
 from pathlib import Path
 source, inner, python, prefix, root = map(Path, sys.argv[1:6])
-target = sys.argv[6]
-sys.argv = [str(source), *sys.argv[7:]]
+target, fault = sys.argv[6:8]
+sys.argv = [str(source), *sys.argv[8:]]
 spec = importlib.util.spec_from_file_location('native_outer', source)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 real_popen = subprocess.Popen
 class Observed(real_popen):
     def __init__(self, args, **kwargs):
-        args = [args[0], '-I', str(inner), str(source), str(root), target, *args[3:]]
+        args = [args[0], '-I', str(inner), str(source), str(root), target, fault, *args[3:]]
         super().__init__(args, **kwargs)
         (root/'child.pid').write_text(str(self.pid))
 subprocess.Popen = Observed
@@ -372,7 +385,7 @@ raise SystemExit(module.main())
 ''')
     with (root/'synthetic.stdout').open('w') as out, (root/'synthetic.stderr').open('w') as err:
         process = subprocess.Popen([sys.executable, str(outer), str(Path(driver.__file__)),
-            str(inner), str(python), str(prefix), str(root), mode or 'none', '--wheel', str(wheel),
+            str(inner), str(python), str(prefix), str(root), mode or 'none', publication_fault or 'none', '--wheel', str(wheel),
             '--expected-version', version, '--self-test'], stdout=out, stderr=err, start_new_session=True)
         try:
             if mode is not None:
@@ -405,6 +418,9 @@ raise SystemExit(module.main())
             if mode is not None:
                 assert held, 'Synthetic supervisor was cancelled before it could deliver receipts'
                 assert status == 130
+                if publication_fault:
+                    number = errno.EIO if publication_fault == 'response' else errno.ENOSPC
+                    assert '[Errno %d]' % number in (root/'synthetic.stderr').read_text()
             else:
                 assert status == 0, (root/'synthetic.stderr').read_text()
                 assert json.loads((root/'synthetic.stdout').read_text())['capture_label'] == 'synthetic'
@@ -482,6 +498,90 @@ def test_outer_cli_preserves_pending_interrupt_and_forwards_once_on_reentry(
         assert not active
     finally:
         signal.signal(signal.SIGINT, original_handler)
+
+
+@pytest.mark.parametrize('mode,publication,error_number', [
+    (None, None, None),
+    *[(mode, publication, error_number)
+      for mode in ('review', 'investigation')
+      for publication in ('response', 'receipt')
+      for error_number in (errno.EIO, errno.ENOSPC)],
+])
+def test_self_test_publication_failure_preserves_error_and_cleans_owned_work(
+        driver, setup_run, mode, publication, error_number):
+    _, wheel, _ = setup_run
+    root = wheel.parent
+    bootstrap = root/'publication.py'
+    bootstrap.write_text('''import importlib.util, json, sys, tempfile
+from pathlib import Path
+source, root, wheel = map(Path, sys.argv[1:4])
+mode, publication, number = sys.argv[4:7]
+spec = importlib.util.spec_from_file_location('native', source)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+real_temporary = tempfile.TemporaryDirectory
+def temporary(*args, **kwargs):
+    if kwargs.get('prefix') == 'triad-native-synthetic-': kwargs['dir'] = root
+    return real_temporary(*args, **kwargs)
+tempfile.TemporaryDirectory = temporary
+real_write = Path.write_bytes
+real_atomic = module.atomic
+def refuse(path):
+    (root/'fault.json').write_text(json.dumps({'request_present':(path.parent/'request.json').exists(),
+        'report_present':(path.parent.parent/'report.json').exists()}))
+    raise OSError(int(number), 'Injected synthetic publication failure', str(path))
+def write(path, raw):
+    if publication == 'response' and path.name == 'response.txt' and path.parent.parent.name == mode:
+        refuse(path)
+    return real_write(path, raw)
+def atomic(path, value):
+    if publication == 'receipt' and path.name == 'receipt.json' and path.parent.parent.name == mode:
+        refuse(path)
+    return real_atomic(path, value)
+Path.write_bytes = write
+module.atomic = atomic
+try:
+    result = module.self_test(wheel, {})
+    (root/'result.json').write_text(json.dumps({'capture_label':result['capture_label']}))
+except BaseException as error:
+    (root/'error.json').write_text(json.dumps({'type':type(error).__name__, 'errno':getattr(error,'errno',None)}))
+    raise
+''')
+    with (root/'publication.stderr').open('w') as err:
+        process = subprocess.Popen([sys.executable, str(bootstrap), str(Path(driver.__file__)),
+            str(root), str(wheel), mode or 'none', publication or 'none', str(error_number)],
+            stdout=subprocess.DEVNULL, stderr=err, start_new_session=True)
+        try:
+            try:
+                status = process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pytest.fail('Synthetic publication failure left owned callback work waiting for a receipt')
+            if mode is None:
+                assert status == 0, (root/'publication.stderr').read_text()
+                assert json.loads((root/'result.json').read_text())['capture_label'] == 'synthetic'
+            else:
+                assert status != 0
+                assert json.loads((root/'error.json').read_text()) == {'type':'OSError', 'errno':error_number}
+                assert json.loads((root/'fault.json').read_text()) == {'request_present':True, 'report_present':False}
+                assert not (root/'result.json').exists()
+            assert not list(root.glob('triad-native-synthetic-*'))
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            for temporary in root.glob('triad-native-synthetic-*'):
+                shutil.rmtree(temporary)
+
+
+def test_default_run_rejects_synthetic_abort_before_artifacts(driver, setup_run):
+    config, wheel, run = setup_run
+
+    async def scenario():
+        with pytest.raises(ValueError, match='[Ss]ynthetic'):
+            await driver.run(config, wheel, run, _synthetic_abort=asyncio.Event())
+
+    asyncio.run(scenario())
+    assert not run.exists()
 
 
 @pytest.mark.parametrize('error_number', [None, errno.EIO, errno.EACCES])

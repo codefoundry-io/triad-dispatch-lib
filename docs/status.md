@@ -243,6 +243,21 @@ source/archive tests plus all four installed-wheel paths. The conformance audit
 resolves 204 scoped references. Actual committed-head CI and the next complete
 review remain separately recorded post-freeze evidence.
 
+R18 (`20261015-lib-spec-r18-aa827a`) completed AGREED on `809b056`; all
+required entries returned SAFE. Opus, Argon and separate Astra had no new
+findings. [Native CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38631461513)
+asserted that exact head/tree and passed 852 source/archive tests without skips
+in all four jobs. Sol identified a distinct synthetic publication-failure
+Minor, subsequently reproduced with source unchanged. The round was exported
+and cleaned. The follow-up gives the self-test explicit task ownership and
+fake-only abort/drain on producer error, preserving the original error and
+the configured native acknowledgement requirement. See the
+[R18 closure record](verification/2026-10-15-review-closure.md#r18-synthetic-publication-failure).
+Twelve additional cases pass. Local Python 3.12.13 and 3.14.6 each pass 864
+source/archive tests and all four installed-wheel paths; 206 scoped references
+resolve. Exact committed-head CI and the next complete review remain external
+post-freeze evidence.
+
 
 ## Consolidation slice (historical verification)
 

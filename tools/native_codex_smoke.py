@@ -167,8 +167,11 @@ def prepare(config):
     return prepared
 
 
-async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, capture_label=CAPTURE):
+async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, capture_label=CAPTURE,
+              _synthetic_abort=None):
     """Run real library callbacks; a separate async parent services request files."""
+    if _synthetic_abort is not None and capture_label != 'synthetic':
+        raise ValueError('Synthetic abort is restricted to synthetic capture')
     import triad_dispatch_lib as lib
     config_path, wheel_path, run_dir = map(Path, (config_path, wheel_path, run_dir))
     config_raw, wheel_raw = regular(config_path), regular(wheel_path)
@@ -284,6 +287,8 @@ async def run(config_path, wheel_path, run_dir, *, runtime_identity=None, captur
     async def terminal(name, raw, *, cleanup=False):
         first_error = None
         while True:
+            if _synthetic_abort is not None and _synthetic_abort.is_set():
+                raise asyncio.CancelledError  # Only fake in-memory work has no external child to await.
             try:
                 try:
                     (run_dir/name/'receipt.json').lstat()
@@ -410,27 +415,35 @@ def self_test(wheel, runtime):
             config_path = root/(mode+'.json')
             atomic(config_path, dict(mode=mode,run_id='synthetic-'+mode,max_concurrency=2,host=host,requests=items))
             directory = root/mode
-            task = asyncio.create_task(run(config_path,wheel,directory,runtime_identity=runtime,capture_label='synthetic'))
-            for name in names:
-                path = directory/name/'request.json'
-                while not path.exists():
-                    if task.done(): return await task
-                    await asyncio.sleep(.002)
-                request_raw = regular(path)
-                request = strict(request_raw)
-                if mode == 'review':
-                    raw = json.dumps(dict(schema_version=2,**request['expected'],
-                        verdict='DO NOT MERGE' if name == 'third' else 'SAFE TO MERGE',
-                        criteria_checked=['correctness'],findings=[],affected_surfaces_inspected=['brief.md'],
-                        open_questions=['Synthetic dissent'] if name == 'third' else [])).encode()
-                else: raw = b'Ordinary synthetic investigation evidence.\n'
-                (directory/name/'response.txt').write_bytes(raw)
-                atomic(directory/name/'receipt.json', dict(run_id=request['run_id'],leg_name=name,
-                    request_sha256=sha(request_raw),prompt_sha256=request['prompt_sha256'],response_sha256=sha(raw),
-                    agent_id='synthetic-'+name,status='completed',capture_method=CAPTURE,
-                    requested_settings=request['requested_settings'],effective_settings='UNEXPOSED',
-                    parent_spawned_at=100.0,parent_terminal_at=101.0))
-            report = await task
+            abort = asyncio.Event()
+            task = asyncio.create_task(run(config_path,wheel,directory,runtime_identity=runtime,
+                                           capture_label='synthetic',_synthetic_abort=abort))
+            try:
+                for name in names:
+                    path = directory/name/'request.json'
+                    while not path.exists():
+                        if task.done(): return await task
+                        await asyncio.sleep(.002)
+                    request_raw = regular(path)
+                    request = strict(request_raw)
+                    if mode == 'review':
+                        raw = json.dumps(dict(schema_version=2,**request['expected'],
+                            verdict='DO NOT MERGE' if name == 'third' else 'SAFE TO MERGE',
+                            criteria_checked=['correctness'],findings=[],affected_surfaces_inspected=['brief.md'],
+                            open_questions=['Synthetic dissent'] if name == 'third' else [])).encode()
+                    else: raw = b'Ordinary synthetic investigation evidence.\n'
+                    (directory/name/'response.txt').write_bytes(raw)
+                    atomic(directory/name/'receipt.json', dict(run_id=request['run_id'],leg_name=name,
+                        request_sha256=sha(request_raw),prompt_sha256=request['prompt_sha256'],response_sha256=sha(raw),
+                        agent_id='synthetic-'+name,status='completed',capture_method=CAPTURE,
+                        requested_settings=request['requested_settings'],effective_settings='UNEXPOSED',
+                        parent_spawned_at=100.0,parent_terminal_at=101.0))
+                report = await task
+            except BaseException:
+                abort.set()
+                task.cancel()
+                await asyncio.gather(task, return_exceptions=True)
+                raise
             if mode == 'review':
                 assert report['peak_active'] == 2
                 assert report['agreement']['integrity_ok'] is True

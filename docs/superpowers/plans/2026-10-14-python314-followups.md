@@ -349,7 +349,7 @@ exported and cleaned before this correction.
 - [x] Shield each synthetic scenario from main-task cancellation, await its
   remaining receipt work, then propagate cancellation. Retain the existing
   supervised CLI interrupt handler and clean both temporary directories.
-- [ ] Add real-process regression coverage and normal controls; link the tests
+- [x] Add real-process regression coverage and normal controls; link the tests
   to the driver conformance boundary. Verify both local interpreters and
   exact-head Ubuntu/macOS CI, then run the same full review and Astra comparison.
 
@@ -363,3 +363,36 @@ checks cover the last test-cleanup edit. Integrated source and unpacked-sdist
 suites pass 852 tests each on both versions, with four installed-wheel paths
 and 204 scoped references passing. Actual committed-head CI and the next full
 review are post-freeze evidence, recorded externally.
+
+## R18 synthetic publication failure
+
+R18 completed AGREED on `809b056`. All required entries returned SAFE; Opus,
+Argon and separate Astra found no new issues. Sol identified a distinct Minor:
+after request publication, failure to write a synthetic response or receipt can
+stop the sole synthetic supervisor while callbacks still await that receipt.
+Native CI run 38631461513 asserted the exact head/tree and passed 852 source
+and archive tests in all four jobs. The round was exported and cleaned.
+
+- [x] Reproduce publication failures with source unchanged, ordinary controls
+  and owned process/environment cleanup on Python 3.12/3.14. Receipt ENOSPC
+  hangs both; response EIO has version/scheduling-dependent termination.
+- [x] Give the synthetic scenario explicit ownership of its run task and a
+  private per-run abort signal. On producer failure, settle only known fake
+  work, cancel/drain the owned run and preserve the original exception. Keep
+  configured native execution dependent on real terminal acknowledgement.
+- [ ] Add response/receipt EIO/ENOSPC regressions for review/investigation,
+  normal controls and real-path separation. Verify local source/archive/wheel
+  paths, exact-head native CI and a fresh same-profile complete review.
+
+Estimate: 20–30 new production lines in the repository driver, plus reindentation
+of the existing producer block where required for clear task ownership. Tests
+and documents are separate. No shared API, CLI switch, provider cancellation
+mechanism, task sweep or new host guarantee is introduced.
+
+Measured delta: +35/-22 production (net +13, including producer reindentation),
+and +111/-11 test lines (net +100). Twelve cases cover publication failure,
+default-mode refusal and failure while SIGINT draining is already in progress.
+Both interpreters pass 24 focused and 118 complete native-driver tests. Final
+local source/archive suites pass 864 each, all four installed-wheel paths pass
+and 206 scoped references resolve. Exact committed-head CI and the next complete
+review remain post-freeze evidence recorded externally.

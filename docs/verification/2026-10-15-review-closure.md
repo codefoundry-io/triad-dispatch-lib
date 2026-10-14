@@ -596,3 +596,63 @@ Exact commands, sdist hashes and successful cleanup are in
 These measurements precede only documentation result recording. Actual-head
 native CI and the next complete review are external post-freeze evidence; no
 prior vote transfers.
+
+## R18 synthetic publication failure
+
+R18 `20261015-lib-spec-r18-aa827a` completed AGREED on
+`809b0569597f662d9af9e3f4c969c3f260b9f4a5`. All three required entries returned
+SAFE; Opus, Argon and the separate Astra comparison reported no new issues.
+Sol identified one Minor on a different self-test exit path: a response or
+receipt publication error can stop the sole synthetic producer before its
+pending callbacks settle. The round was exported and cleaned before edits.
+[Native CI run 38631461513](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38631461513)
+asserted this actual head/tree and passed 852 source/archive tests without skips
+and four installed-wheel paths in all four native jobs.
+
+Read-only external reproduction loaded the current driver with a task-owned
+temporary root and injected response-write EIO or receipt-publication ENOSPC
+after confirming the corresponding request existed. Both normal controls
+passed. Receipt failure remained pending at the three-second observation bound
+on both Python 3.12.13 and 3.14.6. Response failure remained pending on 3.14;
+3.12 returned the original errno 5 in that run. Exceptional shutdown can race,
+so these measurements do not claim identical behavior for every fault/run.
+Source was clean and unchanged before and after; exact owned processes and
+temporary roots were cleaned. This is injected failure evidence, not actual
+disk exhaustion or provider execution.
+
+The bounded correction gives the synthetic scenario ownership of its run task
+and a private abort signal for known in-memory fake work. Producer failure
+sets that signal, cancels and drains the exact run task, and preserves the
+original error. It fabricates no receipt or success report. The signal is
+restricted to synthetic capture mode; configured native execution retains
+terminal acknowledgement. Shared library APIs, CLI switches, provider controls
+and native-host guarantees are unchanged. Earlier SIGINT shield/drain and
+configured delayed-acknowledgement regressions remain required controls.
+
+The new regressions cover response/receipt EIO/ENOSPC in both review and
+investigation, a normal control and default-mode abort refusal. Two additional
+outer/inner CLI cases inject a publication error while SIGINT draining is
+already waiting: the inner retains its original errno, and the interrupted
+outer retains exit 130. RED on 3.12 gives three failures and seven passes
+(two observed hangs plus the unimplemented guard); 3.14 gives nine failures
+and one pass. Final focused GREEN passes 24 and the complete native file passes
+118 on each interpreter. Production is +35/-22 (net +13, including loop
+reindentation); tests are +111/-11 with 12 additional cases.
+
+Separate actual-installation replay validates the isolated identity, copies
+the current core over the retained dev3 wheel's runtime and executes the real
+self-test. Both versions pass the normal control, return the original error on
+injected publication failure and remove their synthetic roots and environments.
+This is current-driver fault injection in an installed runtime, not a fresh
+candidate-wheel build or provider claim. Exact commands and all terminal/cleanup
+receipts are in `20261015-lib-reference-closure/r18-self-test-publication/`.
+
+Final integrated local macOS ARM64/Python 3.12.13 and 3.14.6 runs each pass
+**864 source and 864 unpacked-sdist tests**, authoring, generator, diff/interface
+checks and all four installed-wheel paths. Both rebuilt wheels have SHA-256
+`a18082587b2e3439bb67e22fc542a65fa7349a134e48f2db02abbe0f4c391021`.
+Commands, sdist hashes and owned cleanup receipts are in
+`final-{3.12,3.14}-r13/`. The final `r19-map-audit-final/` resolves 206 occurrences,
+129 unique references in 18 files, with the same six documented prose exclusions.
+Only documentation result recording follows these measurements; actual-head
+native CI and the next full review remain external post-freeze evidence.

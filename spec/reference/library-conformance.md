@@ -97,6 +97,16 @@ request pending while the real outer/inner processes run; after release, the
 synthetic supervisor drains before cancellation propagates and both temporary
 directories are removed. This is synthetic lifecycle evidence, not provider
 termination or a claim about ordinary scheduler frequency.
+Two additional cases inject response/receipt failure while SIGINT cleanup is
+already awaiting the scenario; they preserve the inner filesystem error while
+the interrupted outer CLI retains exit 130.
+`tests/test_native_codex_smoke.py::test_self_test_publication_failure_preserves_error_and_cleans_owned_work`
+covers response/receipt EIO and ENOSPC after request publication in review and
+investigation, preserving the original error and cleaning synthetic work without
+a success result. `tests/test_native_codex_smoke.py::test_default_run_rejects_synthetic_abort_before_artifacts`
+checks that the private synthetic abort signal is refused in default native
+capture mode before artifacts; configured terminal-acknowledgement tests above
+remain the real-path control.
 
 `test_invalid_receipt_retains_slot_until_matching_ack` covers malformed/stale
 acknowledgements, timestamp overflow and interruption while waiting for a valid

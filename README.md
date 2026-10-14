@@ -335,6 +335,11 @@ environment. The normal supervised path still requires the parent's terminal
 acknowledgement. Forced process death is outside this cooperative protocol,
 and this behavior does not establish native backend termination.
 
+If synthetic response or receipt publication fails, `--self-test` aborts its
+known in-memory callbacks, drains its owned run and reports the original error.
+This private synthetic cleanup path is unavailable to configured native runs,
+which still require matching terminal acknowledgement.
+
 Malformed or stale receipts retain the slot until a valid replacement establishes
 terminal custody. The original refusal remains a failed observation; replacement
 does not retry the review or turn it into approval. Terminal acknowledgement and
