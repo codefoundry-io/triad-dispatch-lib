@@ -13,7 +13,7 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development package (`0.1.0.dev3`) provides strict original-JSON parsing,
+The development package (`0.1.0.dev4`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks. Repository drivers verify the installed package with
@@ -187,11 +187,11 @@ uv run --locked pytest -q
 uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev3.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 --self-test
+uv build dist/triad_dispatch_lib-0.1.0.dev4.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
 git diff --check
 ```
 
@@ -230,9 +230,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and
@@ -264,8 +264,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl --expected-version 0.1.0.dev3 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev3 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

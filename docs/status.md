@@ -24,6 +24,23 @@ Updated: 2026-10-15
   vote. This is a project override, not a host-distribution or workspace default.
   See [review profile](review-profile.md) and its separate setup evidence.
 
+## Current adoption-observability slice (2026-10-15)
+
+Library PR #1 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, with the
+reviewed `2d1e62e7` tree unchanged. Codex PR #44 merged and independently
+released v0.2.561 using vendored library dev3. Claude adoption remains planned;
+its PR #2 scratch measurements are attributed and lack published reproducible
+evidence. Older candidate/no-adoption statements below describe their dated slices.
+
+The owner approved PR #2 corrections and additive L2/L7 development. The
+[design](design/2026-10-15-adoption-observability.md) and
+[plan](superpowers/plans/2026-10-15-adoption-observability.md) bound this dev4
+slice to safe admission locations, optional clause manifests and adoption docs.
+L10 keeps existing dependency floors; L11/L12 clarify selective use. Other
+requests remain design work. No consumer or provider defaults change.
+Verification and current formal-review outcome will be recorded for this slice;
+earlier approval does not transfer to these changed bytes.
+
 ## Project review setup
 
 Shared specification and implementation authoring already lives in this
@@ -368,11 +385,12 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Neither host has completed released adoption; Codex source-adoption work is a
-separate candidate. The earlier Codex integration experiment
-used parent-dispatched native children; the library and driver do not spawn
-native agents or provider processes. No global installation,
-package-index publication, final merge or release occurred.
+Codex v0.2.561 independently adopted dev3 after library PR #1 merged.
+Claude adoption and adoption of the current dev4 slice remain separate work.
+The earlier Codex integration experiment used parent-dispatched native children;
+the library and driver do not spawn native agents or provider processes. This
+slice performs no consumer update, global installation, package-index publication
+or final merge.
 Platform proof covers only the combinations measured in the linked verification
 records and exact-head CI evidence; a configured matrix alone is not proof.
 The historical library slices above used ordinary independent Codex review;

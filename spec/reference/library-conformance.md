@@ -31,6 +31,13 @@ actual cases to partial library evidence and remaining owners.
 | R-CLASSIFY, R-AUTH, R-TOKENS, R-NOCOST; C8, C11, C17, C37, C43, C74-C77 | No extracted classifier/auth/token API | `tests/test_output.py::test_quota_looking_evidence_is_ordinary_data` covers only the no-keyword-classification boundary | Vendor sentence carriers, credentials, STOP precedence, exit tokens and repair |
 | R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside`, `test_symlink_status_errors_refuse_before_writes`, `test_tree_enumeration_errors_refuse_before_writes`, `test_unreadable_output_directory_refuses_before_following_link`, `test_output_root_observation_error_never_skips_inventory`, `test_output_root_missing_and_occupied_controls`, `test_following_metadata_errors_preserve_errno_before_writes`, `test_source_root_missing_and_file_preserve_diagnostics` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
 
+The additive dev4 observability APIs provide these partial contracts:
+
+| Contract | Shared implementation and tests | Host boundary |
+| --- | --- | --- |
+| L2; R-BIND diagnostic context | `AdmissionError.field/path`; `tests/test_admission_diagnostics.py::test_binding_field_is_canonical`, `test_schema_path_contains_only_trusted_schema_location`, `test_parse_schema_expected_binding_precedence` | Safe locations supplement existing admission codes; no operational diagnosis, raw payload or custody attestation |
+| L7; R-PROMPT/R-PREPARE source-clause evidence | `render_review_clauses(with_manifest=True)`; `tests/test_prompt_manifest.py::test_profiles_have_exact_source_hashes_and_identical_rendering`, `test_manifest_is_fresh_and_independent_of_substitutions`, `test_manifest_still_refuses_tampered_verified_bundle` | Host binds final prompt/bundle identities and checks actual execution; manifest hashes are pre-substitution source evidence |
+
 ## Remaining normative groups and ownership
 
 The implementation table above names 20 of the 28 active review-rule groups.
