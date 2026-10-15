@@ -134,18 +134,30 @@ The 47 verdict decisions and latest six-leg merge (two disabled) remain attribut
 reported wheel closure now has a published inventory and hashes, but no wheel binaries
 or exact download/install command; it establishes no new native platform proof.
 
-The amended leader-driven Claude first slice plans two functions:
-`render_review_clauses` and `validate_binding` (`select_entries` drops disabled
-entries the host keeps in its round record; the host reads its own vendored contract
-copy, which stays its one bound copy with eight mapped payload-pair byte comparisons
-against the vendored bundle at round preparation, as reported by the host). It will vendor with Git-blob-checked file hashes, recursively
-extend exporter/toolkit coverage excluding bytecode, record bundle IDs and the
-adoption record, and gate import/Registry failures as host faults. This is planned
-host work, not released adoption evidence. The host also reports a preparation-time
-text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
-adoption and removal of that render core. These unpublished implementation reports
-have not been independently verified. Verdict admission and roster merging remain
-host-owned until independently adopted. The owner settled issue #3/#4 roster and
+The Claude host's current plan (its review rounds r6-r9, owner decision 2026-10-15,
+all reported and not independently verified) pins this repository at `dac1af62` and
+adopts in two slices. Slice 1, two merge units: 1a vendors the package with an
+adoption record (source commit, per-file SHA-256 of the pinned bytes, bundle ids,
+`artifact: none`), ships the MIT notice, extends its exporter and toolkit map
+recursively excluding bytecode, re-vendors its spec copy and both readonly policy
+copies at the pin, and installs one measured wheel closure per deployed
+architecture; 1b calls `render_review_clauses(with_manifest=True)` for the bound
+prompt and its manifest (the host's own review render core is removed; the host's
+`render_with_manifest` compares the eight mapped payload pairs byte for byte before
+delegating, converts the returned rows to its `(name, sha256)` pairs, keeps its
+argument checks, and translates `PromptError` to its own refusal while
+`ContractError` is a host fault) and `validate_binding` before its own binding
+comparison, with the library import and version floors gated as a host fault.
+Slice 2 adopts `parse_json` and `validate_verdict` with `.field`, the trusted schema
+`.path` and `.missing` (the declined `.member` is replaced by the host's duplicate
+scan after the library's `duplicate_member` refusal, as the documented deviation),
+and roster merging as `validate_resolved(defaults)`, then `merge_roster`, then the
+host's case-folded name check over the override's own names, its inherited-block
+checks, `validate_resolved`, its capability checks and Google route; the library
+`RosterError` is translated to the host's one-line refusal, and the reduced operator
+diagnostics are a documented deviation until issue #9 is decided. L3 is tracked in
+issue #10. The measurements at `dac1af62` are published in this PR under
+`docs/verification/2026-10-15-claude-host-spikes/at-dac1af62/`. The owner settled issue #3/#4 roster and
 admission decisions in the
 [approved adoption APIs](design/2026-10-15-adoption-apis.md): the library now
 implements `merge_roster`, `validate_resolved` and safe `.missing` for the selected
