@@ -1,0 +1,3 @@
+merge_roster: legs= 6 | keys= ['_comment', 'legs', 'schema']
+validate_resolved(merged): OK (None)
+S5 merge_roster legs == host _merge_leg legs (sorted JSON): True
