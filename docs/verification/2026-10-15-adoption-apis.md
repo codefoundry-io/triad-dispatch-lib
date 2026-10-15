@@ -98,3 +98,38 @@ comparison. Each reviewer receives 2400 seconds and current official-source web
 authorization. Outcomes are retained externally with the PR so the reviewed
 source remains frozen. No prior approval transfers. Merge, publication and host
 adoption are separate actions.
+
+## First complete review and bounded followups
+
+Native [CI 38702629185](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38702629185)
+tested exact head `0ae3e528f03de4fed898fc07e191d890dec61c66`: every macOS 15 /
+Ubuntu 24.04 and Python 3.12/3.14 job passed 1020 source and 1020 archive tests,
+authoring/assets and all four installed drivers. The actual job logs confirmed
+both roster assertions, isolated new API origins and both missing-name replays.
+Actual interpreters were macOS 3.12.10/3.14.7 and Ubuntu 3.12.15/3.14.8.
+
+R1 `20261015-lib-adoption-apis-r1-0eb96b` completed `AGREED` on that head.
+All three required reviewers returned SAFE, with no runtime or compatibility
+defect. All producers terminated, final integrity passed, and the round was
+exported/cleaned before corrections. Native containment was prompt-controlled;
+hidden runtime settings and dispatch-message bytes remained UNEXPOSED.
+
+Two nonblocking findings were accepted:
+
+- Opus, Sol and separate Astra found that the current host-adoption paragraph
+  linked owner-settled decisions to the issue #5 proposal document. Correction
+  `86287c5` links the approved issues #3/#4 APIs directly and separately labels
+  issue #5 as proposals without owner approval. The scoped re-review found it
+  addressed without new breakage.
+- Opus found that the web-profile rule comparison still ignored qualifiers.
+  Correction `42272c3` compares the complete parsed web rows against the
+  independently pinned no-web rows with only the intended grouped web-rule
+  change. A copied shell-deny `modes = ["autoEdit"]` escaped the old comparison
+  and failed the strengthened one; a comment prepend passed. Canonical policy
+  bytes were never altered for the control. All 11 policy/manifest/import-origin
+  files remained equal to task start; 24 policy tests and authoring/assets passed.
+
+These corrections change documentation and tests only. R1 approval does not
+transfer: corrected-head native source/archive/wheel CI and a fresh complete
+review are recorded externally with PR #7 after this evidence update. The local
+artifact hashes above continue to identify their original implementation snapshot.
