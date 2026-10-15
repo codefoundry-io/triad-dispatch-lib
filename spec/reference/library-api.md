@@ -1,7 +1,7 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev4` implementation of the 27
-package-root exports in `triad_dispatch_lib`: 14 functions, six dataclasses and
+This reference describes the current `0.1.0.dev4` implementation of the 29
+package-root exports in `triad_dispatch_lib`: 16 functions, six dataclasses and
 seven exception types. It records existing Python behavior; it does not change
 the package's version or compatibility policy. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
@@ -71,6 +71,8 @@ internal references.
 
 ```python
 load_roster_contract() -> dict
+merge_roster(defaults: dict, overrides: str | bytes | None = None) -> dict
+validate_resolved(roster: dict) -> None
 resolve_roster(defaults: dict, overrides: str | bytes | None = None) -> dict
 select_entries(roster: dict) -> list[dict]
 ```
@@ -81,12 +83,27 @@ canonical roster schema identity. The schema root validates override documents;
 nor validates a caller roster. Unreadable, inconsistent or invalid packaged
 schema data raises `ContractError`; there is no resource cache or remote lookup.
 
-`resolve_roster` first validates the supplied complete defaults, then parses and
-validates an optional override before merging, and finally validates the complete
-result. All entries validate, including disabled entries. Python `None` means no
+`merge_roster` validates the supplied complete defaults against the resolved
+schema, then checks exact duplicate names, before parsing an optional override.
+It validates the override schema, then exact duplicate names, and returns an
+independent merge without final validation. Defaults refuse before override
+parsing, and schema refusal precedes duplicate-name refusal at each stage.
+All entries validate, including disabled entries. Python `None` means no
 override; original JSON `null` is an invalid override document. Any override
 parser refusal becomes `RosterError("invalid_json")`. Schema, duplicate-name
 and validation nesting refusals have their respective roster codes.
+
+`validate_resolved` independently loads the verified offline schema, validates
+the complete resolved schema, then checks exact duplicate names. It returns
+`None` without mutation. `resolve_roster` preserves its dictionary return and
+performs input merge and final validation using one verified schema snapshot.
+The split composition is merge, validate, then return the merged dictionary.
+
+An intermediate merge is not resolved or runnable data: it may contain
+incomplete new entries or incompatible inherited vendor blocks. Host capability,
+route, preset, collision and custom diagnostic checks must safely handle these
+and remain host-owned. Validate the exact document before consumption; any later
+mutation requires revalidation. Neither function prunes inherited vendor blocks.
 
 Names match exactly and case-sensitively. Matching entries retain their original
 slot; new names append in override order. Dictionaries merge recursively;

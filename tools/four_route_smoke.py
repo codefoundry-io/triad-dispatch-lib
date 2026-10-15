@@ -40,9 +40,23 @@ def synthetic_smoke():
         dict(name=name, vendor=family, enabled=True, acceptance='required', timeout_s=30,
              **({family: {}} if route is None else {'google': {'route': route}, route: {}}))
         for name, family, route in routes]}
-    selected = lib.select_entries(lib.resolve_roster(defaults, json.dumps({
-        'schema': 'triad-review-legs.v2', 'legs': [{'name': 'y', 'acceptance': 'informational'}]})))
+    override = json.dumps({
+        'schema': 'triad-review-legs.v2', 'legs': [{'name': 'y', 'acceptance': 'informational'}]})
+    merged = lib.merge_roster(defaults, override)
+    assert lib.validate_resolved(merged) is None
+    assert merged == lib.resolve_roster(defaults, override)
+    selected = lib.select_entries(merged)
     assert [entry['name'] for entry in selected] == ['c', 'a', 'g', 'y']
+    incompatible = lib.merge_roster(defaults, json.dumps({
+        'schema': 'triad-review-legs.v2', 'legs': [{'name': 'a', 'vendor': 'codex'}]}))
+    assert incompatible['legs'][1]['claude'] == {}
+    try:
+        lib.validate_resolved(incompatible)
+    except lib.RosterError as error:
+        assert error.code == 'schema_violation'
+        assert str(error) == 'Roster violates the canonical schema.'
+    else:
+        raise AssertionError('Inherited vendor block accepted')
     requests, profiles = [], []
     for entry, (name, family, route) in zip(selected, routes, strict=True):
         expected = dict(review_id='synthetic-four-route', family=family, route=route,
@@ -180,7 +194,8 @@ def synthetic_smoke():
             return await scenario()
     cases, count = asyncio.run(watchdog())
     return dict(capture_method='synthetic', cases=cases, prompt_profiles=profiles,
-                investigation_count=count)
+                investigation_count=count,
+                roster_split={'validated_parity': True, 'inherited_block_refused': True})
 
 
 def main():
