@@ -1,0 +1,4 @@
+profiles=24 identical=24 different=0
+agy profiles match with agy_hook_active = [True]
+investigation suffix agy: identical=True
+investigation suffix gemini: identical=True

@@ -125,9 +125,11 @@ host assets: they do not establish parity with the actual packaged dev3 prompts.
 The 47 verdict decisions, five-entry merge and wheel closure likewise remain
 attributed results until the pinned harness/fixtures/outputs are published.
 
-The amended leader-driven Claude first slice plans four functions:
-`render_review_clauses`, `validate_binding`, `load_roster_contract` and
-`select_entries`. It will vendor with Git-blob-checked file hashes, recursively
+The amended leader-driven Claude first slice plans two functions:
+`render_review_clauses` and `validate_binding` (`select_entries` drops disabled
+entries the host keeps in its round record; the host reads its own vendored contract
+copy, which stays its one bound copy with a byte-equality check against the vendored
+bundle at round preparation). It will vendor with Git-blob-checked file hashes, recursively
 extend exporter/toolkit coverage excluding bytecode, record bundle IDs and the
 adoption record, and gate import/Registry failures as host faults. This is planned
 host work, not released adoption evidence. Verdict admission and roster merging

@@ -48,12 +48,30 @@ them as conformance or released-adoption evidence.
 - **S4 roster merge:** reported five byte-identical merged entries. Native route
   resolution and capability checks remain host-owned.
 
-Claude's amended first slice plans exactly four functions:
-`render_review_clauses`, `validate_binding`, `load_roster_contract` and
-`select_entries`. Verdict admission and roster merging stay wholly host-owned
-pending the expanded L2 and new L13 requests. The earlier twelve/eight-function
-counts are superseded by this named list. Its leader-driven lifecycle does not
-need callback coordinators.
+Claude's amended first slice (its review round r2, concurrent with this slice) plans
+exactly two functions: `render_review_clauses` (the bound prompt bytes, with the
+host's clause manifest computed over the same canonical bytes) and
+`validate_binding`. `select_entries` is not adopted: it drops disabled entries and
+refuses an all-disabled roster, while the host keeps disabled legs in its round
+record with a separate startable list. `load_roster_contract` is not adopted: the
+host reads its own vendored contract copy. Verdict admission and roster merging stay
+wholly host-owned pending the expanded L2 and new L13 requests. The earlier
+twelve/eight/four-function counts are superseded by this named pair. Its
+leader-driven lifecycle does not need callback coordinators.
+
+Two further host facts from that round: the host's `spec/contracts` and
+`spec/prompts` remain its ONE bound copy and the vendored `data/` bundle must be
+byte-equal, checked at round preparation by recomputing the three bundle ids from
+`spec/` (drift refuses); and the host's `bin/` wrappers load its clause renderer by
+file path with `bin/` first on `sys.path`, so the renderer imports the library lazily
+with its own directory on the path and keeps the bare investigation clause
+import-free (`render_investigation_prompt` has no host call site).
+
+The scratch measurements are now published in this PR:
+[`docs/verification/2026-10-15-claude-host-spikes/`](../verification/2026-10-15-claude-host-spikes/README.md)
+(scripts, captured outputs, input identities, environment). The host's implementation
+branch stays unpublished; its file hashes in that record allow a byte-for-byte match
+at publication.
 
 The host also reports these planned safeguards: re-vendor its specification at
 the library pin; compare vendored file hashes with pinned Git blobs; extend
