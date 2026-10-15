@@ -111,6 +111,28 @@ Update the ledger only after successful writes, retain unrelated files and
 support recovery from interrupted upgrades. These are recommendations for future
 host work; this library slice changes no installer or global installation.
 
+## Claude host adoption facts (2026-10-15)
+
+Measured by the claude host leader against `0.1.0.dev3` at `2d1e62e7`; details and
+the library change requests are in
+[claude host adoption requests](requests/2026-10-15-claude-host-adoption-requests.md).
+
+- The claude host has no long-running host process: the leader runs the dispatch
+  lines its `prepare` prints, the claude leg is an in-session agent spawn, and
+  `collect` folds attempts afterwards. `run_review` and `run_investigations` do not
+  apply there; the host adopts 12 of the 14 package-root functions.
+- On the claude host's own vendored prompt bytes, 30 host-A profiles rendered by
+  `render_review_clauses(host="A", ...)` are byte-identical to the host renderer
+  with raw replacement strings; 47 verdict cases give the same decision as the
+  host admitter; `resolve_roster` yields byte-identical merged legs. The host's
+  Google route resolution and capability checks stay in the host.
+- Ubuntu 24.04 apt ships jsonschema 4.10.3 and referencing 0.31.0; the library's
+  `registry=` keyword needs jsonschema 4.18.0 or later. The claude host meets the
+  floor with six manylinux wheels (620 KB) in its existing offline wheel set.
+- The claude host adopts by vendoring the package under its skill `lib/` with an
+  adoption record (source commit, version, per-file hashes, bundle `contract_id`s);
+  its round toolkit map then covers the vendored files and the bundle ids.
+
 ## Verification boundaries
 
 Source tests, authoring validation, deterministic generation, unpacked-sdist
