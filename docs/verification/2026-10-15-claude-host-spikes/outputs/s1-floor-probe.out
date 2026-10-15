@@ -4,4 +4,5 @@ validate_binding: TypeError: create.<locals>.Validator.__init__() got an unexpec
 load_roster_contract: OK
 resolve_roster: TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
 render_review_clauses: TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
-165 failed, 101 passed in 0.95s
+--- pytest selection: tests/test_json_input.py tests/test_verdict.py tests/test_roster.py tests/test_prompts.py tests/test_output.py tests/test_agreement.py (-q -p no:cacheprovider --tb=short -rf)
+165 failed, 101 passed in 1.07s
