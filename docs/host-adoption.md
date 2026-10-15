@@ -113,25 +113,37 @@ host work; this library slice changes no installer or global installation.
 
 ## Claude host adoption facts (2026-10-15)
 
-Measured by the claude host leader against `0.1.0.dev3` at `2d1e62e7`; details and
-the library change requests are in
+Measured by the claude host leader against `0.1.0.dev3` at `2d1e62e7`, on the host's
+implementation branch; details and the library change requests are in
 [claude host adoption requests](requests/2026-10-15-claude-host-adoption-requests.md).
 
 - The claude host has no long-running host process: the leader runs the dispatch
   lines its `prepare` prints, the claude leg is an in-session agent spawn, and
   `collect` folds attempts afterwards. `run_review` and `run_investigations` do not
-  apply there; the host adopts 12 of the 14 package-root functions.
-- On the claude host's own vendored prompt bytes, 30 host-A profiles rendered by
-  `render_review_clauses(host="A", ...)` are byte-identical to the host renderer
-  with raw replacement strings; 47 verdict cases give the same decision as the
-  host admitter; `resolve_roster` yields byte-identical merged legs. The host's
-  Google route resolution and capability checks stay in the host.
+  apply there. Its first adoption slice calls `parse_json`, `validate_binding`,
+  `validate_verdict`, `load_roster_contract`, `resolve_roster`, `select_entries`,
+  `render_review_clauses` and `render_investigation_prompt`; the host keeps its
+  field-naming refusal reasons, route resolution, capability / block / duplicate-name
+  checks and drift warnings over those calls.
+- On the host's own vendored prompt bytes, 24 host-A profiles rendered by
+  `render_review_clauses(host="A", ...)` are byte-identical to the host renderer with
+  raw replacement strings (agy profiles with `agy_hook_active=True`); 47 verdict cases
+  give the same decision as the host admitter; `resolve_roster` yields byte-identical
+  merged legs. The library accepts case-folded duplicate entry names (`codex` and
+  `Codex`); the host refuses them.
 - Ubuntu 24.04 apt ships jsonschema 4.10.3 and referencing 0.31.0; the library's
   `registry=` keyword needs jsonschema 4.18.0 or later. The claude host meets the
-  floor with six manylinux wheels (620 KB) in its existing offline wheel set.
+  floor with six manylinux wheels (620 KB) in its existing offline wheel set and
+  gates the import so a library `TypeError` or `ContractError` becomes a host fault,
+  never an invalid leg reply. Re-rooting `$defs` alone does not block remote `$ref`
+  retrieval on jsonschema 4.10.3 (measured); a lowered floor would need an explicit
+  no-retrieval mechanism.
 - The claude host adopts by vendoring the package under its skill `lib/` with an
-  adoption record (source commit, version, per-file hashes, bundle `contract_id`s);
-  its round toolkit map then covers the vendored files and the bundle ids.
+  adoption record (source commit, version, per-file hashes checked against the
+  library's git blobs, bundle `contract_id`s); its exporter and round toolkit map are
+  extended to cover the nested package (bytecode excluded) and the record.
+- Raw replacement strings and the host's brief fence for the residual are
+  host-native forms under R-CONTEXT; the host ships a 3600-second entry timeout.
 
 ## Verification boundaries
 
