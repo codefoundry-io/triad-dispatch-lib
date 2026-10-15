@@ -58,3 +58,31 @@ container hashes. Runtime/schema/prompt payload files did not change during
 documentation reconciliation. This local record establishes no Ubuntu result,
 real-provider behavior, dev4 consumer adoption, publication or merge. Read the
 exact-head PR CI and complete project review for those separately measured gates.
+
+## R1 documentation corrections
+
+Before these corrections, exact-head CI
+[38673591607](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38673591607)
+passed 952 source and 952 archive tests plus all four installed-wheel drivers
+in each Ubuntu/macOS and Python 3.12/3.14 job at `2eff9d0`. The complete review
+`20261015-lib-observability-r1-fcb113` then returned `BLOCKED`: Opus requested
+five documentation corrections; Sol approved without findings and Argon approved
+with the same README finding. Separate Astra found no required fix.
+All results and source/custody integrity were validated before export and cleanup.
+
+The verified corrections update stale README/migration adoption and merge status,
+repair the historical B sentence and adjacent released-source wording, and state
+the exact L2 diagnostic limits. `absolute_schema_path` describes validator
+evaluation and need not resolve as a JSON Pointer through source `$ref`/`if`
+nodes. The existing nested-reference regression already demonstrates this path.
+The value-free guarantee covers fixed message/`.args` and `.field`/`.path`;
+Python exception internals retain existing references, including `__context__`.
+The previous wording promised more than the additive API implemented. Runtime,
+tests, canonical schemas, prompt payloads and dependency versions are unchanged.
+
+Independent scoped checks confirmed the findings and current release evidence.
+These are documentation corrections, so existing spec/authoring/assets checks
+verify their integration; no runtime behavior or new implementation-mirroring
+test is introduced. Changed documentation and the README package description
+require new exact-head source/package CI and a fresh complete review. Their
+outcomes remain with PR #2 after this source record is frozen.

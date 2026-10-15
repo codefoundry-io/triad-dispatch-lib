@@ -46,6 +46,16 @@ issue #4 and boundary decisions issue #5. This bounded L2 does not fully satisfy
 issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
 freeze; earlier approval does not transfer to changed bytes.
 
+R1 (`20261015-lib-observability-r1-fcb113`) completed `BLOCKED` on `2eff9d0`
+after all four native CI jobs passed 952 source/archive tests and four wheel
+drivers. Five verified documentation findings now receive bounded corrections:
+README/migration adoption status, exact schema diagnostic-path semantics,
+exception-internal privacy limits, and historical/released B wording. No runtime,
+schema, prompt or dependency changes result. See the
+[R1 record](verification/2026-10-15-adoption-observability.md#r1-documentation-corrections).
+The exported round's votes do not transfer; new exact-head CI and complete
+Opus/Sol/Argon review with separate Astra comparison follow the corrected bytes.
+
 ## Project review setup
 
 Shared specification and implementation authoring already lives in this

@@ -52,12 +52,20 @@ ordinary mutable dictionaries/lists.
 `.path: tuple[str | int, ...] | None`, initially `None`. Library-generated
 `binding_mismatch` sets only `.field` to the first mismatch in the six-field
 order above. `schema_violation` sets only `.path` to
-`tuple(validation_error.absolute_schema_path)`: the location in the trusted
-canonical schema, including keyword names and possible composition indexes.
+`tuple(validation_error.absolute_schema_path)`: jsonschema's schema diagnostic
+path produced while evaluating the trusted canonical schema, including keyword
+names and possible composition indexes. Reference (`$ref`) and conditional (`if`)
+traversal hops may be omitted; it is not necessarily a JSON Pointer into the
+source schema document.
 It is never the instance path and does not contain arbitrary provider property
 names or values. An empty tuple denotes the schema root. Which violation wins
 among simultaneous schema failures is not a stable diagnostic contract. Other
 codes leave both attributes `None`; no raw validator error enters the message.
+The value-free diagnostic guarantee covers `.field`, `.path`, and the fixed
+message/`.args`. Python exception internals, including `__context__` and
+tracebacks, retain their existing behavior and may reference validator errors
+or input data. `raise ... from None` suppresses displayed chaining, not those
+internal references.
 
 ## Rosters and contract loading
 

@@ -20,13 +20,19 @@ Every AdmissionError has `.field: str | None` and
 `.path: tuple[str | int, ...] | None`, defaulting to None. Library-generated
 `binding_mismatch` sets field to the first mismatch in the existing six-field
 binding order and leaves path None. `schema_violation` sets path to the validator's
-absolute **schema** location, not the untrusted instance path; field stays None.
-This schema path identifies a keyword in the trusted canonical schema, may
-contain composition indexes, and never contains provider values or arbitrary
-instance property names. Empty tuple means the schema root. It is diagnostic
+absolute **schema diagnostic** path, not the untrusted instance path; field stays
+None. This evaluation path contains trusted schema keywords and possible
+composition indexes, never provider values or arbitrary instance property names.
+Reference (`$ref`) and conditional (`if`) traversal hops may be omitted, so it is
+not necessarily a JSON Pointer into the source schema document.
+Empty tuple means the schema root. It is diagnostic
 context, not a stable choice of which error wins when multiple violations exist.
-Other codes retain both values as None. No raw ValidationError is exposed or
-interpolated into messages. Preserve parse -> schema -> expected -> binding order.
+Other codes retain both values as None. The value-free guarantee covers `.field`,
+`.path`, and the fixed message/`.args`; no raw ValidationError is interpolated
+into the message. Python exception internals, including `__context__` and
+tracebacks, retain their existing behavior and may reference validator errors
+or input data. Suppressed displayed chaining does not remove these references.
+Preserve parse -> schema -> expected -> binding order.
 
 ## L7: optional rendered-clause manifest
 

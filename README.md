@@ -18,8 +18,10 @@ canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks. Repository drivers verify the installed package with
 synthetic four-route responses; earlier fresh Codex observations remain historical.
-It is not published to a package index and neither host has completed released
-adoption. Codex source-adoption work is a separate candidate.
+The dev4 package is not published to a package index. Codex host v0.2.561
+independently released with library dev3 from `2d1e62e7`; Claude adoption remains
+planned. Neither host is claimed to adopt dev4. See
+[independent host adoption](docs/host-adoption.md).
 
 - [Current status and next work](docs/status.md)
 - [Research assessment](docs/research/2026-10-12-shared-library-assessment.md)
@@ -47,8 +49,9 @@ manifests each contain exactly `schema_version`, `source_repository`, `source_pa
 bytes, not the entire specification or a repository commit. Integrity establishes
 consistency, not authenticity. Legacy schema `$id` values remain unchanged.
 
-Repository cutover awaits this PR merge and an old-repository notice; no remote
-retirement is claimed. See [migration](spec/MIGRATION.md) and
+Specification consolidation merged in PR #1 at `9489543e`. Posting the
+old-repository notice remains separate work; no remote retirement is claimed.
+See [migration](spec/MIGRATION.md) and
 [independent host adoption](docs/host-adoption.md). Each host retains native
 spawning, model/effort integration, installation and independent releases.
 The [library conformance map](spec/reference/library-conformance.md) links current
@@ -87,8 +90,8 @@ valid negative verdicts; it makes no merge decision. Callers own input size limi
 
 See the API contract for error codes and edge cases. Runtime bundles have candidate
 content IDs; historical import commits are separate. The API does not convert v1 data.
-Output admission and unanimous agreement are implemented; native host adapters
-remain separate work. Rust is deferred until a measured need justifies it.
+Output admission and unanimous agreement are implemented; native adapters
+remain host-owned. Rust is deferred until a measured need justifies it.
 
 `validate_binding(expected)` checks invocation bindings without a response.
 `render_review_clauses(...)` selects byte-preserved canonical clauses in their

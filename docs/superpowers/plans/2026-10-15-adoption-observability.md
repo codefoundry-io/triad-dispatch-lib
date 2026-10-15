@@ -29,7 +29,9 @@ another implementation plan. Existing selected checkout is reused in place.
 
 ## Review Focus
 
-- Untrusted additional property names must not leak through error attributes or text.
+- Untrusted additional property names must not leak through `.field`, `.path`,
+  or the fixed message/`.args`. Existing exception internals and tracebacks are
+  outside this diagnostic guarantee; their behavior remains unchanged.
 - Simultaneous schema/expected/binding failures preserve the existing refusal order.
 - Nested web-policy source clauses are represented without changing rendered bytes.
 - Phase/host/route/hook selection has the same clause coverage in both modes.
