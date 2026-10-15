@@ -19,7 +19,7 @@ host inputs described here are still required for independent reproduction.
 
 | spike | command (from the scratch root `R`; `A` = the host skill root) | result |
 | --- | --- | --- |
-| S1 floor probe | apt-equivalent venv (`jsonschema==4.10.3`, `referencing==0.31.0`), `PYTHONPATH=src` of the library at `2d1e62e7` | `outputs/s1-floor-probe.out` |
+| S1 floor probe (`scripts/s1_floor_probe.py`; the exact pytest selection is written into the output; full failure output in `outputs/s1-pytest-full.out`; wheel filenames, sizes and SHA-256 in `outputs/s1-wheel-inventory.md`) | apt-equivalent venv (`jsonschema==4.10.3`, `referencing==0.31.0`), `PYTHONPATH=src` of the library at `2d1e62e7` | `outputs/s1-floor-probe.out` |
 | S2' render parity | `PYTHONPATH=$R/lib-A2/src:$A/lib python scripts/s2b_compare.py` where `lib-A2` is the library at `2d1e62e7` with `spec/prompts/*.md` and the three schemas replaced by the host's vendored bytes and `tools/sync_spec_assets.py --write` run | `outputs/s2-render-parity.out` |
 | S3' admission parity | `PYTHONPATH=$R/lib/src:$A/lib python scripts/s3_verdict.py` | `outputs/s3-admission-parity.out` |
 | S4' roster parity | `PYTHONPATH=$R/lib/src:$A/lib python scripts/s4b_roster.py` (the worktree path inside the script is the host checkout) | `outputs/s4-roster-parity.out` |

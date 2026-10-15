@@ -1,0 +1,1969 @@
+............................FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 27%]
+FFFFFFFFFFFFF.FFFFFFFFFFFFFFFFFFFFFFFFF..........FFFFFF.FFFFFFFFFFFFFFFF [ 54%]
+FFFFFFFFFF...........F.....FFFFFFFFFFF........FFFFFFFFFFFFFFFF.......... [ 81%]
+...................FFFF...FFFFFFFFFF..FFF.F..FFFFF                       [100%]
+=================================== FAILURES ===================================
+________________ test_admit_canonical[SAFE TO MERGE-codex-None] ________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________ test_admit_canonical[SAFE TO MERGE-claude-None] ________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________ test_admit_canonical[SAFE TO MERGE-google-agy] ________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_admit_canonical[SAFE TO MERGE-google-gemini] _______________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_admit_canonical[MERGE WITH FIXES-codex-None] _______________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_admit_canonical[MERGE WITH FIXES-claude-None] ______________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_admit_canonical[MERGE WITH FIXES-google-agy] _______________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________ test_admit_canonical[MERGE WITH FIXES-google-gemini] _____________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________ test_admit_canonical[DO NOT MERGE-codex-None] _________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________ test_admit_canonical[DO NOT MERGE-claude-None] ________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________ test_admit_canonical[DO NOT MERGE-google-agy] _________________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________ test_admit_canonical[DO NOT MERGE-google-gemini] _______________
+tests/test_verdict.py:34: in test_admit_canonical
+    assert admit(data) == data
+           ^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________________ test_missing_required[schema_version] _____________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_missing_required[review_id] _______________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_missing_required[family] _________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________________ test_missing_required[content_digest] _____________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_missing_required[leg_name] ________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_missing_required[attempt] ________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________________ test_missing_required[route] _________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_missing_required[verdict] ________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________________ test_missing_required[criteria_checked] ____________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_missing_required[findings] ________________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_missing_required[affected_surfaces_inspected] ______________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________________ test_missing_required[open_questions] _____________________
+tests/test_verdict.py:46: in test_missing_required
+    admit(data, {key: BASE[key] for key in BINDINGS})
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change0] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change1] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change2] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change3] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change4] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change5] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change6] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change7] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change8] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change9] ________________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change10] _______________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change11] _______________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change12] _______________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change13] _______________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_schema_rejections[change14] _______________________
+tests/test_verdict.py:63: in test_schema_rejections
+    admit(dict(BASE, **change))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________ test_each_binding[review_id-other] ______________________
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_each_binding[family-claude] _______________________
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_each_binding[content_digest-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb] _
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________ test_each_binding[leg_name-other] _______________________
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________________ test_each_binding[attempt-2] _________________________
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_each_binding[route-gemini] ________________________
+tests/test_verdict.py:78: in test_each_binding
+    admit(data, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change0] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change1] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change2] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change3] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change4] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change5] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_binding[change6] ________________________
+tests/test_verdict.py:89: in test_expected_binding
+    admit(BASE, expected)
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_shape[expected0] ________________________
+tests/test_verdict.py:97: in test_expected_shape
+    lib.validate_verdict(json.dumps(BASE), expected=expected)
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_expected_shape[expected1] ________________________
+tests/test_verdict.py:97: in test_expected_shape
+    lib.validate_verdict(json.dumps(BASE), expected=expected)
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________________ test_expected_shape[None] ___________________________
+tests/test_verdict.py:97: in test_expected_shape
+    lib.validate_verdict(json.dumps(BASE), expected=expected)
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________________ test_expected_shape[binding] _________________________
+tests/test_verdict.py:97: in test_expected_shape
+    lib.validate_verdict(json.dumps(BASE), expected=expected)
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________________ test_admission_errors_do_not_echo_input ____________________
+tests/test_verdict.py:103: in test_admission_errors_do_not_echo_input
+    admit(dict(BASE, PRIVATE_TOKEN="PRIVATE_VALUE"))
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________________________ test_no_shared_mutation ____________________________
+tests/test_verdict.py:118: in test_no_shared_mutation
+    result = admit(BASE, expected)
+             ^^^^^^^^^^^^^^^^^^^^^
+tests/test_verdict.py:25: in admit
+    return lib.validate_verdict(json.dumps(data), expected=expected)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:41: in validate_verdict
+    Draft202012Validator(schema, registry=Registry()).validate(data)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________________ test_validate_binding_api ___________________________
+tests/test_verdict.py:128: in test_validate_binding_api
+    assert lib.validate_binding(expected) is None
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_recursive_partial_null_merge_and_copy __________________
+tests/test_roster.py:26: in test_recursive_partial_null_merge_and_copy
+    result = resolve(defaults, json.dumps(roster({'name': 'c', 'codex': {'model': None}})))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_four_routes_same_family_order_and_selection_copy _____________
+tests/test_roster.py:37: in test_four_routes_same_family_order_and_selection_copy
+    result = resolve(defaults, json.dumps(roster({'name': 'c', 'enabled': False}, new)).encode())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_strict_json_refusal_is_fixed_roster_error[{] _______________
+tests/test_roster.py:50: in test_strict_json_refusal_is_fixed_roster_error
+    resolve(roster(entry()), raw)
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_strict_json_refusal_is_fixed_roster_error[{"schema":"triad-review-legs.v2","legs":[],"legs":[]}] _
+tests/test_roster.py:50: in test_strict_json_refusal_is_fixed_roster_error
+    resolve(roster(entry()), raw)
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_strict_json_refusal_is_fixed_roster_error[{"schema":"triad-review-legs.v2","legs":[],"x":NaN}] _
+tests/test_roster.py:50: in test_strict_json_refusal_is_fixed_roster_error
+    resolve(roster(entry()), raw)
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________ test_strict_json_refusal_is_fixed_roster_error[\xff] _____________
+tests/test_roster.py:50: in test_strict_json_refusal_is_fixed_roster_error
+    resolve(roster(entry()), raw)
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_strict_json_refusal_is_fixed_roster_error[42] ______________
+tests/test_roster.py:50: in test_strict_json_refusal_is_fixed_roster_error
+    resolve(roster(entry()), raw)
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_invalid_even_disabled_entries_refused[defaults0-None] __________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_even_disabled_entries_refused[defaults1-override1] ________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_invalid_even_disabled_entries_refused[defaults2-None] __________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_invalid_even_disabled_entries_refused[defaults3-None] __________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_even_disabled_entries_refused[defaults4-override4] ________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_even_disabled_entries_refused[defaults5-override5] ________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_even_disabled_entries_refused[defaults6-override6] ________
+tests/test_roster.py:67: in test_invalid_even_disabled_entries_refused
+    resolve(defaults, None if override is None else json.dumps(override))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_empty_selection_and_select_validation __________________
+tests/test_roster.py:71: in test_empty_selection_and_select_validation
+    result = resolve(roster(entry(enabled=False)))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________ test_preserves_opaque_settings_and_null_route_without_defaults ________
+tests/test_roster.py:79: in test_preserves_opaque_settings_and_null_route_without_defaults
+    result = resolve(roster(entry('g', 'google', google={'route': 'gemini'},
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________ test_multiple_codex_entries_retained_separately ________________
+tests/test_roster.py:88: in test_multiple_codex_entries_retained_separately
+    result = resolve(roster(entry('one'), entry('two')))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________ test_schema_reference_cannot_retrieve_remote _________________
+tests/test_roster.py:101: in test_schema_reference_cannot_retrieve_remote
+    resolve(roster(entry()))
+tests/test_roster.py:20: in resolve
+    return lib.resolve_roster(defaults, overrides)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/roster.py:42: in resolve_roster
+    _validate(defaults, schema, resolved=True)
+src/triad_dispatch_lib/roster.py:19: in _validate
+    if not Draft202012Validator(target, registry=registry).is_valid(value):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________ test_phase_and_order[formal-plan] _______________________
+tests/test_prompts.py:25: in test_phase_and_order
+    text = render(review_kind=kind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_phase_and_order[pre-merge] ________________________
+tests/test_prompts.py:25: in test_phase_and_order
+    text = render(review_kind=kind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________ test_phase_and_order[implementation-review] __________________
+tests/test_prompts.py:25: in test_phase_and_order
+    text = render(review_kind=kind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_web_and_arguments[changes0] _______________________
+tests/test_prompts.py:49: in test_web_and_arguments
+    render(**changes)
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_web_and_arguments[changes1] _______________________
+tests/test_prompts.py:49: in test_web_and_arguments
+    render(**changes)
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+________________________ test_web_selection_and_default ________________________
+tests/test_prompts.py:53: in test_web_selection_and_default
+    assert render() == render(review_kind="pre-merge")
+           ^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________________________ test_replacement_once _____________________________
+tests/test_prompts.py:62: in test_replacement_once
+    text = render(replacements=VALUES | {"worktree": '"literal <review-kind> 한글"'})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________________ test_bundle_damage[missing] __________________________
+tests/test_prompts.py:68: in test_bundle_damage
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________________ test_bundle_damage[digest] __________________________
+tests/test_prompts.py:68: in test_bundle_damage
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________________ test_bundle_damage[manifest] _________________________
+tests/test_prompts.py:68: in test_bundle_damage
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________________ test_clause_format ______________________________
+tests/test_prompts.py:85: in test_clause_format
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_order_skips_host_inapplicable_clause ___________________
+tests/test_prompts.py:105: in test_order_skips_host_inapplicable_clause
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________________ test_broken_phase_is_contract_failure[{] ___________________
+tests/test_prompts.py:117: in test_broken_phase_is_contract_failure
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_broken_phase_is_contract_failure[[]] ___________________
+tests/test_prompts.py:117: in test_broken_phase_is_contract_failure
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________ test_broken_phase_is_contract_failure[{"type": 123}] _____________
+tests/test_prompts.py:117: in test_broken_phase_is_contract_failure
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_broken_phase_is_contract_failure[{}] ___________________
+tests/test_prompts.py:117: in test_broken_phase_is_contract_failure
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[formal-plan-A-codex] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_all_family_host_phase_profiles[formal-plan-A-claude] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_all_family_host_phase_profiles[formal-plan-A-google] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[formal-plan-B-codex] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_all_family_host_phase_profiles[formal-plan-B-claude] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_all_family_host_phase_profiles[formal-plan-B-google] ___________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______ test_all_family_host_phase_profiles[implementation-review-A-codex] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____ test_all_family_host_phase_profiles[implementation-review-A-claude] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____ test_all_family_host_phase_profiles[implementation-review-A-google] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______ test_all_family_host_phase_profiles[implementation-review-B-codex] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____ test_all_family_host_phase_profiles[implementation-review-B-claude] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____ test_all_family_host_phase_profiles[implementation-review-B-google] ______
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_all_family_host_phase_profiles[pre-merge-A-codex] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[pre-merge-A-claude] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[pre-merge-A-google] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_all_family_host_phase_profiles[pre-merge-B-codex] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[pre-merge-B-claude] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_all_family_host_phase_profiles[pre-merge-B-google] ____________
+tests/test_prompts.py:131: in test_all_family_host_phase_profiles
+    text = render(family=family, host=host, review_kind=kind, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________ test_google_hook_route[False-agy] _______________________
+tests/test_prompts.py:149: in test_google_hook_route
+    text = render(**kwargs)
+           ^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________________ test_google_hook_route[False-gemini] _____________________
+tests/test_prompts.py:149: in test_google_hook_route
+    text = render(**kwargs)
+           ^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________________ test_google_hook_route[True-agy] _______________________
+tests/test_prompts.py:149: in test_google_hook_route
+    text = render(**kwargs)
+           ^^^^^^^^^^^^^^^^
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________ test_unknown_canonical_placeholder_still_refused _______________
+tests/test_prompts.py:183: in test_unknown_canonical_placeholder_still_refused
+    render()
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_google_replacement_is_one_pass_and_extra_keys_refused __________
+tests/test_prompts.py:195: in test_google_replacement_is_one_pass_and_extra_keys_refused
+    text = render(family='google', route='gemini', replacements=VALUES | {
+tests/test_prompts.py:18: in render
+    return lib.render_review_clauses(**({"family": "codex", "host": "B",
+src/triad_dispatch_lib/prompts.py:94: in render_review_clauses
+    if not Draft202012Validator(phase_schema, registry=Registry()).is_valid(review_kind):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_admit_all_carriers[False-native-final-codex-None] ____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_admit_all_carriers[False-native-final-claude-None] ____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_admit_all_carriers[False-claude-json-claude-None] ____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_admit_all_carriers[False-gemini-json-google-gemini] ___________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________ test_admit_all_carriers[False-agy-stream-json-google-agy] ___________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_admit_all_carriers[True-native-final-codex-None] _____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_admit_all_carriers[True-native-final-claude-None] ____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________ test_admit_all_carriers[True-claude-json-claude-None] _____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_admit_all_carriers[True-gemini-json-google-gemini] ____________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_admit_all_carriers[True-agy-stream-json-google-agy] ___________
+tests/test_output.py:36: in test_admit_all_carriers
+    assert lib.admit_output(output(raw, carrier), expected={k: data[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-native-final] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-claude-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-gemini-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-agy-stream-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-native-final] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-claude-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-gemini-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-agy-stream-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-native-final] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-claude-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-gemini-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-agy-stream-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__ test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-native-final] __
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__ test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-claude-json] ___
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__ test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-gemini-json] ___
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-agy-stream-json] _
+tests/test_output.py:63: in test_inner_evidence_reaches_strict_parser
+    lib.admit_output(output(wrap(raw, carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________ test_carrier_must_match_binding[claude-json] _________________
+tests/test_output.py:133: in test_carrier_must_match_binding
+    lib.admit_output(output(wrap(json.dumps(BASE), carrier), carrier), expected={k: BASE[k] for k in BINDINGS})
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________ test_carrier_must_match_binding[gemini-json] _________________
+tests/test_output.py:133: in test_carrier_must_match_binding
+    lib.admit_output(output(wrap(json.dumps(BASE), carrier), carrier), expected={k: BASE[k] for k in BINDINGS})
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______________ test_carrier_must_match_binding[agy-stream-json] _______________
+tests/test_output.py:133: in test_carrier_must_match_binding
+    lib.admit_output(output(wrap(json.dumps(BASE), carrier), carrier), expected={k: BASE[k] for k in BINDINGS})
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________________ test_quota_looking_evidence_is_ordinary_data _________________
+tests/test_output.py:139: in test_quota_looking_evidence_is_ordinary_data
+    assert lib.admit_output(output(json.dumps(data)), expected={k: BASE[k] for k in BINDINGS}) == data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________ test_google_sibling_carrier_cannot_swap[gemini-json-agy] ___________
+tests/test_output.py:164: in test_google_sibling_carrier_cannot_swap
+    lib.admit_output(output(wrap("{}", carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_google_sibling_carrier_cannot_swap[agy-stream-json-gemini] ________
+tests/test_output.py:164: in test_google_sibling_carrier_cannot_swap
+    lib.admit_output(output(wrap("{}", carrier), carrier), expected=expected)
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___________________ test_native_does_not_strip_host_markers ____________________
+tests/test_output.py:170: in test_native_does_not_strip_host_markers
+    lib.admit_output(output('```json\n' + json.dumps(BASE) + '\n```'), expected={k: BASE[k] for k in BINDINGS})
+src/triad_dispatch_lib/output.py:120: in admit_output
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________________ test_every_same_family_leg_counts _______________________
+tests/test_agreement.py:23: in test_every_same_family_leg_counts
+    result = evaluate(expected, results)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___ test_negative_invalid_stale_and_swapped_block[change0-negative_verdict] ____
+tests/test_agreement.py:38: in test_negative_invalid_stale_and_swapped_block
+    result = evaluate(results={"codex-leg": lib.ProviderOutput("native-final", json.dumps(BASE | change), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___ test_negative_invalid_stale_and_swapped_block[change1-binding_mismatch] ____
+tests/test_agreement.py:38: in test_negative_invalid_stale_and_swapped_block
+    result = evaluate(results={"codex-leg": lib.ProviderOutput("native-final", json.dumps(BASE | change), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___ test_negative_invalid_stale_and_swapped_block[change2-binding_mismatch] ____
+tests/test_agreement.py:38: in test_negative_invalid_stale_and_swapped_block
+    result = evaluate(results={"codex-leg": lib.ProviderOutput("native-final", json.dumps(BASE | change), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+___ test_negative_invalid_stale_and_swapped_block[change3-binding_mismatch] ____
+tests/test_agreement.py:38: in test_negative_invalid_stale_and_swapped_block
+    result = evaluate(results={"codex-leg": lib.ProviderOutput("native-final", json.dumps(BASE | change), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+____________________ test_failure_and_invalid_payload_block ____________________
+tests/test_agreement.py:45: in test_failure_and_invalid_payload_block
+    result = evaluate(results={"codex-leg": lib.ProviderOutput("native-final", raw, exit_code, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+__________________ test_host_integrity_blocks_unanimous_safe ___________________
+tests/test_agreement.py:50: in test_host_integrity_blocks_unanimous_safe
+    result = evaluate(integrity=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______ test_invalid_callers_raise[expected2-results2-True-name_mismatch] _______
+tests/test_agreement.py:68: in test_invalid_callers_raise
+    evaluate(expected, results, integrity)
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_callers_raise[expected3-results3-True-mixed_basis] ________
+tests/test_agreement.py:68: in test_invalid_callers_raise
+    evaluate(expected, results, integrity)
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_______ test_invalid_callers_raise[expected4-results4-True-extra_output] _______
+tests/test_agreement.py:68: in test_invalid_callers_raise
+    evaluate(expected, results, integrity)
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______ test_invalid_callers_raise[expected6-results6-True-invalid_output] ______
+tests/test_agreement.py:68: in test_invalid_callers_raise
+    evaluate(expected, results, integrity)
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________ test_all_binding_fields_are_rechecked[family-claude] _____________
+tests/test_agreement.py:91: in test_all_binding_fields_are_rechecked
+    result = evaluate(expected, {"codex-leg": lib.ProviderOutput("native-final", json.dumps(data), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_ test_all_binding_fields_are_rechecked[content_digest-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb] _
+tests/test_agreement.py:91: in test_all_binding_fields_are_rechecked
+    result = evaluate(expected, {"codex-leg": lib.ProviderOutput("native-final", json.dumps(data), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_____________ test_all_binding_fields_are_rechecked[route-gemini] ______________
+tests/test_agreement.py:91: in test_all_binding_fields_are_rechecked
+    result = evaluate(expected, {"codex-leg": lib.ProviderOutput("native-final", json.dumps(data), None, True)})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+_________ test_mixed_review_ids_and_invalid_binding_are_caller_errors __________
+tests/test_agreement.py:99: in test_mixed_review_ids_and_invalid_binding_are_caller_errors
+    evaluate(expected, {})
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+______________ test_four_carrier_round_counts_both_google_routes _______________
+tests/test_agreement.py:116: in test_four_carrier_round_counts_both_google_routes
+    assert evaluate(expected, results).agreed
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_agreement.py:15: in evaluate
+    return lib.evaluate_agreement(expected, results, integrity_ok=integrity)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/triad_dispatch_lib/agreement.py:40: in evaluate_agreement
+    validate_binding(expected)
+src/triad_dispatch_lib/verdict.py:29: in validate_binding
+    _validate_binding(expected, load_contract())
+src/triad_dispatch_lib/verdict.py:23: in _validate_binding
+    if not Draft202012Validator(binding_schema, registry=Registry()).is_valid(expected):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+=========================== short test summary info ============================
+FAILED tests/test_verdict.py::test_admit_canonical[SAFE TO MERGE-codex-None]
+FAILED tests/test_verdict.py::test_admit_canonical[SAFE TO MERGE-claude-None]
+FAILED tests/test_verdict.py::test_admit_canonical[SAFE TO MERGE-google-agy]
+FAILED tests/test_verdict.py::test_admit_canonical[SAFE TO MERGE-google-gemini]
+FAILED tests/test_verdict.py::test_admit_canonical[MERGE WITH FIXES-codex-None]
+FAILED tests/test_verdict.py::test_admit_canonical[MERGE WITH FIXES-claude-None]
+FAILED tests/test_verdict.py::test_admit_canonical[MERGE WITH FIXES-google-agy]
+FAILED tests/test_verdict.py::test_admit_canonical[MERGE WITH FIXES-google-gemini]
+FAILED tests/test_verdict.py::test_admit_canonical[DO NOT MERGE-codex-None]
+FAILED tests/test_verdict.py::test_admit_canonical[DO NOT MERGE-claude-None]
+FAILED tests/test_verdict.py::test_admit_canonical[DO NOT MERGE-google-agy]
+FAILED tests/test_verdict.py::test_admit_canonical[DO NOT MERGE-google-gemini]
+FAILED tests/test_verdict.py::test_missing_required[schema_version] - TypeErr...
+FAILED tests/test_verdict.py::test_missing_required[review_id] - TypeError: c...
+FAILED tests/test_verdict.py::test_missing_required[family] - TypeError: crea...
+FAILED tests/test_verdict.py::test_missing_required[content_digest] - TypeErr...
+FAILED tests/test_verdict.py::test_missing_required[leg_name] - TypeError: cr...
+FAILED tests/test_verdict.py::test_missing_required[attempt] - TypeError: cre...
+FAILED tests/test_verdict.py::test_missing_required[route] - TypeError: creat...
+FAILED tests/test_verdict.py::test_missing_required[verdict] - TypeError: cre...
+FAILED tests/test_verdict.py::test_missing_required[criteria_checked] - TypeE...
+FAILED tests/test_verdict.py::test_missing_required[findings] - TypeError: cr...
+FAILED tests/test_verdict.py::test_missing_required[affected_surfaces_inspected]
+FAILED tests/test_verdict.py::test_missing_required[open_questions] - TypeErr...
+FAILED tests/test_verdict.py::test_schema_rejections[change0] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change1] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change2] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change3] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change4] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change5] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change6] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change7] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change8] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change9] - TypeError: cr...
+FAILED tests/test_verdict.py::test_schema_rejections[change10] - TypeError: c...
+FAILED tests/test_verdict.py::test_schema_rejections[change11] - TypeError: c...
+FAILED tests/test_verdict.py::test_schema_rejections[change12] - TypeError: c...
+FAILED tests/test_verdict.py::test_schema_rejections[change13] - TypeError: c...
+FAILED tests/test_verdict.py::test_schema_rejections[change14] - TypeError: c...
+FAILED tests/test_verdict.py::test_each_binding[review_id-other] - TypeError:...
+FAILED tests/test_verdict.py::test_each_binding[family-claude] - TypeError: c...
+FAILED tests/test_verdict.py::test_each_binding[content_digest-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb]
+FAILED tests/test_verdict.py::test_each_binding[leg_name-other] - TypeError: ...
+FAILED tests/test_verdict.py::test_each_binding[attempt-2] - TypeError: creat...
+FAILED tests/test_verdict.py::test_each_binding[route-gemini] - TypeError: cr...
+FAILED tests/test_verdict.py::test_expected_binding[change0] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change1] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change2] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change3] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change4] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change5] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_binding[change6] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_shape[expected0] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_shape[expected1] - TypeError: cre...
+FAILED tests/test_verdict.py::test_expected_shape[None] - TypeError: create.<...
+FAILED tests/test_verdict.py::test_expected_shape[binding] - TypeError: creat...
+FAILED tests/test_verdict.py::test_admission_errors_do_not_echo_input - TypeE...
+FAILED tests/test_verdict.py::test_no_shared_mutation - TypeError: create.<lo...
+FAILED tests/test_verdict.py::test_validate_binding_api - TypeError: create.<...
+FAILED tests/test_roster.py::test_recursive_partial_null_merge_and_copy - Typ...
+FAILED tests/test_roster.py::test_four_routes_same_family_order_and_selection_copy
+FAILED tests/test_roster.py::test_strict_json_refusal_is_fixed_roster_error[{]
+FAILED tests/test_roster.py::test_strict_json_refusal_is_fixed_roster_error[{"schema":"triad-review-legs.v2","legs":[],"legs":[]}]
+FAILED tests/test_roster.py::test_strict_json_refusal_is_fixed_roster_error[{"schema":"triad-review-legs.v2","legs":[],"x":NaN}]
+FAILED tests/test_roster.py::test_strict_json_refusal_is_fixed_roster_error[\xff]
+FAILED tests/test_roster.py::test_strict_json_refusal_is_fixed_roster_error[42]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults0-None]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults1-override1]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults2-None]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults3-None]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults4-override4]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults5-override5]
+FAILED tests/test_roster.py::test_invalid_even_disabled_entries_refused[defaults6-override6]
+FAILED tests/test_roster.py::test_empty_selection_and_select_validation - Typ...
+FAILED tests/test_roster.py::test_preserves_opaque_settings_and_null_route_without_defaults
+FAILED tests/test_roster.py::test_multiple_codex_entries_retained_separately
+FAILED tests/test_roster.py::test_schema_reference_cannot_retrieve_remote - T...
+FAILED tests/test_prompts.py::test_phase_and_order[formal-plan] - TypeError: ...
+FAILED tests/test_prompts.py::test_phase_and_order[pre-merge] - TypeError: cr...
+FAILED tests/test_prompts.py::test_phase_and_order[implementation-review] - T...
+FAILED tests/test_prompts.py::test_web_and_arguments[changes0] - TypeError: c...
+FAILED tests/test_prompts.py::test_web_and_arguments[changes1] - TypeError: c...
+FAILED tests/test_prompts.py::test_web_selection_and_default - TypeError: cre...
+FAILED tests/test_prompts.py::test_replacement_once - TypeError: create.<loca...
+FAILED tests/test_prompts.py::test_bundle_damage[missing] - TypeError: create...
+FAILED tests/test_prompts.py::test_bundle_damage[digest] - TypeError: create....
+FAILED tests/test_prompts.py::test_bundle_damage[manifest] - TypeError: creat...
+FAILED tests/test_prompts.py::test_clause_format - TypeError: create.<locals>...
+FAILED tests/test_prompts.py::test_order_skips_host_inapplicable_clause - Typ...
+FAILED tests/test_prompts.py::test_broken_phase_is_contract_failure[{] - Type...
+FAILED tests/test_prompts.py::test_broken_phase_is_contract_failure[[]] - Typ...
+FAILED tests/test_prompts.py::test_broken_phase_is_contract_failure[{"type": 123}]
+FAILED tests/test_prompts.py::test_broken_phase_is_contract_failure[{}] - Typ...
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-A-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-A-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-A-google]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-B-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-B-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[formal-plan-B-google]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-A-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-A-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-A-google]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-B-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-B-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[implementation-review-B-google]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-A-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-A-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-A-google]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-B-codex]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-B-claude]
+FAILED tests/test_prompts.py::test_all_family_host_phase_profiles[pre-merge-B-google]
+FAILED tests/test_prompts.py::test_google_hook_route[False-agy] - TypeError: ...
+FAILED tests/test_prompts.py::test_google_hook_route[False-gemini] - TypeErro...
+FAILED tests/test_prompts.py::test_google_hook_route[True-agy] - TypeError: c...
+FAILED tests/test_prompts.py::test_unknown_canonical_placeholder_still_refused
+FAILED tests/test_prompts.py::test_google_replacement_is_one_pass_and_extra_keys_refused
+FAILED tests/test_output.py::test_admit_all_carriers[False-native-final-codex-None]
+FAILED tests/test_output.py::test_admit_all_carriers[False-native-final-claude-None]
+FAILED tests/test_output.py::test_admit_all_carriers[False-claude-json-claude-None]
+FAILED tests/test_output.py::test_admit_all_carriers[False-gemini-json-google-gemini]
+FAILED tests/test_output.py::test_admit_all_carriers[False-agy-stream-json-google-agy]
+FAILED tests/test_output.py::test_admit_all_carriers[True-native-final-codex-None]
+FAILED tests/test_output.py::test_admit_all_carriers[True-native-final-claude-None]
+FAILED tests/test_output.py::test_admit_all_carriers[True-claude-json-claude-None]
+FAILED tests/test_output.py::test_admit_all_carriers[True-gemini-json-google-gemini]
+FAILED tests/test_output.py::test_admit_all_carriers[True-agy-stream-json-google-agy]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-native-final]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-claude-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-gemini-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1,"\\u0061":2}-duplicate_member-agy-stream-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-native-final]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-claude-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-gemini-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":NaN}-nonfinite_number-agy-stream-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-native-final]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-claude-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-gemini-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":1e999}-nonfinite_number-agy-stream-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-native-final]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-claude-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-gemini-json]
+FAILED tests/test_output.py::test_inner_evidence_reaches_strict_parser[{"a":-invalid_json-agy-stream-json]
+FAILED tests/test_output.py::test_carrier_must_match_binding[claude-json] - T...
+FAILED tests/test_output.py::test_carrier_must_match_binding[gemini-json] - T...
+FAILED tests/test_output.py::test_carrier_must_match_binding[agy-stream-json]
+FAILED tests/test_output.py::test_quota_looking_evidence_is_ordinary_data - T...
+FAILED tests/test_output.py::test_google_sibling_carrier_cannot_swap[gemini-json-agy]
+FAILED tests/test_output.py::test_google_sibling_carrier_cannot_swap[agy-stream-json-gemini]
+FAILED tests/test_output.py::test_native_does_not_strip_host_markers - TypeEr...
+FAILED tests/test_agreement.py::test_every_same_family_leg_counts - TypeError...
+FAILED tests/test_agreement.py::test_negative_invalid_stale_and_swapped_block[change0-negative_verdict]
+FAILED tests/test_agreement.py::test_negative_invalid_stale_and_swapped_block[change1-binding_mismatch]
+FAILED tests/test_agreement.py::test_negative_invalid_stale_and_swapped_block[change2-binding_mismatch]
+FAILED tests/test_agreement.py::test_negative_invalid_stale_and_swapped_block[change3-binding_mismatch]
+FAILED tests/test_agreement.py::test_failure_and_invalid_payload_block - Type...
+FAILED tests/test_agreement.py::test_host_integrity_blocks_unanimous_safe - T...
+FAILED tests/test_agreement.py::test_invalid_callers_raise[expected2-results2-True-name_mismatch]
+FAILED tests/test_agreement.py::test_invalid_callers_raise[expected3-results3-True-mixed_basis]
+FAILED tests/test_agreement.py::test_invalid_callers_raise[expected4-results4-True-extra_output]
+FAILED tests/test_agreement.py::test_invalid_callers_raise[expected6-results6-True-invalid_output]
+FAILED tests/test_agreement.py::test_all_binding_fields_are_rechecked[family-claude]
+FAILED tests/test_agreement.py::test_all_binding_fields_are_rechecked[content_digest-bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb]
+FAILED tests/test_agreement.py::test_all_binding_fields_are_rechecked[route-gemini]
+FAILED tests/test_agreement.py::test_mixed_review_ids_and_invalid_binding_are_caller_errors
+FAILED tests/test_agreement.py::test_four_carrier_round_counts_both_google_routes
+165 failed, 101 passed in 1.07s
