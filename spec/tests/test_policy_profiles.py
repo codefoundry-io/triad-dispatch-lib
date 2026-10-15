@@ -68,6 +68,15 @@ def test_c32_a_web_profile_moves_only_the_two_web_tools_to_allow():
     assert {r for r in no_web if r[0] in WEB_TOOLS} == {(t, "deny", 200) for t in WEB_TOOLS}
     assert {r for r in web if r[0] in WEB_TOOLS} == {(t, "allow", 100) for t in WEB_TOOLS}
     assert {r for r in web if r[0] not in WEB_TOOLS} == {r for r in no_web if r[0] not in WEB_TOOLS}
+    # The independent no-web literal pin fixes every row, including this final
+    # grouped web rule. Preserve all other complete rows and their order.
+    expected = tomllib.loads((ROOT / "contracts/gemini-readonly.toml").read_text())["rule"]
+    expected[-1] = {
+        "toolName": ["google_web_search", "web_fetch"],
+        "decision": "allow",
+        "priority": 100,
+    }
+    assert tomllib.loads((ROOT / "contracts/gemini-readonly-web.toml").read_text())["rule"] == expected
 
 
 def test_c15_a_no_web_rule_content_is_fixed_independently_of_comments():
