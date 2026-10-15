@@ -49,16 +49,20 @@ requests remain design work. No consumer or provider defaults change.
 The [local verification record](verification/2026-10-15-adoption-observability.md)
 records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
 installed-wheel drivers and new API probes. Concurrent Claude documentation
-amendments are preserved: two-function first slice, remaining duplicate `.member`
-and schema-defined missing-required-name requests
-in issue #3, L13 issue #4 and boundary decisions issue #5. The requester accepts
-dev4 `.field` and trusted schema `.path`; `.detail`, instance pointers and the
-duplicate pre-pass are withdrawn. Duplicate `.member` and missing-required-name
-diagnostics remain unimplemented design requests; `.missing` is a proposed
-example, not a decided API. See the
-[latest requester comment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185444844)
-and [pre-pass withdrawal](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185234528).
-This bounded L2 does not fully satisfy issue #3. The merged review/CI evidence
+amendments and their provenance remain in the
+[request sync record](verification/2026-10-15-provenance-request-sync.md). The
+owner subsequently approved the [remaining adoption APIs](design/2026-10-15-adoption-apis.md):
+`merge_roster`/`validate_resolved` are implemented, and safe `.missing` diagnostics
+now accompany selected canonical required violations. Arbitrary duplicate
+`.member` disclosure is declined; the host retains its strict-parser deviation.
+The [boundary proposals](design/2026-10-15-adoption-boundary-proposals.md) retain
+the other request boundaries. Task 2 scoped checks passed 127 diagnostics/verdict/
+parser tests and then 160 replay/diagnostics/verdict/parser tests, including the
+wrong-diagnostic driver control. The combined
+[verification record](verification/2026-10-15-adoption-apis.md) belongs to the
+subsequent integration checks; source/archive/wheel/platform/formal review results
+for the combined bytes are not claimed here. Keep dev4 unpublished and source-pinned.
+Host adoption, release and merge remain separate. The merged review/CI evidence
 does not transfer to changed bytes.
 
 R1 (`20261015-lib-observability-r1-fcb113`) completed `BLOCKED` on `2eff9d0`

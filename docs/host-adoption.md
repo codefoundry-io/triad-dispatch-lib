@@ -145,17 +145,18 @@ host work, not released adoption evidence. The host also reports a preparation-t
 text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
 adoption and removal of that render core. These unpublished implementation reports
 have not been independently verified. Verdict admission and roster merging remain
-host-owned pending the remaining duplicate-member and missing-required-name
-diagnostic requests (#3) and
-merge-only roster request (#4). The requester accepts dev4 `.field`/trusted schema
-`.path`. It withdrew `.detail`, instance pointers and the
-[duplicate pre-pass](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185234528).
-The [latest requester comment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185444844)
-requests the schema-defined name of a missing required property alongside the
-earlier duplicate `.member` request. Both remain unimplemented design requests;
-`.missing` is only a proposed example. Trusted schema names and provider-chosen
-duplicate names need separate design decisions. Bounded L2 does not claim to
-unblock full admission delegation.
+host-owned until independently adopted. The owner settled the
+[boundary decisions](design/2026-10-15-adoption-boundary-proposals.md) in the
+[approved adoption APIs](design/2026-10-15-adoption-apis.md): the library now
+implements `merge_roster`, `validate_resolved` and safe `.missing` for the selected
+canonical required violation. Duplicate `.member` disclosure is declined; the
+host retains its own strict duplicate parser as a documented deviation. The
+requester accepted dev4 `.field`/trusted schema `.path` and withdrew `.detail`,
+instance pointers and the duplicate pre-pass; see the
+[request sync evidence](verification/2026-10-15-provenance-request-sync.md).
+These settled library APIs do not establish host adaptation, full parse delegation
+or released adoption. Keep dev4 unpublished and source-pinned; combined verification
+is recorded separately in the [adoption API record](verification/2026-10-15-adoption-apis.md).
 
 The host's raw replacement/residual forms, case-folded directory-name checks and
 reported 3600-second entry timeout remain host responsibilities. This project's

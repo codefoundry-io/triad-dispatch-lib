@@ -45,6 +45,10 @@ def test_missing_required(field):
     with pytest.raises(lib.AdmissionError) as caught:
         admit(data, {key: BASE[key] for key in BINDINGS})
     assert caught.value.code == "schema_violation"
+    assert caught.value.missing == field
+    assert caught.value.field is None
+    assert caught.value.path == ("required",)
+    assert caught.value.args == ("Verdict violates the canonical schema.",)
 
 
 @pytest.mark.parametrize("change", [

@@ -23,6 +23,9 @@ def test_replay_vectors(case):
         with pytest.raises(AdmissionError) as caught:
             validate_verdict(raw, expected=case["expected"])
         assert caught.value.code == case["outcome"]
+        if "diagnostics" in case:
+            assert caught.value.missing == case["diagnostics"]["missing"]
+            assert caught.value.path == tuple(case["diagnostics"]["path"])
 
 
 def verifier():
@@ -45,6 +48,23 @@ def test_installed_probe_requires_site_packages(tmp_path):
 
 def test_installed_probe_replays_vectors():
     assert verifier().replay(ROOT) == [case["name"] for case in CASES]
+
+
+def test_installed_probe_checks_missing_diagnostic(monkeypatch):
+    import triad_dispatch_lib
+
+    real_validate = triad_dispatch_lib.validate_verdict
+
+    def wrong_missing(raw, *, expected):
+        try:
+            return real_validate(raw, expected=expected)
+        except AdmissionError as error:
+            error.missing = "wrong-required-name"
+            raise
+
+    monkeypatch.setattr(triad_dispatch_lib, "validate_verdict", wrong_missing)
+    with pytest.raises(AssertionError, match="unexpected diagnostic: missing-root"):
+        verifier().replay(ROOT)
 
 
 def test_probe_reports_all_verified_bundle_identities():
