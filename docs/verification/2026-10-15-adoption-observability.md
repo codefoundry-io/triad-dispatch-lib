@@ -125,3 +125,10 @@ of typing metadata; no `py.typed` marker or new typing guarantee is introduced h
 Affected documentation/package checks and fresh exact-head CI verify the correction;
 a new complete project review remains required after provider recovery. Final
 post-freeze outcomes are retained with PR #2 rather than implied by this record.
+
+After R2 closed, concurrent amendments `e763df8` and `d5d7f65` narrowed the
+remaining L2 request to `.member` and published S1's probe, full selected-test
+failure log and wheel inventory/hashes. Current request/adoption/design records
+reflect those reports; earlier R1/R2 findings above retain their measured source
+boundaries. The S1 evidence files are preserved without execution, and the
+repository-only evidence link now points to the snapshot containing those files.

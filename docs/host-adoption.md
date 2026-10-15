@@ -125,7 +125,8 @@ assets and measured roster input remain unpublished, so independent reproduction
 is still incomplete. The reported 24 prompt comparisons used a scratch bundle
 rebuilt from host assets; they do not establish parity with packaged dev3 prompts.
 The 47 verdict decisions and latest six-leg merge (two disabled) remain attributed captures. The
-reported wheel closure lacks published artifacts and establishes no new platform proof.
+reported wheel closure now has a published inventory and hashes, but no wheel binaries
+or exact download/install command; it establishes no new native platform proof.
 
 The amended leader-driven Claude first slice plans two functions:
 `render_review_clauses` and `validate_binding` (`select_entries` drops disabled

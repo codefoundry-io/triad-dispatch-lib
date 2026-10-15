@@ -13,7 +13,7 @@ publishing the host commit alone does not recover that measured input.
 The scripts and captured outputs are repository-only evidence. The source
 distribution includes this Markdown record and input identities, but omits
 `scripts/*.py` and `outputs/*.out`. Archive readers can inspect the exact files
-in the [published repository snapshot](https://github.com/codefoundry-io/triad-dispatch-lib/tree/bc817cabb993e6fb8fd4764b901985ce74a3bcd7/docs/verification/2026-10-15-claude-host-spikes).
+in the [published repository snapshot](https://github.com/codefoundry-io/triad-dispatch-lib/tree/d5d7f654db30fb01e3cdec66ac638c3ce8215761/docs/verification/2026-10-15-claude-host-spikes).
 Paths and commands below are relative to that repository record; the missing
 host inputs described here are still required for independent reproduction.
 
@@ -32,8 +32,12 @@ checks override `_comment`, not the complete document or native route resolution
 the reported manylinux wheel closure is CPython 3.12 x86-64 evidence only. These are
 feasibility measurements for the host's own planning, not conformance or adoption evidence.
 
-S1 supplies only a summary: its probe script, exact pytest selection, full failure
-output and wheel inventory/hashes are absent. Its failure counts and wheel closure
-remain attributed reports. S2-S4 are print-based probes; they do not enforce
+Amendment `d5d7f65` supplies S1's probe script, exact pytest selection, full failure
+output and wheel inventory/hashes, replacing the earlier summary-only record.
+The captured selection reports 165 failures and 101 passes; it has not been
+independently rerun here. The inventory lists supported-floor wheels separately
+from the old-validator probe; wheel binaries and the exact download/install command
+are absent, and no native Ubuntu installation is established by that list.
+The S1 function probe and S2-S4 are print-based probes; they do not enforce
 conformance by failing on a mismatch. Captured S3 has 13 accepts and 34 rejections
 (six for bindings); captured S4 has six merged legs, of which four are enabled.

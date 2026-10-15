@@ -6,7 +6,7 @@ Maintainer disposition: owner-approved on 2026-10-15 after comparison with
 Codex `c81c02984825af7dd1ec69a14af83f0ff18d0551` and published Claude
 `e4cadf2f751308d1ab75e4199b08d89849bb93b3`.
 
-Concurrent host amendments through `e763df8` are incorporated below. The earlier
+Concurrent host amendments through `d5d7f65` are incorporated below. The earlier
 candidate `3afc4d7e` was unavailable in the public remote and three known local
 reference repositories. The newly published scratch record identifies reported
 host head `f925395f` on `impl/claude-host-2026-10`; that implementation branch
@@ -35,8 +35,12 @@ Published captures alone establish neither conformance nor released adoption.
   That environment is below the declared jsonschema>=4.26,<5 and
   referencing>=0.37,<1 floors; the keyword's introduction in 4.18 does not lower
   the package requirements. The [Ubuntu package](https://packages.ubuntu.com/noble/python3-jsonschema)
-  confirms its older distribution version. The reported six-wheel/620 KB
-  manylinux CPython 3.12 closure does not establish macOS or Python 3.14 support.
+  confirms its older distribution version. Amendment `d5d7f65` publishes the
+  probe script, exact pytest selection, full failure output and six-wheel/620213-byte
+  manylinux CPython 3.12 inventory with hashes. Those wheels use supported-floor
+  versions, separately from the older-validator probe. The binaries and exact
+  download/install command remain absent; this is not independently rerun evidence
+  or proof of native Ubuntu installation, macOS or Python 3.14 support.
 - **S2 renderer comparison:** amended report: 24 matching host-A profiles with raw
   replacements **after rebuilding the library bundle from host-owned prompts**.
   This is renderer-only comparison with substituted assets, not packaged dev3
@@ -159,7 +163,8 @@ The amended S1 reports that old jsonschema's default resolver can retrieve remot
 references despite `$defs` re-rooting. Retain no-retrieval behavior; a future
 lower-floor proposal would need explicit protection and old-version CI. No such
 backport is selected here. Published scratch captures do not supply the missing
-host inputs for independent reproduction or the reported wheel-closure artifacts.
+host inputs for independent S2-S4 reproduction. The published S1 wheel inventory
+does not include the wheel binaries or exact download/install command.
 
 ## 4. Sequence and specification work
 
