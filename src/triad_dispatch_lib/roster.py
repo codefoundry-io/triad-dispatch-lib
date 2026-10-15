@@ -36,9 +36,7 @@ def _merge(base, override):
     return deepcopy(override)
 
 
-def resolve_roster(defaults: dict, overrides: str | bytes | None = None) -> dict:
-    """Validate defaults, merge strict named overrides, then validate all entries."""
-    schema = load_roster_contract()
+def _merge_roster(defaults: dict, overrides: str | bytes | None, schema: dict) -> dict:
     _validate(defaults, schema, resolved=True)
     result = deepcopy(defaults)
     if overrides is not None:
@@ -57,6 +55,23 @@ def resolve_roster(defaults: dict, overrides: str | bytes | None = None) -> dict
         for key, value in override.items():
             if key != "legs":
                 result[key] = deepcopy(value)
+    return result
+
+
+def merge_roster(defaults: dict, overrides: str | bytes | None = None) -> dict:
+    """Validate inputs and return an independent, not finally validated merge."""
+    return _merge_roster(defaults, overrides, load_roster_contract())
+
+
+def validate_resolved(roster: dict) -> None:
+    """Validate all resolved entries without mutating the supplied roster."""
+    _validate(roster, load_roster_contract(), resolved=True)
+
+
+def resolve_roster(defaults: dict, overrides: str | bytes | None = None) -> dict:
+    """Validate defaults, merge strict named overrides, then validate all entries."""
+    schema = load_roster_contract()
+    result = _merge_roster(defaults, overrides, schema)
     _validate(result, schema, resolved=True)
     return result
 

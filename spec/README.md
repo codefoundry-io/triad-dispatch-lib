@@ -5,9 +5,16 @@ This directory is the canonical shared specification inside
 implementation and tests are developed together here; native host execution and
 installation stay in their independently released host repositories.
 
-The consolidation is pending PR merge and an old-repository notice. The former
-`triad-dispatch-spec` repository remains available; no remote retirement or host
-adoption is claimed. [Migration and ancestry](MIGRATION.md) distinguishes the
+The consolidation merged in [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
+at `9489543ee24f338e9c6d0e3b032a1aa389986429`. The later adoption-observability
+slice (admission diagnostics and clause manifests) merged in
+[PR #2](https://github.com/codefoundry-io/triad-dispatch-lib/pull/2) at
+`ee8b4b4ab3c1440788733931874047a1821ee08e`, following R5 `AGREED` on
+reviewed head `830942e05d3681e7ded04a91d60850d18ea00d10` and successful
+[main CI run 38690043657](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38690043657).
+The old-repository notice remains separate work. The former `triad-dispatch-spec`
+repository remains available; this merge claims no release, remote retirement or
+new host adoption. [Migration and ancestry](MIGRATION.md) distinguishes the
 original imported commit/hashes from current runtime bundle IDs. The imported
 v2 candidate and historical rev-0 records retain their original meaning; this
 move creates no specification tag.

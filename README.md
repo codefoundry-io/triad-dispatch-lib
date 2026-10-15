@@ -59,10 +59,19 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 
 ## API
 
-The [current Python API contract](spec/reference/library-api.md) covers all 27
+The [current Python API contract](spec/reference/library-api.md) covers all 29
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
+
+`merge_roster(defaults, overrides=None)` returns an independent merge after
+validating the complete defaults and strict JSON override inputs.
+`validate_resolved(roster)` validates the exact merged document and returns
+`None`. The intermediate merge may contain incomplete entries or inherited
+incompatible vendor blocks; host checks must safely handle these and final
+validation is mandatory before consumption. `resolve_roster` retains its
+validated dictionary return. Capability, route and custom diagnostic checks
+remain host-owned; later mutations require revalidation.
 
 ```python
 from triad_dispatch_lib import AdmissionError, ContractError, validate_verdict

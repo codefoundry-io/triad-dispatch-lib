@@ -8,7 +8,7 @@
 
 schema = "triad-gemini-verify.v1-draft"
 policy = "contracts/gemini-readonly-web.toml"
-policy_sha256 = "678da3f08fff31b2fad5d498fde21d402e234e1698ea60b015db98f609d52603"
+policy_sha256 = "556d78ec4baacfc449a5842daa10b5a3d27d646f9bb084bde5712fbb315ceedd"
 gemini_cli_pinned = "v0.60.0"
 status = "NOT RUN"
 result_channel = "decisions/owner-register.md (briefing rows) + cases/cases.json C32 test column"

@@ -18,7 +18,13 @@ assertions; they are not refreshed by this migration.
 root, run `uv run --locked python tools/sync_spec_assets.py --write` after an
 authorized source change, and `--check` before handoff. The generator needs no Git
 or network access. Package data and its manifests are generated, never hand-edited.
-Canonical payload bytes and legacy schema `$id` namespaces remain unchanged.
+The original consolidation move preserved canonical payload bytes and legacy
+schema `$id` namespaces. Later authorized policy-comment edits change canonical
+file bytes without changing parsed rules; their adjacent verification manifests
+track the current digests. Original imported hashes remain in `import-origin.json`
+as ancestry evidence. Hosts retain their adopted policy bytes until independent
+re-vendoring; a canonical comment update does not update a host copy or establish
+new runtime verification. Legacy schema identities remain unchanged.
 
 Each runtime manifest has exactly `schema_version`, `source_repository`,
 `source_path`, `status`, `sha256` and `contract_id`. An ID covers one runtime

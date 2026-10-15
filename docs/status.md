@@ -26,6 +26,13 @@ Updated: 2026-10-15
 
 ## Current adoption-observability slice (2026-10-15)
 
+Library [PR #2](https://github.com/codefoundry-io/triad-dispatch-lib/pull/2)
+merged at `ee8b4b4ab3c1440788733931874047a1821ee08e`. R5 ended `AGREED` on
+exact reviewed head `830942e05d3681e7ded04a91d60850d18ea00d10`; the subsequent
+[main CI run 38690043657](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38690043657)
+succeeded. This records library integration, with release and new host adoption
+remaining separate. Earlier round records below retain their historical meaning.
+
 Library PR #1 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, with the
 reviewed `2d1e62e7` tree unchanged. Codex PR #44 merged and independently
 released v0.2.561 using vendored library dev3. Claude adoption remains planned;
@@ -42,11 +49,23 @@ requests remain design work. No consumer or provider defaults change.
 The [local verification record](verification/2026-10-15-adoption-observability.md)
 records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
 installed-wheel drivers and new API probes. Concurrent Claude documentation
-amendments are preserved: two-function first slice, remaining `.member` request
-in issue #3, L13 issue #4 and boundary decisions issue #5. The requester accepts
-dev4 `.field` and trusted schema `.path`; `.member` remains unimplemented, so
-this bounded L2 does not fully satisfy issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
-freeze; earlier approval does not transfer to changed bytes.
+amendments and their provenance remain in the
+[request sync record](verification/2026-10-15-provenance-request-sync.md). The
+owner subsequently approved the [remaining adoption APIs](design/2026-10-15-adoption-apis.md):
+`merge_roster`/`validate_resolved` are implemented, and safe `.missing` diagnostics
+now accompany selected canonical required violations. Arbitrary duplicate
+`.member` disclosure is declined; the host retains its strict-parser deviation.
+The [boundary proposals](design/2026-10-15-adoption-boundary-proposals.md) retain
+the other request boundaries. Task 2 scoped checks passed 127 diagnostics/verdict/
+parser tests and then 160 replay/diagnostics/verdict/parser tests, including the
+wrong-diagnostic driver control. The combined
+[verification record](verification/2026-10-15-adoption-apis.md) records 1020 source
+and 1020 archive passes on each local Python 3.12/3.14, all four installed-wheel
+drivers per version and the new API assertions. Exact-head native CI and formal
+review follow the documentation-only recording commit and are retained with
+draft PR #7. Keep dev4 unpublished and source-pinned.
+Host adoption, release and merge remain separate. The merged review/CI evidence
+does not transfer to changed bytes.
 
 R1 (`20261015-lib-observability-r1-fcb113`) completed `BLOCKED` on `2eff9d0`
 after all four native CI jobs passed 952 source/archive tests and four wheel

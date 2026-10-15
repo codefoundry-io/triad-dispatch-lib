@@ -1,7 +1,7 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev4` implementation of the 27
-package-root exports in `triad_dispatch_lib`: 14 functions, six dataclasses and
+This reference describes the current `0.1.0.dev4` implementation of the 29
+package-root exports in `triad_dispatch_lib`: 16 functions, six dataclasses and
 seven exception types. It records existing Python behavior; it does not change
 the package's version or compatibility policy. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
@@ -48,10 +48,11 @@ mutates `expected` nor returns shared schema state; nested result members remain
 ordinary mutable dictionaries/lists.
 
 `AdmissionError(code)` retains its constructor, fixed message, `.args` and
-`.code`. Every instance also has `.field: str | None` and
-`.path: tuple[str | int, ...] | None`, initially `None`. Library-generated
+`.code`. Every instance also has `.field: str | None`,
+`.path: tuple[str | int, ...] | None` and `.missing: str | None`, initially `None`.
+Library-generated
 `binding_mismatch` sets only `.field` to the first mismatch in the six-field
-order above. `schema_violation` sets only `.path` to
+order above. `schema_violation` sets `.path` to
 `tuple(validation_error.absolute_schema_path)`: jsonschema's schema diagnostic
 path produced while evaluating the trusted canonical schema, including keyword
 names and possible composition indexes. Reference (`$ref`) and conditional (`if`)
@@ -60,9 +61,25 @@ source schema document.
 It is never the instance path and does not contain arbitrary provider property
 names or values. An empty tuple denotes the schema root. Which violation wins
 among simultaneous schema failures is not a stable diagnostic contract. Other
-codes leave both attributes `None`; no raw validator error enters the message.
-The value-free diagnostic guarantee covers `.field`, `.path`, and the fixed
-message/`.args`. Python exception internals, including `__context__` and
+codes leave these attributes `None`; no raw validator error enters the message.
+
+Only the selected canonical `required` violation may set `.missing`. When its
+`validator_value` is a list of strings and its `instance` is a dictionary, the
+first name in that required-list order absent from that object is returned.
+Otherwise it remains `None`, including selected non-required violations even
+when other required data is absent. Names come only from the trusted schema;
+the instance is consulted only for membership. This does not change violation
+selection or validation order. Root required paths are `("required",)`; finding
+required paths are `("properties", "findings", "items", "required")`, without
+a finding instance index. `.missing` never extends `.path`.
+
+Duplicate provider-chosen names remain undisclosed: no `.member` API is provided.
+The owner settled these separate boundaries in the
+[approved adoption design](../../docs/design/2026-10-15-adoption-apis.md). Hosts
+retain ownership of any strict-parser deviation and consumer adaptation.
+
+The value-free diagnostic guarantee covers `.code`, `.field`, `.path`, `.missing`,
+and the fixed message/`.args`. Python exception internals, including `__context__` and
 tracebacks, retain their existing behavior and may reference validator errors
 or input data. `raise ... from None` suppresses displayed chaining, not those
 internal references.
@@ -71,6 +88,8 @@ internal references.
 
 ```python
 load_roster_contract() -> dict
+merge_roster(defaults: dict, overrides: str | bytes | None = None) -> dict
+validate_resolved(roster: dict) -> None
 resolve_roster(defaults: dict, overrides: str | bytes | None = None) -> dict
 select_entries(roster: dict) -> list[dict]
 ```
@@ -81,12 +100,27 @@ canonical roster schema identity. The schema root validates override documents;
 nor validates a caller roster. Unreadable, inconsistent or invalid packaged
 schema data raises `ContractError`; there is no resource cache or remote lookup.
 
-`resolve_roster` first validates the supplied complete defaults, then parses and
-validates an optional override before merging, and finally validates the complete
-result. All entries validate, including disabled entries. Python `None` means no
+`merge_roster` validates the supplied complete defaults against the resolved
+schema, then checks exact duplicate names, before parsing an optional override.
+It validates the override schema, then exact duplicate names, and returns an
+independent merge without final validation. Defaults refuse before override
+parsing, and schema refusal precedes duplicate-name refusal at each stage.
+All entries validate, including disabled entries. Python `None` means no
 override; original JSON `null` is an invalid override document. Any override
 parser refusal becomes `RosterError("invalid_json")`. Schema, duplicate-name
 and validation nesting refusals have their respective roster codes.
+
+`validate_resolved` independently loads the verified offline schema, validates
+the complete resolved schema, then checks exact duplicate names. It returns
+`None` without mutation. `resolve_roster` preserves its dictionary return and
+performs input merge and final validation using one verified schema snapshot.
+The split composition is merge, validate, then return the merged dictionary.
+
+An intermediate merge is not resolved or runnable data: it may contain
+incomplete new entries or incompatible inherited vendor blocks. Host capability,
+route, preset, collision and custom diagnostic checks must safely handle these
+and remain host-owned. Validate the exact document before consumption; any later
+mutation requires revalidation. Neither function prunes inherited vendor blocks.
 
 Names match exactly and case-sensitively. Matching entries retain their original
 slot; new names append in override order. Dictionaries merge recursively;

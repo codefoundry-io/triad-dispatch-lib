@@ -67,7 +67,8 @@ host's clause manifest computed over the same canonical bytes) and
 refuses an all-disabled roster, while the host keeps disabled legs in its round
 record with a separate startable list. `load_roster_contract` is not adopted: the
 host reads its own vendored contract copy. Verdict admission and roster merging stay
-wholly host-owned pending the remaining L2 duplicate-member and new L13 requests. The earlier
+wholly host-owned in that reported slice, pending the then-open L2 duplicate-member,
+missing-required-name and new L13 requests. The earlier
 twelve/eight/four-function counts are superseded by this named pair. Its
 leader-driven lifecycle does not need callback coordinators.
 
@@ -90,6 +91,14 @@ the web-policy manifest entry after every clause carrying the placeholder, while
 library records it once; the host reports equivalence for its current clause set.
 The requester accepts implemented `.field` and trusted schema `.path`; `.member`
 remains requested, while `.detail` and instance-pointer expectations are withdrawn.
+The [later pre-pass amendment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185234528)
+withdraws the duplicate pre-pass; if `.member` is declined, the host retains its
+own strict duplicate parser as a recorded deviation, rather than preceding
+`parse_json` with a pre-pass. The
+[latest requester amendment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185444844)
+also requests a schema-defined missing required property's name: schema `.path`
+alone cannot identify it. Reusing `.member` or adding `.missing` are proposed
+examples in that requester amendment, before the owner disposition recorded below.
 L5 (`check_opaque_pins`) has one reported consumer, the Claude host, so it remains
 host-only unless a concrete second consumer and shared contract justify extraction.
 
@@ -135,16 +144,34 @@ canonical admission remains required after carrier or recovery adaptation.
 | L11: raw clauses | Canonical Claude clauses distinguish A raw/native and B structured CLI admission. The reported `HostControls(raw_admission)` symbol was not found at the published A pin. | Claude withdrew the toggle request. Document the fixed profile; no new toggle without a concrete use case and contract. |
 | L12: optional coordinator | Admission/rendering/agreement functions work independently of callback coordinators. | Document selective adoption and model-neutral future collection helpers. |
 
-## Concurrent issues and unmet adoption requirements
+## Current owner disposition (2026-10-15)
+
+The [approved adoption APIs](../design/2026-10-15-adoption-apis.md) settle the
+library boundary: `merge_roster`/`validate_resolved` and safe canonical `.missing`
+are implemented. Arbitrary duplicate `.member` is declined; Claude retains its
+strict-parser deviation and independently owns consumer adaptation. Task 2 scoped
+checks passed 160 replay/diagnostics/verdict/parser tests. Combined verification
+is separate in the [adoption API record](../verification/2026-10-15-adoption-apis.md);
+no host adoption or release is inferred. Keep dev4 unpublished and source-pinned.
+See [boundary proposals](../design/2026-10-15-adoption-boundary-proposals.md) and
+[request provenance](../verification/2026-10-15-provenance-request-sync.md).
+
+## Historical concurrent issues and unmet adoption requirements
 
 - [Issue #3](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3)
   now accepts dev4's implemented `.field` and trusted **schema** `.path`.
   The requester's r3 amendment withdraws decoder-detail and instance-pointer
-  expectations; its original broader issue body remains historical. Only `.member`
-  remains requested. It would expose a provider-chosen duplicate name and needs a
-  separate diagnostic/privacy decision; it is not implemented here. The requester
-  offers a host-side duplicate parser as a recorded deviation if that surface stays
-  excluded. Keep the issue open; complete Claude verdict delegation is not claimed
+  expectations; its original broader issue body remains historical. The later
+  [amendment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185234528)
+  also withdraws the duplicate pre-pass. Duplicate `.member` remains requested;
+  it would expose a provider-chosen name and needs a separate diagnostic/privacy
+  decision. The [latest comment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185444844)
+  additionally requests the trusted schema-defined name of a missing required
+  property, proposing `.member` reuse or `.missing` as examples. Both remain
+  unimplemented design requests and require separate treatment of trusted schema
+  names and arbitrary duplicate names. The requester offers its own strict
+  duplicate parser as a recorded deviation if duplicate disclosure stays excluded.
+  Keep the issue open; complete Claude verdict delegation is not claimed
   unblocked, and existing library error selection is unchanged.
 - [Issue #4](https://github.com/codefoundry-io/triad-dispatch-lib/issues/4)
   adds L13: `merge_roster(defaults, overrides)` would validate input documents,
@@ -166,10 +193,11 @@ backport is selected here. Published scratch captures do not supply the missing
 host inputs for independent S2-S4 reproduction. The published S1 wheel inventory
 does not include the wheel binaries or exact download/install command.
 
-## 4. Sequence and specification work
+## 4. Historical sequence and specification work
 
 Correct evidence, implement L2/L7 with regressions, and document L10-L12. Then
-design the remaining L2 `.member` request and L13 alongside L1/L3/L4/L6; L8/L9
+design the remaining L2 duplicate `.member` and missing-required-name requests
+and L13 alongside L1/L3/L4/L6; L8/L9
 follow their own contract decisions. L5 remains host-only. This is not approval of every proposed signature. Update API/conformance references for
 implemented portions; retain native ownership in `spec/units.json`.
 

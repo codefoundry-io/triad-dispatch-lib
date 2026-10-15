@@ -130,6 +130,47 @@
         "route": null
       },
       "outcome": "admit"
+    },
+    {
+      "name": "missing-root",
+      "raw": "missing-root.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "schema_violation",
+      "diagnostics": {
+        "missing": "review_id",
+        "path": [
+          "required"
+        ]
+      }
+    },
+    {
+      "name": "missing-finding",
+      "raw": "missing-finding.json",
+      "expected": {
+        "review_id": "replay-1",
+        "family": "codex",
+        "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "leg_name": "codex-leg",
+        "attempt": 1,
+        "route": null
+      },
+      "outcome": "schema_violation",
+      "diagnostics": {
+        "missing": "severity",
+        "path": [
+          "properties",
+          "findings",
+          "items",
+          "required"
+        ]
+      }
     }
   ]
 }

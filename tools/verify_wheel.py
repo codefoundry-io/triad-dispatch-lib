@@ -33,6 +33,12 @@ def replay(root: Path) -> list[str]:
         except AdmissionError as error:
             if error.code != case["outcome"]:
                 raise AssertionError(f"unexpected rejection: {case['name']}") from None
+            diagnostics = case.get("diagnostics")
+            if diagnostics is not None and (
+                error.missing != diagnostics["missing"]
+                or error.path != tuple(diagnostics["path"])
+            ):
+                raise AssertionError(f"unexpected diagnostic: {case['name']}") from None
         else:
             if case["outcome"] != "admit" or result != json.loads(raw):
                 raise AssertionError(f"unexpected admission: {case['name']}")

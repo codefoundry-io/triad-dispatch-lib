@@ -19,6 +19,12 @@ Claude adoption remains planned. Host releases, local installation, fresh-sessio
 exposure and adoption of this unpublished `0.1.0.dev4` revision are separate
 claims; a library change does not automatically update a consumer.
 
+Library [PR #2](https://github.com/codefoundry-io/triad-dispatch-lib/pull/2)
+merged at `ee8b4b4ab3c1440788733931874047a1821ee08e`, after R5 `AGREED` on
+reviewed head `830942e05d3681e7ded04a91d60850d18ea00d10`. Subsequent
+[main CI run 38690043657](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38690043657)
+succeeded. That integration establishes neither a package release nor new host adoption.
+
 ## Adoption record
 
 Each host should retain the following with its adapter/release evidence:
@@ -139,9 +145,20 @@ host work, not released adoption evidence. The host also reports a preparation-t
 text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
 adoption and removal of that render core. These unpublished implementation reports
 have not been independently verified. Verdict admission and roster merging remain
-host-owned pending the remaining duplicate-member diagnostic request (#3) and
-merge-only roster request (#4). The requester accepts dev4 `.field`/trusted schema
-`.path`, but bounded L2 does not claim to unblock full admission delegation.
+host-owned until independently adopted. The owner settled issue #3/#4 roster and
+admission decisions in the
+[approved adoption APIs](design/2026-10-15-adoption-apis.md): the library now
+implements `merge_roster`, `validate_resolved` and safe `.missing` for the selected
+canonical required violation. Duplicate `.member` disclosure is declined; the
+host retains its own strict duplicate parser as a documented deviation. The
+separate [issue #5 boundary proposals](design/2026-10-15-adoption-boundary-proposals.md)
+remain proposals only, not approved owner decisions. The
+requester accepted dev4 `.field`/trusted schema `.path` and withdrew `.detail`,
+instance pointers and the duplicate pre-pass; see the
+[request sync evidence](verification/2026-10-15-provenance-request-sync.md).
+These settled library APIs do not establish host adaptation, full parse delegation
+or released adoption. Keep dev4 unpublished and source-pinned; combined verification
+is recorded separately in the [adoption API record](verification/2026-10-15-adoption-apis.md).
 
 The host's raw replacement/residual forms, case-folded directory-name checks and
 reported 3600-second entry timeout remain host responsibilities. This project's

@@ -49,6 +49,14 @@ def validate_verdict(raw: str | bytes, *, expected: dict) -> dict:
     except ValidationError as validation_error:
         error = AdmissionError("schema_violation")
         error.path = tuple(validation_error.absolute_schema_path)
+        if (validation_error.validator == "required"
+                and isinstance(validation_error.validator_value, list)
+                and all(isinstance(name, str) for name in validation_error.validator_value)
+                and isinstance(validation_error.instance, dict)):
+            error.missing = next(
+                (name for name in validation_error.validator_value
+                 if name not in validation_error.instance), None,
+            )
         raise error from None
     except Unresolvable:
         raise ContractError("External or unresolved schema reference.") from None

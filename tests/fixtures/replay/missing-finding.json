@@ -1,0 +1,27 @@
+{
+  "schema_version": 2,
+  "review_id": "replay-1",
+  "family": "codex",
+  "content_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "leg_name": "codex-leg",
+  "attempt": 1,
+  "route": null,
+  "verdict": "MERGE WITH FIXES",
+  "criteria_checked": [
+    "correctness"
+  ],
+  "findings": [
+    {
+      "path": "src/main.py",
+      "line": 1,
+      "summary": "Summary",
+      "trigger": "Input",
+      "evidence": "Observed",
+      "context_known": true
+    }
+  ],
+  "affected_surfaces_inspected": [
+    "src/main.py"
+  ],
+  "open_questions": []
+}

@@ -24,6 +24,9 @@ def test_synthetic_four_route_matrix():
     # must fail the harness's own assertions rather than report success.
     report = driver().synthetic_smoke()
     assert report['capture_method'] == 'synthetic'
+    assert report['roster_split'] == {
+        'validated_parity': True, 'inherited_block_refused': True,
+    }
     assert report['cases'] == {
         'unanimous': True, 'informational-dissent': False,
         'google-sibling-swap': False, 'invoke-failure': False,
@@ -44,6 +47,13 @@ def test_matrix_detects_approval_fault(monkeypatch):
         return replace(original(*args, **kwargs), agreed=True)
     monkeypatch.setattr('triad_dispatch_lib.dispatch.evaluate_agreement', approves)
     with pytest.raises(AssertionError):
+        driver().synthetic_smoke()
+
+
+def test_matrix_detects_skipped_resolved_validation(monkeypatch):
+    import triad_dispatch_lib as lib
+    monkeypatch.setattr(lib, 'validate_resolved', lambda roster: None)
+    with pytest.raises(AssertionError, match='Inherited vendor block accepted'):
         driver().synthetic_smoke()
 
 
@@ -152,6 +162,6 @@ print(json.dumps(dict(loads=len(loads), checks=checks, expected=expected * 2,
                                check=True, capture_output=True, text=True)
     observed = json.loads(completed.stdout)
     assert observed['checks'] == observed['expected']
-    assert observed['exports'] == 27
+    assert observed['exports'] == 29
     assert observed['refusals'] == (0 if invalid_origin is None else 2)
     assert observed['loads'] == 2

@@ -20,6 +20,7 @@ class AdmissionError(ValueError):
         self.code = code
         self.field: str | None = None
         self.path: tuple[str | int, ...] | None = None
+        self.missing: str | None = None
         super().__init__(_MESSAGES[code])
 
 

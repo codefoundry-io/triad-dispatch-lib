@@ -28,9 +28,13 @@ def test_c15_b_profile_preserves_read_plan_and_catchall_rules_without_web_allow(
                for r in data["rule"])
 
 
-def test_c15_a_payload_is_unchanged_by_b_profile_split():
-    data = (ROOT / "contracts/gemini-readonly.toml").read_bytes()
-    assert hashlib.sha256(data).hexdigest() == "6480a765ca2d32d3bdadd8f46be20f9bcd2b4de66d42bb075e4dcda1cad3d207"
+def test_c15_a_manifest_binds_exact_current_policy_payload():
+    manifest = tomllib.loads((ROOT / "contracts/gemini-readonly.verify.toml").read_text())
+    assert manifest["policy"] == "contracts/gemini-readonly.toml"
+    data = (ROOT / manifest["policy"]).read_bytes()
+    assert manifest["policy_sha256"] == hashlib.sha256(data).hexdigest()
+    # Original imported bytes remain recorded in import-origin.json; that
+    # historical digest does not freeze the current authoring payload.
 
 
 def test_c15_b_manifest_binds_exact_profile_and_leaves_live_checks_unrun():
@@ -64,6 +68,36 @@ def test_c32_a_web_profile_moves_only_the_two_web_tools_to_allow():
     assert {r for r in no_web if r[0] in WEB_TOOLS} == {(t, "deny", 200) for t in WEB_TOOLS}
     assert {r for r in web if r[0] in WEB_TOOLS} == {(t, "allow", 100) for t in WEB_TOOLS}
     assert {r for r in web if r[0] not in WEB_TOOLS} == {r for r in no_web if r[0] not in WEB_TOOLS}
+    # The independent no-web literal pin fixes every row, including this final
+    # grouped web rule. Preserve all other complete rows and their order.
+    expected = tomllib.loads((ROOT / "contracts/gemini-readonly.toml").read_text())["rule"]
+    expected[-1] = {
+        "toolName": ["google_web_search", "web_fetch"],
+        "decision": "allow",
+        "priority": 100,
+    }
+    assert tomllib.loads((ROOT / "contracts/gemini-readonly-web.toml").read_text())["rule"] == expected
+
+
+def test_c15_a_no_web_rule_content_is_fixed_independently_of_comments():
+    rules = tomllib.loads((ROOT / "contracts/gemini-readonly.toml").read_text())["rule"]
+    assert rules == [
+        {"toolName": "read_file", "decision": "allow", "priority": 100},
+        {"toolName": "read_many_files", "decision": "allow", "priority": 100},
+        {"toolName": "glob", "decision": "allow", "priority": 100},
+        {"toolName": "search_file_content", "decision": "allow", "priority": 100},
+        {"toolName": "list_directory", "decision": "allow", "priority": 100},
+        {"toolName": "write_file", "decision": "deny", "priority": 200},
+        {"toolName": "replace", "decision": "deny", "priority": 200},
+        {"toolName": "run_shell_command", "decision": "deny", "priority": 200},
+        {"toolName": "mcp_*", "decision": "deny", "priority": 200},
+        {
+            "toolName": ["google_web_search", "web_fetch"],
+            "decision": "deny",
+            "priority": 200,
+            "denyMessage": "Review legs read the reviewed tree only; web evidence belongs to an investigation dispatch (D-9).",
+        },
+    ]
 
 
 def test_c32_review_web_manifest_names_both_host_web_profiles_unrun():
