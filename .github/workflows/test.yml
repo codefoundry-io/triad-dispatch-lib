@@ -58,7 +58,7 @@ jobs:
           import os, tarfile
           root = Path(os.environ["RUNNER_TEMP"]) / "triad-sdist"
           root.mkdir()
-          with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev3.tar.gz") as archive:
+          with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev4.tar.gz") as archive:
               archive.extractall(root, filter="data")
           source, = root.iterdir()
           with open(os.environ["GITHUB_ENV"], "a") as output:
@@ -75,11 +75,11 @@ jobs:
           uv run --locked python tools/sync_spec_assets.py --check
           uv build --wheel
       - name: Verify installed wheel and binary dependencies
-        run: uv run --locked python tools/verify_wheel.py "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl"
+        run: uv run --locked python tools/verify_wheel.py "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl"
       - name: Verify installed Codex prompt and admission driver
-        run: uv run --locked python tools/codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3 self-test
+        run: uv run --locked python tools/codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4 self-test
       - name: Verify installed four-route synthetic matrix
-        run: uv run --locked python tools/four_route_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3
+        run: uv run --locked python tools/four_route_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4
       - run: git diff --exit-code
       - name: Verify installed supervised callback synthetic exchange
-        run: uv run --locked python tools/native_codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev3-py3-none-any.whl" --expected-version 0.1.0.dev3 --self-test
+        run: uv run --locked python tools/native_codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4 --self-test

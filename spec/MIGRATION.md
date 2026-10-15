@@ -2,9 +2,11 @@
 
 The owner approved consolidating the shared specification in
 [`triad-dispatch-lib/spec/`](README.md), alongside deterministic implementation
-and tests. This branch is a candidate: repository cutover awaits PR merge and a
-notice in the former `triad-dispatch-spec` repository. That repository's history,
-tags and URLs remain available. No remote retirement or host adoption is claimed.
+and tests. Consolidation merged in PR #1 at
+`9489543ee24f338e9c6d0e3b032a1aa389986429`. Posting a notice in the former
+`triad-dispatch-spec` repository remains separate work. That repository's history,
+tags and URLs remain available; no remote retirement is claimed. Consolidation
+does not itself adopt a package in a host; see the current adoption record below.
 
 `import-origin.json` records the original repository, exact imported commit
 `396a04dac310d5ff91dbe0a36982f7679aa00428` and original file hashes. It is immutable
@@ -26,20 +28,21 @@ bundle, not all normative documents. It is SHA-256 of
 IDs establish content consistency, not authenticity or a Git release identity.
 Build commit and artifact hashes belong in external verification/release evidence.
 
-Use [independent host adoption](../docs/host-adoption.md) for future consumer
-ports. Shared semantics are authored here; native spawning, model/effort controls,
-provider CLI setup and installer lifecycle remain host-owned. The unpublished
-`0.1.0.dev3` package, candidate wire schema and historical specification tags are
-separate version concepts. No new spec tag is implied.
+Use [independent host adoption](../docs/host-adoption.md) for current adoption
+status and future consumer ports. Shared semantics are authored here; native
+spawning, model/effort controls, provider CLI setup and installer lifecycle remain
+host-owned. The current unpublished `0.1.0.dev4` package, Codex's adopted dev3
+source pin, candidate wire schema and historical specification tags are separate
+version concepts. No new spec tag is implied.
 
-## Old-repository notice, for use after merge
+## Old-repository notice, separate publication
 
-Copy the following only after the consolidated PR has merged, replacing the
-placeholder with its actual merge commit. Posting it is separate authorized work.
+PR #1 has merged; the prepared notice below records its actual merge commit.
+Posting it is separate authorized work and is not claimed by this document.
 
 > Shared specification authoring has moved to
 > [triad-dispatch-lib/spec](https://github.com/codefoundry-io/triad-dispatch-lib/tree/main/spec)
-> at consolidation merge commit `<actual-merge-commit>`. Please submit new shared
+> at consolidation merge commit `9489543ee24f338e9c6d0e3b032a1aa389986429`. Please submit new shared
 > contract, prompt, case and deterministic implementation changes there.
 > This repository remains available for its history, tags and existing links.
 > Its imported source ancestry is recorded in the new repository's

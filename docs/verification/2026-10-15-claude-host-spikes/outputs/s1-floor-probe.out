@@ -1,0 +1,8 @@
+env: jsonschema 4.10.3 referencing 0.31.0
+parse_json: OK
+validate_binding: TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+load_roster_contract: OK
+resolve_roster: TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+render_review_clauses: TypeError: create.<locals>.Validator.__init__() got an unexpected keyword argument 'registry'
+--- pytest selection: tests/test_json_input.py tests/test_verdict.py tests/test_roster.py tests/test_prompts.py tests/test_output.py tests/test_agreement.py (-q -p no:cacheprovider --tb=short -rf)
+165 failed, 101 passed in 1.07s

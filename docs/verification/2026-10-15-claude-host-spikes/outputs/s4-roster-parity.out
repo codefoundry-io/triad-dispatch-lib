@@ -1,0 +1,10 @@
+lib legs: [('claude', True), ('codex', True), ('google', True), ('codex-astra', True), ('x-claude-high', False), ('google-flash', False)]
+A   legs: [('claude', True), ('codex', True), ('google', True), ('codex-astra', True), ('x-claude-high', False), ('google-flash', False)]
+merged legs byte-identical (json, sorted keys): True
+lib _comment taken from override: True
+lib select_entries: ['claude', 'codex', 'google', 'codex-astra']
+lib google route values (unresolved, as data): {'google': 'agy', 'google-flash': 'agy'}
+A resolve_roster OK — legs: ['claude', 'codex', 'google', 'codex-astra', 'x-claude-high', 'google-flash'] | startable: ['claude', 'codex', 'google', 'codex-astra'] | families: ['claude', 'codex', 'google'] | routes: {'google': 'agy', 'google-flash': None} | warnings: []
+null override keeps sibling — lib: {'model': None, 'effort': 'high'} | A: {'model': None, 'effort': 'high'}
+lib accepts claude.model/effort override: {'agent': 'cross-family-review-reviewer', 'model': 'claude-opus-5-5', 'effort': 'xhigh'}
+A _check_capabilities refuses it: roster entry 'claude': claude.effort is not applicable on host A — the effort tier is pinned by the named agent preset (

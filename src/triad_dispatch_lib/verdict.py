@@ -40,11 +40,16 @@ def validate_verdict(raw: str | bytes, *, expected: dict) -> dict:
     try:
         Draft202012Validator(schema, registry=Registry()).validate(data)
         _validate_binding(expected, schema)
-        if any(data[name] != expected[name] for name in BINDING_FIELDS):
-            raise AdmissionError("binding_mismatch")
+        for name in BINDING_FIELDS:
+            if data[name] != expected[name]:
+                error = AdmissionError("binding_mismatch")
+                error.field = name
+                raise error
         return data
-    except ValidationError:
-        raise AdmissionError("schema_violation") from None
+    except ValidationError as validation_error:
+        error = AdmissionError("schema_violation")
+        error.path = tuple(validation_error.absolute_schema_path)
+        raise error from None
     except Unresolvable:
         raise ContractError("External or unresolved schema reference.") from None
     except RecursionError:

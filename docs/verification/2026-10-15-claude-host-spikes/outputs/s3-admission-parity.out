@@ -1,0 +1,51 @@
+case                               A       A class          lib     lib code           same
+valid SAFE codex/None              accept                   accept                     yes
+valid negative codex/None          accept                   accept                     yes
+valid SAFE claude/None             accept                   accept                     yes
+valid negative claude/None         accept                   accept                     yes
+valid SAFE google/agy              accept                   accept                     yes
+valid negative google/agy          accept                   accept                     yes
+valid SAFE google/gemini           accept                   accept                     yes
+valid negative google/gemini       accept                   accept                     yes
+MERGE WITH FIXES + Minor           accept                   accept                     yes
+SAFE + must-fix                    reject  schema:exit1     reject  schema_violation   yes
+SAFE + open question               reject  schema:exit1     reject  schema_violation   yes
+negative, no content               reject  schema:exit1     reject  schema_violation   yes
+uncertainty-only negative          accept                   accept                     yes
+duplicate member                   reject  parse:duplicate  reject  duplicate_member   yes
+escaped duplicate                  reject  parse:duplicate  reject  duplicate_member   yes
+NaN attempt                        reject  schema:exit1     reject  nonfinite_number   yes
+1e999 line                         reject  schema:exit1     reject  nonfinite_number   yes
+BOM prefix                         reject  parse:json       reject  invalid_json       yes
+fenced                             reject  parse:json       reject  invalid_json       yes
+two documents                      reject  parse:json       reject  invalid_json       yes
+array root                         reject  schema:exit1     reject  schema_violation   yes
+null root                          reject  schema:exit1     reject  schema_violation   yes
+truncated                          reject  parse:json       reject  invalid_json       yes
+schema_version 1                   reject  schema:exit1     reject  schema_violation   yes
+extra field                        reject  schema:exit1     reject  schema_violation   yes
+attempt 0                          reject  schema:exit1     reject  schema_violation   yes
+attempt true                       reject  schema:exit1     reject  schema_violation   yes
+attempt 1.0                        accept                   accept                     yes
+codex + route agy                  reject  schema:exit1     reject  schema_violation   yes
+google + null route                reject  schema:exit1     reject  schema_violation   yes
+absolute surface                   reject  schema:exit1     reject  schema_violation   yes
+parent surface                     reject  schema:exit1     reject  schema_violation   yes
+empty criteria                     reject  schema:exit1     reject  schema_violation   yes
+dup criteria                       reject  schema:exit1     reject  schema_violation   yes
+finding unknown key                reject  schema:exit1     reject  schema_violation   yes
+severity lowercase                 reject  schema:exit1     reject  schema_violation   yes
+line null                          accept                   accept                     yes
+optional correction                accept                   accept                     yes
+review_id newline                  reject  schema:exit1     reject  schema_violation   yes
+digest uppercase                   reject  schema:exit1     reject  schema_violation   yes
+leg_name blank                     reject  schema:exit1     reject  schema_violation   yes
+binding mismatch review_id         reject  binding:exit1    reject  binding_mismatch   yes
+binding mismatch family            reject  binding:exit1    reject  binding_mismatch   yes
+binding mismatch content_digest    reject  binding:exit1    reject  binding_mismatch   yes
+binding mismatch leg_name          reject  binding:exit1    reject  binding_mismatch   yes
+binding mismatch attempt           reject  binding:exit1    reject  binding_mismatch   yes
+binding mismatch route             reject  binding:exit1    reject  binding_mismatch   yes
+
+cases=47 same_decision=47 different=0
+same decision, different reason class: [('NaN attempt', 'schema:exit1', 'nonfinite_number'), ('1e999 line', 'schema:exit1', 'nonfinite_number')]

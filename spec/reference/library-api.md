@@ -1,6 +1,6 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev3` implementation of the 27
+This reference describes the current `0.1.0.dev4` implementation of the 27
 package-root exports in `triad_dispatch_lib`: 14 functions, six dataclasses and
 seven exception types. It records existing Python behavior; it does not change
 the package's version or compatibility policy. Wire fields, allowed roster
@@ -47,6 +47,26 @@ than an additional Python `type(value) is int` rule. The operation neither
 mutates `expected` nor returns shared schema state; nested result members remain
 ordinary mutable dictionaries/lists.
 
+`AdmissionError(code)` retains its constructor, fixed message, `.args` and
+`.code`. Every instance also has `.field: str | None` and
+`.path: tuple[str | int, ...] | None`, initially `None`. Library-generated
+`binding_mismatch` sets only `.field` to the first mismatch in the six-field
+order above. `schema_violation` sets only `.path` to
+`tuple(validation_error.absolute_schema_path)`: jsonschema's schema diagnostic
+path produced while evaluating the trusted canonical schema, including keyword
+names and possible composition indexes. Reference (`$ref`) and conditional (`if`)
+traversal hops may be omitted; it is not necessarily a JSON Pointer into the
+source schema document.
+It is never the instance path and does not contain arbitrary provider property
+names or values. An empty tuple denotes the schema root. Which violation wins
+among simultaneous schema failures is not a stable diagnostic contract. Other
+codes leave both attributes `None`; no raw validator error enters the message.
+The value-free diagnostic guarantee covers `.field`, `.path`, and the fixed
+message/`.args`. Python exception internals, including `__context__` and
+tracebacks, retain their existing behavior and may reference validator errors
+or input data. `raise ... from None` suppresses displayed chaining, not those
+internal references.
+
 ## Rosters and contract loading
 
 ```python
@@ -90,8 +110,8 @@ render_review_clauses(
     *, family: str, host: str, review_date: str,
     review_web_authorized: bool, replacements: dict,
     review_kind: str = "pre-merge", route: str | None = None,
-    agy_hook_active: bool = False,
-) -> str
+    agy_hook_active: bool = False, with_manifest: bool = False,
+) -> str | tuple[str, list[dict[str, str]]]
 render_data(value: str) -> str
 render_investigation_prompt(
     prompt: str, *, family: str, route: str | None = None,
@@ -119,6 +139,24 @@ is never interpreted again as a placeholder. Canonical Claude shape literals
 remain literal. The result is the clause portion, not a complete packet or
 objective/criteria/residual assembly. Invalid arguments raise `PromptError`;
 detected asset, schema, order or placeholder faults raise `ContractError`.
+
+`with_manifest` must be an actual boolean. Its default `False` returns the
+same rendered string. `True` returns `(text, manifest)`, with the identical
+text and a fresh mutable list of fresh `{ "name": str, "sha256": str }` rows.
+Rows follow canonical rendered clause order, retaining the `common:` prefix
+and resolving the phase-purpose name before recording. Inactive hooks and
+other-host clauses are omitted. Each SHA-256 hashes the selected fenced
+clause's UTF-8 bytes after the parser's trailing-LF removal, before date,
+phase, route or caller substitutions, and without joining blank lines.
+Immediately after the first selected parent containing `<review-web-policy>`,
+one row records the selected `common:review-web-permission` or
+`common:review-no-web` clause using its own unexpanded source bytes. This
+dependency row is not another top-level emitted block. Literal caller data
+cannot create rows; replacement changes do not change hashes, and mutation
+of a returned manifest cannot affect later calls. Both modes use the same
+verified bundle load and rendering path. Clause hashes describe selected
+source clauses, not final-prompt identity, bundle identity, execution
+attestation or custody proof. No additional package-root export is introduced.
 
 `render_data` accepts any string and returns the canonical data caveat followed
 by an adaptive backtick text fence containing its `json.dumps(...,

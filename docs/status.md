@@ -24,12 +24,63 @@ Updated: 2026-10-15
   vote. This is a project override, not a host-distribution or workspace default.
   See [review profile](review-profile.md) and its separate setup evidence.
 
+## Current adoption-observability slice (2026-10-15)
+
+Library PR #1 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, with the
+reviewed `2d1e62e7` tree unchanged. Codex PR #44 merged and independently
+released v0.2.561 using vendored library dev3. Claude adoption remains planned;
+its PR #2 scratch scripts, captured outputs and input hashes are now published,
+while matching host inputs remain unpublished and independent reproduction is
+incomplete. Older candidate/no-adoption statements below describe their dated slices.
+
+The owner approved PR #2 corrections and additive L2/L7 development. The
+[design](design/2026-10-15-adoption-observability.md) and
+[plan](superpowers/plans/2026-10-15-adoption-observability.md) bound this dev4
+slice to safe admission locations, optional clause manifests and adoption docs.
+L10 keeps existing dependency floors; L11/L12 clarify selective use. Other
+requests remain design work. No consumer or provider defaults change.
+The [local verification record](verification/2026-10-15-adoption-observability.md)
+records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
+installed-wheel drivers and new API probes. Concurrent Claude documentation
+amendments are preserved: two-function first slice, remaining `.member` request
+in issue #3, L13 issue #4 and boundary decisions issue #5. The requester accepts
+dev4 `.field` and trusted schema `.path`; `.member` remains unimplemented, so
+this bounded L2 does not fully satisfy issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
+freeze; earlier approval does not transfer to changed bytes.
+
+R1 (`20261015-lib-observability-r1-fcb113`) completed `BLOCKED` on `2eff9d0`
+after all four native CI jobs passed 952 source/archive tests and four wheel
+drivers. Five verified documentation findings now receive bounded corrections:
+README/migration adoption status, exact schema diagnostic-path semantics,
+exception-internal privacy limits, and historical/released B wording. No runtime,
+schema, prompt or dependency changes result. See the
+[R1 record](verification/2026-10-15-adoption-observability.md#r1-documentation-corrections).
+The exported round's votes do not transfer; new exact-head CI and complete
+Opus/Sol/Argon review with separate Astra comparison follow the corrected bytes.
+
+R2 (`20261015-lib-observability-r2-b1a9fc`) ended `INCOMPLETE` on `bc817ca`:
+Opus and Sol approved, but Argon returned no verdict after reaching its individual
+quota. All producers terminated before export and cleanup. Four nonblocking
+documentation findings receive bounded corrections; see the
+[R2 record](verification/2026-10-15-adoption-observability.md#r2-documentation-corrections-and-incomplete-review).
+Native CI on `bc817ca` passed all four source/archive/wheel jobs. That evidence
+does not complete the missing review. Corrected bytes require new exact-head CI
+and a fresh complete project review after provider recovery.
+
+R3 (`20261015-lib-observability-r3-b3136c`) completed `AGREED` on `5f90238`
+with all three required approvals and no actionable Astra comparison finding.
+Argon completed successfully after quota recovery. The
+[R3 record](verification/2026-10-15-adoption-observability.md#r3-documentation-corrections)
+records bounded documentation corrections and the optional typing disposition.
+Corrected-byte CI and complete review outcomes will be retained with PR #2.
+
 ## Project review setup
 
 Shared specification and implementation authoring already lives in this
-repository. The Codex host has a separate source-adoption candidate; the earlier
-statements below about no host adoption describe release/installation boundaries,
-not the absence of that candidate. Claude's port remains separately owned.
+repository. At the 2026-10-14 setup, the Codex host had a separate source-adoption
+candidate; it has since released v0.2.561 with library dev3, as recorded above.
+The earlier no-adoption statements below retain their dated release/installation
+boundaries. Claude's port remains separately owned.
 This project profile uses existing Codex host v2 configuration and does not move
 provider execution or model defaults into the shared library implementation.
 The project roster is installed locally. Source/installed host resolution and
@@ -368,11 +419,12 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Neither host has completed released adoption; Codex source-adoption work is a
-separate candidate. The earlier Codex integration experiment
-used parent-dispatched native children; the library and driver do not spawn
-native agents or provider processes. No global installation,
-package-index publication, final merge or release occurred.
+Codex v0.2.561 independently adopted dev3 after library PR #1 merged.
+Claude adoption and adoption of the current dev4 slice remain separate work.
+The earlier Codex integration experiment used parent-dispatched native children;
+the library and driver do not spawn native agents or provider processes. This
+slice performs no consumer update, global installation, package-index publication
+or final merge.
 Platform proof covers only the combinations measured in the linked verification
 records and exact-head CI evidence; a configured matrix alone is not proof.
 The historical library slices above used ordinary independent Codex review;

@@ -8,11 +8,16 @@ The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
 
-Neither host has completed released adoption of this consolidation. Codex has a
-separate source-adoption candidate; release/installation follow the library PR
-merge as separately scoped work. Host versions and release dates are independent;
-hosts may adopt different compatible library releases. The unpublished library
-`0.1.0.dev3`, candidate schema status and historical spec tags are distinct.
+Library [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
+merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed
+`2d1e62e7de6f33fa13a918a39579c6b5e74def00` tree. The independently released
+[Codex host v0.2.561](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.561)
+bundles library `0.1.0.dev3` from that source for JSON/verdict admission, roster
+resolution and prompt rendering. Its scheduler and native adapters remain
+host-owned. See its [pinned refresh record](https://github.com/codefoundry-io/triad-codex-dispatch/blob/c81c02984825af7dd1ec69a14af83f0ff18d0551/docs/verification/2026-10-15-library-refresh.md).
+Claude adoption remains planned. Host releases, local installation, fresh-session
+exposure and adoption of this unpublished `0.1.0.dev4` revision are separate
+claims; a library change does not automatically update a consumer.
 
 ## Adoption record
 
@@ -110,6 +115,63 @@ with the proposed replacement; do not overwrite, reset or delete user content.
 Update the ledger only after successful writes, retain unrelated files and
 support recovery from interrupted upgrades. These are recommendations for future
 host work; this library slice changes no installer or global installation.
+
+## Claude host adoption assessment (2026-10-15)
+
+The [request record](requests/2026-10-15-claude-host-adoption-requests.md)
+retains the host leader's dev3 measurements and links the published scratch
+scripts, captured outputs and input identities. The matching host implementation,
+assets and measured roster input remain unpublished, so independent reproduction
+is still incomplete. The reported 24 prompt comparisons used a scratch bundle
+rebuilt from host assets; they do not establish parity with packaged dev3 prompts.
+The 47 verdict decisions and latest six-leg merge (two disabled) remain attributed captures. The
+reported wheel closure now has a published inventory and hashes, but no wheel binaries
+or exact download/install command; it establishes no new native platform proof.
+
+The amended leader-driven Claude first slice plans two functions:
+`render_review_clauses` and `validate_binding` (`select_entries` drops disabled
+entries the host keeps in its round record; the host reads its own vendored contract
+copy, which stays its one bound copy with eight mapped payload-pair byte comparisons
+against the vendored bundle at round preparation, as reported by the host). It will vendor with Git-blob-checked file hashes, recursively
+extend exporter/toolkit coverage excluding bytecode, record bundle IDs and the
+adoption record, and gate import/Registry failures as host faults. This is planned
+host work, not released adoption evidence. The host also reports a preparation-time
+text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
+adoption and removal of that render core. These unpublished implementation reports
+have not been independently verified. Verdict admission and roster merging remain
+host-owned pending the remaining duplicate-member diagnostic request (#3) and
+merge-only roster request (#4). The requester accepts dev4 `.field`/trusted schema
+`.path`, but bounded L2 does not claim to unblock full admission delegation.
+
+The host's raw replacement/residual forms, case-folded directory-name checks and
+reported 3600-second entry timeout remain host responsibilities. This project's
+review timeout remains 2400 seconds. Claude withdrew its separate manifest/toggle
+requests; the owner independently approved the additive library manifest API.
+
+## Selective adoption and dependencies
+
+`run_review` and `run_investigations` are optional callback coordinators. Hosts
+can use parsing, validation, roster and rendering functions independently, and
+can call `evaluate_agreement` without either coordinator. A leader-driven host
+retains its own collection/custody lifecycle. Native spawning never moves into
+this library. Future collection helpers must remain execution-model neutral.
+
+Host-A Claude rendering includes the canonical raw-admission clauses; host B
+uses its structured-CLI profile. This fixed selection does not expose a generic
+raw-admission toggle. `agy_hook_active` remains a separate Google/AGY/A control.
+
+Install with Python >=3.12, jsonschema>=4.26,<5 and referencing>=0.37,<1.
+Ubuntu's stock packages may be older; they are not the supported runtime floor.
+Use an isolated environment or host-owned vendoring/wheel installation that
+actually satisfies the package metadata. Preserve offline reference refusal;
+do not remove Registry merely to support an older distribution package.
+
+For offline distribution, obtain the complete allowed binary-wheel dependency
+closure separately for each supported OS, architecture, Python version and ABI.
+Record filenames/versions/hashes and verify installation/import plus the host's
+adoption tests on that native combination. `rpds-py` has native code: a manylinux
+CPython 3.12 wheel set is not macOS or Python 3.14 evidence. Installation and
+dependency packaging remain host-owned; runtime admission does not use a network.
 
 ## Verification boundaries
 

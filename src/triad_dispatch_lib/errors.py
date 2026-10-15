@@ -18,6 +18,8 @@ class AdmissionError(ValueError):
 
     def __init__(self, code: str):
         self.code = code
+        self.field: str | None = None
+        self.path: tuple[str | int, ...] | None = None
         super().__init__(_MESSAGES[code])
 
 
