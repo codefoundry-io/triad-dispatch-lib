@@ -69,11 +69,25 @@ leader-driven lifecycle does not need callback coordinators.
 
 The host reports two further implementation facts from that round: its `spec/contracts` and
 `spec/prompts` remain its ONE bound copy and the vendored `data/` bundle must be
-byte-equal, checked at round preparation by recomputing the three bundle ids from
-`spec/` (drift refuses); and the host's `bin/` wrappers load its clause renderer by
+byte-equal, checked at round preparation by comparing the eight payload pairs byte for
+byte through a mapping recorded in the host's adoption record (drift refuses; the host
+does not recompute bundle ids, which would depend on the non-exported `bundle_manifest`
+module and the `BUNDLES` map of `tools/sync_spec_assets.py`); and the host's `bin/` wrappers load its clause renderer by
 file path with `bin/` first on `sys.path`, so the renderer imports the library lazily
 with its own directory on the path and keeps the bare investigation clause
 import-free (`render_investigation_prompt` has no host call site).
+
+Round r3 of the host's review (2026-10-15) added three facts. In its first slice the host
+keeps its own clause renderer only to compute the prompt manifest over the same canonical
+bytes, and its round preparation compares that host-rendered text with the library's
+`render_review_clauses` text and refuses on any mismatch, so the recorded manifest
+provably describes the bytes sent; the second slice adopts `with_manifest=True` and
+removes the host render core (the host records the web-policy manifest entry after every
+clause carrying the placeholder, the library once; identical for the current clause set).
+The accepted L2 shape is `.field`, the trusted schema `.path` and `.member`; `.detail` and
+the instance-pointer wording are withdrawn (issue #3 narrowed accordingly). L5
+(`check_opaque_pins`) has one consumer, the claude host, so it is host-only unless the
+codex host adopts it.
 
 The scratch measurements are now published in this PR:
 [`docs/verification/2026-10-15-claude-host-spikes/`](../verification/2026-10-15-claude-host-spikes/README.md)
