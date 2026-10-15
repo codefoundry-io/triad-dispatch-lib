@@ -71,19 +71,24 @@ def test_c32_a_web_profile_moves_only_the_two_web_tools_to_allow():
 
 
 def test_c15_a_no_web_rule_content_is_fixed_independently_of_comments():
-    assert _rule_rows(ROOT / "contracts/gemini-readonly.toml") == {
-        ("read_file", "allow", 100),
-        ("read_many_files", "allow", 100),
-        ("glob", "allow", 100),
-        ("search_file_content", "allow", 100),
-        ("list_directory", "allow", 100),
-        ("write_file", "deny", 200),
-        ("replace", "deny", 200),
-        ("run_shell_command", "deny", 200),
-        ("mcp_*", "deny", 200),
-        ("google_web_search", "deny", 200),
-        ("web_fetch", "deny", 200),
-    }
+    rules = tomllib.loads((ROOT / "contracts/gemini-readonly.toml").read_text())["rule"]
+    assert rules == [
+        {"toolName": "read_file", "decision": "allow", "priority": 100},
+        {"toolName": "read_many_files", "decision": "allow", "priority": 100},
+        {"toolName": "glob", "decision": "allow", "priority": 100},
+        {"toolName": "search_file_content", "decision": "allow", "priority": 100},
+        {"toolName": "list_directory", "decision": "allow", "priority": 100},
+        {"toolName": "write_file", "decision": "deny", "priority": 200},
+        {"toolName": "replace", "decision": "deny", "priority": 200},
+        {"toolName": "run_shell_command", "decision": "deny", "priority": 200},
+        {"toolName": "mcp_*", "decision": "deny", "priority": 200},
+        {
+            "toolName": ["google_web_search", "web_fetch"],
+            "decision": "deny",
+            "priority": 200,
+            "denyMessage": "Review legs read the reviewed tree only; web evidence belongs to an investigation dispatch (D-9).",
+        },
+    ]
 
 
 def test_c32_review_web_manifest_names_both_host_web_profiles_unrun():
