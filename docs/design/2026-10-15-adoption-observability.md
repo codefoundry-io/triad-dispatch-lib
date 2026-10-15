@@ -67,8 +67,9 @@ to Ubuntu's stock validator merely to remove `Registry`.
 
 L1 needs typed integrity/refusal/host-fault inputs separate from agreement;
 L3 needs transport-only schema validation and host-normalized argv comparison;
-L4 needs CLI/carrier-qualified evidence and separate token lookup; L5 needs a
-defined placeholder grammar beyond existing opaque-value preservation; L6 needs
+L4 needs CLI/carrier-qualified evidence and separate token lookup. The latest
+host amendment retains L5 as host-only with one consumer; shared extraction would
+need a second consumer and a defined placeholder grammar. L6 needs
 canonical binding separate from measured vendor projections. L8 needs shared
 structured predicates without claiming final admission; L9 needs a versioned
 member/serialization contract before cross-host digest identity is possible.
@@ -91,10 +92,13 @@ Remote commits `477eee8` and `53790e5` arrived during implementation. They narro
 Claude's first slice to four named functions and added issues #3-#5. Later
 amendments `e8ea66d`/`b18da1b` reduced that slice to `render_review_clauses` and
 `validate_binding`; the [request record](../requests/2026-10-15-claude-host-adoption-requests.md)
-preserves this supersession. Issue #3's decoder detail, duplicate-member
-name, instance pointer and deepest-error selection exceed this bounded L2;
-issue #4's L13 merged-but-unvalidated roster API is new design work. Neither is
-claimed complete or unblocking Claude delegation. Claude withdrew L7/L11 as its
+preserves this supersession. Amendment `e763df8` further narrows issue #3: the
+requester accepts implemented `.field` and trusted schema `.path`, withdraws
+decoder-detail and instance-pointer expectations, and leaves only `.member`
+requested. Exposing a provider-chosen duplicate name needs a separate diagnostic
+and privacy decision. Issue #4's L13 merged-but-unvalidated roster API is also new
+design work. Neither remaining request is claimed complete or unblocking full
+Claude admission/roster delegation. Claude withdrew L7/L11 as its
 own requests; the owner's separate approval of this manifest API and fixed-profile
 documentation remains the scope here. No additional runtime was introduced while
 resolving the concurrent documentation edits.

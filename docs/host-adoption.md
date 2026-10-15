@@ -130,13 +130,17 @@ reported wheel closure lacks published artifacts and establishes no new platform
 The amended leader-driven Claude first slice plans two functions:
 `render_review_clauses` and `validate_binding` (`select_entries` drops disabled
 entries the host keeps in its round record; the host reads its own vendored contract
-copy, which stays its one bound copy with a byte-equality check against the vendored
-bundle at round preparation). It will vendor with Git-blob-checked file hashes, recursively
+copy, which stays its one bound copy with eight mapped payload-pair byte comparisons
+against the vendored bundle at round preparation, as reported by the host). It will vendor with Git-blob-checked file hashes, recursively
 extend exporter/toolkit coverage excluding bytecode, record bundle IDs and the
 adoption record, and gate import/Registry failures as host faults. This is planned
-host work, not released adoption evidence. Verdict admission and roster merging
-remain host-owned pending the expanded diagnostic request (#3) and merge-only
-roster request (#4); dev4's bounded L2 does not claim to unblock them.
+host work, not released adoption evidence. The host also reports a preparation-time
+text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
+adoption and removal of that render core. These unpublished implementation reports
+have not been independently verified. Verdict admission and roster merging remain
+host-owned pending the remaining duplicate-member diagnostic request (#3) and
+merge-only roster request (#4). The requester accepts dev4 `.field`/trusted schema
+`.path`, but bounded L2 does not claim to unblock full admission delegation.
 
 The host's raw replacement/residual forms, case-folded directory-name checks and
 reported 3600-second entry timeout remain host responsibilities. This project's

@@ -6,7 +6,7 @@ Maintainer disposition: owner-approved on 2026-10-15 after comparison with
 Codex `c81c02984825af7dd1ec69a14af83f0ff18d0551` and published Claude
 `e4cadf2f751308d1ab75e4199b08d89849bb93b3`.
 
-Concurrent host amendments through `b18da1b` are incorporated below. The earlier
+Concurrent host amendments through `e763df8` are incorporated below. The earlier
 candidate `3afc4d7e` was unavailable in the public remote and three known local
 reference repositories. The newly published scratch record identifies reported
 host head `f925395f` on `impl/claude-host-2026-10`; that implementation branch
@@ -63,7 +63,7 @@ host's clause manifest computed over the same canonical bytes) and
 refuses an all-disabled roster, while the host keeps disabled legs in its round
 record with a separate startable list. `load_roster_contract` is not adopted: the
 host reads its own vendored contract copy. Verdict admission and roster merging stay
-wholly host-owned pending the expanded L2 and new L13 requests. The earlier
+wholly host-owned pending the remaining L2 duplicate-member and new L13 requests. The earlier
 twelve/eight/four-function counts are superseded by this named pair. Its
 leader-driven lifecycle does not need callback coordinators.
 
@@ -77,17 +77,17 @@ file path with `bin/` first on `sys.path`, so the renderer imports the library l
 with its own directory on the path and keeps the bare investigation clause
 import-free (`render_investigation_prompt` has no host call site).
 
-Round r3 of the host's review (2026-10-15) added three facts. In its first slice the host
-keeps its own clause renderer only to compute the prompt manifest over the same canonical
-bytes, and its round preparation compares that host-rendered text with the library's
-`render_review_clauses` text and refuses on any mismatch, so the recorded manifest
-provably describes the bytes sent; the second slice adopts `with_manifest=True` and
-removes the host render core (the host records the web-policy manifest entry after every
-clause carrying the placeholder, the library once; identical for the current clause set).
-The accepted L2 shape is `.field`, the trusted schema `.path` and `.member`; `.detail` and
-the instance-pointer wording are withdrawn (issue #3 narrowed accordingly). L5
-(`check_opaque_pins`) has one consumer, the claude host, so it is host-only unless the
-codex host adopts it.
+The host reports three further observations from its round r3 (2026-10-15).
+Its first slice retains its renderer for the prompt manifest and refuses preparation
+unless that text matches the library's `render_review_clauses` result. This is a
+reported parity gate, not independently verified host behavior. Its planned second
+slice adopts `with_manifest=True` and removes the host render core. The host records
+the web-policy manifest entry after every clause carrying the placeholder, while the
+library records it once; the host reports equivalence for its current clause set.
+The requester accepts implemented `.field` and trusted schema `.path`; `.member`
+remains requested, while `.detail` and instance-pointer expectations are withdrawn.
+L5 (`check_opaque_pins`) has one reported consumer, the Claude host, so it remains
+host-only unless a concrete second consumer and shared contract justify extraction.
 
 The scratch measurements are now published in this PR:
 [`docs/verification/2026-10-15-claude-host-spikes/`](../verification/2026-10-15-claude-host-spikes/README.md)
@@ -122,9 +122,9 @@ canonical admission remains required after carrier or recovery adaptation.
 | L2: refusal locations | Codex already delegates admission to the library (`bin/validate_v2.py`). The library previously exposed only a code; R-BIND/R-DIAG do not define a diagnostic object. | Implement additive `AdmissionError.field` for binding mismatch and `.path` for the trusted schema evaluation path (not necessarily a source-document JSON Pointer), never provider values or arbitrary instance keys. See the public API contract. |
 | L3: receipts | C9 `receipt-fields.json` validates the transport object, not a host envelope. Codex compares `wrapper_cmd` with `invocation["argv"][1:]` after CLI identity checks. | The host narrows this request to transport shape validation only. Executed-command comparison and attempt currency remain host-side; transport shape alone is not receipt/custody validation. |
 | L4: tokens/classification | R-CLASSIFY data distinguishes CLI, carrier, whole lines and operator-only observations. Text-only classification loses required context. | Consider verified data/token lookup and CLI/carrier-qualified evidence lookup; preserve precedence and unknown-token behavior. Define the API before extraction. |
-| L5: placeholders/opaque pins | `resolve_roster` already preserves model/effort values. R-MODEL also covers wrapper/parser boundaries; no generic shared `<...>` grammar is defined. | Specify placeholder syntax/timing before extraction; adoption is optional for Codex, which retains its preflight. Dictionary validation cannot prove CLI transport. |
+| L5: placeholders/opaque pins | `resolve_roster` already preserves model/effort values. R-MODEL also covers wrapper/parser boundaries; no generic shared `<...>` grammar is defined. | Host-only with one reported consumer. Shared extraction requires a concrete second consumer and a defined placeholder syntax/timing contract; Codex retains its preflight. Dictionary validation cannot prove CLI transport. |
 | L6: producer schema | Codex binds the canonical schema and narrowly projects for Claude. Claude's published projection removes additional keywords; DL-103 records measured differences. | Share canonical loading/copying/binding after design. Keep measured vendor/version projections distinct and complete canonical admission unchanged; equal producer bytes are not required. |
-| L7: clause manifest | Claude has `render_with_manifest`; Codex already hashes toolkit sources into its basis. Clause-level output is an additive API. | Claude withdrew its standalone request in the concurrent amendment. The owner separately approved this additive library API: implement optional `with_manifest=True` with ordered source hashes, nested web policy and unchanged default bytes; it is not a Claude adoption prerequisite. |
+| L7: clause manifest | Claude has `render_with_manifest`; Codex already hashes toolkit sources into its basis. Clause-level output is an additive API. | Claude withdrew its standalone request in the concurrent amendment. The owner separately approved this additive library API: implement optional `with_manifest=True` with ordered source hashes, nested web policy and unchanged default bytes; it is not a Claude first-slice prerequisite. The host now reports planned second-slice adoption of `with_manifest=True`. |
 | L8: AGY recovery | Both hosts already implement recovery. Codex `_agy_finish_resubmitted` and `test_agy_finish_resubmission.py` exist; DL-113 records its exit0 boundary. | Consider structured-evidence predicates. Events alone cannot establish admission: preserve route/profile, exit, actual allowed reads, terminal/order checks, no executed forbidden tools, and final schema/six bindings. Never relabel ERROR as SUCCESS. |
 | L9: basis digest | R-PREPARE defines freezing/meaning, not common serialization. Hosts hash different members and newline conventions. | Defer until member schema, value domain, ordering, Unicode/nonfinite rules, version/domain marker and invalidation are specified. Equal-input hashing does not imply equal host bases. |
 | L10: dependencies | Distribution packages can fall below the supported jsonschema>=4.26,<5 and referencing>=0.37,<1 floors. | Keep current Registry design/floors; document installation and per-platform/Python offline wheel checks. No 4.10.3 backport in this slice. |
@@ -134,12 +134,14 @@ canonical admission remains required after carrier or recovery adaptation.
 ## Concurrent issues and unmet adoption requirements
 
 - [Issue #3](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3)
-  expands L2 to duplicate-member names, JSON decoder detail, an instance JSON
-  pointer and deepest-error ordering. Dev4's implemented `.field` and trusted
-  **schema** `.path` do not satisfy that entire request. It deliberately preserves
-  current validator error selection and exposes no decoder detail/member names.
-  Keep this issue open: error-selection/diagnostic privacy and compatibility need
-  a separate contract, and Claude verdict delegation is not claimed unblocked.
+  now accepts dev4's implemented `.field` and trusted **schema** `.path`.
+  The requester's r3 amendment withdraws decoder-detail and instance-pointer
+  expectations; its original broader issue body remains historical. Only `.member`
+  remains requested. It would expose a provider-chosen duplicate name and needs a
+  separate diagnostic/privacy decision; it is not implemented here. The requester
+  offers a host-side duplicate parser as a recorded deviation if that surface stays
+  excluded. Keep the issue open; complete Claude verdict delegation is not claimed
+  unblocked, and existing library error selection is unchanged.
 - [Issue #4](https://github.com/codefoundry-io/triad-dispatch-lib/issues/4)
   adds L13: `merge_roster(defaults, overrides)` would validate input documents,
   return the merged document before final resolved validation, then
@@ -162,8 +164,8 @@ host inputs for independent reproduction or the reported wheel-closure artifacts
 ## 4. Sequence and specification work
 
 Correct evidence, implement L2/L7 with regressions, and document L10-L12. Then
-design the remaining L2 details and L13 alongside L1/L3/L4/L5/L6; L8/L9 follow their own contract decisions. This is not
-approval of every proposed signature. Update API/conformance references for
+design the remaining L2 `.member` request and L13 alongside L1/L3/L4/L6; L8/L9
+follow their own contract decisions. L5 remains host-only. This is not approval of every proposed signature. Update API/conformance references for
 implemented portions; retain native ownership in `spec/units.json`.
 
 Bundle IDs already belong in adoption records. Requiring them as separate members

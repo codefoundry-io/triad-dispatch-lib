@@ -42,9 +42,10 @@ requests remain design work. No consumer or provider defaults change.
 The [local verification record](verification/2026-10-15-adoption-observability.md)
 records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
 installed-wheel drivers and new API probes. Concurrent Claude documentation
-amendments are preserved: two-function first slice, expanded L2 issue #3, L13
-issue #4 and boundary decisions issue #5. This bounded L2 does not fully satisfy
-issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
+amendments are preserved: two-function first slice, remaining `.member` request
+in issue #3, L13 issue #4 and boundary decisions issue #5. The requester accepts
+dev4 `.field` and trusted schema `.path`; `.member` remains unimplemented, so
+this bounded L2 does not fully satisfy issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
 freeze; earlier approval does not transfer to changed bytes.
 
 R1 (`20261015-lib-observability-r1-fcb113`) completed `BLOCKED` on `2eff9d0`
