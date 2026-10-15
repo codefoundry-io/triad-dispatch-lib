@@ -4,10 +4,18 @@ The Claude host leader reports re-running scratch spikes S1-S4' into this folder
 Maintainers can inspect the scripts/results and replay them once the exact host
 inputs are supplied. Scripts are in `scripts/`, captured outputs in `outputs/`,
 input identities (SHA-256 of every host file read, the regenerated bundle ids, the
-environment) in `input-identities.md`. The claude host's implementation branch is not yet
-published; its file hashes above let a later publication be matched byte for byte.
+environment) in `input-identities.md`. The Claude host's implementation branch is not yet
+published; its file hashes in [input-identities.md](input-identities.md) let a
+later publication be matched byte for byte.
 The S4' working-copy roster override is uncommitted and supplied only as a hash;
 publishing the host commit alone does not recover that measured input.
+
+The scripts and captured outputs are repository-only evidence. The source
+distribution includes this Markdown record and input identities, but omits
+`scripts/*.py` and `outputs/*.out`. Archive readers can inspect the exact files
+in the [published repository snapshot](https://github.com/codefoundry-io/triad-dispatch-lib/tree/bc817cabb993e6fb8fd4764b901985ce74a3bcd7/docs/verification/2026-10-15-claude-host-spikes).
+Paths and commands below are relative to that repository record; the missing
+host inputs described here are still required for independent reproduction.
 
 | spike | command (from the scratch root `R`; `A` = the host skill root) | result |
 | --- | --- | --- |

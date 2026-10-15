@@ -57,12 +57,22 @@ schema, prompt or dependency changes result. See the
 The exported round's votes do not transfer; new exact-head CI and complete
 Opus/Sol/Argon review with separate Astra comparison follow the corrected bytes.
 
+R2 (`20261015-lib-observability-r2-b1a9fc`) ended `INCOMPLETE` on `bc817ca`:
+Opus and Sol approved, but Argon returned no verdict after reaching its individual
+quota. All producers terminated before export and cleanup. Four nonblocking
+documentation findings receive bounded corrections; see the
+[R2 record](verification/2026-10-15-adoption-observability.md#r2-documentation-corrections-and-incomplete-review).
+Native CI on `bc817ca` passed all four source/archive/wheel jobs. That evidence
+does not complete the missing review. Corrected bytes require new exact-head CI
+and a fresh complete project review after provider recovery.
+
 ## Project review setup
 
 Shared specification and implementation authoring already lives in this
-repository. The Codex host has a separate source-adoption candidate; the earlier
-statements below about no host adoption describe release/installation boundaries,
-not the absence of that candidate. Claude's port remains separately owned.
+repository. At the 2026-10-14 setup, the Codex host had a separate source-adoption
+candidate; it has since released v0.2.561 with library dev3, as recorded above.
+The earlier no-adoption statements below retain their dated release/installation
+boundaries. Claude's port remains separately owned.
 This project profile uses existing Codex host v2 configuration and does not move
 provider execution or model defaults into the shared library implementation.
 The project roster is installed locally. Source/installed host resolution and

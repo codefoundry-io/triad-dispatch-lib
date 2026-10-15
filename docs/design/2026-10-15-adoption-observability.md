@@ -87,9 +87,11 @@ separate evidence.
 
 ## Concurrent host amendments
 
-Remote commits `477eee8` and `53790e5` arrived during implementation. They narrow
-Claude's first slice to four named functions and add issues #3-#5. The request
-record preserves those amendments. Issue #3's decoder detail, duplicate-member
+Remote commits `477eee8` and `53790e5` arrived during implementation. They narrowed
+Claude's first slice to four named functions and added issues #3-#5. Later
+amendments `e8ea66d`/`b18da1b` reduced that slice to `render_review_clauses` and
+`validate_binding`; the [request record](../requests/2026-10-15-claude-host-adoption-requests.md)
+preserves this supersession. Issue #3's decoder detail, duplicate-member
 name, instance pointer and deepest-error selection exceed this bounded L2;
 issue #4's L13 merged-but-unvalidated roster API is new design work. Neither is
 claimed complete or unblocking Claude delegation. Claude withdrew L7/L11 as its

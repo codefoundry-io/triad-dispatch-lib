@@ -93,3 +93,35 @@ reduced its planned first slice to two library functions. Those artifacts are
 preserved without executing them; matching unpublished host inputs still prevent
 independent reproduction. Current request/adoption/status wording is reconciled
 to this new evidence. No host implementation or runtime API changes are included.
+
+## R2 documentation corrections and incomplete review
+
+Exact-head CI [38676236147](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38676236147)
+passed all four Ubuntu/macOS and Python 3.12/3.14 jobs at
+`bc817cabb993e6fb8fd4764b901985ce74a3bcd7`: each ran 952 source tests, 952
+unpacked-sdist tests and all four installed-wheel drivers without skipped checks.
+Round `20261015-lib-observability-r2-b1a9fc` then ended `INCOMPLETE`. Opus and
+Sol returned `SAFE TO MERGE`; Argon returned no valid verdict after an individual
+quota exhaustion error. The provider reported a reset interval, but recovery has
+not been observed. All producers, including the separate Astra comparison,
+terminated before the round was exported and cleaned. No approval transfers to
+changed bytes or compensates for the missing required reviewer.
+
+Opus identified three documentation Minors: current-tense Codex candidate wording
+in the setup section, missing two-function supersession in the design, and the
+spike README's inaccurate "hashes above" pointer. Sol and separate Astra identified
+one additional Minor: the source archive includes the spike Markdown but omits
+its scripts and captured outputs. A fresh sdist of `bc817ca` reproduced the latter:
+both Markdown files were included byte-for-byte, while all three scripts and four
+output files were absent. That archive's SHA256 is
+`d080d8bc2853ee68e4b2c7c475ec3792e9b21283bf2cb4a27c129de39079ec41`.
+No scratch script was executed and the frozen checkout remained unchanged.
+
+These four corrections date the setup observation, name the superseding functions,
+link the actual hash record and explicitly identify repository-only evidence with
+a commit-pinned source link. Packaging rules, runtime, tests, assets and dependencies
+remain unchanged. Opus's optional overload suggestion concerns future publication
+of typing metadata; no `py.typed` marker or new typing guarantee is introduced here.
+Affected documentation/package checks and fresh exact-head CI verify the correction;
+a new complete project review remains required after provider recovery. Final
+post-freeze outcomes are retained with PR #2 rather than implied by this record.
