@@ -547,7 +547,9 @@ route as follows; a false condition leaves every route in its R-CONTAIN no-web p
     denies to that raw call too (deny outranks the danger flag, measured on agy 1.1.17; DL-122). B's U7 removal of
     machine-settings transactions supersedes that coexistence scenario; it is not current B work.
   - gemini: `--review-web` (`lib/roster_v2.py:1050`) attaches `3rd-Agent/wrappers/policies/gemini-readonly-web.toml`,
-    byte-equal to `contracts/gemini-readonly-web.toml`, instead of the no-web profile (`gemini_wrapper.py:125`, `:465`).
+    byte-equal to the imported `contracts/gemini-readonly-web.toml` bytes recorded in
+    `import-origin.json`, instead of the no-web profile (`gemini_wrapper.py:125`, `:465`).
+    Current canonical provenance comments differ; host re-vendoring remains pending.
   - Every attempt's dispatch record is rendered from the bound condition at prepare and retry and is not re-compared
     later: no host adopts an orphan attempt — `retry` refuses an attempt that already exists above the recorded one
     (R-PREPARE; triad `207dd39f`, DL-130). A wrapper line edited by hand before it runs, and a line with the review log-dir env value removed,
@@ -621,22 +623,26 @@ agy review agents without web tools (both hosts select their no-web profile;
 raw investigations remain separately authorized); gemini by the explicit deny rows in its host profile below. Renderers keep the
 no-web posture for a false condition and select the authorized web posture only under R-REVIEW-WEB. Gemini host
 profiles remain separate under D-B1. On A: `contracts/gemini-readonly.toml` for a false condition
-(`3rd-Agent/wrappers/policies/gemini-readonly.toml`) and `contracts/gemini-readonly-web.toml` for a true one (`3rd-Agent/wrappers/policies/gemini-readonly-web.toml`, byte-equal,
+(`3rd-Agent/wrappers/policies/gemini-readonly.toml`) and `contracts/gemini-readonly-web.toml` for a true one (`3rd-Agent/wrappers/policies/gemini-readonly-web.toml`, byte-equal to the imported bytes recorded in `import-origin.json`,
 selected under `--review-web`, `gemini_wrapper.py:125`, `:465` @ `b53409b`). On B: `contracts/gemini-readonly-b.toml` for a false condition and
 `contracts/gemini-readonly-web-b.toml` for a true one (`bin/policies/gemini-formal-readonly.toml`,
 `bin/policies/gemini-formal-web.toml`). Equality means exact bytes of
 the selected complete profile, with its adjacent digest; no concatenated overlay is implied. Preserve B's
 existing 999/998 allow/deny/catch-all and Plan Mode transition restrictions while moving its two web tools
-to explicit denies. A's profile and V1–V5 manifest stay unchanged; B's live checks are separately recorded
+to explicit denies. That B-profile split preserved A's imported profile and V1–V5 manifest;
+the current A provenance-header edits change comments only, with rules and priorities unchanged.
+Current adjacent policy digests follow those new bytes; A's host copies remain at the imported
+bytes recorded in `import-origin.json` until separate host re-vendoring. B's live checks are separately recorded
 in `contracts/gemini-readonly-b.verify.toml`. The web-enabled profiles are selected under R-REVIEW-WEB; the no-web
-profile bytes stay unchanged, and their header comments (A: "review legs have no web tools"; B: "D-9: web evidence
+profile selection does not modify policy bytes, and their header comments (A: "review legs have no web tools"; B: "D-9: web evidence
 belongs to a separately authorized investigation, never REVIEW") describe the no-web profile. B's web profile header
 (`contracts/gemini-readonly-web-b.toml:1`, `:3`: "explicitly authorized web verification", "selected only for an explicitly
 owner-authorized review") predates the standing authorization; under it every review round is owner-authorized, so the
 header reads as "selected for a true bound condition"; its bytes stay pinned by B's manifest digest. A's web profile header
-(`contracts/gemini-readonly-web.toml:8-9`) points its runtime effect at `contracts/review-web.verify.toml`; that
+(`contracts/gemini-readonly-web.toml:9-10`) points its runtime effect at `contracts/review-web.verify.toml`; that
 manifest's WEB-A-2 reaches the profile's policy checks WA1-WA2 through `contracts/gemini-readonly-web.verify.toml`
-(bytes pinned, unchanged).
+(the imported A payload bytes are pinned in `import-origin.json`; current comment-only edits
+do not establish host re-vendoring or new runtime verification).
 Web-enabled investigations (R-INVEST) keep web. No alignment may introduce a dangerous /
 yolo permission bypass on any leg (each host discloses its existing permissive-route flags in `units.json` exceptions; none is on a review route). A leg a host runs natively stays native; no leader-model CLI subprocess is
 added for symmetry. Containment EVIDENCE is attributed to the leg attempt that produced it (C23): on a host with a LIVE

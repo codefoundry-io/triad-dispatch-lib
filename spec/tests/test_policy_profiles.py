@@ -70,6 +70,22 @@ def test_c32_a_web_profile_moves_only_the_two_web_tools_to_allow():
     assert {r for r in web if r[0] not in WEB_TOOLS} == {r for r in no_web if r[0] not in WEB_TOOLS}
 
 
+def test_c15_a_no_web_rule_content_is_fixed_independently_of_comments():
+    assert _rule_rows(ROOT / "contracts/gemini-readonly.toml") == {
+        ("read_file", "allow", 100),
+        ("read_many_files", "allow", 100),
+        ("glob", "allow", 100),
+        ("search_file_content", "allow", 100),
+        ("list_directory", "allow", 100),
+        ("write_file", "deny", 200),
+        ("replace", "deny", 200),
+        ("run_shell_command", "deny", 200),
+        ("mcp_*", "deny", 200),
+        ("google_web_search", "deny", 200),
+        ("web_fetch", "deny", 200),
+    }
+
+
 def test_c32_review_web_manifest_names_both_host_web_profiles_unrun():
     manifest = tomllib.loads((ROOT / "contracts/review-web.verify.toml").read_text())
     profiles = {row["host"]: row.get("policy") for row in manifest["check"] if row.get("policy")}
