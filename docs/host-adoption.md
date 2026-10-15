@@ -120,11 +120,13 @@ implementation branch; details and the library change requests are in
 - The claude host has no long-running host process: the leader runs the dispatch
   lines its `prepare` prints, the claude leg is an in-session agent spawn, and
   `collect` folds attempts afterwards. `run_review` and `run_investigations` do not
-  apply there. Its first adoption slice calls `parse_json`, `validate_binding`,
-  `validate_verdict`, `load_roster_contract`, `resolve_roster`, `select_entries`,
-  `render_review_clauses` and `render_investigation_prompt`; the host keeps its
-  field-naming refusal reasons, route resolution, capability / block / duplicate-name
-  checks and drift warnings over those calls.
+  apply there. Its first adoption slice calls `render_review_clauses`, `validate_binding`,
+  `load_roster_contract` and `select_entries`; verdict admission and roster merging
+  stay whole in the host until the library exposes structured refusal reasons (L2)
+  and a merge-only roster seam (L13), because fixed refusal codes cannot carry the
+  duplicated member name, the JSON-syntax detail and the schema location the host's
+  leader and tests depend on, and the library's one-call merge-and-validate leaves no
+  place for the host's inherited-block check.
 - On the host's own vendored prompt bytes, 24 host-A profiles rendered by
   `render_review_clauses(host="A", ...)` are byte-identical to the host renderer with
   raw replacement strings (agy profiles with `agy_hook_active=True`); 47 verdict cases
@@ -134,8 +136,9 @@ implementation branch; details and the library change requests are in
 - Ubuntu 24.04 apt ships jsonschema 4.10.3 and referencing 0.31.0; the library's
   `registry=` keyword needs jsonschema 4.18.0 or later. The claude host meets the
   floor with six manylinux wheels (620 KB) in its existing offline wheel set and
-  gates the import so a library `TypeError` or `ContractError` becomes a host fault,
-  never an invalid leg reply. Re-rooting `$defs` alone does not block remote `$ref`
+  gates the package import itself (an `ImportError` such as a missing `referencing`)
+  and the `registry=` probe so a library `TypeError` or `ContractError` becomes a host
+  fault, never an invalid leg reply. Re-rooting `$defs` alone does not block remote `$ref`
   retrieval on jsonschema 4.10.3 (measured); a lowered floor would need an explicit
   no-retrieval mechanism.
 - The claude host adopts by vendoring the package under its skill `lib/` with an
