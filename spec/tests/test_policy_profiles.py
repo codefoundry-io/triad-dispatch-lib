@@ -28,9 +28,13 @@ def test_c15_b_profile_preserves_read_plan_and_catchall_rules_without_web_allow(
                for r in data["rule"])
 
 
-def test_c15_a_payload_is_unchanged_by_b_profile_split():
-    data = (ROOT / "contracts/gemini-readonly.toml").read_bytes()
-    assert hashlib.sha256(data).hexdigest() == "6480a765ca2d32d3bdadd8f46be20f9bcd2b4de66d42bb075e4dcda1cad3d207"
+def test_c15_a_manifest_binds_exact_current_policy_payload():
+    manifest = tomllib.loads((ROOT / "contracts/gemini-readonly.verify.toml").read_text())
+    assert manifest["policy"] == "contracts/gemini-readonly.toml"
+    data = (ROOT / manifest["policy"]).read_bytes()
+    assert manifest["policy_sha256"] == hashlib.sha256(data).hexdigest()
+    # Original imported bytes remain recorded in import-origin.json; that
+    # historical digest does not freeze the current authoring payload.
 
 
 def test_c15_b_manifest_binds_exact_profile_and_leaves_live_checks_unrun():

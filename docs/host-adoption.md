@@ -19,6 +19,12 @@ Claude adoption remains planned. Host releases, local installation, fresh-sessio
 exposure and adoption of this unpublished `0.1.0.dev4` revision are separate
 claims; a library change does not automatically update a consumer.
 
+Library [PR #2](https://github.com/codefoundry-io/triad-dispatch-lib/pull/2)
+merged at `ee8b4b4ab3c1440788733931874047a1821ee08e`, after R5 `AGREED` on
+reviewed head `830942e05d3681e7ded04a91d60850d18ea00d10`. Subsequent
+[main CI run 38690043657](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38690043657)
+succeeded. That integration establishes neither a package release nor new host adoption.
+
 ## Adoption record
 
 Each host should retain the following with its adapter/release evidence:
@@ -139,9 +145,17 @@ host work, not released adoption evidence. The host also reports a preparation-t
 text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
 adoption and removal of that render core. These unpublished implementation reports
 have not been independently verified. Verdict admission and roster merging remain
-host-owned pending the remaining duplicate-member diagnostic request (#3) and
+host-owned pending the remaining duplicate-member and missing-required-name
+diagnostic requests (#3) and
 merge-only roster request (#4). The requester accepts dev4 `.field`/trusted schema
-`.path`, but bounded L2 does not claim to unblock full admission delegation.
+`.path`. It withdrew `.detail`, instance pointers and the
+[duplicate pre-pass](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185234528).
+The [latest requester comment](https://github.com/codefoundry-io/triad-dispatch-lib/issues/3#issuecomment-6185444844)
+requests the schema-defined name of a missing required property alongside the
+earlier duplicate `.member` request. Both remain unimplemented design requests;
+`.missing` is only a proposed example. Trusted schema names and provider-chosen
+duplicate names need separate design decisions. Bounded L2 does not claim to
+unblock full admission delegation.
 
 The host's raw replacement/residual forms, case-folded directory-name checks and
 reported 3600-second entry timeout remain host responsibilities. This project's
