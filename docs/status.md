@@ -59,9 +59,11 @@ The [boundary proposals](design/2026-10-15-adoption-boundary-proposals.md) retai
 the other request boundaries. Task 2 scoped checks passed 127 diagnostics/verdict/
 parser tests and then 160 replay/diagnostics/verdict/parser tests, including the
 wrong-diagnostic driver control. The combined
-[verification record](verification/2026-10-15-adoption-apis.md) belongs to the
-subsequent integration checks; source/archive/wheel/platform/formal review results
-for the combined bytes are not claimed here. Keep dev4 unpublished and source-pinned.
+[verification record](verification/2026-10-15-adoption-apis.md) records 1020 source
+and 1020 archive passes on each local Python 3.12/3.14, all four installed-wheel
+drivers per version and the new API assertions. Exact-head native CI and formal
+review follow the documentation-only recording commit and are retained with
+draft PR #7. Keep dev4 unpublished and source-pinned.
 Host adoption, release and merge remain separate. The merged review/CI evidence
 does not transfer to changed bytes.
 
