@@ -145,12 +145,14 @@ host work, not released adoption evidence. The host also reports a preparation-t
 text-parity gate before using its own manifest; a later slice plans `with_manifest=True`
 adoption and removal of that render core. These unpublished implementation reports
 have not been independently verified. Verdict admission and roster merging remain
-host-owned until independently adopted. The owner settled the
-[boundary decisions](design/2026-10-15-adoption-boundary-proposals.md) in the
+host-owned until independently adopted. The owner settled issue #3/#4 roster and
+admission decisions in the
 [approved adoption APIs](design/2026-10-15-adoption-apis.md): the library now
 implements `merge_roster`, `validate_resolved` and safe `.missing` for the selected
 canonical required violation. Duplicate `.member` disclosure is declined; the
 host retains its own strict duplicate parser as a documented deviation. The
+separate [issue #5 boundary proposals](design/2026-10-15-adoption-boundary-proposals.md)
+remain proposals only, not approved owner decisions. The
 requester accepted dev4 `.field`/trusted schema `.path` and withdrew `.detail`,
 instance pointers and the duplicate pre-pass; see the
 [request sync evidence](verification/2026-10-15-provenance-request-sync.md).
