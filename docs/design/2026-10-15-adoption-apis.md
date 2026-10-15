@@ -100,9 +100,9 @@ corpus and installed-wheel verifier with root/finding diagnostics and an injecte
 wrong-diagnostic control. Preserve all original raw fixtures.
 
 Verify the combined source, neutral unpacked sdist and rebuilt wheel. Native CI
-must measure Ubuntu/macOS and Python3.12/3.14 before corresponding claims. Formal
-review uses three required Opus5.5/xhigh, Sol6.1/xhigh, Argon/high entries and a
-separate nonvoting Astra/high comparison, each2400 seconds, current official web
+must measure Ubuntu/macOS and Python 3.12/3.14 before corresponding claims. Formal
+review uses three required Opus 5.5/xhigh, Sol 6.1/xhigh, Argon/high entries and a
+separate nonvoting Astra/high comparison, each 2400 seconds, current official web
 research authorized. No prior vote transfers. Merge, publication and host adoption
 remain separate owner decisions.
 

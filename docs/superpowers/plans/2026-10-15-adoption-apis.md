@@ -18,15 +18,15 @@
 - Read current repository AGENTS/status and relevant workspace policies. Record Python/module preflight before tooling; permission failures are not test RED evidence.
 - Preserve original error codes/text, parse → schema → expected → binding precedence, one schema snapshot within `resolve_roster`, independent copies and exact case-sensitive names.
 - No `.member`, capture flags, duplicate pre-pass, raw validator exposure or host-specific diagnostic messages.
-- Tasks are sequential: task1 owns shared API/conformance/README edits first, task2 updates them after task1 review; no concurrent writers to those files.
+- Tasks are sequential: task 1 owns shared API/conformance/README edits first, task 2 updates them after task 1 review; no concurrent writers to those files.
 - Each implementer reports scoped files, RED/GREEN commands/output and commits. Fresh task review precedes the next task. The leader owns combined verification, PR updates and final project review; no final merge or publication.
 
 ## Review Focus
 
-- An inherited vendor block or incomplete appended entry must survive merge but fail final validation; task1 pins both and keeps host checks separate.
-- Invalid defaults plus malformed overrides must retain refusal precedence; task1 pins codes, same schema resource and no network retrieval.
-- Mutating returned nested entries must not affect caller defaults; task1 exercises both combined and split paths.
-- Later nested findings and multiple missing properties must report the selected object's canonical required name; task2 pins these and competing non-required errors.
+- An inherited vendor block or incomplete appended entry must survive merge but fail final validation; task 1 pins both and keeps host checks separate.
+- Invalid defaults plus malformed overrides must retain refusal precedence; task 1 pins codes, same schema resource and no network retrieval.
+- Mutating returned nested entries must not affect caller defaults; task 1 exercises both combined and split paths.
+- Later nested findings and multiple missing properties must report the selected object's canonical required name; task 2 pins these and competing non-required errors.
 - Installed source-vs-wheel confusion or ignored diagnostics must not produce false success; both tasks add actual installed behavior plus fault-injection controls.
 
 ## Size and files
@@ -36,18 +36,18 @@ net +50–80; approximately 30–50 novel core lines. Tests/fixtures: +230–350
 documentation: +70–120 lines excluding this plan/design. These are estimates, not
 caps; record actual additions/deletions/net and explain in-scope growth.
 
-Task1: roster runtime/exports/tests, four-route driver, API/conformance/README.
-Task2: admission runtime/tests, replay fixtures/driver, API/conformance/adoption/status.
-Task3: bounded nonblocking provenance R2 followups in policy tests/migration docs;
+Task 1: roster runtime/exports/tests, four-route driver, API/conformance/README.
+Task 2: admission runtime/tests, replay fixtures/driver, API/conformance/adoption/status.
+Task 3: bounded nonblocking provenance R2 followups in policy tests/migration docs;
 approximately +15–30/-10–16 test lines and +2–4/-1 documentation lines, no runtime.
-Leader: source/archive/wheel verification evidence, issue5 boundary proposal doc,
-current PR description and complete project review. Issue5 remains proposals only.
+Leader: source/archive/wheel verification evidence, issue 5 boundary proposal doc,
+current PR description and complete project review. Issue 5 remains proposals only.
 
 Preceding plan gate: `20261015-lib-provenance-r2-b5ed9d` completed `AGREED`
-on743e52a with all three required approvals and no Astra finding. Native CI
+on 743e52a with all three required approvals and no Astra finding. Native CI
 38697006277 passed four environments (953 source/archive tests each). Opus retained
 three nonblocking followups: full parsed-rule pin, migration historical scope and
-latest owner-decision wording. Tasks3 and2 explicitly close them here. No votes
+latest owner-decision wording. Tasks 3 and 2 explicitly close them here. No votes
 transfer; the final combined tree receives fresh CI and full project review.
 
 ---
@@ -243,7 +243,7 @@ approximately 20–35 novel core lines. Tests/fixtures approximately +140–220 
 documentation approximately +35–60 lines. These are planning estimates; record
 actual additions/deletions/net with the combined unit and preserve concurrent work.
 
-- [ ] Commit scoped task1 changes, report exact RED/GREEN evidence and wait for task review before task2.
+- [ ] Commit scoped task 1 changes, report exact RED/GREEN evidence and wait for task review before task 2.
 
 ### Task 2: Add safe missing-required diagnostics
 
@@ -337,7 +337,7 @@ Expected: all pass, including `test_installed_probe_checks_missing_diagnostic` a
 - [ ] Hand this task's GREEN results and exact changed-file list to the leader of the combined remaining-adoption-APIs unit. Source, archive and package verification are performed once on that final combined tree, after the roster task is integrated; do not rerun full suites independently merely to accumulate duplicate evidence.
 
 
-- [ ] Commit scoped task2 changes and report exact RED/GREEN evidence for fresh task review. Current exports remain29 after task1.
+- [ ] Commit scoped task 2 changes and report exact RED/GREEN evidence for fresh task review. Current exports remain 29 after task 1.
 
 ### Task 3: Close nonblocking provenance-review followups
 
@@ -346,10 +346,10 @@ and the stale C15 test reference in `spec/reference/library-case-coverage.md`;
 record scoped verification in the task report. Do not change actual policy
 payloads/digests or historical import ancestry.
 
-**Interfaces:** Consumes R2's accepted Minor findings at candidate743e52a;
+**Interfaces:** Consumes R2's accepted Minor findings at candidate 743e52a;
 produces complete comment-independent rule preservation and unambiguous migration
 history. No runtime API/export change. R2-M3 current decision wording belongs
-to task2, which must replace pending `.missing`/`.member` decisions accurately.
+to task 2, which must replace pending `.missing`/`.member` decisions accurately.
 
 - [ ] Read the R2 findings and current rule test. Replace or strengthen the
   tuple-only pin with a hand-authored literal complete parsed rule list: every
@@ -396,16 +396,16 @@ to task2, which must replace pending `.missing`/`.member` decisions accurately.
   `docs/verification/2026-10-15-adoption-apis.md`. Source/archive/wheel proof is
   synthetic library proof; no actual provider or consumer adoption is claimed.
 - [ ] Add `docs/design/2026-10-15-adoption-boundary-proposals.md` from the reviewed
-  issue5 proposal table. Link it from current requests/status; no L1/L4/L6/L8/L9
+  issue 5 proposal table. Link it from current requests/status; no L1/L4/L6/L8/L9
   runtime implementation is authorized by that proposal.
 - [ ] Check API/export coverage and conformance test references; no stale claim
   that `.missing` remains undecided or `.member` will be added in this slice.
   Preserve historical dated records. Review `git diff --check`, commit scoped
   evidence/docs, rewrite draft PR title/body around the final combined change,
-  push and wait for all four native macOS/Ubuntu Python3.12/3.14 CI jobs at HEAD.
+  push and wait for all four native macOS/Ubuntu Python 3.12/3.14 CI jobs at HEAD.
 - [ ] Freeze the current tree. Run the project public-v2 three required reviewers
-  Opus5.5/xhigh, Sol6.1/xhigh and Argon/high, plus separate nonvoting Astra/high,
-  each2400 seconds and official current web verification allowed. Inspect the
+  Opus 5.5/xhigh, Sol 6.1/xhigh and Argon/high, plus separate nonvoting Astra/high,
+  each 2400 seconds and official current web verification allowed. Inspect the
   whole combined branch including the already reviewed documentation unit.
   Save and adjudicate every result; await all producers before final integrity,
   export and cleanup. Changed reviewed bytes require a new complete round.
