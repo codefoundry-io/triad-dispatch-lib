@@ -67,6 +67,13 @@ Native CI on `bc817ca` passed all four source/archive/wheel jobs. That evidence
 does not complete the missing review. Corrected bytes require new exact-head CI
 and a fresh complete project review after provider recovery.
 
+R3 (`20261015-lib-observability-r3-b3136c`) completed `AGREED` on `5f90238`
+with all three required approvals and no actionable Astra comparison finding.
+Argon completed successfully after quota recovery. The
+[R3 record](verification/2026-10-15-adoption-observability.md#r3-documentation-corrections)
+records bounded documentation corrections and the optional typing disposition.
+Corrected-byte CI and complete review outcomes will be retained with PR #2.
+
 ## Project review setup
 
 Shared specification and implementation authoring already lives in this

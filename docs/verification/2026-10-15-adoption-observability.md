@@ -37,8 +37,12 @@ Native macOS 26.6.2 ARM64, uv 0.11.8, locked pytest 9.1.1:
 Each version used separate source/archive environments and a neutral unpacked
 sdist directory. All 17 recorded stages per interpreter exited zero. The extra
 installed probe used an isolated `-I` child and verified site-packages/dev4 origin,
-binding field and schema path, fixed messages, default-text equivalence, selected
-web dependency and fresh manifest ownership. All dependency installations used
+binding field and schema path, default-text equivalence, selected web dependency
+and fresh manifest ownership; it also recorded the fixed exception messages.
+This temporary probe and its outputs are retained in owner-managed local evidence,
+not committed tests or CI steps. Public CI exercises L2/L7 in source and
+unpacked-sdist pytest; its four installed-wheel drivers do not directly assert
+the new diagnostic fields or opt-in manifest. All dependency installations used
 binary distributions; no provider or native reviewer was invoked by these tests.
 
 The file inventory was identical before and after measurement despite the
@@ -120,8 +124,10 @@ No scratch script was executed and the frozen checkout remained unchanged.
 These four corrections date the setup observation, name the superseding functions,
 link the actual hash record and explicitly identify repository-only evidence with
 a commit-pinned source link. Packaging rules, runtime, tests, assets and dependencies
-remain unchanged. Opus's optional overload suggestion concerns future publication
-of typing metadata; no `py.typed` marker or new typing guarantee is introduced here.
+remain unchanged. Opus's optional overload suggestion could improve inference
+for consumers that type-check vendored source, regardless of a `py.typed` marker.
+No current consumer checker contract or affected caller failure is established;
+overloads remain an optional follow-up, with no new typing guarantee here.
 Affected documentation/package checks and fresh exact-head CI verify the correction;
 a new complete project review remains required after provider recovery. Final
 post-freeze outcomes are retained with PR #2 rather than implied by this record.
@@ -132,3 +138,20 @@ failure log and wheel inventory/hashes. Current request/adoption/design records
 reflect those reports; earlier R1/R2 findings above retain their measured source
 boundaries. The S1 evidence files are preserved without execution, and the
 repository-only evidence link now points to the snapshot containing those files.
+
+## R3 documentation corrections
+
+R3 (`20261015-lib-observability-r3-b3136c`) completed `AGREED` on `5f90238`:
+Opus, Sol and Argon all returned `SAFE TO MERGE`; the separate Astra comparison
+reported no actionable finding. Argon's successful invocation confirmed recovery
+from the earlier quota failure. All producers terminated before export and cleanup.
+
+Opus retained four nonblocking Minors. The conformance map now identifies its
+first implementation table, and DL-160 names the incorporated `d5d7f65` evidence.
+The local probe description distinguishes unpublished owner-managed evidence
+from public CI coverage and recorded messages from assertions. The overload
+suggestion remains optional: vendored-source typing can encounter the union,
+but no current consumer checker contract or caller failure is established.
+These corrections change documentation only. New exact-head CI and a fresh
+complete review are required for the corrected bytes; their outcomes will be
+retained with PR #2. R3 votes do not transfer to changed bytes.

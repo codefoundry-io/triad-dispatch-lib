@@ -40,7 +40,7 @@ The additive dev4 observability APIs provide these partial contracts:
 
 ## Remaining normative groups and ownership
 
-The implementation table above names 20 of the 28 active review-rule groups.
+The first implementation table above names 20 of the 28 active review-rule groups.
 The eight remaining groups and five process/authoring groups are assigned here,
 so omission from a runtime table cannot be mistaken for an unimplemented library
 feature. This inventories all 33 active unique groups, not every sentence or case
