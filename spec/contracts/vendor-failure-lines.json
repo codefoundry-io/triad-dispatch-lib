@@ -163,6 +163,14 @@
       "observed": "2026-09-20 (2 runs)"
     },
     {
+      "cli": "codex",
+      "line": "The 'triad-no-such-model' model is not supported when using Codex with a ChatGPT account.",
+      "match": "model is not supported when using codex with a chatgpt account",
+      "carrier": "the `message` of each stdout JSONL `type: error` event (printed twice — codex's own retry — and again as `turn.failed`'s error message) of a `codex exec --json` run whose pinned model (or the config-alive `model`) the account cannot use; vendor exit 1",
+      "token": "config-conflict",
+      "observed": "2026-10-10 (codex, host A, run-log 20261010T121717Z-22396; host A's spec-branch row DL-155 — the PR #12 delta re-authoring into this repository is pending)"
+    },
+    {
       "cli": "agy",
       "line": "timeout waiting for response",
       "match": "timeout waiting for response",
@@ -209,6 +217,14 @@
       "carrier": "the first stderr line of a print-mode run whose pinned --model is not in the catalog AND --effort was passed, printed before any stream event (the same pin without --effort prints the `is not recognized as a known model or custom model in settings` row instead); vendor exit 1",
       "token": "config-conflict",
       "observed": "2026-10-15 (agy 1.3.5, host A, review dispatch; run-log 20261015T151222Z-23378-83ff86c4; `agy models` that day: Gemini 4 Argon low/medium/high, Gemini 3.8 Flash low/medium/high, Claude Opus 5.5 and Sonnet 5.5 low/medium/high, GPT-OSS 120B medium — `gemini-3.1-pro-high` retired; learned by host A's repair loop and verified on the stored run-log)"
+    },
+    {
+      "cli": "agy",
+      "line": "error: invalid model selection (--model \"<m>\" --effort \"\"): model <m> is not recognized as a known model or custom model in settings",
+      "match": "is not recognized as a known model or custom model in settings",
+      "carrier": "the first stderr line of a print-mode run whose pinned --model is not in the catalog (no --effort passed, or the slug retired), printed before any stream event, followed by the `Available models:` list; vendor exit 1",
+      "token": "config-conflict",
+      "observed": "2026-10-10 (agy 1.3.3, host A, run-log 20261010T121723Z-22698; host A's spec-branch row DL-155 — the PR #12 delta re-authoring into this repository is pending); re-measured 2026-10-15 on agy 1.3.5 for the retired `gemini-3.1-pro-high`"
     }
   ]
 }
