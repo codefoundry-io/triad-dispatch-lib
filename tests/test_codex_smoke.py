@@ -2,6 +2,7 @@ import copy
 import errno
 import hashlib
 import importlib.util
+from importlib.metadata import version
 import json
 import os
 from pathlib import Path
@@ -244,7 +245,7 @@ def test_profile_and_identity(context, tmp_path):
     with pytest.raises(ValueError, match="version"):
         module.identity(tmp_path, "not-installed-version")
     with pytest.raises(ValueError, match="site-packages"):
-        module.identity(tmp_path, "0.1.0.dev3")
+        module.identity(tmp_path, version("triad-dispatch-lib"))
 
 
 def test_synthetic_matrix():
