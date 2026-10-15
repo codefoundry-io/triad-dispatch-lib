@@ -1457,8 +1457,9 @@ A different Google model (C18) is the user's pin and is passed to the CLI as wri
 a model list before review inference — no `agy models` call, and no packaged list as a gate (the gemini CLI exposes no
 model listing, `gemini --help`, 0.60.0; a host-packaged gemini list is display data only). A model the CLI refuses ends
 as R-MODEL's one terminal failed-to-run record naming the leg and the model and telling the user to change the roster
-entry; `contracts/vendor-failure-lines.json` holds no measured agy or gemini model-refusal sentence yet, so a new one
-ends `unknown` and reaches the repair analysis (R-CLASSIFY). The Pro-high default above stays, and the resolved model is
+entry; `contracts/vendor-failure-lines.json` holds the measured agy and codex refused-model sentences (rows observed 2026-10-10 on agy 1.3.3 and codex, and
+2026-10-15 on agy 1.3.5 — a retired slug pinned with `--effort`); a sentence not yet in the contract ends `unknown` and reaches
+the repair analysis (R-CLASSIFY). The Pro-high default above stays, and the resolved model is
 recorded (R-ROSTER). Code removed (DL-116): on A the `agy models` gate before a pinned review dispatch
 (`_catalog_auth_observed` / `_model_catalog_refusal`) and the gemini review preflight's packaged-list gate
 (`3rd-Agent/wrappers/gemini-models.json`) are gone @ triad `86cffe93` (`tests/unit/wrappers/t71-agy-model-passthrough-c18.sh`
