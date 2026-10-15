@@ -71,7 +71,7 @@ stale R-CONTAIN fact, README, pyproject.toml and uv.lock.
 - [x] Correct all PR #2 factual/provenance/scope findings and record each request's disposition.
 - [x] Document declared dependency floors, per-platform offline wheels, fixed raw
   clauses and optional coordinators; update conformance links and package version.
-- [ ] Run source and unpacked-sdist suites with Python 3.12 and 3.14, asset and
+- [x] Run source and unpacked-sdist suites with Python 3.12 and 3.14, asset and
   authoring checks, sdist/wheel builds and the four installed-wheel probes.
 - [ ] Commit/push the reviewed changes, update PR title/body to the final scope,
   and observe native macOS/Ubuntu 3.12/3.14 CI for the actual committed head.

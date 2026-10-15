@@ -78,3 +78,15 @@ Run source and unpacked-sdist suites on Python 3.12 and 3.14, all installed-whee
 drivers, authoring/assets checks, native CI, and the project's three-family review
 with separate Astra comparison. Provider behavior and consumer adoption remain
 separate evidence.
+
+## Concurrent host amendments
+
+Remote commits `477eee8` and `53790e5` arrived during implementation. They narrow
+Claude's first slice to four named functions and add issues #3-#5. The request
+record preserves those amendments. Issue #3's decoder detail, duplicate-member
+name, instance pointer and deepest-error selection exceed this bounded L2;
+issue #4's L13 merged-but-unvalidated roster API is new design work. Neither is
+claimed complete or unblocking Claude delegation. Claude withdrew L7/L11 as its
+own requests; the owner's separate approval of this manifest API and fixed-profile
+documentation remains the scope here. No additional runtime was introduced while
+resolving the concurrent documentation edits.

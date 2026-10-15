@@ -38,8 +38,13 @@ The owner approved PR #2 corrections and additive L2/L7 development. The
 slice to safe admission locations, optional clause manifests and adoption docs.
 L10 keeps existing dependency floors; L11/L12 clarify selective use. Other
 requests remain design work. No consumer or provider defaults change.
-Verification and current formal-review outcome will be recorded for this slice;
-earlier approval does not transfer to these changed bytes.
+The [local verification record](verification/2026-10-15-adoption-observability.md)
+records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
+installed-wheel drivers and new API probes. Concurrent Claude documentation
+amendments are preserved: four-function first slice, expanded L2 issue #3, L13
+issue #4 and boundary decisions issue #5. This bounded L2 does not fully satisfy
+issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
+freeze; earlier approval does not transfer to changed bytes.
 
 ## Project review setup
 

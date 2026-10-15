@@ -120,15 +120,24 @@ host work; this library slice changes no installer or global installation.
 
 The [request record](requests/2026-10-15-claude-host-adoption-requests.md)
 retains the host leader's reported dev3 measurements and the unpublished evidence
-boundary. The reported 30 prompt comparisons used a scratch bundle rebuilt from
+boundary. The amended reported 24 prompt comparisons used a scratch bundle rebuilt from
 host assets: they do not establish parity with the actual packaged dev3 prompts.
 The 47 verdict decisions, five-entry merge and wheel closure likewise remain
 attributed results until the pinned harness/fixtures/outputs are published.
 
-The leader-driven Claude host plans to use twelve of the fourteen functions and
-vendor the package with an adoption record. It will extend its toolkit map to
-cover vendored files and record consumed bundle IDs. This is planned host work,
-not installed or released adoption evidence.
+The amended leader-driven Claude first slice plans four functions:
+`render_review_clauses`, `validate_binding`, `load_roster_contract` and
+`select_entries`. It will vendor with Git-blob-checked file hashes, recursively
+extend exporter/toolkit coverage excluding bytecode, record bundle IDs and the
+adoption record, and gate import/Registry failures as host faults. This is planned
+host work, not released adoption evidence. Verdict admission and roster merging
+remain host-owned pending the expanded diagnostic request (#3) and merge-only
+roster request (#4); dev4's bounded L2 does not claim to unblock them.
+
+The host's raw replacement/residual forms, case-folded directory-name checks and
+reported 3600-second entry timeout remain host responsibilities. This project's
+review timeout remains 2400 seconds. Claude withdrew its separate manifest/toggle
+requests; the owner independently approved the additive library manifest API.
 
 ## Selective adoption and dependencies
 
