@@ -86,3 +86,10 @@ verify their integration; no runtime behavior or new implementation-mirroring
 test is introduced. Changed documentation and the README package description
 require new exact-head source/package CI and a fresh complete review. Their
 outcomes remain with PR #2 after this source record is frozen.
+
+Before the next source freeze, concurrent amendments `e8ea66d`/`b18da1b`
+published Claude scratch scripts, captured outputs and input identities and
+reduced its planned first slice to two library functions. Those artifacts are
+preserved without executing them; matching unpublished host inputs still prevent
+independent reproduction. Current request/adoption/status wording is reconciled
+to this new evidence. No host implementation or runtime API changes are included.

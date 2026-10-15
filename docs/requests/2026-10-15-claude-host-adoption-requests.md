@@ -6,10 +6,11 @@ Maintainer disposition: owner-approved on 2026-10-15 after comparison with
 Codex `c81c02984825af7dd1ec69a14af83f0ff18d0551` and published Claude
 `e4cadf2f751308d1ab75e4199b08d89849bb93b3`.
 
-Concurrent host amendments at `477eee8` and `53790e5` are incorporated below.
-Their reported implementation branch `impl/claude-host-2026-10` and candidate
-`3afc4d7e` remain unavailable in the public remote and three known local reference
-repositories. The named first slice and request records supersede earlier counts.
+Concurrent host amendments through `b18da1b` are incorporated below. The earlier
+candidate `3afc4d7e` was unavailable in the public remote and three known local
+reference repositories. The newly published scratch record identifies reported
+host head `f925395f` on `impl/claude-host-2026-10`; that implementation branch
+remains unpublished. The named first slice and request records supersede earlier counts.
 
 Some requests extract existing host semantics; others require new library API
 contracts. They are not all already inside the public API boundary. This slice
@@ -23,10 +24,11 @@ The original report describes throwaway runs without changing either host.
 Its evidence path is `codefoundry-io/triad-dispatch:docs/reviews/2026-10-15-triad-dispatch-lib-pr1-claude-host-review.md`, section 6.
 At the 2026-10-15 maintainer review that path returned 404, its path history was
 empty, and the only published branch was main at `e4cadf2f`. The harness, host
-revision and scratch bundle hashes were not published. These counts are
-**host-leader reported, not independently reproduced**. An immutable record of
-source, commands, fixtures, bundle hashes and outputs is needed before treating
-them as conformance or released-adoption evidence.
+revision and scratch bundle hashes were not published then. The later amendments
+publish scripts, captured outputs and input identities in this PR, linked below.
+These counts remain **host-leader reported, not independently reproduced**:
+the matching host source/assets and measured roster input are not included.
+Published captures alone establish neither conformance nor released adoption.
 
 - **S1 dependencies:** reported 165 failed / 101 passed with jsonschema 4.10.3
   and referencing 0.31.0, including unsupported `registry` keyword errors.
@@ -42,18 +44,42 @@ them as conformance or released-adoption evidence.
   The amendment uses `agy_hook_active=True` for every AGY profile; this
   supersedes the original unsupported 30-profile/hook-off account. Reported suffix parity concerns each route separately;
   AGY and Gemini outputs themselves use different tool names.
-- **S3 verdict decisions:** reported 47 matching decisions (8 valid, 33 invalid,
-  6 binding mismatches), with NaN/1e999 refused at different stages. Fixtures and
-  outputs remain unpublished.
-- **S4 roster merge:** reported five byte-identical merged entries. Native route
-  resolution and capability checks remain host-owned.
+- **S3 verdict decisions:** captured 47 matching accept/reject decisions (13
+  accepts, 28 non-binding rejections and 6 binding-mismatch rejections),
+  with NaN/1e999 refused at different stages. Fixtures and captured outputs are
+  now published; the matching host validator source remains unpublished.
+- **S4 roster merge:** the published rerun captures six merged legs, including
+  two disabled entries, and four enabled/startable entries. It compares sorted-JSON
+  leg content and checks override `_comment`, not the complete document. This
+  supersedes the earlier five-entry report with a different measured override.
+  That uncommitted per-round override is identified only by hash, so publishing
+  the host commit alone would not enable replay. Native route resolution and
+  capability checks remain host-owned.
 
-Claude's amended first slice plans exactly four functions:
-`render_review_clauses`, `validate_binding`, `load_roster_contract` and
-`select_entries`. Verdict admission and roster merging stay wholly host-owned
-pending the expanded L2 and new L13 requests. The earlier twelve/eight-function
-counts are superseded by this named list. Its leader-driven lifecycle does not
-need callback coordinators.
+Claude's amended first slice (its review round r2, concurrent with this slice) plans
+exactly two functions: `render_review_clauses` (the bound prompt bytes, with the
+host's clause manifest computed over the same canonical bytes) and
+`validate_binding`. `select_entries` is not adopted: it drops disabled entries and
+refuses an all-disabled roster, while the host keeps disabled legs in its round
+record with a separate startable list. `load_roster_contract` is not adopted: the
+host reads its own vendored contract copy. Verdict admission and roster merging stay
+wholly host-owned pending the expanded L2 and new L13 requests. The earlier
+twelve/eight/four-function counts are superseded by this named pair. Its
+leader-driven lifecycle does not need callback coordinators.
+
+The host reports two further implementation facts from that round: its `spec/contracts` and
+`spec/prompts` remain its ONE bound copy and the vendored `data/` bundle must be
+byte-equal, checked at round preparation by recomputing the three bundle ids from
+`spec/` (drift refuses); and the host's `bin/` wrappers load its clause renderer by
+file path with `bin/` first on `sys.path`, so the renderer imports the library lazily
+with its own directory on the path and keeps the bare investigation clause
+import-free (`render_investigation_prompt` has no host call site).
+
+The scratch measurements are now published in this PR:
+[`docs/verification/2026-10-15-claude-host-spikes/`](../verification/2026-10-15-claude-host-spikes/README.md)
+(scripts, captured outputs, input identities, environment). The host's implementation
+branch stays unpublished; its file hashes in that record allow a byte-for-byte match
+at publication.
 
 The host also reports these planned safeguards: re-vendor its specification at
 the library pin; compare vendored file hashes with pinned Git blobs; extend
@@ -116,8 +142,8 @@ canonical admission remains required after carrier or recovery adaptation.
 The amended S1 reports that old jsonschema's default resolver can retrieve remote
 references despite `$defs` re-rooting. Retain no-retrieval behavior; a future
 lower-floor proposal would need explicit protection and old-version CI. No such
-backport is selected here. These amended reports do not remove the missing
-published measurement evidence.
+backport is selected here. Published scratch captures do not supply the missing
+host inputs for independent reproduction or the reported wheel-closure artifacts.
 
 ## 4. Sequence and specification work
 

@@ -29,8 +29,9 @@ Updated: 2026-10-15
 Library PR #1 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, with the
 reviewed `2d1e62e7` tree unchanged. Codex PR #44 merged and independently
 released v0.2.561 using vendored library dev3. Claude adoption remains planned;
-its PR #2 scratch measurements are attributed and lack published reproducible
-evidence. Older candidate/no-adoption statements below describe their dated slices.
+its PR #2 scratch scripts, captured outputs and input hashes are now published,
+while matching host inputs remain unpublished and independent reproduction is
+incomplete. Older candidate/no-adoption statements below describe their dated slices.
 
 The owner approved PR #2 corrections and additive L2/L7 development. The
 [design](design/2026-10-15-adoption-observability.md) and
@@ -41,7 +42,7 @@ requests remain design work. No consumer or provider defaults change.
 The [local verification record](verification/2026-10-15-adoption-observability.md)
 records 952 source and 952 archive tests on each of Python 3.12/3.14, all four
 installed-wheel drivers and new API probes. Concurrent Claude documentation
-amendments are preserved: four-function first slice, expanded L2 issue #3, L13
+amendments are preserved: two-function first slice, expanded L2 issue #3, L13
 issue #4 and boundary decisions issue #5. This bounded L2 does not fully satisfy
 issue #3. Current exact-head CI/formal outcomes are retained with PR #2 after
 freeze; earlier approval does not transfer to changed bytes.
