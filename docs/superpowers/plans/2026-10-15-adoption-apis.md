@@ -341,7 +341,8 @@ Expected: all pass, including `test_installed_probe_checks_missing_diagnostic` a
 
 ### Task 3: Close nonblocking provenance-review followups
 
-**Files:** Modify `spec/tests/test_policy_profiles.py`, `spec/MIGRATION.md`;
+**Files:** Modify `spec/tests/test_policy_profiles.py`, `spec/MIGRATION.md`,
+and the stale C15 test reference in `spec/reference/library-case-coverage.md`;
 record scoped verification in the task report. Do not change actual policy
 payloads/digests or historical import ancestry.
 
@@ -365,11 +366,14 @@ to task2, which must replace pending `.missing`/`.member` decisions accurately.
   wording to the original consolidation move; explain later authorized policy
   comment edits are tracked by adjacent manifests and require independent host
   re-vendoring. No wording test or host implementation change.
+- [ ] Correct the C15 case-map anchor to the renamed current-manifest test.
+  The integration reference audit reproduced the missing old function name;
+  this adds one documentation file and no production-code delta.
 - [ ] Run `uv run --locked pytest -q spec/tests/test_policy_profiles.py`, authoring
   and assets checks, `git diff --check` through the required shell/mode. Confirm
   policy payloads/digests/import-origin equal task start. The combined final
   matrix supplies full source/archive/wheel coverage after all tasks.
-- [ ] Commit only the two scoped files and report controls/checks for a fresh
+- [ ] Commit only the three scoped files and report controls/checks for a fresh
   task review. All three R2 followups must appear in the final combined review
   packet; no R2 vote transfers to changed bytes.
 
