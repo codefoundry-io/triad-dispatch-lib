@@ -409,8 +409,15 @@ These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
 `AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
-and `PromptError` have no library-defined `.code`. No broader code/version
-stability commitment is introduced here.
+and `PromptError` have no library-defined `.code`. The adopted compatibility
+floor also protects selected actual operational outcomes, including
+`extract_final` emitting `OutputError` codes `invalid_carrier` and `timed_out`,
+and agreement reasons `missing_output` and `negative_verdict`. Constructor checks
+preserve `.code` for tested constructor inputs; constructing
+`AgreementError('empty_selection')` or `DispatchError('invalid_requests')` alone
+does not establish which operations emit those codes. This inventory alone
+adds no blanket code/version stability promise beyond the scoped
+[compatibility policy](../../docs/api-compatibility.md).
 
 | Exception | Base | Current emitted codes / role |
 | --- | --- | --- |

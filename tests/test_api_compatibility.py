@@ -139,6 +139,97 @@ def test_baseline_requires_full_commit_identity(tmp_path):
         checker().check_repository(tmp_path)
 
 
+def test_candidate_cwd_cannot_replace_baseline(tmp_path, monkeypatch):
+    (tmp_path / "new").mkdir()
+    monkeypatch.chdir(tmp_path / "new")
+    assert compare(tmp_path, "__all__=['api']\ndef api(a=1): pass",
+                   "__all__=['api']\ndef api(a=2): pass")
+
+
+def test_wrong_loaded_root_origin_refuses(tmp_path, monkeypatch):
+    root = tmp_path / "sample"
+    root.mkdir()
+    (root / "__init__.py").write_text("__all__=['api']\ndef api(): pass")
+    module = checker()
+    wrong = module.griffe.Module("sample", filepath=tmp_path / "elsewhere.py")
+    monkeypatch.setattr(module.griffe, "load", lambda *args, **kwargs: wrong)
+    with pytest.raises(ValueError, match="loaded root origin mismatch"):
+        module.root_exports(tmp_path, "sample")
+
+
+@pytest.mark.parametrize("signature, breaks", [("a=1, b=2", False), ("a=3, b=2", True),
+    ("a=1, b=2, *, required", True), ("b=2, a=1", True)])
+def test_old_private_target_still_compares_public_shape(tmp_path, signature, breaks):
+    alias = "from .helpers import _implementation as api\n__all__=['api']"
+    assert bool(compare(tmp_path, alias, alias,
+                        old_helpers="def _implementation(a=1, b=2): pass",
+                        new_helpers=f"def _implementation({signature}): pass")) is breaks
+
+
+@pytest.mark.parametrize("base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_builtin_base_alias_uses_identity(tmp_path, base, breaks):
+    old = "__all__=['Error']\nclass Error(ValueError): pass"
+    new = f"from builtins import {base} as BuiltinBase\n__all__=['Error']\nclass Error(BuiltinBase): pass"
+    assert bool(compare(tmp_path, old, new)) is breaks
+
+
+@pytest.mark.parametrize("base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_private_intermediate_preserves_external_ancestry(tmp_path, base, breaks):
+    old = "__all__=['Error']\nclass Error(ValueError): pass"
+    new = f"__all__=['Error']\nclass _Internal({base}): pass\nclass Error(_Internal): pass"
+    assert bool(compare(tmp_path, old, new)) is breaks
+
+
+def test_private_intermediate_rename_passes(tmp_path):
+    old = "__all__=['Error']\nclass _Internal(ValueError): pass\nclass Error(_Internal): pass"
+    assert compare(tmp_path, old, old.replace("_Internal", "_Renamed")) == []
+
+
+def test_exported_base_ancestry_loss_refuses(tmp_path):
+    old = "__all__=['Base', 'Error']\nclass Base(ValueError): pass\nclass Error(Base): pass"
+    assert compare(tmp_path, old, old.replace("Error(Base)", "Error(ValueError)"))
+
+
+@pytest.mark.parametrize("exports", ["['Base','Error','Alias']", "['Alias','Base','Error']"])
+def test_additive_exported_base_alias_passes(tmp_path, exports):
+    old = "from .helpers import Base\n__all__=['Base','Error']\nclass Error(Base): pass"
+    new = f"from .helpers import Base, Base as Alias\n__all__={exports}\nclass Error(Base): pass"
+    assert compare(tmp_path, old, new, old_helpers="class Base(ValueError): pass",
+                   new_helpers="class Base(ValueError): pass") == []
+
+
+def test_exported_base_alias_order_does_not_change_identity(tmp_path):
+    old = "from .helpers import Base, Base as Alias\n__all__=['Base','Alias','Error']\nclass Error(Base): pass"
+    new = old.replace("['Base','Alias','Error']", "['Alias','Base','Error']")
+    assert compare(tmp_path, old, new, old_helpers="class Base(ValueError): pass",
+                   new_helpers="class Base(ValueError): pass") == []
+
+
+@pytest.mark.parametrize("from_source_cwd", [False, True])
+@pytest.mark.parametrize("candidate, breaks", [
+    ("__all__=['api']\ndef api(a, b=1): pass", False),
+    ("__all__=['api']\ndef api(b=1): pass", True),
+    ("__all__=['api','extra']\ndef api(a, b=1, *, option=None): pass\ndef extra(): pass", False),
+])
+def test_repository_archive_compares_real_baseline(tmp_path, monkeypatch, from_source_cwd, candidate, breaks):
+    source = tmp_path / "src" / "triad_dispatch_lib"
+    source.mkdir(parents=True)
+    initializer = source / "__init__.py"
+    initializer.write_text("__all__=['api']\ndef api(a, b=1): pass")
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    subprocess.run(["git", "add", "src"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.name=API Test", "-c", "user.email=test@example.invalid",
+                    "commit", "--quiet", "-m", "Synthetic baseline"], cwd=tmp_path, check=True)
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True).strip()
+    metadata(tmp_path, commit)
+    initializer.write_text(candidate)
+    monkeypatch.chdir(tmp_path / "src" if from_source_cwd else tmp_path)
+    errors = checker().check_repository(tmp_path)
+    assert bool(errors) is breaks
+    if breaks:
+        assert any("api" in error and "a" in error for error in errors)
+
+
 def test_resolved_baseline_identity_mismatch_refuses(tmp_path, monkeypatch):
     metadata(tmp_path, "0" * 40)
     module = checker()

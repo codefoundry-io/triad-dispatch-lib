@@ -20,7 +20,10 @@ def root_exports(source: Path, package: str, *, allow_empty=False):
     if not (source / package / "__init__.py").is_file():
         raise ValueError(f"cannot resolve source package: {source / package}")
     module = griffe.load(package, search_paths=[source], allow_inspection=False,
-                         resolve_aliases=True, resolve_external=False)
+                         resolve_aliases=True, resolve_external=False, try_relative_path=False)
+    expected_origin = (source / package / "__init__.py").resolve()
+    if module.filepath.resolve() != expected_origin:
+        raise ValueError(f"loaded root origin mismatch: {module.filepath}; expected {expected_origin}")
     exports = module.exports
     if exports is None or (not exports and not allow_empty) or any(not isinstance(name, str) for name in exports):
         raise ValueError(f"cannot resolve nonempty explicit root exports: {source}")
@@ -42,7 +45,7 @@ def callable_surface(obj):
             public_parameters = public_parameters[1:]
     parameters = griffe.Parameters(*(griffe.Parameter(
         p.name, kind=p.kind, default=p.default) for p in public_parameters))
-    return griffe.Function(obj.name, parameters=parameters)
+    return griffe.Function("call", parameters=parameters)
 
 
 def compare_exports(old, new):
@@ -61,11 +64,17 @@ def compare_exports(old, new):
             # Exception inheritance is a documented root contract. Normalize root
             # aliases so moving their implementation module remains compatible.
             def bases(obj, exports):
-                paths = {target.path: public for public, target in exports.items()}
-                return {paths.get(getattr(base, "canonical_path", str(base)), str(base))
-                        for base in obj.bases}
+                paths = {}
+                for public, target in exports.items():
+                    paths.setdefault(target.path, set()).add(public)
+                ancestors = obj.mro()
+                internal = {base.path for base in ancestors} - paths.keys()
+                identities = {getattr(base, "canonical_path", str(base))
+                              for ancestor in [obj, *ancestors] for base in ancestor.bases}
+                return {public for identity in identities if identity not in internal
+                        for public in paths.get(identity, {identity.removeprefix("builtins.")})}
             if not bases(before, old).issubset(bases(after, new)):
-                errors.append(f"{name}: declared base inheritance removed or changed")
+                errors.append(f"{name}: protected base ancestry removed or changed")
         if before.is_function or before.is_class:
             left, right = callable_surface(before), callable_surface(after)
             old_surface = griffe.Module("contract", filepath=Path("baseline.py"))

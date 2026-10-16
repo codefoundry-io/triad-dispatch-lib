@@ -24,7 +24,9 @@ consumes the reviewed release source; the static gate runs on PR and main heads.
 The command compares the immutable baseline source to the actual candidate
 `src/` bytes, including local edits. Missing source, objects, explicit exports or
 unresolvable aliases fail the check. It never falls back to an installed package
-or an empty baseline. The metadata in [api-compatibility.json](../api-compatibility.json)
+or an empty baseline. Relative cwd lookup is disabled and the loaded package
+initializer origin must match the requested source. The metadata in
+[api-compatibility.json](../api-compatibility.json)
 records the original floor, current structural baseline and advancement history.
 It does not automatically follow tags, main or the latest release.
 
@@ -32,13 +34,21 @@ The locked development dependency Griffe statically resolves root aliases and
 generates dataclass constructor signatures. The wrapper projects each exported
 function or class constructor into a synthetic module before invoking
 `find_breaking_changes`; it does not recurse through implementation modules or
-class helpers. Constructor projections omit the bound implicit receiver, while
+class helpers. A stable public synthetic callable name prevents a private
+implementation alias from suppressing checks. Constructor projections omit the
+bound implicit receiver, while
 preserving a static constructor's first public argument and ordinary function
 parameters. It rejects removed exports, changed object/sync-async kind,
-existing argument removal/positional reorder, incompatible kind changes, optional argument
+existing argument removal/positional reorder, incompatible kind changes, optional
+argument
 default changes, optional-to-required changes, newly
-required arguments and removed declared class bases (including documented
-exception bases). Existing argument names remain protected even when variadic
+required arguments and loss of supported resolved ancestry (including documented
+exception bases). Griffe's MRO supplies resolved ancestors; their canonical base
+identities preserve exported root bases and external leaves while allowing
+non-exported intermediate classes to be inserted or renamed. All public aliases
+of a base retain their identities regardless of export order. This does not
+establish arbitrary inheritance equivalence. Existing argument names remain
+protected even when variadic
 arguments could swallow them. Added exports, optional keyword arguments,
 private helpers and internal implementation moves remain allowed.
 Safe argument widening (required to optional, positional-only or keyword-only
@@ -58,7 +68,8 @@ rewrites may require preserving their existing spelling or a reviewed decision.
 
 `tests/test_public_api_consumers.py` uses only package-root imports and standard
 library test tools. It protects export availability, six frozen dataclass
-constructors, exception bases/codes/selected diagnostics, strict JSON and all
+constructors, exception bases/constructor code preservation and selected emitted
+codes/diagnostics, strict JSON and all
 six bindings, roster order/copy/opaque model values, receipt shape/opaque CLI
 versions, prompt default/manifest shape and carrier/negative/timeout/agreement
 safety. It does not freeze exact prompt text. The full existing conformance and
