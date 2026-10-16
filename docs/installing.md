@@ -20,6 +20,14 @@ A development version such as `0.1.0.dev4` may be a local candidate or a publish
 prerelease: inspect the chosen release rather than inferring publication from
 package metadata, a tag alone or an update PR.
 
+Before running the selection script, provide Python >=3.12 with working `venv`
+and `ensurepip`; [venv bootstraps pip through ensurepip by default](https://docs.python.org/3.12/library/venv.html).
+For Ubuntu 24.04's distro Python 3.12, this requires
+[`python3.12-venv`](https://packages.ubuntu.com/noble/all/python3.12-venv/filelist).
+For other Debian/Ubuntu interpreters, use the venv package matching that Python
+version. Arrange any missing OS prerequisite separately before continuing; this
+guide does not install OS packages. The source-build `uv` prerequisite is separate.
+
 Choose an owner-reviewed full lowercase source commit. For a published install,
 also choose an explicit release tag (`v` plus its package version), verify that
 GitHub marks it published rather than draft, and decide whether its prerelease
