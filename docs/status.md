@@ -9,8 +9,11 @@ provides immutable artifact manifests, idempotent update proposals for the two
 host repositories, a reusable exact-commit native CI workflow and source release
 publication with a separate scoped GitHub App delivery token. The
 [operator guide](releasing.md) covers configuration, publication, retry and
-preview; the [consumer guide](installing.md) covers verified installation and
-host-owned adoption, including AGY as a route rather than a third target repo.
+preview; the [consumer guide](installing.md) covers GitHub Release discovery,
+exact wheel/sdist/manifest acquisition, verified library installation and
+platform dependencies. The owner's subsequent scope correction supersedes the
+earlier host installation/update requirement: this repository distributes the
+library and release notices; consuming projects own integration and deployment.
 The candidate normalizes sdist build metadata before extraction/rebuild and
 refuses differing published bytes. Source tests and workflow checks are local
 candidate evidence; exact-head native CI and formal review remain separate.

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Publish versioned library artifacts and deliver release-change and host-installation guidance through idempotent Codex/Claude update PRs.
+**Goal:** Publish versioned library artifacts and deliver release-change and library-acquisition guidance through idempotent Codex/Claude update PRs.
 
 **Architecture:** Library-owned GitHub Actions orchestrate verified release assets and a small Python GitHub API client. Generated host notices preserve independent adoption and release authority. Publication and delivery are independently retryable.
 
@@ -16,6 +16,17 @@ Reconcile with main `fcc5072` in the existing branch; preserve the pending Task 
 collision regressions. AGY and Claude agents can use the common guide to adopt
 the library in their host projects. This does not add a third delivery repository
 or authorize changes to host implementations.
+
+## Owner scope correction (2026-10-16)
+
+The owner's subsequent direction supersedes the earlier vendor plugin
+installation/update requirement. This plan distributes library wheel/sdist/manifest
+assets and tells consumers where/how to obtain and verify them. Consumer projects
+own integration and deployment; no plugin/bootstrap/permission/restart or host
+rollback instructions belong in generated notices or this release guide. Existing
+operator App configuration and publication/retry tooling remain in scope. Prior
+implementation evidence remains historical; this correction changes the active
+requirements without adding a new plan, feature or framework.
 
 ## Global Constraints
 
@@ -66,7 +77,7 @@ Record actual additions/deletions at final verification.
 
 **Interfaces:** Import `validate_manifest` and `verify_artifact` from Task 1. `render_notice(release: dict, manifest: dict, target: str, previous_version: str | None = None) -> str`; `deliver(api, release: dict, manifest: dict, target: str) -> dict`. CLI accepts `--tag`, optional `--target` (fixed choices), `--dry-run-dir`; reads `GH_TOKEN` for the hosts and `SOURCE_GH_TOKEN` for the library. The latter is the existing workflow token, not a new registered secret. API wrapper exposes `request(method, path, payload=None)` and only talks to GitHub's API; artifact download stays in the same release's approved URLs. The CLI may use `gh api` as a subprocess argument list, never a shell command string. Record the existing version from a target's `contracts/library-adoption.json` when present; absence means unrecorded, not an invented version or proof of no adoption.
 
-- [x] Write failing rendering tests for both host guides, source notes, hashes, preview/published separation, pending adoption, prerelease marking and rollback.
+- [x] Write rendering tests for both target notices, source notes, hashes, preview/published separation, pending adoption, prerelease marking and library-only acquisition guidance (superseding the prior host-guide requirement).
 - [x] Write fake-API tests for create, existing open/closed/merged PR skip, matching branch-only recovery, conflicting branch refusal (including unrelated changes on that branch), no-force update and partial target failure. All cases assert affected paths and absence of writes in dry-run. Include present/absent previous-version records.
 - [x] Implement two generated regular files (`release.json`, `README.md`) per release. Use Git Data blob/tree/commit/ref endpoints plus pull requests. Validate release identity and require non-draft published release. Query PRs before creating branch; inspect existing branch files before recovery.
 - [x] Confirm RED then GREEN with `uv run --locked pytest -q tests/test_release_prs.py`; record results and commit owned files.
@@ -85,7 +96,7 @@ Record actual additions/deletions at final verification.
   Preserve names, modes and payload bytes; keep exact-byte replay refusal. Record
   backend/compression changes as a reproducibility limit, not a reason to overwrite.
 - [x] Add `release: published` and `workflow_dispatch` retry; no push trigger for notifications. Use pinned existing Actions plus `actions/create-github-app-token`, request only two target repositories and Contents/Pull requests write permission. Credential names: variable `TRIAD_RELEASE_APP_ID`, secret `TRIAD_RELEASE_APP_PRIVATE_KEY`.
-- [x] Document GitHub App setup, exact release/retry commands, generated PR examples, no-live-delivery dry run, install links and remaining activation boundary. Do not register secrets automatically.
+- [x] Document GitHub App setup, exact release/retry commands, generated PR examples, no-live-delivery dry run, library acquisition links and remaining activation boundary. Do not register secrets automatically.
 - [ ] Run focused delivery tests, full `uv run --locked pytest -q`, `uv run --locked python tools/sync_spec_assets.py --check`, `git diff --check`, workflow syntax check when available, and package/source archive checks if new tooling changes package contents.
 - [ ] Commit/push the feature branch and create an attached Draft PR; collect native CI and complete formal project review using the existing 2400-second configuration. Report actual activation/credential limits separately from source/test completion.
 
@@ -101,13 +112,12 @@ Task 3 owns README/status links and the final integration verification.
   in an isolated Python >=3.12 environment, check actual installed version/path and
   verified bundle identities. Explain the source-pinned candidate fallback when
   no release exists without calling it a published release.
-- [x] Cover host-owned vendoring and per-platform dependency closure, selective
-  adoption/API mapping, retained native adapters, meaningful adoption tests,
-  independent host release/install/restart, rollback and an evidence report.
-  Link current Codex/Claude installation references; AGY is a supported route
-  and guide consumer, not an inferred third delivery repository. Do not write
-  a new installer, provider model catalog or automatic host port.
+- [x] Cover library release discovery, wheel/sdist/manifest acquisition and per-platform
+  dependency closure. Link public APIs and host-adoption contracts; leave integration,
+  native adapters and deployment with consumers. Supersedes the prior host vendoring,
+  plugin installation/update/restart and host rollback guidance requirement. No new
+  installer, provider catalog or automatic host port.
 - [x] Exercise the common install and smoke commands with the candidate wheel in
   a clean temporary environment and record outputs; published download and live
   host adoption remain explicitly unrun. Review documentation against executable
-  APIs and current official installation sources. Commit only owned documents.
+  APIs and library artifact contracts. Commit only owned documents.

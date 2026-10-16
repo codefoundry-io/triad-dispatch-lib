@@ -25,7 +25,9 @@ planned. Neither host is claimed to adopt dev4. See
 [independent host adoption](docs/host-adoption.md).
 
 - [Current status and next work](docs/status.md)
-- [Verified installation and AI-agent adoption guide](docs/installing.md)
+- [Latest stable library release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)
+  ([all releases, including prereleases](https://github.com/codefoundry-io/triad-dispatch-lib/releases))
+- [Obtain and verify the library: wheel, sdist and manifest](docs/installing.md)
 - [Library publication, host proposal and retry operations](docs/releasing.md)
 - [Research assessment](docs/research/2026-10-12-shared-library-assessment.md)
 - [API design and staged Codex testing](docs/design/2026-10-12-v2-admission.md)

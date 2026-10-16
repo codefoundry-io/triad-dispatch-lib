@@ -1,10 +1,16 @@
-# Install, adopt and update the library
+# Obtain and install the library
 
-This guide is for AI agents and maintainers working in a consuming host, including
-Claude, Codex and agents using the AGY route. AGY is a supported execution route,
-not a third delivery repository. Installing this Python library does not install
-a host plugin, configure providers or port host code. The two delivery targets
-are `codefoundry-io/triad-codex-dispatch` and `codefoundry-io/triad-dispatch`.
+This guide covers obtaining and verifying `triad-dispatch-lib` for Python consumers,
+including AI agents. A published GitHub Release distributes a wheel, source
+distribution (sdist) and `triad-release.json` manifest containing their identities,
+sizes and SHA-256 hashes. This repository distributes the library; consuming
+projects own their integration, deployment and plugin lifecycle.
+
+Discover the [latest stable release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)
+or browse [all releases](https://github.com/codefoundry-io/triad-dispatch-lib/releases).
+The latest-release URL is for discovery only and may be unavailable before a
+stable release exists; inspect the release list for prereleases. Select an
+acceptable exact tag and source commit before downloading or installing assets.
 
 ## Select and verify an exact source
 
@@ -14,7 +20,6 @@ A development version such as `0.1.0.dev4` may be a local candidate or a publish
 prerelease: inspect the chosen release rather than inferring publication from
 package metadata, a tag alone or an update PR.
 
-Read the host's instructions, adoption record and dirty state before changing it.
 Choose an owner-reviewed full lowercase source commit. For a published install,
 also choose an explicit release tag (`v` plus its package version), verify that
 GitHub marks it published rather than draft, and decide whether its prerelease
@@ -127,7 +132,7 @@ Both paths leave exactly one wheel in `artifacts`. Install into the fresh Python
 >=3.12 environment with binary dependencies only, then check dependencies. The
 metadata requires `jsonschema>=4.26,<5` and `referencing>=0.37,<1`; older system
 packages are insufficient. Record the resolved dependency versions and hashes
-for repeatable host packaging rather than assuming these ranges are a lock.
+for repeatable consumer packaging rather than assuming these ranges are a lock.
 
 ```sh
 : "${WORK:?Run source selection first in the same dedicated script}"
@@ -200,76 +205,32 @@ resources on use and refuse remote reference retrieval. Bundle `status=candidate
 is a runtime contract literal, independent of whether the wheel was released.
 This smoke is consistency/API evidence, not provider or complete host conformance.
 
-## Adopt selectively in the host
-
-Map the exact [public API](../spec/reference/library-api.md) and
-[conformance coverage](../spec/reference/library-conformance.md) to host call sites.
-Use `parse_json`/`validate_binding`/`validate_verdict` for strict original JSON and
-six-field admission, roster APIs for merge/validation/selection, rendering APIs for
-canonical clauses, `validate_transport_receipt` for nested transport shape, and
-`admit_output`/`evaluate_agreement` where their documented semantics match. The
-callback coordinators are optional. A schema-valid receipt does not attest execution.
-
-Preserve native spawning, model/effort controls, route discovery, provider setup,
-authentication, packet/attempt custody, cancellation/cleanup, fresh integrity,
-failure classification and installer preservation in the host. Follow the
-[required adapter contracts](host-adoption.md#required-adapter-contracts), including
-AGY recovery and host-fault boundaries. Do not replace a host adapter merely
-because a similarly named library function exists.
-
-For host-owned vendoring, update its explicit source/version pin, file inventory,
-hashes, dependency closure and adoption record together. Codex's existing pinned
-`vendor_library.py` restores its recorded pin; running it alone is not an upgrade.
-An absent Claude adoption record means unrecorded, not proof of no adoption.
-Keep legacy schema identities and six-field runtime manifests intact.
+## Platform dependencies and offline installation
 
 For offline distribution, use `pip download --only-binary=:all:` on each supported
 native OS/architecture/Python/ABI combination to collect the selected library
 wheel and its complete dependency closure. Pin and hash every wheel, then verify
 `pip install --no-index --find-links <wheelhouse>` into a fresh environment and run
-this smoke plus host tests. `rpds-py` contains native code: one manylinux CPython
-wheel set proves neither macOS nor a different Python ABI. Do not silently compile
-or remove offline Registry checks when a binary wheel is unavailable.
+this smoke. `rpds-py` contains native code: one manylinux CPython wheel set proves
+neither macOS nor a different Python ABI. Do not silently compile or remove offline
+Registry checks when a binary wheel is unavailable.
 
-Test changed call sites with positive cases and refusals: duplicate/malformed JSON,
-binding mismatch, negative verdict retention, roster overrides/disabled entries,
-prompt parity, transport failures, stale attempts, integrity faults and cooperative
-cancellation as applicable. Retain host-specific deviations and route tests. A
-passing library test suite alone does not establish host adoption.
+## Consumer integration and library updates
 
-## Release, install, update and roll back the host independently
+See the [public API](../spec/reference/library-api.md),
+[conformance coverage](../spec/reference/library-conformance.md) and
+[host-adoption contracts](host-adoption.md) for integration boundaries. Consumers
+own API mapping, native adapters, provider setup, deployment and plugin lifecycle.
+Installing this library alone does not change a consuming application.
 
-Review and release the host port separately, recording its library pin. Install
-that host release using its current official instructions; library installation
-above does not change an already installed plugin. These references were checked
-on 2026-10-16; reread them before executing their current installer commands.
+For a library update, select and verify another exact release/source pin, create
+a fresh environment and repeat the installation/smoke checks. Retain the previous
+library artifact, source pin and dependency inventory for a library rollback;
+restore them in a fresh environment and repeat the checks. Consumer deployment
+and application rollback remain the consuming project's responsibility.
 
-- **Codex:** follow [installation](https://github.com/codefoundry-io/triad-codex-dispatch/blob/main/docs/installation.md).
-  Register the intended marketplace, install with `codex plugin add
-  triad-codex-dispatch@triad-codex-dispatch --json`, and use its returned absolute
-  `installedPath` for `scripts/bootstrap.sh --install` from the target project.
-  For updates, first run the old installed bootstrap's `--remove` successfully,
-  then remove the plugin, refresh the registered marketplace or pinned local source,
-  reinstall, run the new installed bootstrap and start a fresh Codex session.
-- **Claude:** follow [installation and permission setup](https://github.com/codefoundry-io/triad-dispatch/blob/main/README.md).
-  Use `/plugin marketplace add codefoundry-io/triad-dispatch` and `/plugin install
-  triad-dispatch@triad-dispatch`. Run installed `scripts/setup_permissions.py` from
-  each target project (or with its explicit `--target`), then restart. Update via
-  `claude plugin update triad-dispatch@triad-dispatch` in a shell
-  ([official update reference](https://code.claude.com/docs/en/discover-plugins#update-plugins-now)),
-  rerun permission setup for the same targets
-  using the new installed script, and restart. AGY setup remains in host scripts.
-
-Verify fresh-session skill exposure and the adopted APIs/routes separately from
-successful installation. Provider authentication and real route execution require
-host evidence. On failure, preserve user edits and diagnostics, then restore the
-previous reviewed host release/source and its recorded library/dependency pin via
-that host's lifecycle. Reinstall and restart, then repeat the affected checks.
-Rolling back only this library wheel cannot roll back a vendored host plugin.
-
-Report: selected tag/full source commit and published-or-candidate status; manifest
-and artifact size/hash; installed path/version; dependency inventory and native
-platform/Python; consumed bundle IDs/digest maps; host commit/release and API map;
-test commands/results/deviations; installation/restart/fresh-session observations;
-rollback target; and explicitly unrun checks. Keep release, adoption, installation
-and real-provider results as separate claims.
+Record the selected tag/full source commit and published-or-candidate status;
+manifest and artifact size/hash; installed library path/version; dependency
+inventory and native platform/Python; verified bundle IDs/digest maps; smoke
+commands/results; previous library pin; and explicitly unrun checks. Library
+installation evidence does not establish consumer integration or provider execution.

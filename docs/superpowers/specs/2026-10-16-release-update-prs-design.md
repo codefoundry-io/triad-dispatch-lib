@@ -9,8 +9,8 @@ remain explicit integration boundaries; neither blocks the release tooling.
 A published library release produces a wheel/source distribution and opens one
 update PR in each of `codefoundry-io/triad-codex-dispatch` and
 `codefoundry-io/triad-dispatch`. The PR contains the release changes, artifact
-identity, host-specific installation/update guidance, verification boundaries
-and rollback guidance. Development builds do not send notifications. A retry
+identity, library acquisition/verification guidance and consumer ownership
+boundaries. Development builds do not send notifications. A retry
 must not duplicate a PR or overwrite a maintainer's changes.
 
 The owner explicitly requested a written plan followed by implementation in this
@@ -19,19 +19,22 @@ Meaningful review findings, including Minor findings, remain eligible for fixes.
 
 ## Current evidence and ownership
 
+The owner's subsequent scope correction supersedes the earlier vendor
+installation/update requirement: distribute the library and explain where/how
+to obtain and verify it. Host integration, plugin lifecycle and deployment
+instructions belong to consuming projects. No new feature or framework is added.
+
 Library base: `dac1af62297402a0078a616e8e194c7a69cafe18`, Python >=3.12,
 package `0.1.0.dev4`. Existing CI covers native macOS/Ubuntu and Python 3.12/3.14.
-Codex v0.2.561 bundles dev3; its vendor tool restores the existing pin only.
-Claude main `e4cadf2f751308d1ab75e4199b08d89849bb93b3` has no shared-library
-adoption/pin/update interface. Its plugin is v0.2.1709 and retains host-local
-implementations. A release notice cannot claim either host has adopted it.
+A release notice cannot claim a consumer has adopted the library.
 
 Keep this change in the library repository. Native execution, host integration,
 host release versions and local plugin installation remain independently owned.
 The first delivery capability is a release proposal: a per-release Markdown
 record plus machine-readable release identity in a target PR. It does not rewrite
-native host implementations. The owner's subsequent direction keeps host changes
-as guidance only and resumes this work through an AI-readable installation guide.
+native host implementations. The consumer guide covers library acquisition and
+verified Python installation only; host installation/update guidance is outside
+this repository's scope.
 A separate Codex bundle-upgrade mechanism is not part of publication and
 notification tooling. AGY is a supported route and consumer of that guide; the
 two named distribution repositories remain the only automatic delivery targets.
@@ -69,14 +72,10 @@ two named distribution repositories remain the only automatic delivery targets.
 
 - Source release link, version, source commit and artifact hashes.
 - Release notes copied as data; no shell interpolation of notes, tags or titles.
-- Host-specific adoption status, impacts requiring review and API documentation.
-- Separate pre-merge inspection/testing from post-host-release installation.
-- Codex instructions link `docs/installation.md` and name marketplace/plugin
-  commands and bootstrap, including the documented removal/reinstall sequence.
-- Claude instructions link its README and name plugin install/update and project
-  permission refresh. Gemini/AGY setup remains in those host instructions.
-- Existing-host release rollback instructions; no promise that library release
-  alone changes installed behavior. Pending host CI is reported as pending.
+- Previous recorded library version (or unrecorded), pending adoption/CI and API links.
+- Exact wheel/sdist/manifest acquisition and library verification guidance.
+- Consumer ownership of integration, native adapters and deployment; no plugin
+  installation/update commands or host rollback procedure.
 
 ## Failure and retry behavior
 

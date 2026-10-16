@@ -1,9 +1,9 @@
 # Publishing a library release and proposing host updates
 
-This repository owns library artifacts and release-notice tooling. Each host
-owner separately reviews adoption, publishes a host release and installs that
-host. The [consumer guide](installing.md) describes verified installation and
-selective adoption, including AGY as a supported route. Automatic notices target
+This repository owns library artifacts and release-notice tooling. Consuming
+projects own integration and deployment. The [consumer guide](installing.md)
+describes obtaining the GitHub Release wheel, sdist and manifest and verifying
+library installation. Automatic notices target
 only `codefoundry-io/triad-codex-dispatch` and
 `codefoundry-io/triad-dispatch`.
 
@@ -68,7 +68,7 @@ Choose a reviewed commit containing the publishing workflow and tools. Set the
 version in `pyproject.toml` through the normal review process. The release tag
 must be exactly `v` plus that version; the workflow checks the package metadata
 on the resolved commit. Preserve development/prerelease labels: a `.dev`, alpha,
-beta or release-candidate package is not a stable host release. For such a
+beta or release-candidate package is not a stable library release. For such a
 package, mark its GitHub Release as a prerelease.
 The resolver and publisher refuse these versions when GitHub's prerelease flag
 is false. Set the flag correctly before publishing any assets, and do not change
@@ -230,19 +230,17 @@ A proposal uses branch `automation/triad-lib/v0.1.0.dev4` and title
 
 - `docs/library-updates/v0.1.0.dev4/release.json`: release and archive identity.
 - `docs/library-updates/v0.1.0.dev4/README.md`: release notes, hashes, prior recorded
-  library version (or unrecorded), pending adoption/CI, host-specific install,
-  update and rollback guidance.
+  library version (or unrecorded), library acquisition/verification guidance and
+  pending consumer adoption/CI.
 
 Existing open, closed or merged PRs prevent duplicate creation. A matching
 branch-only interrupted attempt can resume, including after the default branch
 advances; conflicting branches and maintainer edits are preserved. No force
 push, reopen, automatic merge or installation occurs.
 
-The host owner verifies the pin/hash and compatibility, updates host-owned
-adoption code/records, runs host tests and publishes its independent release.
-Then follow the [Codex installation guide](https://github.com/codefoundry-io/triad-codex-dispatch/blob/main/docs/installation.md)
-or [Claude installation guide](https://github.com/codefoundry-io/triad-dispatch/blob/main/README.md),
-including permissions/bootstrap and fresh-session verification. The source
-library release alone does not alter installed host behavior. Keep publication,
-notice delivery, host adoption, host release and fresh installed behavior as
-separate evidence in the final operator report.
+Consumers verify the library pin/hash and compatibility using the
+[library guide](installing.md); integration, deployment and plugin lifecycle
+instructions belong to their own projects. The owner's scope correction
+supersedes the earlier vendor installation/update guidance requirement. Keep
+library publication, notice delivery and consumer adoption as separate evidence
+in the final operator report.
