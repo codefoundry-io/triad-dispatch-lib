@@ -30,9 +30,11 @@ Keep this change in the library repository. Native execution, host integration,
 host release versions and local plugin installation remain independently owned.
 The first delivery capability is a release proposal: a per-release Markdown
 record plus machine-readable release identity in a target PR. It does not rewrite
-native host implementations. A question to the owner distinguishes this from
-adding a separate Codex bundle-upgrade mechanism; the latter is not a prerequisite
-for publication and notification tooling.
+native host implementations. The owner's subsequent direction keeps host changes
+as guidance only and resumes this work through an AI-readable installation guide.
+A separate Codex bundle-upgrade mechanism is not part of publication and
+notification tooling. AGY is a supported route and consumer of that guide; the
+two named distribution repositories remain the only automatic delivery targets.
 
 ## Components and flow
 
