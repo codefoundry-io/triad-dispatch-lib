@@ -161,23 +161,34 @@ class FakeAPI:
         raise AssertionError(f"unexpected request: {method} {path}")
 
 
-@pytest.mark.parametrize("target,guide,command", [
-    (TARGET, "docs/installation.md", "codex plugin"),
-    (CLAUDE, "README.md", "claude plugin update triad-dispatch@triad-dispatch")])
-def test_notice_preserves_data_and_explains_host_boundaries(helper, target, guide, command):
+@pytest.mark.parametrize("target", [TARGET, CLAUDE])
+def test_notice_provides_library_retrieval_without_host_rollout_instructions(helper, target):
     release, manifest, _ = fixture()
     notice = helper.render_notice(release, manifest, target)
     normalized = " ".join(notice.split())
-    for text in (guide, command, "1.2.3", SHA, "Pending host adoption", "Host CI: pending",
-                 "Pre-merge", "Post-host-release", "Rollback", "unrecorded",
-                 "docs/installing.md", "$(touch /tmp/never)"):
+    for text in ("triad-dispatch-lib==1.2.3", SHA, "Pending host adoption", "unrecorded",
+                 f"https://github.com/{SOURCE}/releases/tag/v1.2.3",
+                 f"https://github.com/{SOURCE}/releases/download/v1.2.3/triad-release.json",
+                 f"https://github.com/{SOURCE}/tree/{SHA}",
+                 f"https://github.com/{SOURCE}/releases/latest",
+                 f"https://github.com/{SOURCE}/blob/v1.2.3/docs/installing.md",
+                 f"https://github.com/{SOURCE}/blob/v1.2.3/spec/reference/library-api.md",
+                 "source build", "$(touch /tmp/never)"):
         assert text in normalized
-    if target == CLAUDE:
-        assert "/plugin update" not in normalized
+    for directive in ("codex plugin", "claude plugin", "/plugin", "bootstrap",
+                      "setup_permissions", "restart", "post-host-release", "pre-merge:"):
+        assert directive not in normalized.lower()
     for artifact in manifest["artifacts"]:
         assert artifact["sha256"] in notice and artifact["url"] in notice
     assert "not proof" in notice
     assert "```\nevil" not in notice  # Notes remain escaped inert quoted data.
+
+
+def test_both_recipients_receive_the_same_library_guidance(helper):
+    release, manifest, _ = fixture()
+    codex = helper.render_notice(release, manifest, TARGET)
+    claude = helper.render_notice(release, manifest, CLAUDE)
+    assert codex.replace(f"target={TARGET}", "target=RECIPIENT") == claude.replace(f"target={CLAUDE}", "target=RECIPIENT")
 
 
 def test_notice_marks_prerelease_and_previous_version(helper):
@@ -185,7 +196,7 @@ def test_notice_marks_prerelease_and_previous_version(helper):
     release["prerelease"] = manifest["prerelease"] = True
     notice = helper.render_notice(release, manifest, TARGET, "0.1.0.dev3")
     assert "Prerelease" in notice and "0.1.0.dev3" in notice
-    assert "restores the existing pin" in notice
+    assert "triad-dispatch-lib==1.2.3" in notice
 
 
 @pytest.mark.parametrize("version", ["1.2.3rc1", "1.2.3.dev1", "1.2.3a1", "1.2.3b2"])

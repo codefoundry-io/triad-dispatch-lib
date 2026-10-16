@@ -153,7 +153,7 @@ def _verify_downloads(api, release, manifest):
 
 def render_notice(release: dict, manifest: dict, target: str,
                   previous_version: str | None = None) -> str:
-    """Render release notes as inert data and make host adoption boundaries explicit."""
+    """Render shared library retrieval guidance and release notes as inert data."""
     _target(target)
     _release_metadata(release, manifest)
     tag = manifest["tag"]
@@ -163,76 +163,37 @@ def render_notice(release: dict, manifest: dict, target: str,
                 "Recorded library version: unrecorded; absence is not proof of no adoption.")
     artifacts = "\n".join(f"- [{a['name']}]({a['url']}): {a['size']} bytes; SHA-256 `{a['sha256']}`."
                           for a in manifest["artifacts"])
-    if target == TARGETS[0]:
-        guide = f"https://github.com/{target}/blob/main/docs/installation.md"
-        host = f"""Follow the [Codex host installation guide]({guide}).
-The existing vendor tool restores the existing pin; the host owner must adapt the
-bundle upgrade and adoption record for this exact library release, then test it.
-
-After an independently verified host release, use `codex plugin marketplace add
-codefoundry-io/triad-codex-dispatch --ref <approved-host-ref>` and
-`codex plugin add triad-codex-dispatch@triad-codex-dispatch --json` to obtain
-`installedPath`, then run its bootstrap with `--install` from the target project.
-For updates, first run the OLD installed bootstrap with `--remove` successfully;
-then `codex plugin remove triad-codex-dispatch@triad-codex-dispatch`,
-`codex plugin marketplace upgrade triad-codex-dispatch`, reinstall and bootstrap
-with `--install`, and start a fresh session. Follow the host guide for bootstrap
-paths, project permissions, Gemini and AGY setup.
-
-Rollback: remove the current bootstrap installation successfully, remove the
-plugin, select the earlier approved HOST release ref in the marketplace, then
-reinstall, bootstrap and verify in a fresh session."""
-    else:
-        guide = f"https://github.com/{target}/blob/main/README.md"
-        host = f"""Follow the [Claude host installation guide]({guide}).
-The host owner must choose and implement the adoption and pin, preserve native
-execution adapters and verify host behavior before publishing a host release.
-
-After an independently verified host release, run
-`/plugin marketplace add codefoundry-io/triad-dispatch` and
-`/plugin install triad-dispatch@triad-dispatch` in Claude Code.
-For updates, run `claude plugin update triad-dispatch@triad-dispatch` in a shell
-([official update reference](https://code.claude.com/docs/en/discover-plugins#update-plugins-now)), then run
-`python3 <plugin-dir>/scripts/setup_permissions.py` in every project using the
-same host-documented `--target` selection; restart Claude Code. Follow the host
-guide for plugin paths, project permission refresh, Gemini and AGY setup.
-
-Rollback: use the host guide's removal/reinstall procedure with the earlier
-approved HOST release source, rerun project permission setup and restart.
-There is no universal library-only downgrade command for this host."""
     return f"""# Library update request: {tag}{' (Prerelease/development package)' if prerelease else ''}
 
 <!-- triad-library-update source={SOURCE} release={release['id']} target={target} -->
 
-[Published source release]({manifest['release_url']}); package pin
-`triad-dispatch-lib=={manifest['version']}`; source commit `{manifest['source_commit']}`.
+[Published release]({manifest['release_url']}); package pin
+`triad-dispatch-lib=={manifest['version']}`;
+[source commit `{manifest['source_commit']}`](https://github.com/{SOURCE}/tree/{manifest['source_commit']}).
 {previous}
 
-Pending host adoption. Host CI: pending. Merging this notice records a proposal;
-library publication alone does not update installed host behavior.
+Pending host adoption. Application and release decisions belong to each
+recipient; this notice supplies no host verification evidence.
 
 ## Release notes (data)
 
 <pre>{html.escape(release.get('body') or '(No release notes supplied.)')}</pre>
 
-## Artifacts and pre-merge inspection
+## Downloads and source
+
+[Release manifest](https://github.com/{SOURCE}/releases/download/{tag}/triad-release.json)
+records the exact wheel/sdist identities below.
 
 {artifacts}
 
-Pre-merge: verify the exact pin and SHA-256, inspect source/API changes and host
-compatibility, update the host-owned bundle/adoption record, and run host CI and
-smoke checks. Record actual results; this notice supplies no host test evidence.
-Use the version-pinned [common installation and update guide](https://github.com/{SOURCE}/blob/{tag}/docs/installing.md)
+For library installation or a source build, use the version-pinned
+[installation and source-build guide](https://github.com/{SOURCE}/blob/{tag}/docs/installing.md)
 and [API documentation](https://github.com/{SOURCE}/blob/{tag}/spec/reference/library-api.md).
-Native spawning, model/effort, installation and configuration stay host-owned.
+Verify the exact version, source commit and downloaded artifact SHA-256 before use.
 
-## Post-host-release installation, update and rollback
-
-Post-host-release: install only after the host owner publishes its own verified
-release. Confirm the host release, library pin, artifact hash and fresh-session
-behavior separately. AGY is a host-owned route, not a third delivery repository.
-
-{host}
+Discover other versions in [all releases](https://github.com/{SOURCE}/releases),
+including prereleases, or [the latest stable release](https://github.com/{SOURCE}/releases/latest).
+These discovery links do not replace this notice's exact pin and artifact URLs.
 """
 
 
