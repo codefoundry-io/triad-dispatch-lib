@@ -105,11 +105,11 @@ def test_pr12_measured_claim_needs_both_cli_rows_not_capacity_or_other_config():
     codex = {"cli": "codex", "token": "config-conflict", "match": "model is not supported",
              "line": "Model is not supported", "carrier": "test-only stdout JSONL", "observed": "test-only"}
     _check_model_refusal_measurement_claims(rules, [agy, codex])
-    with pytest.raises(AssertionError, match="codex"):
+    with pytest.raises(AssertionError, match=r"^\('codex',"):
         _check_model_refusal_measurement_claims(rules, [agy])
-    with pytest.raises(AssertionError, match="agy"):
+    with pytest.raises(AssertionError, match=r"^\('agy',"):
         _check_model_refusal_measurement_claims(rules, [codex])
-    with pytest.raises(AssertionError, match="agy"):
+    with pytest.raises(AssertionError, match=r"^\('agy',"):
         _check_model_refusal_measurement_claims(rules, [
             {**agy, "token": "capacity"}, {**agy, "match": "invalid configuration"}, codex])
 
