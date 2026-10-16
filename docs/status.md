@@ -2,6 +2,21 @@
 
 Updated: 2026-10-16
 
+## Public API compatibility: implementation candidate
+
+PR #14 merged as `087af94a7078de0ae9701fb057840b5492f51f66` and
+[v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4)
+is published with wheel, sdist and release manifest after all four native release
+verification jobs passed. Delivery notices failed because the App settings remain
+unconfigured; no host adoption is claimed. The dated audit below is historical.
+
+The [compatibility gate](api-compatibility.md) establishes dev4 as the first floor,
+uses locked Griffe for root-export structural comparison, and runs representative
+public consumer checks against source, unpacked sdist and installed wheel.
+Runtime, schema and prompt bytes remain the released dev4 bytes. Local verification
+and controls are candidate evidence; exact-head native CI and the project formal
+review remain separate gates before integration.
+
 ## Release delivery: implementation candidate
 
 The resumed [release-delivery plan](superpowers/plans/2026-10-16-release-update-prs.md)

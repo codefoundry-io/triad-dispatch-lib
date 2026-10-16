@@ -64,6 +64,9 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 
 ## API
 
+The [public API compatibility gate](docs/api-compatibility.md) protects the declared
+`0.1.0.dev4` floor through structural and representative consumer checks.
+
 The [current Python API contract](spec/reference/library-api.md) covers all 31
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
@@ -211,6 +214,7 @@ uv sync --locked
 uv run --locked pytest -q
 uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
+uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
 uv build dist/triad_dispatch_lib-0.1.0.dev4.tar.gz --wheel
 uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl

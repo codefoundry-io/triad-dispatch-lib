@@ -3,7 +3,8 @@
 This reference describes the current `0.1.0.dev4` implementation of the 31
 package-root exports in `triad_dispatch_lib`: 17 functions, six dataclasses and
 eight exception types. It records existing Python behavior; it does not change
-the package's version or compatibility policy. Wire fields, allowed roster
+the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
+protect this public surface from the declared dev4 floor. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
 [sources](README.md#one-source-per-fact). See the [conformance map](library-conformance.md)
 for rule/case/test coverage and [host adoption](../../docs/host-adoption.md)
@@ -408,8 +409,15 @@ These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
 `AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
-and `PromptError` have no library-defined `.code`. No broader code/version
-stability commitment is introduced here.
+and `PromptError` have no library-defined `.code`. The adopted compatibility
+floor also protects selected actual operational outcomes, including
+`extract_final` emitting `OutputError` codes `invalid_carrier` and `timed_out`,
+and agreement reasons `missing_output` and `negative_verdict`. Constructor checks
+preserve `.code` for tested constructor inputs; constructing
+`AgreementError('empty_selection')` or `DispatchError('invalid_requests')` alone
+does not establish which operations emit those codes. This inventory alone
+adds no blanket code/version stability promise beyond the scoped
+[compatibility policy](../../docs/api-compatibility.md).
 
 | Exception | Base | Current emitted codes / role |
 | --- | --- | --- |

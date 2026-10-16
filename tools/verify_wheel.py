@@ -11,6 +11,7 @@ import platform
 import subprocess
 import sys
 import tempfile
+import tomllib
 import venv
 
 
@@ -169,11 +170,16 @@ def main() -> None:
         parser.error("provide one existing wheel path")
     script = Path(__file__).resolve()
     fixtures = script.parents[1] / "tests" / "fixtures" / "replay"
+    consumers = script.parents[1] / "tests" / "test_public_api_consumers.py"
+    expected_version = tomllib.loads((script.parents[1] / "pyproject.toml").read_text())["project"]["version"]
     with installed_wheel(wheel) as (python, prefix, neutral):
+        subprocess.run([str(python), "-I", str(consumers), "--installed-prefix", str(prefix),
+                        "--expected-version", expected_version], cwd=neutral, check=True)
         result = subprocess.run([str(python), "-I", str(script), "--probe",
                                  str(fixtures), str(prefix)], cwd=neutral,
                                 check=True, capture_output=True, text=True)
         report = json.loads(result.stdout)
+        report["public_api_consumers"] = {"passed": True, "expected_version": expected_version}
         report["wheel_sha256"] = hashlib.sha256(wheel.read_bytes()).hexdigest()
         print(json.dumps(report, indent=2))
 
