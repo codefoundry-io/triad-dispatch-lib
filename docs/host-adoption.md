@@ -1,5 +1,9 @@
 # Independent host adoption
 
+For a complete consumer workflow, see [install, adopt and update the library](installing.md):
+exact-source/release selection, artifact verification, isolated installation,
+public API smoke, selective host ports and independent host installation/rollback.
+
 `triad-dispatch-lib` owns common contracts, prompt clauses, cases and deterministic
 behavior. The Claude host (`triad-dispatch`) and Codex host
 (`triad-codex-dispatch`) own native spawning, model/effort resolution, native
