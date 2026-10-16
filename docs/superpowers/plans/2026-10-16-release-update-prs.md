@@ -34,6 +34,13 @@ approximately 300 novel core lines; workflows/config 100-150 lines, tests 250-35
 docs 150-250. Estimate changes when evidence requires it, not as an automatic gate.
 Task-level read-only review plus complete project formal review before integration.
 
+Updated estimate after Tasks 1/2/4: 800-1,000 tooling lines (including API I/O,
+identity checks, rendering and the bounded archive-normalization helper), about
+400 novel core lines, 170-230 workflow lines, 1,050-1,150 test lines and 450-600 doc
+lines. The increase covers required branch recovery/immutable retry refusals and
+the explicitly requested executable consumer guide, not a new runtime feature.
+Record actual additions/deletions at final verification.
+
 ## Review Focus
 
 - A network interruption after branch creation must resume without losing edits.
@@ -48,21 +55,21 @@ Task-level read-only review plus complete project formal review before integrati
 
 **Interfaces:** `build_manifest(dist: Path, tag: str, source_commit: str, prerelease: bool = False) -> dict`; `validate_manifest(value: dict) -> dict`; `verify_artifact(path: Path, artifact: dict) -> None`. CLI accepts `--dist`, `--tag`, `--source-commit`, `--prerelease`, `--output`. Manifest keys are `schema_version=1`, `name="triad-dispatch-lib"`, `version`, `tag`, `source_commit`, `release_url`, `prerelease`, `artifacts` (each `name`, `size`, `sha256`, `url`). URLs bind to this repository and tag.
 
-- [ ] Write tests for wheel METADATA name/version and tag matching, exact wheel+sdist inventory, SHA-256/size and release URLs; reject traversal/unsafe tags, mismatched wheel name/version and invalid commit, and verify tampered artifact refusal. Include valid prerelease and fresh deterministic manifest cases.
-- [ ] Run `uv run --locked pytest -q tests/test_release_artifacts.py`; confirm RED for absent behavior.
-- [ ] Implement the stdlib helper and CLI; validate relevant metadata without recreating a full package installer.
-- [ ] Run focused tests; confirm GREEN. Record actual output and commit only owned files.
+- [x] Write tests for wheel METADATA name/version and tag matching, exact wheel+sdist inventory, SHA-256/size and release URLs; reject traversal/unsafe tags, mismatched wheel name/version and invalid commit, and verify tampered artifact refusal. Include valid prerelease and fresh deterministic manifest cases.
+- [x] Run `uv run --locked pytest -q tests/test_release_artifacts.py`; confirm RED for absent behavior.
+- [x] Implement the stdlib helper and CLI; validate relevant metadata without recreating a full package installer.
+- [x] Run focused tests; confirm GREEN. Record actual output and commit only owned files.
 
 ### Task 2: Render and deliver update-request PRs
 
 **Files:** Create `tools/release_prs.py`, `tests/test_release_prs.py`.
 
-**Interfaces:** Import `validate_manifest` and `verify_artifact` from Task 1. `render_notice(release: dict, manifest: dict, target: str, previous_version: str | None = None) -> str`; `deliver(api, release: dict, manifest: dict, target: str) -> dict`. CLI accepts `--tag`, optional `--target` (fixed choices), `--dry-run-dir`; reads `GH_TOKEN`. API wrapper exposes `request(method, path, payload=None)` and only talks to GitHub's API; artifact download stays in the same release's approved URLs. The CLI may use `gh api` as a subprocess argument list, never a shell command string. Record the existing version from a target's `contracts/library-adoption.json` when present; absence means unrecorded, not an invented version or proof of no adoption.
+**Interfaces:** Import `validate_manifest` and `verify_artifact` from Task 1. `render_notice(release: dict, manifest: dict, target: str, previous_version: str | None = None) -> str`; `deliver(api, release: dict, manifest: dict, target: str) -> dict`. CLI accepts `--tag`, optional `--target` (fixed choices), `--dry-run-dir`; reads `GH_TOKEN` for the hosts and `SOURCE_GH_TOKEN` for the library. The latter is the existing workflow token, not a new registered secret. API wrapper exposes `request(method, path, payload=None)` and only talks to GitHub's API; artifact download stays in the same release's approved URLs. The CLI may use `gh api` as a subprocess argument list, never a shell command string. Record the existing version from a target's `contracts/library-adoption.json` when present; absence means unrecorded, not an invented version or proof of no adoption.
 
-- [ ] Write failing rendering tests for both host guides, source notes, hashes, preview/published separation, pending adoption, prerelease marking and rollback.
-- [ ] Write fake-API tests for create, existing open/closed/merged PR skip, matching branch-only recovery, conflicting branch refusal (including unrelated changes on that branch), no-force update and partial target failure. All cases assert affected paths and absence of writes in dry-run. Include present/absent previous-version records.
-- [ ] Implement two generated regular files (`release.json`, `README.md`) per release. Use Git Data blob/tree/commit/ref endpoints plus pull requests. Validate release identity and require non-draft published release. Query PRs before creating branch; inspect existing branch files before recovery.
-- [ ] Confirm RED then GREEN with `uv run --locked pytest -q tests/test_release_prs.py`; record results and commit owned files.
+- [x] Write failing rendering tests for both host guides, source notes, hashes, preview/published separation, pending adoption, prerelease marking and rollback.
+- [x] Write fake-API tests for create, existing open/closed/merged PR skip, matching branch-only recovery, conflicting branch refusal (including unrelated changes on that branch), no-force update and partial target failure. All cases assert affected paths and absence of writes in dry-run. Include present/absent previous-version records.
+- [x] Implement two generated regular files (`release.json`, `README.md`) per release. Use Git Data blob/tree/commit/ref endpoints plus pull requests. Validate release identity and require non-draft published release. Query PRs before creating branch; inspect existing branch files before recovery.
+- [x] Confirm RED then GREEN with `uv run --locked pytest -q tests/test_release_prs.py`; record results and commit owned files.
 
 ### Task 3: Connect verified releases, credentials and operator documentation
 
@@ -70,15 +77,15 @@ Task-level read-only review plus complete project formal review before integrati
 
 **Interfaces:** Reuse Task 1 manifest and Task 2 delivery CLI. Reusable test workflow accepts an exact ref and optional release artifact upload, defaulting to existing PR/main behavior. Release workflow verifies ref/version, waits for platform CI, publishes artifacts, then calls delivery for both targets independently using a scoped GitHub App token.
 
-- [ ] Test published asset replay: missing assets uploaded, identical existing assets reused, changed bytes/identity refused; incomplete upload resumes safely.
-- [ ] Normalize sdist archive timestamps/owner metadata deterministically before
+- [x] Test published asset replay: missing assets uploaded, identical existing assets reused, changed bytes/identity refused; incomplete upload resumes safely.
+- [x] Normalize sdist archive timestamps/owner metadata deterministically before
   extraction/rebuild and manifest hashing, using the source commit epoch; build
   its wheel with the same `SOURCE_DATE_EPOCH`. A repeat-build probe found plain
   setuptools sdists differed solely from build metadata even with that variable.
   Preserve names, modes and payload bytes; keep exact-byte replay refusal. Record
   backend/compression changes as a reproducibility limit, not a reason to overwrite.
-- [ ] Add `release: published` and `workflow_dispatch` retry; no push trigger for notifications. Use pinned existing Actions plus `actions/create-github-app-token`, request only two target repositories and Contents/Pull requests write permission. Credential names: variable `TRIAD_RELEASE_APP_ID`, secret `TRIAD_RELEASE_APP_PRIVATE_KEY`.
-- [ ] Document GitHub App setup, exact release/retry commands, generated PR examples, no-live-delivery dry run, install links and remaining activation boundary. Do not register secrets automatically.
+- [x] Add `release: published` and `workflow_dispatch` retry; no push trigger for notifications. Use pinned existing Actions plus `actions/create-github-app-token`, request only two target repositories and Contents/Pull requests write permission. Credential names: variable `TRIAD_RELEASE_APP_ID`, secret `TRIAD_RELEASE_APP_PRIVATE_KEY`.
+- [x] Document GitHub App setup, exact release/retry commands, generated PR examples, no-live-delivery dry run, install links and remaining activation boundary. Do not register secrets automatically.
 - [ ] Run focused delivery tests, full `uv run --locked pytest -q`, `uv run --locked python tools/sync_spec_assets.py --check`, `git diff --check`, workflow syntax check when available, and package/source archive checks if new tooling changes package contents.
 - [ ] Commit/push the feature branch and create an attached Draft PR; collect native CI and complete formal project review using the existing 2400-second configuration. Report actual activation/credential limits separately from source/test completion.
 
@@ -89,18 +96,18 @@ This documentation task may run alongside Task 2: it consumes the completed
 Task 1 manifest and existing runtime APIs, not the delivery implementation.
 Task 3 owns README/status links and the final integration verification.
 
-- [ ] Write an AI-readable host-neutral guide: choose an explicit released tag and
+- [x] Write an AI-readable host-neutral guide: choose an explicit released tag and
   source commit, download its manifest/wheel, verify identity/size/SHA-256, install
   in an isolated Python >=3.12 environment, check actual installed version/path and
   verified bundle identities. Explain the source-pinned candidate fallback when
   no release exists without calling it a published release.
-- [ ] Cover host-owned vendoring and per-platform dependency closure, selective
+- [x] Cover host-owned vendoring and per-platform dependency closure, selective
   adoption/API mapping, retained native adapters, meaningful adoption tests,
   independent host release/install/restart, rollback and an evidence report.
   Link current Codex/Claude installation references; AGY is a supported route
   and guide consumer, not an inferred third delivery repository. Do not write
   a new installer, provider model catalog or automatic host port.
-- [ ] Exercise the common install and smoke commands with the candidate wheel in
+- [x] Exercise the common install and smoke commands with the candidate wheel in
   a clean temporary environment and record outputs; published download and live
   host adoption remain explicitly unrun. Review documentation against executable
   APIs and current official installation sources. Commit only owned documents.

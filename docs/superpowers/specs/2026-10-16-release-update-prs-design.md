@@ -48,7 +48,11 @@ two named distribution repositories remain the only automatic delivery targets.
    Previously published assets are reused after verification rather than replaced.
 3. Use a GitHub App installation token, limited to the two host repositories,
    with Contents and Pull requests write access. The source `GITHUB_TOKEN`
-   publishes library assets; it is not a cross-repository credential. Store only
+   publishes and reads library assets; it is not a cross-repository credential.
+   Delivery passes it as `SOURCE_GH_TOKEN` for fixed library API requests and
+   the App token as `GH_TOKEN` for the two host repositories. Do not depend on
+   a host-only installation token falling back to anonymous source-repo access.
+   This uses the existing workflow token, not another registered secret. Store only
    App ID as a variable and private key as an Actions secret. Do not copy a
    developer's credential into automation.
 4. For each target, render a Markdown notice and release identity under
