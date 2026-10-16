@@ -1,6 +1,6 @@
 # Minimal Adoption Follow-ups Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Add the two approved deterministic APIs, pin the two Minor review cases,
 and document precise contribution dispositions without changing either host.
@@ -58,33 +58,33 @@ guarded admission diagnostics. Produces the reviewed roster attributes,
 `ReceiptError(code)` (`schema_violation`/`nesting_limit`) and
 `validate_transport_receipt(doc: dict) -> None`; private receipt loader only.
 
-- [ ] Write focused regressions before implementation: direct error defaults,
+- [x] Write focused regressions before implementation: direct error defaults,
   defaults/override/final/standalone/selection attribution, schema paths, selected
   required names, competing/non-required winners, fixed messages, existing copy
   and precedence rules, and non-schema `None` attributes.
-- [ ] Include the two R2 vectors: Google `route=agy` with neither vendor block
+- [x] Include the two R2 vectors: Google `route=agy` with neither vendor block
   selects `anyOf`, path `properties/legs/items/allOf/1/allOf/2/then/anyOf`,
   `.missing=None`; adding `gemini={}` selects route-required `.missing="agy"`.
-- [ ] Add transport tests for valid/no-mutation, required/type/vocabulary/extra
+- [x] Add transport tests for valid/no-mutation, required/type/vocabulary/extra
   members, native null binary/version/stdin constraints, integral-float semantics,
   opaque version text, whole-envelope refusal, recursion, missing/corrupt bundle,
   wrong identity/dialect and unresolved references without network access.
-- [ ] Run focused tests and retain expected RED evidence (missing attributes/API).
+- [x] Run focused tests and retain expected RED evidence (missing attributes/API).
   Use `uv run --locked pytest -q tests/test_roster_diagnostics.py tests/test_receipt.py`.
-- [ ] Implement the smallest changes, preserving schema bytes and selection order.
+- [x] Implement the smallest changes, preserving schema bytes and selection order.
   Fixed ReceiptError text: `Transport receipt violates the canonical schema.` and
   `Transport receipt nesting exceeds the validation limit.` No input interpolation.
-- [ ] Extend generation mapping, package-data globs, bundle inventory and exports.
+- [x] Extend generation mapping, package-data globs, bundle inventory and exports.
   Generate assets with `uv run --locked python tools/sync_spec_assets.py --write`.
   Extend the installed wheel probe to actually call the new API and exercise
   the new error families/roster diagnostics; test a wrong-behavior control.
-- [ ] Run focused tests and existing roster/contract/assets/wheel-driver tests.
+- [x] Run focused tests and existing roster/contract/assets/wheel-driver tests.
   Expected: all pass; generator `--check` passes; exports are 31, four bundles,
   nine payloads, four runtime schemas and sixteen source-only contracts.
-- [ ] Run the checkout suite with only the six already-held collision cases
+- [x] Run the checkout suite with only the six already-held collision cases
   excluded: `uv run --locked pytest -q -k 'not test_cli_refuses_output_collision_and_preserves_artifacts'`.
   This is explicitly not a claim that the held release regression passes.
-- [ ] Self-review, commit only owned files and write RED/GREEN evidence/report.
+- [x] Self-review, commit only owned files and write RED/GREEN evidence/report.
   Obtain independent task review for spec compliance and code quality.
 
 ### Task 2: Record adoption boundaries, contribution dispositions and Minor 2
@@ -99,31 +99,31 @@ new `docs/requests/2026-10-16-adoption-followups-disposition.md`,
 PR #8/#11/#12 dispositions. Produces user-facing contracts and host guidance,
 with no host edits, unverified contract rows, wholesale PR cherry-pick or issue closure.
 
-- [ ] Document new API contracts, evaluation roots, selected-required-only missing
+- [x] Document new API contracts, evaluation roots, selected-required-only missing
   metadata, Python exception-internal limits, and both R2 route-block examples.
   Keep issue #9 partial; explain the declined arbitrary-key surface without
   claiming permanent prohibition or exact host diagnostic-message parity.
-- [ ] Update current package/export/count prose and C9 shape-only coverage.
+- [x] Update current package/export/count prose and C9 shape-only coverage.
   Preserve dated historical counts and host adoption status.
-- [ ] Record #8's corrected comment/order and host-injected-asset limits; #11's
+- [x] Record #8's corrected comment/order and host-injected-asset limits; #11's
   attributed concurrency observation and actual B `--remove` option; #12's held
   retirement/equivalence assertions and missing original carrier evidence.
   Keep contributed branches open for their owners to amend rather than treating
   their text as implementation instructions. Link host-owned checks as guidance.
-- [ ] Add a bounded regression for the concrete PR #12 contradiction: record
+- [x] Add a bounded regression for the concrete PR #12 contradiction: record
   prose must not claim measured AGY/Codex model-refusal rows absent from the
   measured contract, and cannot claim none when the corresponding rows exist.
   Exercise both mismatch directions with test-only fixtures and the live records.
   Do not add a runtime classifier or pin current model IDs/CLI versions as gates.
-- [ ] Keep current R-GOOGLE measurement wording unchanged while all proposed
+- [x] Keep current R-GOOGLE measurement wording unchanged while all proposed
   rows remain held; document conditional coordinated updates upon later acceptance.
-- [ ] Run `uv run --locked pytest -q spec/tests/test_spec_records.py` and
+- [x] Run `uv run --locked pytest -q spec/tests/test_spec_records.py` and
   `uv run --locked python spec/tools/check_authoring.py`; expected: pass.
-- [ ] Commit owned documentation/tests; obtain independent task review.
+- [x] Commit owned documentation/tests; obtain independent task review.
 
 ## Integration, review and GitHub delivery (parent)
 
-- [ ] Verify source plus asset/authoring checks, neutral sdist rebuild, isolated
+- [x] Verify source plus asset/authoring checks, neutral sdist rebuild, isolated
   wheel and four existing drivers on local Python 3.12/3.14. Preserve logs.
 - [ ] Build an exact publication branch from `origin/main` plus only this slice's
   selected file blobs using an alternate index; keep the active checkout and held
