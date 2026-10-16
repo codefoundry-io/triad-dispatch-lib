@@ -2,10 +2,21 @@
 
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
+import sys
 
 import pytest
+
+
+@pytest.fixture(autouse=True)
+def isolate_fixture_git_environment(monkeypatch):
+    for key in tuple(os.environ):
+        if key.startswith("GIT_"):
+            monkeypatch.delenv(key)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
 
 
 def checker():
@@ -252,6 +263,44 @@ def git_baseline(tmp_path):
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True).strip()
     metadata(tmp_path, commit)
     return initializer
+
+
+@pytest.mark.parametrize("contamination", ["repository-routing", "signing-config"])
+def test_incoming_git_environment_cannot_escape_fixture(tmp_path, contamination):
+    clean = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    clean.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
+    incoming = dict(clean)
+    sentinel = tmp_path / "sentinel"
+    sentinel.mkdir()
+    (sentinel / "src").mkdir()
+    (sentinel / "src/keep.txt").write_text("keep")
+    for args in [["init", "--quiet"], ["add", "src"],
+                 ["-c", "user.name=Sentinel", "-c", "user.email=sentinel@example.invalid",
+                  "commit", "--quiet", "-m", "Sentinel baseline"]]:
+        subprocess.run(["git", *args], cwd=sentinel, env=clean, check=True)
+    (sentinel / "src/pending.txt").write_text("unrelated pending work")
+    before = {path: (sentinel / path).read_bytes() for path in
+              [".git/HEAD", ".git/config", ".git/index", "src/keep.txt", "src/pending.txt"]}
+    before_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sentinel, env=clean)
+    if contamination == "repository-routing":
+        incoming.update(GIT_DIR=str(sentinel / ".git"), GIT_WORK_TREE=str(sentinel))
+    else:
+        config = tmp_path / "signing.gitconfig"
+        config.write_text(f"[commit]\n gpgsign = true\n[gpg]\n program = {tmp_path / 'no-signing-agent'}\n")
+        incoming["GIT_CONFIG_GLOBAL"] = str(config)
+    child_temp = tmp_path / "child-pytest"
+    result = subprocess.run([sys.executable, "-m", "pytest", "-q", str(Path(__file__).resolve()),
+                             "-k", "repository_archive_compares_real_baseline",
+                             "--basetemp", str(child_temp)], cwd=tmp_path, env=incoming,
+                            capture_output=True, text=True)
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sentinel, env=clean) == before_commit
+    assert {path: (sentinel / path).read_bytes() for path in before} == before
+    assert result.returncode == 0, result.stdout + result.stderr
+    fixture_repos = list(child_temp.rglob(".git"))
+    assert fixture_repos
+    for git_dir in fixture_repos:
+        assert subprocess.check_output(["git", "rev-list", "--count", "HEAD"],
+                                       cwd=git_dir.parent, env=clean).strip() == b"1"
 
 
 @pytest.mark.parametrize("exports, diagnostic", [
