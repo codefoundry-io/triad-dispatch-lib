@@ -407,7 +407,7 @@ checks. Fields below are in constructor order; only shown defaults are optional.
 These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
-`AdmissionError` and `RosterError` explicitly declare it stable. `ContractError`
+`AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
 and `PromptError` have no library-defined `.code`. No broader code/version
 stability commitment is introduced here.
 
