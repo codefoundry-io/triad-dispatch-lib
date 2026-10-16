@@ -220,9 +220,9 @@ def test_resolve_roster_uses_one_schema_snapshot(monkeypatch):
         assert len(loads) == 1, 'resolver loaded a second schema snapshot'
         return schema
     validate = module._validate
-    def observed(value, received, *, resolved):
+    def observed(value, received, *, resolved, document="resolved"):
         events.append((received, resolved))
-        return validate(value, received, resolved=resolved)
+        return validate(value, received, resolved=resolved, document=document)
     monkeypatch.setattr(module, 'load_roster_contract', load)
     monkeypatch.setattr(module, '_validate', observed)
     result = lib.resolve_roster(roster(entry(codex={'model': 'chosen', 'reasoning': 'high'})),

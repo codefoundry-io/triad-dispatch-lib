@@ -12,8 +12,11 @@ from .agreement import AgreementResult, evaluate_agreement
 from .errors import DispatchError
 from .dispatch import (ReviewRequest, InvestigationRequest, CallOutcome, ReviewRun,
                        run_review, run_investigations)
+from .errors import ReceiptError
+from .receipt import validate_transport_receipt
 
-__all__ = ["OutputError", "AgreementError", "ProviderOutput", "extract_final", "admit_output",
+__all__ = ["ReceiptError", "validate_transport_receipt",
+           "OutputError", "AgreementError", "ProviderOutput", "extract_final", "admit_output",
            "DispatchError", "ReviewRequest", "InvestigationRequest", "CallOutcome", "ReviewRun",
            "run_review", "run_investigations",
            "AgreementResult", "evaluate_agreement",
