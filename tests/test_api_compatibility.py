@@ -94,7 +94,7 @@ def test_safe_argument_widening_passes(tmp_path, signature):
 
 
 def test_internal_move_and_helper_change_pass(tmp_path):
-    assert compare(tmp_path, "__all__=['api']\ndef api(a): pass", 
+    assert compare(tmp_path, "__all__=['api']\ndef api(a): pass",
                    "from .helpers import api\n__all__=['api']",
                    new_helpers="def api(a): pass\ndef helper(): pass") == []
 
