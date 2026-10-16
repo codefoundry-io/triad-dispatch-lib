@@ -36,13 +36,13 @@ def helper():
         sys.path.pop(0)
 
 
-def archives(root):
+def archives(root, version="1.2.3"):
     root.mkdir(exist_ok=True)
-    metadata = b"Metadata-Version: 2.4\nName: triad-dispatch-lib\nVersion: 1.2.3\n\n"
-    with zipfile.ZipFile(root / "triad_dispatch_lib-1.2.3-py3-none-any.whl", "w") as archive:
-        archive.writestr("triad_dispatch_lib-1.2.3.dist-info/METADATA", metadata)
-    with tarfile.open(root / "triad_dispatch_lib-1.2.3.tar.gz", "w:gz") as archive:
-        member = tarfile.TarInfo("triad_dispatch_lib-1.2.3/PKG-INFO")
+    metadata = f"Metadata-Version: 2.4\nName: triad-dispatch-lib\nVersion: {version}\n\n".encode()
+    with zipfile.ZipFile(root / f"triad_dispatch_lib-{version}-py3-none-any.whl", "w") as archive:
+        archive.writestr(f"triad_dispatch_lib-{version}.dist-info/METADATA", metadata)
+    with tarfile.open(root / f"triad_dispatch_lib-{version}.tar.gz", "w:gz") as archive:
+        member = tarfile.TarInfo(f"triad_dispatch_lib-{version}/PKG-INFO")
         member.size = len(metadata)
         archive.addfile(member, io.BytesIO(metadata))
 
@@ -50,8 +50,9 @@ def archives(root):
 class FakeAPI:
     """Only the source release endpoints and raw upload boundary are available."""
 
-    def __init__(self):
-        self.release = dict(id=7, tag_name=TAG, html_url=f"{URL}/tag/{TAG}",
+    def __init__(self, tag=TAG):
+        self.tag = tag
+        self.release = dict(id=7, tag_name=tag, html_url=f"{URL}/tag/{tag}",
                             draft=False, published_at="2026-10-16T00:00:00Z",
                             prerelease=False, body="Notes", assets=[])
         self.assets = {}
@@ -62,9 +63,9 @@ class FakeAPI:
 
     def request(self, method, path, payload=None):
         assert method == "GET", "publisher must never mutate release metadata"
-        if path in (f"{API}/releases/tags/{TAG}", f"{API}/releases/7"):
+        if path in (f"{API}/releases/tags/{self.tag}", f"{API}/releases/7"):
             return deepcopy(self.release)
-        if path == f"{API}/git/ref/tags/{TAG}":
+        if path == f"{API}/git/ref/tags/{self.tag}":
             return {"object": {"type": "commit", "sha": self.sha}}
         if path.startswith(f"{API}/releases/assets/"):
             return self.assets[int(path.rsplit("/", 1)[1])]
@@ -83,7 +84,7 @@ class FakeAPI:
     def attach(self, name, raw):
         number = len(self.assets) + 1
         asset = dict(id=number, name=name, state="uploaded", size=len(raw),
-                     browser_download_url=f"{URL}/download/{TAG}/{name}")
+                     browser_download_url=f"{URL}/download/{self.tag}/{name}")
         self.release["assets"].append(asset)
         self.assets[number] = raw
         return asset
@@ -100,6 +101,35 @@ def test_publish_uploads_two_verified_archives_then_manifest(helper, tmp_path):
     assert {a["name"] for a in manifest["artifacts"]} == set(api.uploads[:2])
     assert helper.publish(api, tmp_path, TAG, SHA)["status"] == "reused"
     assert len(api.uploads) == 3
+
+
+@pytest.mark.parametrize("version", ["0.1.0.dev4", "1.2.3a1", "1.2.3b2", "1.2.3rc3"])
+@pytest.mark.parametrize("operation", ["resolve", "publish"])
+def test_prerelease_version_without_github_flag_refuses_before_upload(helper, tmp_path, version, operation):
+    archives(tmp_path, version)
+    tag = "v" + version
+    api = FakeAPI(tag)
+    with pytest.raises(ValueError, match="prerelease"):
+        if operation == "resolve":
+            helper.release_context(api, tag)
+        else:
+            helper.publish(api, tmp_path, tag, SHA)
+    assert api.uploads == []
+
+
+@pytest.mark.parametrize("version,flag", [
+    ("0.1.0.dev4", True), ("1.2.3a1", True), ("1.2.3b2", True), ("1.2.3rc3", True),
+    ("1.2.3", False), ("1.2.3", True), ("1.2.3.post1", False),
+])
+def test_accepted_release_preserves_github_prerelease_flag(helper, tmp_path, version, flag):
+    archives(tmp_path, version)
+    tag = "v" + version
+    api = FakeAPI(tag)
+    api.release["prerelease"] = flag
+    assert helper.release_context(api, tag)[1] == SHA
+    assert helper.publish(api, tmp_path, tag, SHA)["status"] == "published"
+    assert json.loads(api.assets[3])["prerelease"] is flag
+    assert helper.publish(api, tmp_path, tag, SHA)["status"] == "reused"
 
 
 def test_interrupted_upload_resumes_only_missing_assets(helper, tmp_path):

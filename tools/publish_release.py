@@ -98,6 +98,8 @@ def release_context(api, tag):
             or type(release.get("prerelease")) is not bool
             or release.get("html_url") != f"https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/{tag}"):
         raise ValueError("release must be published, non-draft and match the requested tag")
+    if re.search(r"(?:a|b|rc)[0-9]+|\.dev[0-9]+", tag) and release["prerelease"] is not True:
+        raise ValueError("development/prerelease versions require the GitHub prerelease flag before asset publication")
     return release, resolve_tag(api, tag)
 
 

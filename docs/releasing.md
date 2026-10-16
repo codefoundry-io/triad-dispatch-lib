@@ -70,6 +70,12 @@ must be exactly `v` plus that version; the workflow checks the package metadata
 on the resolved commit. Preserve development/prerelease labels: a `.dev`, alpha,
 beta or release-candidate package is not a stable host release. For such a
 package, mark its GitHub Release as a prerelease.
+The resolver and publisher refuse these versions when GitHub's prerelease flag
+is false. Set the flag correctly before publishing any assets, and do not change
+it after verified assets exist: the manifest records GitHub's flag, so changing
+it would conflict with the existing immutable release identity. Stable-version
+tags may also be deliberately marked as prereleases; the recorded flag remains
+the actual GitHub value. There is no automatic migration of published manifests.
 
 Run the repository's locked tests, source-asset checks, sdist/wheel verification
 and complete required native CI/review before choosing `SOURCE_COMMIT`. Final
@@ -110,8 +116,24 @@ unsuccessfully if either fails; a successful proposal remains intact.
 
 ## Retry and immutable assets
 
-Retry an existing published release by its tag after correcting the reported
-configuration or permission issue. The workflow must already exist on `main`:
+If source publication succeeded and only host delivery failed, correct the
+reported credential or permission issue, then choose **Re-run failed jobs** on
+the original Actions run. This preserves the successful verification/publication
+jobs and their outputs/artifacts, and the delivery job mints a fresh App token.
+The CLI equivalent is:
+
+```sh
+gh run rerun <original-run-id> --repo codefoundry-io/triad-dispatch-lib --failed
+gh run watch <original-run-id> --repo codefoundry-io/triad-dispatch-lib --exit-status
+```
+
+GitHub permits re-running a workflow for up to 30 days after its initial run,
+using the original SHA/ref. See
+[GitHub's re-run documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)
+and [`gh run rerun`](https://cli.github.com/manual/gh_run_rerun).
+
+Use a full tag-dispatch retry when a new complete verification/publication
+attempt is needed. The workflow must already exist on `main`:
 
 ```sh
 TAG='v0.1.0.dev4'
@@ -121,7 +143,11 @@ gh run list --repo codefoundry-io/triad-dispatch-lib --workflow release.yml
 gh run watch <run-id> --repo codefoundry-io/triad-dispatch-lib --exit-status
 ```
 
-Retries run verification again. Existing uploaded assets are downloaded through
+Full tag-dispatch retries rebuild and run verification again. They depend on a
+byte-identical rebuild of any already-published archives and can refuse after
+backend/compression/runner drift, even when the source tag is unchanged. Prefer
+the failed-job re-run above for a delivery-only failure. Existing uploaded
+assets are downloaded through
 the source GitHub asset API and compared byte for byte, including the manifest.
 Matching assets are reused; a valid partial subset uploads only missing files.
 Different bytes, duplicate names, unexpected assets, wrong URLs/size/state or a
@@ -185,9 +211,13 @@ uv run --locked pytest -q tests/test_release_artifacts.py \
   tests/test_publish_release.py tests/test_release_prs.py
 ```
 
-For an authorized delivery retry without rebuilding source artifacts, use an
-approved two-host App installation token in `GH_TOKEN` plus a source-read token
-in `SOURCE_GH_TOKEN` and run:
+For an advanced manual delivery retry without rebuilding source artifacts, the
+operator must supply an approved two-host App installation token in `GH_TOKEN`
+plus a source-read token in `SOURCE_GH_TOKEN`; see
+[GitHub's installation-token generation procedure](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app).
+This CLI does not mint credentials or read/copy a private key. Prefer the
+original workflow's failed-job re-run for routine delivery recovery. With those
+authorized environment credentials supplied, run:
 
 ```sh
 python3 tools/release_prs.py --tag "$TAG"
