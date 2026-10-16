@@ -10,6 +10,7 @@ from email.parser import BytesParser
 from email.policy import compat32
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import tarfile
@@ -168,6 +169,25 @@ def build_manifest(dist: Path, tag: str, source_commit: str, prerelease: bool = 
     })
 
 
+def _validate_output(output: Path, dist: Path) -> None:
+    """Refuse manifest destinations that can change the release inventory."""
+    resolved_dist = dist.resolve(strict=True)
+    resolved_output = output.resolve()
+    try:
+        resolved_output.relative_to(resolved_dist)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("output must be outside the dist directory")
+
+    for artifact in dist.iterdir():
+        try:
+            if os.path.samefile(output, artifact):
+                raise ValueError("output must not refer to a release artifact")
+        except FileNotFoundError:
+            continue
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dist", type=Path, required=True)
@@ -178,6 +198,7 @@ def main() -> None:
     args = parser.parse_args()
     try:
         manifest = build_manifest(args.dist, args.tag, args.source_commit, args.prerelease)
+        _validate_output(args.output, args.dist)
         args.output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     except (ValueError, OSError) as error:
         parser.error(str(error))

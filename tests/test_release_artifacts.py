@@ -190,3 +190,34 @@ def test_cli_writes_valid_manifest(helper, tmp_path):
     assert result.returncode == 0, result.stderr
     manifest = json.loads(output.read_text())
     assert helper.validate_manifest(manifest)["prerelease"] is True
+
+
+@pytest.mark.parametrize("collision", ["wheel", "sdist", "new-file", "symlink", "directory-alias", "hardlink"])
+def test_cli_refuses_output_collision_and_preserves_artifacts(helper, tmp_path, collision):
+    dist = tmp_path / "dist"
+    wheel, sdist = archives(dist)
+    before = {path: path.read_bytes() for path in (wheel, sdist)}
+    if collision == "wheel":
+        output = wheel
+    elif collision == "sdist":
+        output = sdist
+    elif collision == "new-file":
+        output = dist / "triad-release.json"
+    elif collision == "directory-alias":
+        alias = tmp_path / "alias"
+        alias.symlink_to(dist, target_is_directory=True)
+        output = alias / wheel.name
+    else:
+        output = tmp_path / "triad-release.json"
+        if collision == "symlink":
+            output.symlink_to(wheel)
+        else:
+            output.hardlink_to(wheel)
+    result = subprocess.run([sys.executable, str(SCRIPT), "--dist", str(dist),
+                             "--tag", "v1.2.3", "--source-commit", COMMIT,
+                             "--output", str(output)], capture_output=True, text=True)
+    assert {path: path.read_bytes() for path in before} == before
+    assert result.returncode != 0
+    assert "output" in result.stderr.lower()
+    if collision == "new-file":
+        assert not output.exists()
