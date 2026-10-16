@@ -12,12 +12,24 @@ from .errors import AdmissionError, ContractError, RosterError
 from .json_input import parse_json
 
 
-def _validate(value: dict, schema: dict, *, resolved: bool) -> None:
+def _validate(value: dict, schema: dict, *, resolved: bool, document: str = "resolved") -> None:
     registry = Registry().with_resource(schema["$id"], Resource.from_contents(schema, default_specification=DRAFT202012))
     target = {"$ref": schema["$id"] + "#/$defs/resolvedRoster"} if resolved else schema
     try:
-        if not Draft202012Validator(target, registry=registry).is_valid(value):
-            raise RosterError("schema_violation")
+        validation_error = next(Draft202012Validator(target, registry=registry).iter_errors(value), None)
+        if validation_error is not None:
+            error = RosterError("schema_violation")
+            error.path = tuple(validation_error.absolute_schema_path)
+            error.document = document
+            if (validation_error.validator == "required"
+                    and isinstance(validation_error.validator_value, list)
+                    and all(isinstance(name, str) for name in validation_error.validator_value)
+                    and isinstance(validation_error.instance, dict)):
+                error.missing = next(
+                    (name for name in validation_error.validator_value
+                     if name not in validation_error.instance), None,
+                )
+            raise error
         names = [leg["name"] for leg in value["legs"]]
         if len(names) != len(set(names)):
             raise RosterError("duplicate_name")
@@ -37,14 +49,14 @@ def _merge(base, override):
 
 
 def _merge_roster(defaults: dict, overrides: str | bytes | None, schema: dict) -> dict:
-    _validate(defaults, schema, resolved=True)
+    _validate(defaults, schema, resolved=True, document="defaults")
     result = deepcopy(defaults)
     if overrides is not None:
         try:
             override = parse_json(overrides)
         except AdmissionError:
             raise RosterError("invalid_json") from None
-        _validate(override, schema, resolved=False)
+        _validate(override, schema, resolved=False, document="override")
         entries = {leg["name"]: index for index, leg in enumerate(result["legs"])}
         for leg in override["legs"]:
             if leg["name"] in entries:

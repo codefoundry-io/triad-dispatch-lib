@@ -70,8 +70,8 @@ def test_installed_probe_checks_missing_diagnostic(monkeypatch):
 def test_probe_reports_all_verified_bundle_identities():
     data = Path(__file__).parents[1] / "src/triad_dispatch_lib/data"
     report = verifier().verify_bundles(data)
-    assert set(report) == {"verdict", "roster", "prompts"}
-    assert [len(report[name]["sha256"]) for name in ("verdict", "roster", "prompts")] == [1, 1, 6]
+    assert set(report) == {"verdict", "roster", "prompts", "receipt"}
+    assert [len(report[name]["sha256"]) for name in ("verdict", "roster", "prompts", "receipt")] == [1, 1, 6, 1]
     for manifest in report.values():
         assert set(manifest) == {"schema_version", "source_repository", "source_path",
                                  "status", "sha256", "contract_id"}
@@ -86,6 +86,7 @@ def test_probe_reports_all_verified_bundle_identities():
     "prompt-bundle/prompts/investigation.md",
     "source-manifest.json", "roster-bundle/source-manifest.json",
     "prompt-bundle/source-manifest.json",
+    "receipt-bundle/contracts/receipt-fields.json", "receipt-bundle/source-manifest.json",
 ])
 def test_probe_refuses_corruption_in_every_bundle_resource(tmp_path, relative):
     from triad_dispatch_lib import ContractError
@@ -155,3 +156,38 @@ def test_public_help_hides_internal_probe_without_installation(monkeypatch, caps
     assert captured.err == ""
     assert "  wheel\n" in captured.out
     assert "--probe" not in captured.out
+
+
+def test_installed_probe_exercises_minimal_adoption_apis():
+    assert verifier().verify_minimal_adoption() == {
+        'transport_valid': True, 'transport_schema_refused': True,
+        'transport_nesting_refused': True, 'roster_diagnostics': True,
+    }
+
+
+@pytest.mark.parametrize('fault', ['receipt_accepts_invalid', 'receipt_wrong_code', 'roster_wrong_document',
+                                 'roster_wrong_path', 'roster_wrong_missing'])
+def test_installed_probe_detects_minimal_adoption_faults(monkeypatch, fault):
+    import triad_dispatch_lib as lib
+    if fault.startswith('receipt'):
+        original = lib.validate_transport_receipt
+        def wrong_receipt(doc):
+            if doc == {}:
+                if fault == 'receipt_accepts_invalid':
+                    return None
+                raise lib.ReceiptError('nesting_limit')
+            return original(doc)
+        monkeypatch.setattr(lib, 'validate_transport_receipt', wrong_receipt)
+    else:
+        original = lib.validate_resolved
+        def wrong_roster(doc):
+            try:
+                return original(doc)
+            except lib.RosterError as error:
+                if fault == 'roster_wrong_document': error.document = 'override'
+                if fault == 'roster_wrong_path': error.path = ('wrong',)
+                if fault == 'roster_wrong_missing': error.missing = 'wrong'
+                raise
+        monkeypatch.setattr(lib, 'validate_resolved', wrong_roster)
+    with pytest.raises(AssertionError):
+        verifier().verify_minimal_adoption()

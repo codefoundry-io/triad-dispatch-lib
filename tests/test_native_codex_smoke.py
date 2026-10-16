@@ -1032,13 +1032,17 @@ def test_matching_terminal_ack_does_not_wait_for_repaired_response(driver, setup
         post(run, request, raw, receipt)
         if bad_response == 'missing':
             (run/'first/response.txt').unlink()
-        await asyncio.sleep(.08)
-        advanced_before_repair = (run/'second/request.json').exists()
-        # Repair only to drain an incorrectly blocked RED run before asserting.
-        post(run, request, verdict(request))
-        second = await wait_request(run, 'second')
-        post(run, second, verdict(second))
-        report = await task
+        try:
+            await wait_request(run, 'second')
+            advanced_before_repair = True
+        except TimeoutError:
+            advanced_before_repair = False
+        finally:
+            # Always repair and drain, including a deliberately blocked RED run.
+            post(run, request, verdict(request))
+            second = await wait_request(run, 'second')
+            post(run, second, verdict(second))
+            report = await task
         assert advanced_before_repair, 'valid terminal acknowledgment waited for response repair'
         assert report['outcomes'][0]['status'] == ('timed_out' if cleanup else 'failed')
         assert not report['agreement']['agreed']

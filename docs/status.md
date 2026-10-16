@@ -1,6 +1,39 @@
 # Current status
 
-Updated: 2026-10-15
+Updated: 2026-10-16
+
+## Minimal adoption follow-ups: implementation candidate
+
+The owner requested a minimal design and formal three-family review after
+triaging PRs #8/#11/#12 and issues #9/#10 against main `dac1af6`. The
+[candidate design](superpowers/specs/2026-10-16-minimal-adoption-followups-design.md)
+defines safe roster diagnostics, a transport-shape API and bounded corrections
+to attributed evidence. The owner subsequently approved minimal implementation,
+both Minor regressions/documentation, the same review composition and GitHub updates.
+Host installation, classifiers and model selection stay guidance; issue #5 remains pending.
+The separate release-update-PR work is held with its current edits preserved.
+Review uses the project profile, authorized official web research and 2400-second
+budgets; a plan result does not replace implementation verification.
+
+The corrected candidate completed R2 `20261016-lib-minimal-plan-r2-e3b5e7` with
+`AGREED`: Opus, Sol and Argon approved, and the separate Astra comparison found
+no actionable defect. The [review record](verification/2026-10-16-minimal-adoption-design-review.md)
+captures R1 corrections and two accepted R2 implementation checklist details:
+the concrete `anyOf`/`.missing=None` residual and PR #12 rule-text consistency.
+The reviewed design is unchanged after collection. The implementation adds
+`RosterError.path/.missing/.document`, `validate_transport_receipt` and
+`ReceiptError`, with a verified runtime receipt bundle. Both checklist cases have
+dedicated regressions and documentation. Issue #9 remains partial; arbitrary-key
+names and input pointers are not added. No host adoption or release is claimed.
+See the [implementation plan](superpowers/plans/2026-10-16-minimal-adoption-followups.md),
+[contribution dispositions](requests/2026-10-16-adoption-followups-disposition.md)
+and [verification record](verification/2026-10-16-minimal-adoption-followups.md).
+Exact publication-head CI and formal review outcomes are recorded with the scoped
+PR after the candidate freeze; design approval does not certify changed code.
+Initial CI exposed a pre-existing fixed-80-ms test observation. The
+[bounded correction and negative control](verification/2026-10-16-minimal-adoption-followups.md#ci-discovered-test-observation-correction)
+preserve runtime behavior and require fresh complete native CI on the corrected
+publication head before the formal review.
 
 ## Owner decisions
 

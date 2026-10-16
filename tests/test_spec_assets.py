@@ -18,6 +18,7 @@ REPO = Path(__file__).resolve().parents[1]
 MAPPING = {
     'leg-verdict.schema.json': 'contracts/leg-verdict.schema.json',
     'roster-bundle/contracts/review-legs.schema.json': 'contracts/review-legs.schema.json',
+    'receipt-bundle/contracts/receipt-fields.json': 'contracts/receipt-fields.json',
     'prompt-bundle/contracts/review-kind.schema.json': 'contracts/review-kind.schema.json',
     **{f'prompt-bundle/prompts/{name}.md': f'prompts/{name}.md' for name in
        ('common-clauses', 'leg-codex', 'leg-claude', 'leg-google', 'investigation')},
@@ -98,6 +99,7 @@ def test_generation_preserves_bytes_and_is_deterministic(generated):
     assert snapshot(root) == first
     for bundle, names in [('', ('leg-verdict.schema.json',)),
                           ('roster-bundle', ('contracts/review-legs.schema.json',)),
+                          ('receipt-bundle', ('contracts/receipt-fields.json',)),
                           ('prompt-bundle', tuple(p.removeprefix('prompt-bundle/') for p in MAPPING if p.startswith('prompt-bundle/')))]:
         assert load_verified_bundle(root / 'src/triad_dispatch_lib/data' / bundle, names)
 

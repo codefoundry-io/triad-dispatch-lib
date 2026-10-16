@@ -4,6 +4,8 @@ import json
 import re
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -60,6 +62,56 @@ def test_dev_log_footer_matches_the_status_cells():
 
 def _vendor_lines():
     return json.loads((ROOT / "contracts/vendor-failure-lines.json").read_text())["lines"]
+
+
+def _check_model_refusal_measurement_claims(rules, rows):
+    # Only the two measurement forms at issue in PR #12; not a prose audit/classifier.
+    claims = re.findall(
+        r"`contracts/vendor-failure-lines.json` holds "
+        r"(no measured [^.;]+? model-refusal sentence yet|"
+        r"the measured [^.;]+? refused-model sentences)", " ".join(rules.split()))
+    assert claims, "missing model-refusal measurement statement"
+    measured = {row["cli"] for row in rows
+                if row["token"] == "config-conflict" and "model" in row["match"]}
+    for claim in claims:
+        for cli in re.findall(r"\b(?:agy|codex|gemini)\b", claim):
+            assert (cli in measured) == (not claim.startswith("no ")), (cli, claim)
+
+
+@pytest.mark.parametrize("cli", ["agy", "codex", "gemini"])
+@pytest.mark.parametrize("claims_measured", [False, True])
+def test_model_refusal_measurement_claim_controls(cli, claims_measured):
+    # Catch PR #12's unsupported measurement claim and the inverse stale "none" claim.
+    claim = (f"the measured {cli} refused-model sentences" if claims_measured
+             else f"no measured {cli} model-refusal sentence yet")
+    rules = f"`contracts/vendor-failure-lines.json` holds {claim}"
+    rows = [{"cli": cli, "token": "config-conflict", "match": "model is not supported",
+             "line": "Model is not supported", "carrier": "test-only stderr", "observed": "test-only"}]
+    _check_model_refusal_measurement_claims(rules, rows if claims_measured else [])
+    with pytest.raises(AssertionError, match=cli):
+        _check_model_refusal_measurement_claims(rules, [] if claims_measured else rows)
+
+
+def test_live_model_refusal_measurement_claims_match_vendor_rows():
+    _check_model_refusal_measurement_claims(
+        (ROOT / "reference/review-rules.md").read_text(), _vendor_lines())
+
+
+def test_pr12_measured_claim_needs_both_cli_rows_not_capacity_or_other_config():
+    rules = ("`contracts/vendor-failure-lines.json` holds the measured agy and codex "
+             "refused-model sentences (rows observed on test-only versions)")
+    agy = {"cli": "agy", "token": "config-conflict", "match": "invalid model selection",
+           "line": "Invalid model selection", "carrier": "test-only stderr", "observed": "test-only"}
+    codex = {"cli": "codex", "token": "config-conflict", "match": "model is not supported",
+             "line": "Model is not supported", "carrier": "test-only stdout JSONL", "observed": "test-only"}
+    _check_model_refusal_measurement_claims(rules, [agy, codex])
+    with pytest.raises(AssertionError, match=r"^\('codex',"):
+        _check_model_refusal_measurement_claims(rules, [agy])
+    with pytest.raises(AssertionError, match=r"^\('agy',"):
+        _check_model_refusal_measurement_claims(rules, [codex])
+    with pytest.raises(AssertionError, match=r"^\('agy',"):
+        _check_model_refusal_measurement_claims(rules, [
+            {**agy, "token": "capacity"}, {**agy, "match": "invalid configuration"}, codex])
 
 
 def test_vendor_failure_rows_match_their_own_sentence_with_a_known_token():
