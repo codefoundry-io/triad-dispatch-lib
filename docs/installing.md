@@ -219,7 +219,8 @@ Collect wheels while online on each supported native OS/architecture/Python/ABI
 combination. Use the verified local library wheel from either path above, rather
 than asking an index for a library package name. This example uses the same
 dedicated script variables; the collection environment's Python selects its
-native dependency wheels:
+native dependency wheels. Keep both optional blocks below in that same dedicated
+script/process so their variables remain available:
 
 ```sh
 : "${WORK:?Run source selection first in the same dedicated script}"
@@ -239,6 +240,10 @@ and platform combination. For a local offline-install check, create another fres
 environment and install the exact collected library wheel without an index:
 
 ```sh
+: "${WORK:?Run source selection first in the same dedicated script}"
+: "${PY:?Run source selection first in the same dedicated script}"
+: "${WHEELHOUSE:?Run online collection first in the same dedicated script}"
+: "${LIB_WHEEL:?Run online collection first in the same dedicated script}"
 "$PY" -I -m venv "$WORK/offline-env"
 OFFLINE_PY="$WORK/offline-env/bin/python"
 "$OFFLINE_PY" -I -m pip --isolated --disable-pip-version-check install \
