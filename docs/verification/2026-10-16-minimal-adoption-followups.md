@@ -50,7 +50,8 @@ was misclassified as a code defect.
 
 Native local platform: macOS 26.6.2 ARM64. Runtime/test source is `050edb0`;
 the checkout also contains the preserved release work and parent status draft.
-The subsequent recording edits affect documentation only. Each interpreter used
+These measurements precede the test-only CI correction below; runtime/package
+implementation is unchanged by that correction. Each interpreter used
 an independent environment, a neutral unpacked sdist and a wheel rebuilt there.
 
 | Interpreter | Source | Unpacked sdist | Installed drivers |
@@ -79,6 +80,36 @@ and packaged receipt bytes match. Dependencies/version floors remain unchanged.
 These are local candidate artifacts, not published release assets. Installed
 synthetic tests do not establish real-provider execution or either host's adoption.
 
+## CI-discovered test observation correction
+
+Initial [CI run 38854284902](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/38854284902)
+at publication `68b6a26972858cf6333b68d553fc566664626388` passed all four
+source suites and three complete jobs. The macOS/Python 3.12 unpacked-sdist
+suite failed `test_matching_terminal_ack_does_not_wait_for_repaired_response[hash-True]`
+with 1,101 other passes. This failed run is not counted as a green gate.
+
+Independent diagnosis traced a fixed 80 ms observation in the unchanged test,
+not evidence of a production acknowledgment defect. The driver acknowledges
+matching terminal custody before response admission and returns from cleanup
+after an acknowledged admission failure. A controlled 150 ms poll delay reproduced
+the same test failure with that correct driver. The actual CI scheduling timeline
+was not observed.
+
+Commit `20278ce` replaces only the test's observation/drain block: use the existing
+three-second bounded `wait_request`, retain whether progress occurred before
+repair, and always repair/drain in `finally` before asserting. All six hash/UTF-8/
+missing × ordinary/cleanup cases and their `failed` versus `timed_out` assertions
+remain. Runtime code, provider deadlines and custody contracts do not change.
+
+The delayed correct driver passes the conditional observation; the ordinary case
+still completes as `failed` before its one-second deadline. A deliberately broken
+driver that acknowledges only after response admission still fails the pre-repair
+assertion after the bounded wait, then drains both callbacks. These controlled
+observations establish that the correction retains the regression's distinction.
+The six existing focused cases pass on Python 3.12.13 (4.64 s) and 3.14.6
+(3.81 s), with 112 unrelated cases deselected in each run. A new complete native
+matrix and the planned full formal review assess the corrected publication head.
+
 ## Publication and formal review boundary
 
 The scoped publication branch uses main `dac1af62297402a0078a616e8e194c7a69cafe18`
@@ -101,7 +132,7 @@ containment remain explicitly unexposed/prompt-controlled where applicable.
 
 Runtime/package support changes remain bounded: 122 additions/7 deletions across
 runtime/package tools/config, including the 47-line installed probe; generated
-assets add 104 lines. Tests add 327 lines and remove five, covering the refusal
+assets add 104 lines. Tests add 338 lines and remove twelve, covering the refusal
 matrix and fault controls. Task 2 documentation adds 234/removes 14 lines; the
 growth over the initial estimate records complete API contracts and three
 contributions' distinct evidence limits, without new infrastructure.
