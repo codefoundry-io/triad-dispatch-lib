@@ -19,6 +19,14 @@ Claude adoption remains planned. Host releases, local installation, fresh-sessio
 exposure and adoption of this unpublished `0.1.0.dev4` revision are separate
 claims; a library change does not automatically update a consumer.
 
+The 2026-10-16 follow-up adds `RosterError.path/missing/document` and
+`validate_transport_receipt`/`ReceiptError`, retaining `0.1.0.dev4`. These are
+library contracts awaiting each host's independent adoption. See the
+[API](../spec/reference/library-api.md#rosters-and-contract-loading) and
+[contribution dispositions](requests/2026-10-16-adoption-followups-disposition.md).
+Issue #9 remains partial: unknown-key spelling is declined for this slice,
+without a permanent prohibition or host-message parity claim.
+
 Library [PR #2](https://github.com/codefoundry-io/triad-dispatch-lib/pull/2)
 merged at `ee8b4b4ab3c1440788733931874047a1821ee08e`, after R5 `AGREED` on
 reviewed head `830942e05d3681e7ded04a91d60850d18ea00d10`. Subsequent
@@ -72,6 +80,18 @@ result fields, emitted errors, input copies and shallow result mutability.
   R-TOKENS classifier. Keep measured vendor-error carriers, authentication STOP
   precedence, token mapping and repair analysis in the host until a separately
   specified extraction. Do not replace these with verdict-text keyword matching.
+- **Transport shape (C9):** pass only the parsed nested `transport` object to
+  `validate_transport_receipt`. Shape does not verify invocation identity,
+  `wrapper_cmd` equality, route/binary observations, attempt currency, stdin or
+  execution truth, envelopes, ownership, seals, reads or collection. Keep those
+  checks in the host; a shape-valid receipt cannot approve a review.
+- **Roster diagnostics:** `.document` names the evaluated defaults/override/
+  resolved document, not merged-property origin. `.path` contains schema
+  evaluation metadata, with possible omitted `$ref`/`if` hops; `.missing` is
+  selected-required-only and may remain `None` for missing route blocks under
+  `anyOf`. Preserve the host's formatting and reduced-diagnostics deviation.
+  Exception contexts/tracebacks may retain input references even when the public
+  attributes and message are value-free.
 - **Cancellation custody:** callbacks must retain each published native request
   until terminal acknowledgement, including cancellation-publication errors and
   failed receipt readiness/read operations or malformed/stale acknowledgement
@@ -121,6 +141,13 @@ with the proposed replacement; do not overwrite, reset or delete user content.
 Update the ledger only after successful writes, retain unrelated files and
 support recovery from interrupted upgrades. These are recommendations for future
 host work; this library slice changes no installer or global installation.
+
+PR #11's restored lock and tests at A `26e80918` remain attributed observations,
+without independently verified source. Host A owns its installer lock. Host B
+should check overlapping bootstrap, `scripts/bootstrap.sh --remove` and ordinary
+configuration readers against the same target. This is guidance consistent with
+R-THREAT's machine-level concurrency, not proof of a B race or a lock-transplant
+requirement. See the [scoped disposition](requests/2026-10-16-adoption-followups-disposition.md#pr-11-host-concurrency).
 
 ## Claude host adoption assessment (2026-10-15)
 
@@ -194,8 +221,10 @@ dependency packaging remain host-owned; runtime admission does not use a network
 
 Source tests, authoring validation, deterministic generation, unpacked-sdist
 tests and isolated wheel drivers establish static/synthetic library behavior.
-The installed probe verifies verdict, roster and prompt bundle identities and
-all eight payload digests from an isolated interpreter. Four-route synthetic
+The installed probe verifies verdict, roster, prompt and receipt bundle identities,
+all nine payload digests and the new API/diagnostic refusals from an isolated
+interpreter. The runtime contains four schemas in four bundles; sixteen other
+canonical contracts remain source-only (also retained in the sdist). Four-route synthetic
 responses exercise carriers and shared orchestration; they do not establish
 provider authentication, permissions, effective model controls or host adoption.
 

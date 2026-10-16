@@ -146,6 +146,13 @@ canonical admission remains required after carrier or recovery adaptation.
 
 ## Current owner disposition (2026-10-15)
 
+The later [2026-10-16 disposition](2026-10-16-adoption-followups-disposition.md)
+adds safe roster schema diagnostics (issue #9, partial) and the shape-only
+`validate_transport_receipt`/`ReceiptError` API (issue #10 / L3). It records
+PR #8's dev4 evidence limits and held #11/#12 contributions. The dated requests,
+counts and captures below retain their historical meaning; host adoption and
+the five issue #5 boundaries remain independently owned.
+
 The [approved adoption APIs](../design/2026-10-15-adoption-apis.md) settle the
 library boundary: `merge_roster`/`validate_resolved` and safe canonical `.missing`
 are implemented. Arbitrary duplicate `.member` is declined; Claude retains its

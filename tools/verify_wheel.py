@@ -56,6 +56,7 @@ def verify_bundles(data) -> dict:
     bundles = {
         "verdict": (data, ("leg-verdict.schema.json",)),
         "roster": (data.joinpath("roster-bundle"), ("contracts/review-legs.schema.json",)),
+        "receipt": (data.joinpath("receipt-bundle"), ("contracts/receipt-fields.json",)),
         "prompts": (data.joinpath("prompt-bundle"), (
             "contracts/review-kind.schema.json", "prompts/common-clauses.md",
             "prompts/leg-codex.md", "prompts/leg-claude.md", "prompts/leg-google.md",
@@ -66,6 +67,51 @@ def verify_bundles(data) -> dict:
         load_verified_bundle(bundle, payloads)
         report[name] = parse_json(bundle.joinpath("source-manifest.json").read_bytes())
     return report
+
+
+def verify_minimal_adoption() -> dict:
+    """Exercise installed APIs and fixed refusals, beyond checking exports."""
+    import triad_dispatch_lib as lib
+    from triad_dispatch_lib import receipt
+
+    doc = dict(schema_version=2.0, stdin_delivery="complete", route="codex",
+               binary="codex", cli_version="opaque future build", attempt=1.0)
+    saved = dict(doc)
+    assert lib.validate_transport_receipt(doc) is None and doc == saved
+    try:
+        lib.validate_transport_receipt({})
+    except lib.ReceiptError as error:
+        assert error.code == "schema_violation"
+        assert str(error) == "Transport receipt violates the canonical schema."
+    else:
+        raise AssertionError("Invalid transport accepted")
+
+    # Synthetic local schema fault tests the installed recursion refusal path.
+    loader = receipt._load_receipt_contract
+    try:
+        receipt._load_receipt_contract = lambda: {
+            "$defs": {"loop": {"$ref": "#/$defs/loop"}}, "$ref": "#/$defs/loop",
+        }
+        try:
+            lib.validate_transport_receipt(doc)
+        except lib.ReceiptError as error:
+            assert error.code == "nesting_limit"
+            assert str(error) == "Transport receipt nesting exceeds the validation limit."
+        else:
+            raise AssertionError("Recursive transport contract accepted")
+    finally:
+        receipt._load_receipt_contract = loader
+
+    try:
+        lib.validate_resolved({})
+    except lib.RosterError as error:
+        assert error.code == "schema_violation"
+        assert str(error) == "Roster violates the canonical schema."
+        assert (error.document, error.path, error.missing) == ("resolved", ("required",), "schema")
+    else:
+        raise AssertionError("Invalid resolved roster accepted")
+    return dict(transport_valid=True, transport_schema_refused=True,
+                transport_nesting_refused=True, roster_diagnostics=True)
 
 
 def probe(root: Path, prefix: Path) -> dict:
@@ -80,6 +126,7 @@ def probe(root: Path, prefix: Path) -> dict:
         "version": version("triad-dispatch-lib"), "python": platform.python_version(),
         "platform": platform.platform(), "machine": platform.machine(),
         "bundles": bundles,
+        "minimal_adoption": verify_minimal_adoption(),
         "dependencies": {name: version(name) for name in ("jsonschema", "referencing", "rpds-py", "attrs")},
         "replay_passed": passed,
     }
