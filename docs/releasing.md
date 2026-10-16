@@ -127,6 +127,21 @@ gh run rerun <original-run-id> --repo codefoundry-io/triad-dispatch-lib --failed
 gh run watch <original-run-id> --repo codefoundry-io/triad-dispatch-lib --exit-status
 ```
 
+Also prefer this original-run failed-jobs retry when verification succeeded but
+publication uploaded only a subset of assets before failing. First address any
+incomplete `starter` entry through the operator inspection/removal procedure
+below, and confirm that the original `release-artifacts` from the successful
+verification job is still available in that run's Artifacts section. The
+retried publication job downloads the retained verified archives instead of
+rebuilding them. The [pinned download action](https://github.com/actions/download-artifact/blob/v8.0.2/action.yml)
+uses the current workflow run by default; [GitHub keeps the run ID unchanged on
+re-run](https://docs.github.com/en/actions/reference/workflows-and-actions/variables#default-environment-variables).
+This recovery requires the original artifact to remain accessible and neither
+deleted nor expired. Repository/organization retention settings can expire it
+before the re-run window ends; see [artifact availability](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts).
+If it is unavailable, use the full tag-dispatch fallback below, which still
+requires rebuilt bytes to match every already-published asset.
+
 GitHub permits re-running a workflow for up to 30 days after its initial run,
 using the original SHA/ref. See
 [GitHub's re-run documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)
@@ -146,7 +161,8 @@ gh run watch <run-id> --repo codefoundry-io/triad-dispatch-lib --exit-status
 Full tag-dispatch retries rebuild and run verification again. They depend on a
 byte-identical rebuild of any already-published archives and can refuse after
 backend/compression/runner drift, even when the source tag is unchanged. Prefer
-the failed-job re-run above for a delivery-only failure. Existing uploaded
+the failed-job re-run above for delivery-only failures, or partial publication
+when the original verified artifact remains available. Existing uploaded
 assets are downloaded through
 the source GitHub asset API and compared byte for byte, including the manifest.
 Matching assets are reused; a valid partial subset uploads only missing files.
