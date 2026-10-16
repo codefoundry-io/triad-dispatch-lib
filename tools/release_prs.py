@@ -25,6 +25,9 @@ SOURCE_API = f"/repos/{SOURCE}"
 class GitHubAPI:
     """Small gh transport; tokens stay in the environment and never in arguments."""
 
+    def __init__(self, *, source_token=None):
+        self.source_token = source_token
+
     def request(self, method, path, payload=None):
         if not path.startswith("/repos/codefoundry-io/") or ":" in path or "\n" in path:
             raise ValueError("only GitHub repository API paths are supported")
@@ -33,8 +36,11 @@ class GitHubAPI:
                 "-H", "Accept: " + ("application/octet-stream" if binary else "application/vnd.github+json")]
         if payload is not None:
             args += ["--input", "-"]
+        environment = dict(os.environ)
+        if self.source_token is not None and (path == SOURCE_API or path.startswith(SOURCE_API + "/")):
+            environment["GH_TOKEN"] = self.source_token
         result = subprocess.run(args, input=None if payload is None else json.dumps(payload).encode(),
-                                capture_output=True, check=False)
+                                capture_output=True, check=False, env=environment)
         if result.returncode:
             # Do not print provider output, headers or credential material.
             if method == "GET" and b"(HTTP 404)" in result.stderr:
@@ -352,9 +358,12 @@ def main():
     args = parser.parse_args()
     if not os.environ.get("GH_TOKEN"):
         parser.error("GH_TOKEN is required; configure a GitHub App token for the two host repositories")
+    source_token = os.environ.get("SOURCE_GH_TOKEN")
+    if not source_token:
+        parser.error("SOURCE_GH_TOKEN is required; use the source workflow GITHUB_TOKEN separately from the host App token")
     if not re.fullmatch("v" + VERSION, args.tag, flags=re.ASCII):
         parser.error("invalid release tag")
-    api = GitHubAPI()
+    api = GitHubAPI(source_token=source_token)
     try:
         release = api.request("GET", f"{SOURCE_API}/releases/tags/{args.tag}")
         if not release:

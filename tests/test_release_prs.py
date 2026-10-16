@@ -344,14 +344,22 @@ def test_truncated_tree_refuses_writes(helper):
 
 def test_cli_dry_run_writes_previews_for_both_targets(helper, monkeypatch, tmp_path, capsys):
     api = FakeAPI()
-    monkeypatch.setattr(helper, "GitHubAPI", lambda: api)
+    credentials = []
+
+    def client(*, source_token):
+        credentials.append(source_token)
+        return api
+
+    monkeypatch.setattr(helper, "GitHubAPI", client)
     monkeypatch.setenv("GH_TOKEN", "fixture-secret")
+    monkeypatch.setenv("SOURCE_GH_TOKEN", "fixture-source-secret")
     monkeypatch.setattr(sys, "argv", ["release_prs.py", "--tag", TAG, "--dry-run-dir", str(tmp_path)])
     helper.main()
     output = json.loads(capsys.readouterr().out)
     assert {target: result["status"] for target, result in output.items()} == {TARGET: "preview", CLAUDE: "preview"}
     assert not api.writes
     assert len(list(tmp_path.rglob("release.json"))) == 2
+    assert credentials == ["fixture-source-secret"]
     assert not any("fixture-secret" in p.read_text() for p in tmp_path.rglob("*") if p.is_file())
 
 
@@ -416,8 +424,9 @@ def counting_api():
 
 def test_cli_manifest_download_counter_change_does_not_invalidate_release(helper, monkeypatch, tmp_path, capsys):
     api, targets = counting_api()
-    monkeypatch.setattr(helper, "GitHubAPI", lambda: api)
+    monkeypatch.setattr(helper, "GitHubAPI", lambda **kwargs: api)
     monkeypatch.setenv("GH_TOKEN", "fixture-secret")
+    monkeypatch.setenv("SOURCE_GH_TOKEN", "fixture-source-secret")
     monkeypatch.setattr(sys, "argv", ["release_prs.py", "--tag", TAG, "--dry-run-dir", str(tmp_path)])
     helper.main()
     result = json.loads(capsys.readouterr().out)
@@ -472,3 +481,54 @@ def test_bad_adoption_shape_is_target_local_and_second_target_continues(helper, 
     assert "adoption record" in results[TARGET]["error"]
     assert results[CLAUDE]["status"] == "created"
     assert not targets[TARGET].writes
+
+
+def test_source_and_target_credentials_use_separate_child_environments(helper, monkeypatch, capsys):
+    calls = []
+    monkeypatch.setenv("GH_TOKEN", "host-app-secret")
+    monkeypatch.setenv("SOURCE_GH_TOKEN", "workflow-source-secret")
+    before = dict(os.environ)
+
+    def run(args, **kwargs):
+        calls.append((args, kwargs))
+        return subprocess.CompletedProcess(args, 0, stdout=b"{}", stderr=b"")
+
+    monkeypatch.setattr(helper.subprocess, "run", run)
+    api = helper.GitHubAPI(source_token="workflow-source-secret")
+    paths = [f"/repos/{SOURCE}/releases/7", f"/repos/{SOURCE}/releases/assets/1",
+             f"/repos/{TARGET}/pulls", f"/repos/{CLAUDE}/git/refs"]
+    for path in paths:
+        api.request("GET" if path.startswith(f"/repos/{SOURCE}/") else "POST", path)
+    assert [options["env"]["GH_TOKEN"] for _, options in calls] == [
+        "workflow-source-secret", "workflow-source-secret", "host-app-secret", "host-app-secret"]
+    assert dict(os.environ) == before
+    assert all("host-app-secret" not in str(args) and "workflow-source-secret" not in str(args)
+               for args, _ in calls)
+    assert capsys.readouterr() == ("", "")
+
+
+def test_default_source_only_client_preserves_existing_token_context(helper, monkeypatch):
+    credentials = []
+    monkeypatch.setenv("GH_TOKEN", "publisher-source-secret")
+
+    def run(args, **kwargs):
+        credentials.append(kwargs.get("env", os.environ)["GH_TOKEN"])
+        return subprocess.CompletedProcess(args, 0, stdout=b"{}", stderr=b"")
+
+    monkeypatch.setattr(helper.subprocess, "run", run)
+    helper.GitHubAPI().request("GET", f"/repos/{SOURCE}/releases/7")
+    assert credentials == ["publisher-source-secret"]
+
+
+def test_cli_missing_source_token_reports_credential_boundary_before_network(helper, monkeypatch, capsys):
+    monkeypatch.delenv("SOURCE_GH_TOKEN", raising=False)
+    monkeypatch.setenv("GH_TOKEN", "host-app-secret")
+    monkeypatch.setattr(sys, "argv", ["release_prs.py", "--tag", TAG])
+    monkeypatch.setattr(helper, "GitHubAPI", lambda: pytest.fail("credentials must be checked before transport"))
+    with pytest.raises(SystemExit) as error:
+        helper.main()
+    assert error.value.code == 2
+    output = capsys.readouterr()
+    assert "SOURCE_GH_TOKEN is required" in output.err
+    assert "source workflow GITHUB_TOKEN" in output.err
+    assert "host-app-secret" not in output.out + output.err
