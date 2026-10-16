@@ -8,18 +8,28 @@ are `codefoundry-io/triad-codex-dispatch` and `codefoundry-io/triad-dispatch`.
 
 ## Select and verify an exact source
 
-As of 2026-10-16, this library has no published release. `0.1.0.dev4` is a source
-candidate; use the candidate path below until a release exists. Never infer a
-released version from package metadata, a tag alone or an update PR.
+Use the published path when your chosen tag has an acceptable published GitHub
+release and verified assets; otherwise use the exact-source candidate path.
+A development version such as `0.1.0.dev4` may be a local candidate or a published
+prerelease: inspect the chosen release rather than inferring publication from
+package metadata, a tag alone or an update PR.
 
 Read the host's instructions, adoption record and dirty state before changing it.
 Choose an owner-reviewed full lowercase source commit. For a published install,
 also choose an explicit release tag (`v` plus its package version), verify that
 GitHub marks it published rather than draft, and decide whether its prerelease
 status is acceptable. Record the decision; do not use floating `latest` or `main`.
-Replace the placeholder before running these commands in a new temporary directory:
+Assemble the selection block below, exactly ONE of the published/candidate blocks,
+and the install/smoke block into ONE dedicated shell script, then run that script
+as a separate process (for example, `sh /path/to/install-library.sh`). Replace its
+placeholders first. Do not paste `set -eu` into the user's interactive shell.
+All selected blocks must share the same process: `WORK`, `PY` and `SOURCE_COMMIT`
+are its shell variables. If your tool starts a fresh shell for every call,
+combine the selected blocks in that one script before executing it. Never
+concatenate both source alternatives. The script creates a new temporary directory.
 
 ```sh
+#!/bin/sh
 set -eu
 SOURCE_COMMIT=REPLACE_WITH_REVIEWED_40_HEX_COMMIT
 WORK=$(mktemp -d)
@@ -48,6 +58,9 @@ comparisons below also bind it to your chosen source and tag. A failed check
 stops installation; do not repair the manifest or bypass the check.
 
 ```sh
+: "${WORK:?Run source selection first in the same dedicated script}"
+: "${PY:?Run source selection first in the same dedicated script}"
+: "${SOURCE_COMMIT:?Run source selection first in the same dedicated script}"
 TAG=REPLACE_WITH_PUBLISHED_TAG
 "$PY" -I - "$WORK/source" "$WORK/artifacts" "$TAG" "$SOURCE_COMMIT" <<'PY'
 import json, pathlib, sys, urllib.request
@@ -86,6 +99,9 @@ This is a local candidate, even when its manifest contains release-shaped URLs;
 those URLs do not imply published assets and must not be used as download proof.
 
 ```sh
+: "${WORK:?Run source selection first in the same dedicated script}"
+: "${PY:?Run source selection first in the same dedicated script}"
+: "${SOURCE_COMMIT:?Run source selection first in the same dedicated script}"
 uv build --python "$PY" --sdist --out-dir "$WORK/build" "$WORK/source"
 uv build --python "$PY" --wheel --out-dir "$WORK/build" "$WORK/build/"*.tar.gz
 # uv may create auxiliary files; copy only the two distributions for validation.
@@ -114,6 +130,9 @@ packages are insufficient. Record the resolved dependency versions and hashes
 for repeatable host packaging rather than assuming these ranges are a lock.
 
 ```sh
+: "${WORK:?Run source selection first in the same dedicated script}"
+: "${PY:?Run source selection first in the same dedicated script}"
+: "${SOURCE_COMMIT:?Run source selection first in the same dedicated script}"
 "$PY" -I -m pip --isolated --disable-pip-version-check install --only-binary=:all: "$WORK/artifacts/"*.whl
 "$PY" -I -m pip check
 "$PY" -I - "$WORK/env" "$WORK/artifacts" <<'PY'
@@ -236,7 +255,9 @@ on 2026-10-16; reread them before executing their current installer commands.
   Use `/plugin marketplace add codefoundry-io/triad-dispatch` and `/plugin install
   triad-dispatch@triad-dispatch`. Run installed `scripts/setup_permissions.py` from
   each target project (or with its explicit `--target`), then restart. Update via
-  `claude plugin update triad-dispatch`, rerun permission setup for the same targets
+  `claude plugin update triad-dispatch@triad-dispatch` in a shell
+  ([official update reference](https://code.claude.com/docs/en/discover-plugins#update-plugins-now)),
+  rerun permission setup for the same targets
   using the new installed script, and restart. AGY setup remains in host scripts.
 
 Verify fresh-session skill exposure and the adopted APIs/routes separately from

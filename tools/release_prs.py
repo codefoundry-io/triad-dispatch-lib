@@ -191,8 +191,8 @@ execution adapters and verify host behavior before publishing a host release.
 After an independently verified host release, run
 `/plugin marketplace add codefoundry-io/triad-dispatch` and
 `/plugin install triad-dispatch@triad-dispatch` in Claude Code.
-For updates, use `claude plugin update triad-dispatch` (or `/plugin update
-triad-dispatch@triad-dispatch` in Claude Code), then run
+For updates, run `claude plugin update triad-dispatch@triad-dispatch` in a shell
+([official update reference](https://code.claude.com/docs/en/discover-plugins#update-plugins-now)), then run
 `python3 <plugin-dir>/scripts/setup_permissions.py` in every project using the
 same host-documented `--target` selection; restart Claude Code. Follow the host
 guide for plugin paths, project permission refresh, Gemini and AGY setup.
@@ -263,6 +263,8 @@ def _files(release, manifest, target, previous):
 
 def _tree(api, repo, sha):
     value = api.request("GET", f"{repo}/git/trees/{sha}?recursive=1")
+    if not isinstance(value, dict) or not isinstance(value.get("tree"), list):
+        raise ValueError("cannot inspect missing or invalid Git tree")
     if value.get("truncated") is not False:
         raise ValueError("cannot safely inspect a truncated Git tree")
     return {e["path"]: {k: e[k] for k in ("mode", "type", "sha")}
@@ -304,6 +306,8 @@ def deliver(api, release: dict, manifest: dict, target: str) -> dict:
             if entry["mode"] != "100644" or entry["type"] != "blob":
                 raise ValueError("existing notice must contain regular files")
             blob = api.request("GET", f"{repo}/git/blobs/{entry['sha']}")
+            if not isinstance(blob, dict) or not isinstance(blob.get("content"), str):
+                raise ValueError("cannot inspect missing or invalid Git blob; preserving branch")
             if blob.get("encoding") != "base64" or base64.b64decode(blob["content"]) != content.encode():
                 raise ValueError("existing branch notice differs; preserving maintainer edits")
     else:

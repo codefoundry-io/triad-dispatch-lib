@@ -163,14 +163,17 @@ class FakeAPI:
 
 @pytest.mark.parametrize("target,guide,command", [
     (TARGET, "docs/installation.md", "codex plugin"),
-    (CLAUDE, "README.md", "/plugin update")])
+    (CLAUDE, "README.md", "claude plugin update triad-dispatch@triad-dispatch")])
 def test_notice_preserves_data_and_explains_host_boundaries(helper, target, guide, command):
     release, manifest, _ = fixture()
     notice = helper.render_notice(release, manifest, target)
+    normalized = " ".join(notice.split())
     for text in (guide, command, "1.2.3", SHA, "Pending host adoption", "Host CI: pending",
                  "Pre-merge", "Post-host-release", "Rollback", "unrecorded",
                  "docs/installing.md", "$(touch /tmp/never)"):
-        assert text in notice
+        assert text in normalized
+    if target == CLAUDE:
+        assert "/plugin update" not in normalized
     for artifact in manifest["artifacts"]:
         assert artifact["sha256"] in notice and artifact["url"] in notice
     assert "not proof" in notice
@@ -532,3 +535,27 @@ def test_cli_missing_source_token_reports_credential_boundary_before_network(hel
     assert "SOURCE_GH_TOKEN is required" in output.err
     assert "source workflow GITHUB_TOKEN" in output.err
     assert "host-app-secret" not in output.out + output.err
+
+
+@pytest.mark.parametrize("resource,response", [("tree", None), ("tree", []),
+                                               ("blob", None), ("blob", [])])
+def test_unavailable_git_object_is_target_local_and_second_target_continues(helper, resource, response):
+    api, targets = counting_api()
+    if resource == "blob":
+        helper.deliver(api, deepcopy(api.release), api.manifest, TARGET)
+        targets[TARGET].prs.clear()
+        targets[TARGET].calls.clear()
+    original = api.request
+
+    def request(method, path, payload=None):
+        endpoint = "git/trees/" if resource == "tree" else "git/blobs/"
+        if method == "GET" and path.startswith(f"/repos/{TARGET}/{endpoint}"):
+            return response
+        return original(method, path, payload)
+
+    api.request = request
+    results = helper.deliver_targets(api, deepcopy(api.release), api.manifest)
+    assert results[TARGET]["status"] == "error"
+    assert f"Git {resource}" in results[TARGET]["error"]
+    assert not targets[TARGET].writes
+    assert results[CLAUDE]["status"] == "created"
