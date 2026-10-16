@@ -14,9 +14,12 @@ read-only audit found no library releases, repository-visible Actions variables
 or secret names, or environments. In particular, `TRIAD_RELEASE_APP_ID` and
 `TRIAD_RELEASE_APP_PRIVATE_KEY` were absent from the inspected repository and
 applicable organization scopes. App registration/installation itself was not
-inspected. Activation remains pending: merge the reviewed workflow, configure
-the App and explicitly authorize an actual release. Source tests and local
-candidate builds do not prove live publication or host adoption.
+inspected. That audit preceded the owner-authorized PR #14 merge and
+[v0.1.0.dev4 publication](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4).
+The exact-tag four-platform verification and publication jobs succeeded with
+wheel, sdist and manifest assets. Delivery remains pending App configuration:
+the delivery job refused missing settings and sent no host notices. Publication
+does not establish host adoption.
 
 ## Configure the GitHub App
 

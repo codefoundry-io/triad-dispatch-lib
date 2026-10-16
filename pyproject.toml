@@ -15,7 +15,10 @@ dependencies = ["jsonschema>=4.26,<5", "referencing>=0.37,<1"]
 Repository = "https://github.com/codefoundry-io/triad-dispatch-lib"
 
 [dependency-groups]
-dev = ["pytest>=9,<10"]
+dev = [
+    "griffe>=2.3.2",
+    "pytest>=9,<10",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
