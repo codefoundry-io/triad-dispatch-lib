@@ -390,3 +390,85 @@ def test_invalid_adoption_record_is_preserved_and_refuses_writes(helper, record)
     with pytest.raises(ValueError):
         helper.deliver(api, api.release, api.manifest, TARGET)
     assert not api.writes
+
+
+def counting_api():
+    """GitHub increments asset counters while target repositories stay independent."""
+    source = FakeAPI()
+    targets = {target: FakeAPI() for target in (TARGET, CLAUDE)}
+    for asset in source.release["assets"]:
+        asset["download_count"] = 0
+    original = source.request
+
+    def request(method, path, payload=None):
+        if path.startswith(f"/repos/{SOURCE}/"):
+            result = original(method, path, payload)
+            if "/releases/assets/" in path:
+                asset_id = int(path.rsplit("/", 1)[1])
+                next(a for a in source.release["assets"] if a["id"] == asset_id)["download_count"] += 1
+            return result
+        target = next(t for t in targets if path == f"/repos/{t}" or path.startswith(f"/repos/{t}/"))
+        return targets[target].request(method, path, payload)
+
+    source.request = request
+    return source, targets
+
+
+def test_cli_manifest_download_counter_change_does_not_invalidate_release(helper, monkeypatch, tmp_path, capsys):
+    api, targets = counting_api()
+    monkeypatch.setattr(helper, "GitHubAPI", lambda: api)
+    monkeypatch.setenv("GH_TOKEN", "fixture-secret")
+    monkeypatch.setattr(sys, "argv", ["release_prs.py", "--tag", TAG, "--dry-run-dir", str(tmp_path)])
+    helper.main()
+    result = json.loads(capsys.readouterr().out)
+    assert [result[t]["status"] for t in (TARGET, CLAUDE)] == ["preview", "preview"]
+    assert all(not target.writes for target in targets.values())
+    assert api.release["assets"][2]["download_count"] >= 3
+
+
+def test_first_target_download_counters_do_not_block_second_target(helper):
+    api, targets = counting_api()
+    release = deepcopy(api.release)
+    results = helper.deliver_targets(api, release, api.manifest)
+    assert [results[t]["status"] for t in (TARGET, CLAUDE)] == ["created", "created"]
+    assert all(any(p.endswith("/pulls") for _, p, _ in target.writes) for target in targets.values())
+    assert all(a["download_count"] == 2 for a in api.release["assets"])
+
+
+@pytest.mark.parametrize("field", ["body", "name", "id", "published_at", "asset-id", "asset-name",
+                                   "asset-url", "asset-size", "asset-state", "asset-digest"])
+def test_meaningful_release_or_asset_changes_still_refuse_writes(helper, field):
+    api = FakeAPI()
+    release = deepcopy(api.release)
+    if field.startswith("asset-"):
+        key = {"url": "browser_download_url"}.get(field[6:], field[6:])
+        api.release["assets"][0][key] = "changed"
+    else:
+        api.release[field] = "changed"
+    with pytest.raises(ValueError, match="metadata changed"):
+        helper.deliver(api, release, api.manifest, TARGET)
+    assert not api.writes
+
+
+@pytest.mark.parametrize("record", [[], None, "invalid", 1, {"library": []},
+    {"name": "triad-dispatch-lib", "version": []},
+    {"name": "triad-dispatch-lib", "version": {}},
+    {"name": "triad-dispatch-lib", "version": 1},
+    {"name": "triad-dispatch-lib", "version": False},
+    {"name": "triad-dispatch-lib", "version": ""}])
+def test_bad_adoption_shape_is_target_local_and_second_target_continues(helper, record):
+    api, targets = counting_api()
+    original = api.request
+
+    def request(method, path, payload=None):
+        if path.startswith(f"/repos/{TARGET}/contents/contracts/library-adoption.json?"):
+            return {"type": "file", "encoding": "base64",
+                    "content": base64.b64encode(json.dumps(record).encode()).decode()}
+        return original(method, path, payload)
+
+    api.request = request
+    results = helper.deliver_targets(api, deepcopy(api.release), api.manifest)
+    assert results[TARGET]["status"] == "error"
+    assert "adoption record" in results[TARGET]["error"]
+    assert results[CLAUDE]["status"] == "created"
+    assert not targets[TARGET].writes

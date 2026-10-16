@@ -81,10 +81,25 @@ def validate_release(api, release, manifest):
     """Bind a manifest to current published metadata and the actual tagged commit."""
     _release_metadata(release, manifest)
     current = api.request("GET", f"{SOURCE_API}/releases/{release['id']}")
-    if current != release:
+    if _release_identity(current) != _release_identity(release):
         raise ValueError("release metadata changed; reload the published release")
     if resolve_tag(api, manifest["tag"]) != manifest["source_commit"]:
         raise ValueError("release tag does not resolve to manifest source_commit")
+
+
+def _release_identity(release):
+    """Select release content/asset identity, excluding mutable usage counters."""
+    if not isinstance(release, dict) or not isinstance(release.get("assets"), list):
+        raise ValueError("invalid published release metadata")
+    fields = ("id", "tag_name", "html_url", "draft", "prerelease", "published_at", "name", "body")
+    asset_fields = ("id", "name", "size", "state", "browser_download_url", "url", "digest",
+                    "created_at", "updated_at", "content_type", "label")
+    assets = []
+    for asset in release["assets"]:
+        if not isinstance(asset, dict):
+            raise ValueError("invalid published release asset metadata")
+        assets.append({field: asset.get(field) for field in asset_fields})
+    return ({field: release.get(field) for field in fields}, assets)
 
 
 def _asset(release, name, url):
@@ -222,9 +237,12 @@ def _context(api, target, base_sha=None):
     record = api.request("GET", f"{repo}/contents/contracts/library-adoption.json?ref={quote(base, safe='')}")
     previous = None
     if record is not None:
-        if record.get("type") != "file" or record.get("encoding") != "base64":
+        if (not isinstance(record, dict) or record.get("type") != "file"
+                or record.get("encoding") != "base64" or not isinstance(record.get("content"), str)):
             raise ValueError("adoption record must be a regular JSON file")
         value = json.loads(base64.b64decode(record["content"]))
+        if not isinstance(value, dict):
+            raise ValueError("invalid existing library adoption record: expected a JSON object")
         previous = value.get("version")
         if value.get("name") != "triad-dispatch-lib" or not isinstance(previous, str) or not previous:
             raise ValueError("invalid existing library adoption record")
