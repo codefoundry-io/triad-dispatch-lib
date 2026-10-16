@@ -29,6 +29,10 @@ initializer origin must match the requested source. The metadata in
 [api-compatibility.json](../api-compatibility.json)
 records the original floor, current structural baseline and advancement history.
 It does not automatically follow tags, main or the latest release.
+Full commit IDs are the authoritative comparison identities. `version` values
+are descriptive release or transition labels reviewed with the metadata; the
+checker does not authenticate releases or derive the baseline from mutable
+tags. Maintainers verify labels and the approved source when advancing it.
 
 The locked development dependency Griffe statically resolves root aliases and
 generates dataclass constructor signatures. The wrapper projects each exported
@@ -44,6 +48,7 @@ argument
 default changes, optional-to-required changes, newly
 required arguments and loss of supported resolved ancestry (including documented
 exception bases). Griffe's MRO supplies resolved ancestors; their canonical base
+references resolve through Griffe's final targets across re-export hops. These
 identities preserve exported root bases and external leaves while allowing
 non-exported intermediate classes to be inserted or renamed. All public aliases
 of a base retain their identities regardless of export order. This does not
@@ -51,6 +56,10 @@ establish arbitrary inheritance equivalence. Existing argument names remain
 protected even when variadic
 arguments could swallow them. Added exports, optional keyword arguments,
 private helpers and internal implementation moves remain allowed.
+Variadic additions and local `*args`/`**kwargs` variable renames are allowed;
+removing a variadic kind or a real named argument remains a break. Projected
+variadic names use spaced kind identities that cannot collide with legal
+ordinary parameter names.
 Safe argument widening (required to optional, positional-only or keyword-only
 to positional-or-keyword) also remains allowed through Griffe's compatibility rules.
 
@@ -82,11 +91,21 @@ origin is the environment's `site-packages` and its distribution version matches
 the candidate project. This adds installed consumer evidence to the existing
 raw-corpus/bundle checks; it is not exhaustive behavioral equivalence.
 
-On release, maintainers may advance `baseline` to a full reviewed release commit
-only after preserving the existing consumer/regression checks and adding checks
-for newly public behavior. Append the previous baseline and advancement decision
-to `history`; retain `floor` and its export list. Keep the old tests when advancing,
-so a later baseline does not silently erase the original behavioral floor.
-A deliberate incompatibility requires an explicit reviewed owner decision,
-updated contract/tests and migration notes explaining affected calls and remedies.
-There is no automatic refresh, rewrite or waiver flag.
+For routine compatible releases, maintainers may advance `baseline` to a full
+reviewed release commit after retaining existing checks and adding checks for
+newly public behavior. Record the previous baseline and advancement decision
+in `history`; preserve the original floor identity and historical export list.
+
+An incompatible transition requires an explicit reviewed owner decision,
+updated contract/tests and migration notes naming affected calls and remedies.
+For that approved transition only, maintainers may manually set `baseline` to
+an existing reviewed API-source commit before release, and update the active
+`floor_exports` and affected checks for the specifically approved differences.
+Preserve the previous baseline and protected export list in `history`; retain
+all unaffected protections. Commit the API source before the metadata that
+references its full SHA. The final candidate must match that reviewed source
+plus separately checked compatible edits. This requires no failing-gate merge
+or automatic waiver. A version bump alone authorizes none of these changes.
+
+No fixed pre-1.0 deprecation window is promised. After 1.0, the major-version
+expectation above applies. There is no automatic refresh, rewrite or waiver flag.

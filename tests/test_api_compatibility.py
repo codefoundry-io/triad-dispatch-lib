@@ -205,13 +205,42 @@ def test_exported_base_alias_order_does_not_change_identity(tmp_path):
                    new_helpers="class Base(ValueError): pass") == []
 
 
-@pytest.mark.parametrize("from_source_cwd", [False, True])
-@pytest.mark.parametrize("candidate, breaks", [
-    ("__all__=['api']\ndef api(a, b=1): pass", False),
-    ("__all__=['api']\ndef api(b=1): pass", True),
-    ("__all__=['api','extra']\ndef api(a, b=1, *, option=None): pass\ndef extra(): pass", False),
+@pytest.mark.parametrize("public", [False, True])
+@pytest.mark.parametrize("candidate_base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_multihop_base_move_preserves_final_identity(tmp_path, public, candidate_base, breaks):
+    base = "Base" if public else "_Intermediate"
+    exports = "['Base','Error']" if public else "['Error']"
+    initializer = (f"from ._base import {base}\n" if public else "") + f"from .errors import Error\n__all__={exports}"
+    for label, module, ancestor in [("old", "compat", "ValueError"), ("new", "_base", candidate_base)]:
+        root = tmp_path / label / "sample"
+        root.mkdir(parents=True)
+        (root / "__init__.py").write_text(initializer)
+        (root / "errors.py").write_text(f"from .{module} import {base}\nclass Error({base}): pass")
+        (root / "compat.py").write_text(f"from ._base import {base}")
+        (root / "_base.py").write_text(f"class {base}({ancestor}): pass")
+    assert bool(checker().compare_sources(tmp_path / "old", tmp_path / "new", package="sample")) is breaks
+
+
+@pytest.mark.parametrize("old, new, breaks", [
+    ("a", "a, *args", False), ("a", "a, **options", False),
+    ("a, *args", "a, *values", False), ("a, **kwargs", "a, **options", False),
+    ("a, *args", "a", True), ("a, **kwargs", "a", True),
+    ("a, *args", "a, **kwargs", True), ("a, **kwargs", "a, *args", True),
+    ("a", "a, b", True),
 ])
-def test_repository_archive_compares_real_baseline(tmp_path, monkeypatch, from_source_cwd, candidate, breaks):
+def test_variadic_spelling_and_kind_contracts(tmp_path, old, new, breaks):
+    assert bool(compare(tmp_path, f"__all__=['api']\ndef api({old}): pass",
+                        f"__all__=['api']\ndef api({new}): pass")) is breaks
+
+
+@pytest.mark.parametrize("name", ["args", "kwargs", "variadic_positional", "variadic_keyword"])
+def test_variadic_names_cannot_hide_removed_ordinary_argument(tmp_path, name):
+    errors = compare(tmp_path, f"__all__=['api']\ndef api({name}, **options): pass",
+                     f"__all__=['api']\ndef api(**{name}): pass")
+    assert f"api({name}): existing argument removed" in errors
+
+
+def git_baseline(tmp_path):
     source = tmp_path / "src" / "triad_dispatch_lib"
     source.mkdir(parents=True)
     initializer = source / "__init__.py"
@@ -222,12 +251,38 @@ def test_repository_archive_compares_real_baseline(tmp_path, monkeypatch, from_s
                     "commit", "--quiet", "-m", "Synthetic baseline"], cwd=tmp_path, check=True)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True).strip()
     metadata(tmp_path, commit)
+    return initializer
+
+
+@pytest.mark.parametrize("exports, diagnostic", [
+    ([], "baseline requires nonempty protected floor exports"),
+    ([1], "baseline requires nonempty protected floor exports"),
+    (["absent"], "baseline lost protected floor exports"),
+])
+def test_floor_export_guards_refuse_invalid_active_protection(tmp_path, exports, diagnostic):
+    git_baseline(tmp_path)
+    path = tmp_path / "api-compatibility.json"
+    document = json.loads(path.read_text())
+    document["floor_exports"] = exports
+    path.write_text(json.dumps(document))
+    with pytest.raises(ValueError, match=diagnostic):
+        checker().check_repository(tmp_path)
+
+
+@pytest.mark.parametrize("from_source_cwd", [False, True])
+@pytest.mark.parametrize("candidate, breaks", [
+    ("__all__=['api']\ndef api(a, b=1): pass", False),
+    ("__all__=['api']\ndef api(b=1): pass", True),
+    ("__all__=['api','extra']\ndef api(a, b=1, *, option=None): pass\ndef extra(): pass", False),
+])
+def test_repository_archive_compares_real_baseline(tmp_path, monkeypatch, from_source_cwd, candidate, breaks):
+    initializer = git_baseline(tmp_path)
     initializer.write_text(candidate)
     monkeypatch.chdir(tmp_path / "src" if from_source_cwd else tmp_path)
     errors = checker().check_repository(tmp_path)
     assert bool(errors) is breaks
     if breaks:
-        assert any("api" in error and "a" in error for error in errors)
+        assert "api(a): existing argument removed" in errors
 
 
 def test_resolved_baseline_identity_mismatch_refuses(tmp_path, monkeypatch):

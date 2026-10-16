@@ -43,8 +43,11 @@ def callable_surface(obj):
                 and public_parameters[0].kind in (griffe.ParameterKind.positional_only,
                                                   griffe.ParameterKind.positional_or_keyword)):
             public_parameters = public_parameters[1:]
+    # Spaced kind names cannot collide with legal ordinary parameter identifiers.
     parameters = griffe.Parameters(*(griffe.Parameter(
-        p.name, kind=p.kind, default=p.default) for p in public_parameters))
+        p.kind.value if p.kind in (griffe.ParameterKind.var_positional,
+                                  griffe.ParameterKind.var_keyword) else p.name,
+        kind=p.kind, default=p.default) for p in public_parameters))
     return griffe.Function("call", parameters=parameters)
 
 
@@ -64,12 +67,19 @@ def compare_exports(old, new):
             # Exception inheritance is a documented root contract. Normalize root
             # aliases so moving their implementation module remains compatible.
             def bases(obj, exports):
+                def identity(ancestor, base):
+                    path = getattr(base, "canonical_path", str(base))
+                    try:
+                        target = ancestor.modules_collection.get_member(path)
+                        return target.final_target.path if target.is_alias else target.path
+                    except (KeyError, griffe.AliasResolutionError, griffe.CyclicAliasError):
+                        return path
                 paths = {}
                 for public, target in exports.items():
                     paths.setdefault(target.path, set()).add(public)
                 ancestors = obj.mro()
                 internal = {base.path for base in ancestors} - paths.keys()
-                identities = {getattr(base, "canonical_path", str(base))
+                identities = {identity(ancestor, base)
                               for ancestor in [obj, *ancestors] for base in ancestor.bases}
                 return {public for identity in identities if identity not in internal
                         for public in paths.get(identity, {identity.removeprefix("builtins.")})}
