@@ -2,6 +2,28 @@
 
 Updated: 2026-10-16
 
+## Release delivery: implementation candidate
+
+The resumed [release-delivery plan](superpowers/plans/2026-10-16-release-update-prs.md)
+provides immutable artifact manifests, idempotent update proposals for the two
+host repositories, a reusable exact-commit native CI workflow and source release
+publication with a separate scoped GitHub App delivery token. The
+[operator guide](releasing.md) covers configuration, publication, retry and
+preview; the [consumer guide](installing.md) covers GitHub Release discovery,
+exact wheel/sdist/manifest acquisition, verified library installation and
+platform dependencies. The owner's subsequent scope correction supersedes the
+earlier host installation/update requirement: this repository distributes the
+library and release notices; consuming projects own integration and deployment.
+The candidate normalizes sdist build metadata before extraction/rebuild and
+refuses differing published bytes. Source tests and workflow checks are local
+candidate evidence; exact-head native CI and formal review remain separate.
+
+The 2026-10-16 read-only audit found no library releases or the required
+`TRIAD_RELEASE_APP_ID`/`TRIAD_RELEASE_APP_PRIVATE_KEY` settings in accessible
+repository/organization Actions scopes; App existence itself was not inspected.
+Activation remains pending. No credentials were registered, no test releases or
+host PRs were sent, and no new host adoption or installed behavior is claimed.
+
 ## Minimal adoption follow-ups: implementation candidate
 
 The owner requested a minimal design and formal three-family review after
@@ -11,7 +33,7 @@ defines safe roster diagnostics, a transport-shape API and bounded corrections
 to attributed evidence. The owner subsequently approved minimal implementation,
 both Minor regressions/documentation, the same review composition and GitHub updates.
 Host installation, classifiers and model selection stay guidance; issue #5 remains pending.
-The separate release-update-PR work is held with its current edits preserved.
+The separate release-update-PR work was subsequently resumed, as recorded above.
 Review uses the project profile, authorized official web research and 2400-second
 budgets; a plan result does not replace implementation verification.
 

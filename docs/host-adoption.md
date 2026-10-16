@@ -1,5 +1,9 @@
 # Independent host adoption
 
+For library acquisition, see [obtain and install the library](installing.md):
+exact-source/release selection, artifact verification, isolated installation,
+public API smoke and platform dependency requirements.
+
 `triad-dispatch-lib` owns common contracts, prompt clauses, cases and deterministic
 behavior. The Claude host (`triad-dispatch`) and Codex host
 (`triad-codex-dispatch`) own native spawning, model/effort resolution, native
@@ -43,6 +47,15 @@ Each host should retain the following with its adapter/release evidence:
 - Host adapter version/commit and independent host release version.
 - Supported routes, platform/Python combination, native controls, explicit host
   exceptions and case/conformance results with unrun checks named.
+
+The release-notice tool optionally reads `contracts/library-adoption.json` to
+report a consumer's previously recorded library version. When present, it must be
+a regular JSON file containing an object with top-level `name` equal to
+`"triad-dispatch-lib"` and a nonempty string `version`; additional fields are
+allowed. An absent file reports `unrecorded`, not proof of no adoption. An existing
+incompatible record fails notice delivery only for that target; other targets
+continue independently. This describes existing notice metadata, not a new host
+schema or a requirement to port or create a record.
 
 `spec/import-origin.json` records original import ancestry only. It does not pin
 newly edited guidance. Legacy schema `$id` values remain wire identities even
