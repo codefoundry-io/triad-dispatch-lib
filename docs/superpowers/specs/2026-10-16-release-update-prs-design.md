@@ -72,7 +72,8 @@ two named distribution repositories remain the only automatic delivery targets.
 
 - Source release link, version, source commit and artifact hashes.
 - Release notes copied as data; no shell interpolation of notes, tags or titles.
-- Previous recorded library version (or unrecorded), pending adoption/CI and API links.
+- Previous recorded library version (or unrecorded), pending adoption and API links;
+  the notice supplies no host verification evidence.
 - Exact wheel/sdist/manifest acquisition and library verification guidance.
 - Consumer ownership of integration, native adapters and deployment; no plugin
   installation/update commands or host rollback procedure.

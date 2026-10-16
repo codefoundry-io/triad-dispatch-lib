@@ -231,7 +231,7 @@ A proposal uses branch `automation/triad-lib/v0.1.0.dev4` and title
 - `docs/library-updates/v0.1.0.dev4/release.json`: release and archive identity.
 - `docs/library-updates/v0.1.0.dev4/README.md`: release notes, hashes, prior recorded
   library version (or unrecorded), library acquisition/verification guidance and
-  pending consumer adoption/CI.
+  pending consumer adoption. The notice supplies no host verification evidence.
 
 Existing open, closed or merged PRs prevent duplicate creation. A matching
 branch-only interrupted attempt can resume, including after the default branch
