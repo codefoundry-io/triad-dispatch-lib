@@ -35,6 +35,8 @@ The additive dev4 observability APIs provide these partial contracts:
 
 | Contract | Shared implementation and tests | Host boundary |
 | --- | --- | --- |
+| Issue #9; R-ROSTER diagnostics (partial) | `RosterError.path/missing/document`; `tests/test_roster_diagnostics.py` covers defaults/override/resolved attribution, selected required/non-required winners, both Google route-block vectors, ordering/copies and non-schema `None` metadata; installed diagnostic controls in `tests/test_replay.py` | Schema-only public metadata; arbitrary unknown-key spelling declined for this slice; Python exception internals and host formatting remain separate |
+| Issue #10 / L3; R-RECEIPT, C9 (shape only) | `validate_transport_receipt`, `ReceiptError`; `tests/test_receipt.py` covers required/type/vocabulary/native constraints, no mutation, whole-envelope refusal, opaque versions, recursion and offline/broken contracts; installed probe in `tools/verify_wheel.py` and negative controls in `tests/test_replay.py` | Truthful input delivery/execution, command equality, attempt currency, envelopes, ownership/seals/reads and collection |
 | L2; R-BIND diagnostic context | `AdmissionError.field/path/missing`; `tests/test_admission_diagnostics.py::test_binding_field_is_canonical`, `test_schema_path_contains_only_trusted_schema_location`, `test_missing_nested_required_is_canonical`, `test_missing_uses_selected_finding_object`, `test_multiple_missing_follow_selected_required_order`, `test_competing_schema_error_keeps_existing_winner`, `test_missing_guaranteed_surface_does_not_echo_provider_data`, `test_duplicate_name_stays_out_of_guaranteed_surface`, `test_parse_schema_expected_binding_precedence`; `tests/test_verdict.py::test_missing_required`; `tests/test_replay.py::test_replay_vectors`, `test_installed_probe_checks_missing_diagnostic` | Safe locations supplement existing admission codes; no operational diagnosis, raw payload or custody attestation |
 | L7; R-PROMPT/R-PREPARE source-clause evidence | `render_review_clauses(with_manifest=True)`; `tests/test_prompt_manifest.py::test_profiles_have_exact_source_hashes_and_identical_rendering`, `test_manifest_is_fresh_and_independent_of_substitutions`, `test_manifest_still_refuses_tampered_verified_bundle` | Host binds final prompt/bundle identities and checks actual execution; manifest hashes are pre-substitution source evidence |
 
@@ -62,11 +64,20 @@ axis. Historical duplicate headings are not additional rules.
 | [R-DECISION-ORDER](spec-authoring.md#R-DECISION-ORDER) | Maintainers resolve shared gaps before host-specific implementation | New common semantics require a specification decision, not a private host fork |
 | [R-DEV-LOG](../authoring/shared-dev-log.md#R-DEV-LOG) | Maintainers record common drift/defects and affected host/case ownership | Historical host records are not current library execution proof |
 
-The canonical contract directory has 20 files excluding its README: three runtime
-schemas and 17 host/development reference or profile files. Five prompt payloads
-complete the eight packaged payloads. Keeping host receipt/token/profile files in
-source/sdist rather than the runtime wheel is deliberate. The behavioral corpus
+The canonical contract directory has 20 files excluding its README: four runtime
+schemas and sixteen source-only host/development reference or profile files.
+Five prompt payloads complete the nine packaged payloads in four bundles.
+Only the unchanged transport-object `receipt-fields.json` joins the runtime
+schemas; other host receipt/token/profile files stay in source/sdist deliberately.
+The behavioral corpus
 has 58 actual cases, with non-contiguous IDs; its largest ID is not its case count.
+
+`spec/tests/test_spec_records.py::test_live_model_refusal_measurement_claims_match_vendor_rows`
+checks the known R-GOOGLE measurement clauses against CLI/token model-refusal
+rows, with both mismatch directions in test-only controls. It is a bounded record
+consistency check, not a classifier, model-ID pin or CLI-version gate. Future
+measurement prose forms require deliberate updates to this regression alongside
+accepted rows; PR #12's proposed rows and rule replacement remain held.
 
 ## API limits that adoption must preserve
 
