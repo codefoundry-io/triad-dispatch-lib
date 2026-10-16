@@ -30,6 +30,10 @@ See the [implementation plan](superpowers/plans/2026-10-16-minimal-adoption-foll
 and [verification record](verification/2026-10-16-minimal-adoption-followups.md).
 Exact publication-head CI and formal review outcomes are recorded with the scoped
 PR after the candidate freeze; design approval does not certify changed code.
+Initial CI exposed a pre-existing fixed-80-ms test observation. The
+[bounded correction and negative control](verification/2026-10-16-minimal-adoption-followups.md#ci-discovered-test-observation-correction)
+preserve runtime behavior and require fresh complete native CI on the corrected
+publication head before the formal review.
 
 ## Owner decisions
 
