@@ -103,10 +103,18 @@ must remain clean. An sdist rebuilt into a wheel verifies the distribution path.
 This is a local candidate, even when its manifest contains release-shaped URLs;
 those URLs do not imply published assets and must not be used as download proof.
 
+This build path requires a compatible `uv` on `PATH`; the documented commands
+were tested with `uv 0.11.8` (an observation, not an exact-version requirement or
+minimum supported version). If it is unavailable, follow the
+[official uv installation instructions](https://docs.astral.sh/uv/getting-started/installation/)
+before using this path. Check availability/version before building:
+
 ```sh
 : "${WORK:?Run source selection first in the same dedicated script}"
 : "${PY:?Run source selection first in the same dedicated script}"
 : "${SOURCE_COMMIT:?Run source selection first in the same dedicated script}"
+command -v uv
+uv --version
 uv build --python "$PY" --sdist --out-dir "$WORK/build" "$WORK/source"
 uv build --python "$PY" --wheel --out-dir "$WORK/build" "$WORK/build/"*.tar.gz
 # uv may create auxiliary files; copy only the two distributions for validation.
@@ -207,12 +215,45 @@ This smoke is consistency/API evidence, not provider or complete host conformanc
 
 ## Platform dependencies and offline installation
 
-For offline distribution, use `pip download --only-binary=:all:` on each supported
-native OS/architecture/Python/ABI combination to collect the selected library
-wheel and its complete dependency closure. Pin and hash every wheel, then verify
-`pip install --no-index --find-links <wheelhouse>` into a fresh environment and run
-this smoke. `rpds-py` contains native code: one manylinux CPython wheel set proves
-neither macOS nor a different Python ABI. Do not silently compile or remove offline
+Collect wheels while online on each supported native OS/architecture/Python/ABI
+combination. Use the verified local library wheel from either path above, rather
+than asking an index for a library package name. This example uses the same
+dedicated script variables; the collection environment's Python selects its
+native dependency wheels:
+
+```sh
+: "${WORK:?Run source selection first in the same dedicated script}"
+: "${PY:?Run source selection first in the same dedicated script}"
+set -- "$WORK/artifacts/"*.whl
+test "$#" -eq 1
+LIB_WHEEL="$1"
+WHEELHOUSE="$WORK/wheelhouse"
+mkdir "$WHEELHOUSE"
+"$PY" -I -m pip --isolated --disable-pip-version-check download \
+  --only-binary=:all: --dest "$WHEELHOUSE" "$LIB_WHEEL"
+```
+
+Pin and hash every collected wheel, and retain the library manifest/source pin.
+Transfer those verified files to the offline target with the same native Python
+and platform combination. For a local offline-install check, create another fresh
+environment and install the exact collected library wheel without an index:
+
+```sh
+"$PY" -I -m venv "$WORK/offline-env"
+OFFLINE_PY="$WORK/offline-env/bin/python"
+"$OFFLINE_PY" -I -m pip --isolated --disable-pip-version-check install \
+  --no-index --find-links "$WHEELHOUSE" --only-binary=:all: \
+  "$WHEELHOUSE/$(basename "$LIB_WHEEL")"
+"$OFFLINE_PY" -I -m pip check
+```
+
+Run the existing Python smoke heredoc above using `"$OFFLINE_PY" -I -
+"$WORK/offline-env" "$WORK/artifacts"` as its invocation; skip the online install
+line. Keep the verified manifest and original artifact available for its checks.
+See the official [pip download](https://pip.pypa.io/en/stable/cli/pip_download/)
+and [pip install](https://pip.pypa.io/en/stable/cli/pip_install/) references.
+`rpds-py` contains native code: one manylinux CPython wheel set proves neither
+macOS nor a different Python ABI. Do not silently compile or remove offline
 Registry checks when a binary wheel is unavailable.
 
 ## Consumer integration and library updates
