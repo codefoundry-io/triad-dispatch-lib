@@ -1,6 +1,26 @@
 # Current status
 
-Updated: 2026-10-15
+Updated: 2026-10-16
+
+## Minimal adoption follow-ups: design review only
+
+The owner requested a minimal design and formal three-family review after
+triaging PRs #8/#11/#12 and issues #9/#10 against main `dac1af6`. The
+[candidate design](superpowers/specs/2026-10-16-minimal-adoption-followups-design.md)
+proposes safe roster diagnostics, a transport-shape API and bounded corrections
+to attributed evidence. Host installation, classifiers and model selection stay
+guidance; issue #5 remains pending. No implementation, merge or release is claimed.
+The separate release-update-PR work is held with its current edits preserved.
+Review uses the project profile, authorized official web research and 2400-second
+budgets; a plan result does not replace implementation verification.
+
+The corrected candidate completed R2 `20261016-lib-minimal-plan-r2-e3b5e7` with
+`AGREED`: Opus, Sol and Argon approved, and the separate Astra comparison found
+no actionable defect. The [review record](verification/2026-10-16-minimal-adoption-design-review.md)
+captures R1 corrections and two accepted R2 implementation checklist details:
+the concrete `anyOf`/`.missing=None` residual and PR #12 rule-text consistency.
+The reviewed design is unchanged after collection. Current work stops at design
+review; issue #9 remains partial, and no new API or host adoption is implemented.
 
 ## Owner decisions
 
