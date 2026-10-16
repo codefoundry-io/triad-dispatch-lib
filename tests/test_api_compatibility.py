@@ -1,7 +1,9 @@
 """Controls for the root-only structural gate, using tiny real packages."""
 
 import importlib.util
+import json
 from pathlib import Path
+import subprocess
 
 import pytest
 
@@ -48,6 +50,32 @@ def test_constructor_order_breaks(tmp_path):
     assert compare(tmp_path, old, old.replace(" a: str\n b: int", " b: int\n a: str"))
 
 
+@pytest.mark.parametrize("decorator, receiver", [("", "instance"), ("", "instance, /"),
+                                                (" @classmethod\n", "instance")])
+def test_implicit_constructor_receiver_rename_passes(tmp_path, decorator, receiver):
+    old = f"__all__=['Error']\nclass Error(ValueError):\n{decorator} def __init__(self, code): self.code = code"
+    new = old.replace("self, code", f"{receiver}, code").replace("self.code", "instance.code")
+    assert compare(tmp_path, old, new) == []
+
+
+@pytest.mark.parametrize("signature", ["instance, extra=1", "instance, extra, code=1",
+                                       "instance, code, extra=2"])
+def test_real_constructor_arguments_remain_protected(tmp_path, signature):
+    old = "__all__=['Record']\nclass Record:\n def __init__(self, code, extra=1): pass"
+    new = f"__all__=['Record']\nclass Record:\n def __init__({signature}): pass"
+    assert compare(tmp_path, old, new)
+
+
+def test_static_constructor_first_argument_is_public(tmp_path):
+    old = "__all__=['Record']\nclass Record:\n @staticmethod\n def __init__(code, extra=1): pass"
+    assert compare(tmp_path, old, old.replace("code, extra=1", "extra=1"))
+
+
+def test_regular_function_first_argument_is_public(tmp_path):
+    old = "__all__=['api']\ndef api(self, code): pass"
+    assert compare(tmp_path, old, old.replace("self, code", "code"))
+
+
 def test_exception_base_breaks(tmp_path):
     old = "__all__=['Refusal']\nclass Refusal(ValueError): pass"
     assert compare(tmp_path, old, old.replace("ValueError", "RuntimeError"))
@@ -85,6 +113,37 @@ def test_unresolvable_baseline_refuses(tmp_path, source):
         compare(tmp_path, source, "__all__=['api']\ndef api(): pass")
 
 
-def test_missing_baseline_commit_refuses(tmp_path):
+def test_missing_metadata_refuses(tmp_path):
     with pytest.raises((ValueError, RuntimeError), match="baseline|Git"):
         checker().check_repository(tmp_path)
+
+
+def metadata(tmp_path, commit):
+    document = {"floor": {"commit": commit}, "baseline": {"commit": commit},
+                "floor_exports": ["api"]}
+    (tmp_path / "api-compatibility.json").write_text(json.dumps(document))
+
+
+def test_missing_baseline_commit_refuses(tmp_path):
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    metadata(tmp_path, "0" * 40)
+    with pytest.raises(ValueError, match="cannot resolve compatibility baseline/source/Git") as caught:
+        checker().check_repository(tmp_path)
+    assert isinstance(caught.value.__cause__, subprocess.CalledProcessError)
+    assert caught.value.__cause__.cmd[1] == "rev-parse"
+
+
+def test_baseline_requires_full_commit_identity(tmp_path):
+    metadata(tmp_path, "main")
+    with pytest.raises(ValueError, match="full immutable commit IDs"):
+        checker().check_repository(tmp_path)
+
+
+def test_resolved_baseline_identity_mismatch_refuses(tmp_path, monkeypatch):
+    metadata(tmp_path, "0" * 40)
+    module = checker()
+    # Boundary fake: Git claims successful resolution to a different full ID.
+    monkeypatch.setattr(module.subprocess, "run", lambda *args, **kwargs:
+                        subprocess.CompletedProcess(args[0], 0, stdout="1" * 40 + "\n"))
+    with pytest.raises(ValueError, match="baseline commit does not resolve exactly"):
+        module.check_repository(tmp_path)

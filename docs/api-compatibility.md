@@ -17,7 +17,10 @@ uv run --locked pytest -q
 
 The structural command requires a Git source checkout with the full declared
 baseline and floor commit objects available. CI fetches full history in a
-dedicated compatibility job; the four native OS/Python jobs remain independent.
+dedicated PR/main compatibility workflow; the four native OS/Python jobs remain
+independent in the unchanged reusable package workflow. Historical release-tag
+retries do not require tooling introduced after their source commit. Publication
+consumes the reviewed release source; the static gate runs on PR and main heads.
 The command compares the immutable baseline source to the actual candidate
 `src/` bytes, including local edits. Missing source, objects, explicit exports or
 unresolvable aliases fail the check. It never falls back to an installed package
@@ -29,7 +32,9 @@ The locked development dependency Griffe statically resolves root aliases and
 generates dataclass constructor signatures. The wrapper projects each exported
 function or class constructor into a synthetic module before invoking
 `find_breaking_changes`; it does not recurse through implementation modules or
-class helpers. It rejects removed exports, changed object/sync-async kind,
+class helpers. Constructor projections omit the bound implicit receiver, while
+preserving a static constructor's first public argument and ordinary function
+parameters. It rejects removed exports, changed object/sync-async kind,
 existing argument removal/positional reorder, incompatible kind changes, optional argument
 default changes, optional-to-required changes, newly
 required arguments and removed declared class bases (including documented

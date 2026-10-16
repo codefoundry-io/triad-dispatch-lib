@@ -33,8 +33,15 @@ def root_exports(source: Path, package: str, *, allow_empty=False):
 
 def callable_surface(obj):
     # Project only callable shape: no annotations or recursive member traversal.
+    public_parameters = list(obj.parameters)
+    if obj.is_class and public_parameters:
+        initializer = obj.all_members["__init__"]
+        if ("staticmethod" not in initializer.labels
+                and public_parameters[0].kind in (griffe.ParameterKind.positional_only,
+                                                  griffe.ParameterKind.positional_or_keyword)):
+            public_parameters = public_parameters[1:]
     parameters = griffe.Parameters(*(griffe.Parameter(
-        p.name, kind=p.kind, default=p.default) for p in obj.parameters))
+        p.name, kind=p.kind, default=p.default) for p in public_parameters))
     return griffe.Function(obj.name, parameters=parameters)
 
 
