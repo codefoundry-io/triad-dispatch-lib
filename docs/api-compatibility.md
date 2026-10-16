@@ -60,6 +60,10 @@ Variadic additions and local `*args`/`**kwargs` variable renames are allowed;
 removing a variadic kind or a real named argument remains a break. Projected
 variadic names use spaced kind identities that cannot collide with legal
 ordinary parameter names.
+Static checks do not detect positional capture rebinding, such as adding an
+optional positional parameter before existing `*args`. Dev4 declares no variadic
+parameters; introducing variadic APIs requires targeted consumer tests for
+captured-argument behavior.
 Safe argument widening (required to optional, positional-only or keyword-only
 to positional-or-keyword) also remains allowed through Griffe's compatibility rules.
 
@@ -106,6 +110,10 @@ all unaffected protections. Commit the API source before the metadata that
 references its full SHA. The final candidate must match that reviewed source
 plus separately checked compatible edits. This requires no failing-gate merge
 or automatic waiver. A version bump alone authorizes none of these changes.
+
+Keep an approved pre-release API-source SHA reachable in fresh full-history
+checkouts after integration, via a merge that retains it or a retained tag.
+Squash/rebase without a retained reference may lose that source object.
 
 No fixed pre-1.0 deprecation window is promised. After 1.0, the major-version
 expectation above applies. There is no automatic refresh, rewrite or waiver flag.
