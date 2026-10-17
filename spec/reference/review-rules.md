@@ -38,7 +38,14 @@ step: it is never recorded as one entry's state, a leg outcome or one entry's re
 writes no collection record for it. A file of one entry that cannot be read stays that entry's INVALID, not a host
 fault. On A the host fault is exit 64 (`_HostFault`): it propagates out of the per-entry checks and out of `retry`'s
 refusal check `_retry_blocked`, which writes nothing (`lib/collect_v2.py` `_retry_blocked`, `main` @ triad `e9960053`; no
-orphan attempt is adopted since triad `207dd39f`, DL-130);
+orphan attempt is adopted since triad `207dd39f`, DL-130). On A, since triad `bcc461a6` (LIB-ADOPT 1b), the host's own EXPECTED
+binding pair is validated by the library before any reply is compared (`lib/verdict_v2.py` `_admit_obj` :462-480 →
+`triad_dispatch_lib.validate_binding`): a pair the library refuses (`AdmissionError` `invalid_expected`) or a packaged-contract
+fault there (`ContractError`) is a HOST fault, exit 64, one line — the reply was never judged — never a refused reply (exit 1),
+and `collect` raises its `_HostFault` for such an admission, on the claude entry's saved reply too (`lib/collect_v2.py`
+`_raw_admissible` :877-889), instead of reporting the attempt not admissible (the adoption assessment § 5.23). On B the
+library's admission result decides (`validate_verdict` raises `AdmissionError('invalid_expected')` like any admission
+refusal; B's exit classification of it is B's own) — both hosts' classifications recorded here as a fact (DL-165);
 a seal `collect` wrote for an entry before the step stopped stays. On B an `OSError`, `ValueError` or `TypeError` raised
 out of a v2 step ends as the round-integrity refusal, exit 2 (`bin/review_round.py:2451-2452`, `:2585-2587` @
 `7f75863`), so B's exit does not tell a host fault from a refusal (a fact).
@@ -229,6 +236,12 @@ exactly the keys `name`, `description`, `tools`, `model`, `effort`; base `tools:
 `WebSearch, WebFetch` and nothing that runs or writes (R-CONTAIN); one `model:` and one `effort:` line, equal in base
 and twin (`tests/unit/skills/t23-review-web-c32.sh` axis 9 @ triad `3894879`; B reads no preset — DL-49). On Ubuntu
 24.04 the pydantic venv is created with `--system-site-packages` so apt's jsonschema stays visible beside the venv's
+(since triad `bcc461a6`, LIB-ADOPT 1b, the host's own gate asks for the library's floors — `jsonschema>=4.26,<5`,
+`referencing>=0.37,<1` — before the roster is resolved: `lib/verdict_v2.py` `_get_validator` :261, called by
+`review_scratch.py prepare` before `v2_resolve_roster` (:3235) and by `collect` / `retry` through `_check_toolkit`
+(`lib/collect_v2.py` :1495); apt's `python3-jsonschema` 4.10.3, though visible beside the venv, is below the floor and is
+refused with one line carrying both pins, the Mac and Ubuntu install lines and the running interpreter; `roster_v2`'s own
+dependency hint prints the same line, `lib/roster_v2.py` `_require_jsonschema` :256)
 pydantic 2 (a host install fact; NOT RUN on Ubuntu). Claude Code also ranks managed-settings and `--agents`
 definitions above project agents and scans every `.claude/agents/` from its working directory up to the repository
 root; a host that reads fewer places records that it does not observe the others (Claude Code sub-agents
@@ -365,8 +378,10 @@ any other name is an unknown input. On A: `review_scratch.py prepare --v2 --revi
 (`lib/review_scratch.py:3711-3778`). On B: the `review_kind` member of the `review_round.py v2-create --request-file`
 request (`bin/review_round.py:2325-2326`, `bin/review_round_v2.py:130-136`). Every leg prompt carries the shared
 `current-date` clause with `<review-date>` filled by the UTC date (`YYYY-MM-DD`) on which the round was prepared, a
-bound-basis member, so a retry renders the same date (C67; On A: `lib/prompts_v2.py:288`, `lib/review_scratch.py:3805`
-@ `b53409b`; On B: `review_date` is recorded in the digest-covered basis and reused in retries,
+bound-basis member, so a retry renders the same date (C67; On A @ triad `bcc461a6` (LIB-ADOPT 1b): `lib/prompts_v2.py`
+`render_with_manifest` :304 passes the bound `review_date` to the vendored library's `render_review_clauses` (:355), which
+fills the `current-date` clause from its own prompt bundle; `lib/review_scratch.py` :3630 (the render loop of `prepare`),
+`lib/collect_v2.py` :1776 (`retry`'s re-render); On B: `review_date` is recorded in the digest-covered basis and reused in retries,
 `bin/review_round_v2.py:170-177`, `:198-206` @ B `e3a35a3`; DL-46,
 `decisions/2026-10-10-b-shared-review-context.md`). The plan purpose REPLACES the code
 purpose, not a checklist appended to it. The resolved stage is a member of the bound basis (R-PREPARE); no verdict field
@@ -498,9 +513,14 @@ route as follows; a false condition leaves every route in its R-CONTAIN no-web p
   (`lib/review_scratch.py:3650-3658`) and the UTC `review_date` into the digest-covered `Review metadata:` line
   (`:5897-5899`); a caller's `--review-web-authorized false` is ignored with a NOTE and a non-boolean value is refused
   before any file is written (`:3786-3806`). `collect_v2._bound_metadata` checks both against the round record, an
-  absent condition meaning false (`lib/collect_v2.py:519-545`). The renderer fills `<review-web-policy>` from the fenced
-  `review-web-permission` / `review-no-web` clause and records the selected clause in the prompt manifest, and fills
-  `<review-date>` (`lib/prompts_v2.py:40-50`, `:153-155`, `:288`, `:581-582`). `retry` re-renders the round's
+  absent condition meaning false (`lib/collect_v2.py:519-545`). Since triad `bcc461a6` (LIB-ADOPT 1b) the host renders no clause itself:
+  `lib/prompts_v2.py` `render_with_manifest` (:304) passes the bound `review_web_authorized` and `review_date` to the
+  vendored library's `render_review_clauses` (`host="A"`, `with_manifest=True`, :355), which selects the fenced
+  `review-web-permission` / `review-no-web` clause from its own prompt bundle and returns it in the ordered manifest the
+  host records; before the call the host checks the data side (every payload of the four vendored bundle manifests by
+  sha256 — a fault is HOST FAULT 64 naming the `lib/` relpath) and the one-copy rule (the nine `spec/`↔`data/` pairs of
+  `lib/lib-adoption.json` byte for byte — a differing or missing `spec/` copy is exit 2 naming the `spec/` relpath, bundle
+  drift; `prompts_v2._check_identity` :255). `retry` re-renders the round's
   BOUND condition (`lib/collect_v2.py` `retry` @ triad `e9960053`) and does not compare it with the current constant:
   a revocation applies to rounds prepared after it, as above (DL-57). A round prepared before this change binds no
   `review_date` and carries no toolkit map; `retry` and `collect` run `_check_toolkit` first, so it is refused with "this
@@ -1205,7 +1225,16 @@ created (`lib/review_scratch.py` `cmd_prepare`); the leader opens a new packet d
   `results_dir`); the brief and residual are inside the hashed packet. `collect_v2._bound_metadata`
   (`lib/collect_v2.py:442-512`) re-hashes the delivery record and compares the record with the bound line in
   `collect` and `retry`. A later edit of the project roster file does not affect a prepared round. On A (triad `80b302e7`, `c50b1c8b`) `prepare` records a map of the installed toolkit files —
-  every file directly under `lib/`, the vendored `spec/` and the six shipped reviewer presets — with each file's sha256 in `.roster-r<N>.json`,
+  every file directly under `lib/`, the vendored `spec/` and the six shipped reviewer presets — and, since triad `45a2b1c1`
+  (LIB-ADOPT 1a, S3), every regular file of the vendored library package `lib/triad_dispatch_lib/` (recursive; `__pycache__`,
+  `*.pyc` / `*.pyo` and `.DS_Store` excluded) and the adoption record `lib/lib-adoption.json` (`lib/roster_v2.py`
+  `_toolkit_map` :490): a package file whose sha256 differs from the record, a missing or extra file, a symlink or
+  non-regular entry, or a malformed record is the one-line HOST FAULT 64 at `prepare`, `collect` and `retry`, while the
+  host's own toolkit files keep the BASIS CHANGED exit 2; one copy (S9, since triad `bcc461a6`, LIB-ADOPT 1b): the host's
+  `spec/contracts/*` and `spec/prompts/*` are the bound copy and the vendored `data/` payloads must be byte-equal — the nine
+  pairs recorded in `lib-adoption.json` `pairs` (the four bundle manifests' `contract_id`s identify the bundles) — checked
+  at every review render (`lib/prompts_v2.py` `_check_identity` :255: the data side 64 naming the `lib/` relpath, the spec
+  side 2 naming the `spec/` relpath) — with each file's sha256 in `.roster-r<N>.json`,
   and `collect` and `retry` compare it with the installed files before anything is judged or allocated, naming every
   changed file (the recorded-and-compared option above: the map lives in the mutable round record, outside the content
   digest). A retry checks the whole round's basis: a changed member of any

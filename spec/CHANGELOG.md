@@ -1,5 +1,17 @@
 # Changelog
 
+## LIB-ADOPT 1b on host A — 2026-10-17 (not tagged)
+
+- R-BIND: on A a library-refused EXPECTED pair (`invalid_expected`) or a `ContractError` at
+  `validate_binding` is a host fault 64 (the reply never judged), never a refused reply; B's
+  classification stays its own (DL-165). R-PROMPT / R-REVIEW-WEB: the On-A pointers name the 1b
+  adapter — the review clauses render through the vendored library's `render_review_clauses`
+  behind the host's data-side (64) and spec-side (2, bundle drift) identity checks (DL-166).
+- R-PREPARE facts S3 and S9: A's toolkit map covers the vendored package and its record; the
+  one-copy rule's nine pairs are checked at every render (DL-167). R-ROSTER: A asks the library's
+  dependency floors before the roster (DL-168). No prompt, schema or contract revision; nothing
+  is ordered for B beyond two checks.
+
 ## Bound packet availability — 2026-10-12 (not tagged)
 
 - Clarify R-PREPARE / C79: necessary bound inputs must be available to permitted
