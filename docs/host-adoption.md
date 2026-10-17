@@ -205,6 +205,31 @@ reported 3600-second entry timeout remain host responsibilities. This project's
 review timeout remains 2400 seconds. Claude withdrew its separate manifest/toggle
 requests; the owner independently approved the additive library manifest API.
 
+Adopted state (2026-10-18, LIB-ADOPT slices 1a / 1b / 2 on `codefoundry-io/triad`, the host
+repository's ledger `docs/reviews/2026-10-17-lib-adopt-residuals.md`): the claude host vendors
+v0.1.0.dev4 from the verified wheel (`triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl`, sha256
+`c5bfdf10c4ce81f431ec7f77106e4d77b1556ac9c7b6b01bdb6616f988e8b2cc`, 47734 bytes) into
+`.claude/skills/triad-cross-family-review/lib/triad_dispatch_lib/` beside its adoption record
+`lib/lib-adoption.json` (the pin, the file digests, the nine spec↔data pairs, the spec map; no
+repository-root record — the record sits with the package) and the MIT notice; the exporter ships
+the three byte for byte and the toolkit map refuses a changed package file as host fault 64. Functions
+consumed: `render_review_clauses` (`host="A"`, `with_manifest=True`; behind the host's data-side and
+spec-side identity checks), `validate_binding`, `validate_verdict`, `merge_roster`, `validate_resolved`,
+`validate_transport_receipt`. Recorded deviations: the host's own duplicate-member name scan after the
+library's `duplicate_member` (§ 5.22); `invalid_expected` classified as host fault 64 (§ 5.23); the host's
+roster checks (required fields, vendor blocks, case-fold duplicates, capabilities, the Google route) on
+top of `merge_roster` / `validate_resolved` (§ 5.24). Recorded behaviour changes on the host: a non-finite
+number in a reply is exit 2 (was 1); a malformed expected pair beside an unparseable reply is 64 (was
+2); a hand-edited override with a duplicated key or a non-finite number is refused; an unknown roster key
+is refused by its schema path; a run-log whose transport object is absent or violates
+`receipt-fields.json` no longer counts. Platform gate (the exported plugin from a neutral directory,
+both admission paths and the planted wrapper receipt through `collect`): GATE OK on macOS arm64 (brew
+Python 3.12), Ubuntu 24.04 aarch64 and Ubuntu 24.04 x86_64 (Docker, the `~/.venvs/triad` closures
+recorded in the host's `docs/lib-dependency-closures.md`), recorded in the host's
+`docs/reviews/inputs/2026-10-17-lib-adopt/platform-gate.md`. Host adapter heads: 1a merged into `main`
+at 45a2b1c1, 1b at 6fd777b8, slice 2 agreed at 024b1f9e; exported plugin versions 0.2.1959 (1b) and
+0.2.1971 (slice 2). Independent reproduction of the host's runs stays outside this repository.
+
 ## Selective adoption and dependencies
 
 `run_review` and `run_investigations` are optional callback coordinators. Hosts
