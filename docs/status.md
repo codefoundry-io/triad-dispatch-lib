@@ -1,6 +1,76 @@
 # Current status
 
-Updated: 2026-10-15
+Updated: 2026-10-16
+
+## Public API compatibility: implementation candidate
+
+PR #14 merged as `087af94a7078de0ae9701fb057840b5492f51f66` and
+[v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4)
+is published with wheel, sdist and release manifest after all four native release
+verification jobs passed. Delivery notices failed because the App settings remain
+unconfigured; no host adoption is claimed. The dated audit below is historical.
+
+The [compatibility gate](api-compatibility.md) establishes dev4 as the first floor,
+uses locked Griffe for root-export structural comparison, and runs representative
+public consumer checks against source, unpacked sdist and installed wheel.
+Runtime, schema and prompt bytes remain the released dev4 bytes. Local verification
+and controls are candidate evidence; exact-head native CI and the project formal
+review remain separate gates before integration.
+
+## Release delivery: implementation candidate
+
+The resumed [release-delivery plan](superpowers/plans/2026-10-16-release-update-prs.md)
+provides immutable artifact manifests, idempotent update proposals for the two
+host repositories, a reusable exact-commit native CI workflow and source release
+publication with a separate scoped GitHub App delivery token. The
+[operator guide](releasing.md) covers configuration, publication, retry and
+preview; the [consumer guide](installing.md) covers GitHub Release discovery,
+exact wheel/sdist/manifest acquisition, verified library installation and
+platform dependencies. The owner's subsequent scope correction supersedes the
+earlier host installation/update requirement: this repository distributes the
+library and release notices; consuming projects own integration and deployment.
+The candidate normalizes sdist build metadata before extraction/rebuild and
+refuses differing published bytes. Source tests and workflow checks are local
+candidate evidence; exact-head native CI and formal review remain separate.
+
+The 2026-10-16 read-only audit found no library releases or the required
+`TRIAD_RELEASE_APP_ID`/`TRIAD_RELEASE_APP_PRIVATE_KEY` settings in accessible
+repository/organization Actions scopes; App existence itself was not inspected.
+Activation remains pending. No credentials were registered, no test releases or
+host PRs were sent, and no new host adoption or installed behavior is claimed.
+
+## Minimal adoption follow-ups: implementation candidate
+
+The owner requested a minimal design and formal three-family review after
+triaging PRs #8/#11/#12 and issues #9/#10 against main `dac1af6`. The
+[candidate design](superpowers/specs/2026-10-16-minimal-adoption-followups-design.md)
+defines safe roster diagnostics, a transport-shape API and bounded corrections
+to attributed evidence. The owner subsequently approved minimal implementation,
+both Minor regressions/documentation, the same review composition and GitHub updates.
+Host installation, classifiers and model selection stay guidance; issue #5 remains pending.
+The separate release-update-PR work was subsequently resumed, as recorded above.
+Review uses the project profile, authorized official web research and 2400-second
+budgets; a plan result does not replace implementation verification.
+
+The corrected candidate completed R2 `20261016-lib-minimal-plan-r2-e3b5e7` with
+`AGREED`: Opus, Sol and Argon approved, and the separate Astra comparison found
+no actionable defect. The [review record](verification/2026-10-16-minimal-adoption-design-review.md)
+captures R1 corrections and two accepted R2 implementation checklist details:
+the concrete `anyOf`/`.missing=None` residual and PR #12 rule-text consistency.
+The reviewed design is unchanged after collection. The implementation adds
+`RosterError.path/.missing/.document`, `validate_transport_receipt` and
+`ReceiptError`, with a verified runtime receipt bundle. Both checklist cases have
+dedicated regressions and documentation. Issue #9 remains partial; arbitrary-key
+names and input pointers are not added. No host adoption or release is claimed.
+See the [implementation plan](superpowers/plans/2026-10-16-minimal-adoption-followups.md),
+[contribution dispositions](requests/2026-10-16-adoption-followups-disposition.md)
+and [verification record](verification/2026-10-16-minimal-adoption-followups.md).
+Exact publication-head CI and formal review outcomes are recorded with the scoped
+PR after the candidate freeze; design approval does not certify changed code.
+Initial CI exposed a pre-existing fixed-80-ms test observation. The
+[bounded correction and negative control](verification/2026-10-16-minimal-adoption-followups.md#ci-discovered-test-observation-correction)
+preserve runtime behavior and require fresh complete native CI on the corrected
+publication head before the formal review.
 
 ## Owner decisions
 

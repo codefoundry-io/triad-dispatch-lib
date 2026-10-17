@@ -14,6 +14,7 @@ from triad_dispatch_lib.bundle_manifest import make_manifest
 BUNDLES = {
     "": {"leg-verdict.schema.json": "contracts/leg-verdict.schema.json"},
     "roster-bundle": {"contracts/review-legs.schema.json": "contracts/review-legs.schema.json"},
+    "receipt-bundle": {"contracts/receipt-fields.json": "contracts/receipt-fields.json"},
     "prompt-bundle": {
         "contracts/review-kind.schema.json": "contracts/review-kind.schema.json",
         **{f"prompts/{name}.md": f"prompts/{name}.md" for name in

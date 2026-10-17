@@ -1,0 +1,114 @@
+name: Publish library release and host proposals
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing published library release tag to retry
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: library-release-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      source_commit: ${{ steps.release.outputs.source_commit }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - name: Resolve published tag to exact source commit
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: python tools/publish_release.py resolve --tag "$RELEASE_TAG" --github-output "$GITHUB_OUTPUT"
+
+  verify:
+    needs: resolve
+    uses: ./.github/workflows/test.yml
+    with:
+      ref: ${{ needs.resolve.outputs.source_commit }}
+      release_tag: ${{ needs.resolve.outputs.tag }}
+      upload_release_artifacts: true
+
+  publish:
+    needs: [resolve, verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve.outputs.source_commit }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-artifacts
+          path: ${{ runner.temp }}/release-artifacts/
+          digest-mismatch: error
+      - name: Publish or verify immutable source assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.source_commit }}
+        run: python tools/publish_release.py publish --tag "$RELEASE_TAG" --source-commit "$SOURCE_COMMIT" --dist "$RUNNER_TEMP/release-artifacts"
+
+  deliver:
+    needs: [resolve, publish]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve.outputs.source_commit }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: '3.12'
+      - name: Check host delivery credential configuration
+        env:
+          APP_ID: ${{ vars.TRIAD_RELEASE_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.TRIAD_RELEASE_APP_PRIVATE_KEY }}
+        run: |
+          if [ -z "$APP_ID" ] || [ -z "$APP_PRIVATE_KEY" ]; then
+            echo '::error::Source assets are published. Configure TRIAD_RELEASE_APP_ID and TRIAD_RELEASE_APP_PRIVATE_KEY; see docs/releasing.md, then retry this tag.'
+            exit 1
+          fi
+      - name: Mint token only for the two host repositories
+        id: app
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.TRIAD_RELEASE_APP_ID }}
+          private-key: ${{ secrets.TRIAD_RELEASE_APP_PRIVATE_KEY }}
+          owner: codefoundry-io
+          repositories: |
+            triad-codex-dispatch
+            triad-dispatch
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Deliver independent host proposals
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          SOURCE_GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: python tools/release_prs.py --tag "$RELEASE_TAG"

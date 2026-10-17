@@ -1,0 +1,344 @@
+"""Controls for the root-only structural gate, using tiny real packages."""
+
+import importlib.util
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def isolate_fixture_git_environment(monkeypatch):
+    for key in tuple(os.environ):
+        if key.startswith("GIT_"):
+            monkeypatch.delenv(key)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+
+
+def checker():
+    path = Path(__file__).parents[1] / "tools/check_api_compatibility.py"
+    assert path.is_file(), "structural compatibility checker is missing"
+    spec = importlib.util.spec_from_file_location("api_checker", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def compare(tmp_path, old, new, *, old_helpers="", new_helpers=""):
+    roots = []
+    for label, source, helpers in (("old", old, old_helpers), ("new", new, new_helpers)):
+        root = tmp_path / label / "sample"
+        root.mkdir(parents=True)
+        (root / "__init__.py").write_text(source)
+        (root / "helpers.py").write_text(helpers)
+        roots.append(root.parent)
+    return checker().compare_sources(*roots, package="sample")
+
+
+@pytest.mark.parametrize("new", [
+    "__all__ = []\ndef api(a, b=1): pass",
+    "__all__ = ['api']\ndef api(a, b): pass",
+    "__all__ = ['api']\ndef api(a, b=2): pass",
+    "__all__ = ['api']\ndef api(b=1, a=0): pass",
+    "__all__ = ['api']\ndef api(a, *, b=1): pass",
+    "__all__ = ['api']\ndef api(a): pass",
+    "__all__ = ['api']\ndef api(*args, **kwargs): pass",
+    "__all__ = ['api']\nasync def api(a, b=1): pass",
+    "__all__ = ['api']\napi = 3",
+    "__all__ = ['api']\ndef api(a, b=1, *, required): pass",
+])
+def test_function_breaks_are_contextual(tmp_path, new):
+    errors = compare(tmp_path, "__all__ = ['api']\ndef api(a, b=1): pass", new)
+    assert errors and any("api" in error for error in errors)
+
+
+def test_constructor_order_breaks(tmp_path):
+    old = "from dataclasses import dataclass\n__all__=['Record']\n@dataclass(frozen=True)\nclass Record:\n a: str\n b: int\n"
+    assert compare(tmp_path, old, old.replace(" a: str\n b: int", " b: int\n a: str"))
+
+
+@pytest.mark.parametrize("decorator, receiver", [("", "instance"), ("", "instance, /"),
+                                                (" @classmethod\n", "instance")])
+def test_implicit_constructor_receiver_rename_passes(tmp_path, decorator, receiver):
+    old = f"__all__=['Error']\nclass Error(ValueError):\n{decorator} def __init__(self, code): self.code = code"
+    new = old.replace("self, code", f"{receiver}, code").replace("self.code", "instance.code")
+    assert compare(tmp_path, old, new) == []
+
+
+@pytest.mark.parametrize("signature", ["instance, extra=1", "instance, extra, code=1",
+                                       "instance, code, extra=2"])
+def test_real_constructor_arguments_remain_protected(tmp_path, signature):
+    old = "__all__=['Record']\nclass Record:\n def __init__(self, code, extra=1): pass"
+    new = f"__all__=['Record']\nclass Record:\n def __init__({signature}): pass"
+    assert compare(tmp_path, old, new)
+
+
+def test_static_constructor_first_argument_is_public(tmp_path):
+    old = "__all__=['Record']\nclass Record:\n @staticmethod\n def __init__(code, extra=1): pass"
+    assert compare(tmp_path, old, old.replace("code, extra=1", "extra=1"))
+
+
+def test_regular_function_first_argument_is_public(tmp_path):
+    old = "__all__=['api']\ndef api(self, code): pass"
+    assert compare(tmp_path, old, old.replace("self, code", "code"))
+
+
+def test_exception_base_breaks(tmp_path):
+    old = "__all__=['Refusal']\nclass Refusal(ValueError): pass"
+    assert compare(tmp_path, old, old.replace("ValueError", "RuntimeError"))
+
+
+def test_additive_and_private_changes_pass(tmp_path):
+    old = "__all__=['api']\ndef api(a, b=1): pass\ndef helper(x): pass"
+    new = "__all__=['api', 'extra']\ndef api(a, b=1, *, option=None): pass\ndef extra(): pass\ndef helper(): pass"
+    assert compare(tmp_path, old, new) == []
+
+
+@pytest.mark.parametrize("signature", ["a", "a, /", "*, a"])
+def test_safe_argument_widening_passes(tmp_path, signature):
+    old = f"__all__=['api']\ndef api({signature}): pass"
+    assert compare(tmp_path, old, "__all__=['api']\ndef api(a=None): pass") == []
+
+
+def test_internal_move_and_helper_change_pass(tmp_path):
+    assert compare(tmp_path, "__all__=['api']\ndef api(a): pass",
+                   "from .helpers import api\n__all__=['api']",
+                   new_helpers="def api(a): pass\ndef helper(): pass") == []
+
+
+@pytest.mark.parametrize("default, breaks", [(1, False), (2, True)])
+def test_private_target_alias_keeps_root_contract(tmp_path, default, breaks):
+    errors = compare(tmp_path, "__all__=['api']\ndef api(a=1): pass",
+                     "from .helpers import _implementation as api\n__all__=['api']",
+                     new_helpers=f"def _implementation(a={default}): pass")
+    assert bool(errors) is breaks
+
+
+@pytest.mark.parametrize("source", ["", "__all__=[]", "__all__=['missing']"])
+def test_unresolvable_baseline_refuses(tmp_path, source):
+    with pytest.raises(ValueError, match="export|resolve"):
+        compare(tmp_path, source, "__all__=['api']\ndef api(): pass")
+
+
+def test_missing_metadata_refuses(tmp_path):
+    with pytest.raises((ValueError, RuntimeError), match="baseline|Git"):
+        checker().check_repository(tmp_path)
+
+
+def metadata(tmp_path, commit):
+    document = {"floor": {"commit": commit}, "baseline": {"commit": commit},
+                "floor_exports": ["api"]}
+    (tmp_path / "api-compatibility.json").write_text(json.dumps(document))
+
+
+def test_missing_baseline_commit_refuses(tmp_path):
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    metadata(tmp_path, "0" * 40)
+    with pytest.raises(ValueError, match="cannot resolve compatibility baseline/source/Git") as caught:
+        checker().check_repository(tmp_path)
+    assert isinstance(caught.value.__cause__, subprocess.CalledProcessError)
+    assert caught.value.__cause__.cmd[1] == "rev-parse"
+
+
+def test_baseline_requires_full_commit_identity(tmp_path):
+    metadata(tmp_path, "main")
+    with pytest.raises(ValueError, match="full immutable commit IDs"):
+        checker().check_repository(tmp_path)
+
+
+def test_candidate_cwd_cannot_replace_baseline(tmp_path, monkeypatch):
+    (tmp_path / "new").mkdir()
+    monkeypatch.chdir(tmp_path / "new")
+    assert compare(tmp_path, "__all__=['api']\ndef api(a=1): pass",
+                   "__all__=['api']\ndef api(a=2): pass")
+
+
+def test_wrong_loaded_root_origin_refuses(tmp_path, monkeypatch):
+    root = tmp_path / "sample"
+    root.mkdir()
+    (root / "__init__.py").write_text("__all__=['api']\ndef api(): pass")
+    module = checker()
+    wrong = module.griffe.Module("sample", filepath=tmp_path / "elsewhere.py")
+    monkeypatch.setattr(module.griffe, "load", lambda *args, **kwargs: wrong)
+    with pytest.raises(ValueError, match="loaded root origin mismatch"):
+        module.root_exports(tmp_path, "sample")
+
+
+@pytest.mark.parametrize("signature, breaks", [("a=1, b=2", False), ("a=3, b=2", True),
+    ("a=1, b=2, *, required", True), ("b=2, a=1", True)])
+def test_old_private_target_still_compares_public_shape(tmp_path, signature, breaks):
+    alias = "from .helpers import _implementation as api\n__all__=['api']"
+    assert bool(compare(tmp_path, alias, alias,
+                        old_helpers="def _implementation(a=1, b=2): pass",
+                        new_helpers=f"def _implementation({signature}): pass")) is breaks
+
+
+@pytest.mark.parametrize("base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_builtin_base_alias_uses_identity(tmp_path, base, breaks):
+    old = "__all__=['Error']\nclass Error(ValueError): pass"
+    new = f"from builtins import {base} as BuiltinBase\n__all__=['Error']\nclass Error(BuiltinBase): pass"
+    assert bool(compare(tmp_path, old, new)) is breaks
+
+
+@pytest.mark.parametrize("base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_private_intermediate_preserves_external_ancestry(tmp_path, base, breaks):
+    old = "__all__=['Error']\nclass Error(ValueError): pass"
+    new = f"__all__=['Error']\nclass _Internal({base}): pass\nclass Error(_Internal): pass"
+    assert bool(compare(tmp_path, old, new)) is breaks
+
+
+def test_private_intermediate_rename_passes(tmp_path):
+    old = "__all__=['Error']\nclass _Internal(ValueError): pass\nclass Error(_Internal): pass"
+    assert compare(tmp_path, old, old.replace("_Internal", "_Renamed")) == []
+
+
+def test_exported_base_ancestry_loss_refuses(tmp_path):
+    old = "__all__=['Base', 'Error']\nclass Base(ValueError): pass\nclass Error(Base): pass"
+    assert compare(tmp_path, old, old.replace("Error(Base)", "Error(ValueError)"))
+
+
+@pytest.mark.parametrize("exports", ["['Base','Error','Alias']", "['Alias','Base','Error']"])
+def test_additive_exported_base_alias_passes(tmp_path, exports):
+    old = "from .helpers import Base\n__all__=['Base','Error']\nclass Error(Base): pass"
+    new = f"from .helpers import Base, Base as Alias\n__all__={exports}\nclass Error(Base): pass"
+    assert compare(tmp_path, old, new, old_helpers="class Base(ValueError): pass",
+                   new_helpers="class Base(ValueError): pass") == []
+
+
+def test_exported_base_alias_order_does_not_change_identity(tmp_path):
+    old = "from .helpers import Base, Base as Alias\n__all__=['Base','Alias','Error']\nclass Error(Base): pass"
+    new = old.replace("['Base','Alias','Error']", "['Alias','Base','Error']")
+    assert compare(tmp_path, old, new, old_helpers="class Base(ValueError): pass",
+                   new_helpers="class Base(ValueError): pass") == []
+
+
+@pytest.mark.parametrize("public", [False, True])
+@pytest.mark.parametrize("candidate_base, breaks", [("ValueError", False), ("RuntimeError", True)])
+def test_multihop_base_move_preserves_final_identity(tmp_path, public, candidate_base, breaks):
+    base = "Base" if public else "_Intermediate"
+    exports = "['Base','Error']" if public else "['Error']"
+    initializer = (f"from ._base import {base}\n" if public else "") + f"from .errors import Error\n__all__={exports}"
+    for label, module, ancestor in [("old", "compat", "ValueError"), ("new", "_base", candidate_base)]:
+        root = tmp_path / label / "sample"
+        root.mkdir(parents=True)
+        (root / "__init__.py").write_text(initializer)
+        (root / "errors.py").write_text(f"from .{module} import {base}\nclass Error({base}): pass")
+        (root / "compat.py").write_text(f"from ._base import {base}")
+        (root / "_base.py").write_text(f"class {base}({ancestor}): pass")
+    assert bool(checker().compare_sources(tmp_path / "old", tmp_path / "new", package="sample")) is breaks
+
+
+@pytest.mark.parametrize("old, new, breaks", [
+    ("a", "a, *args", False), ("a", "a, **options", False),
+    ("a, *args", "a, *values", False), ("a, **kwargs", "a, **options", False),
+    ("a, *args", "a", True), ("a, **kwargs", "a", True),
+    ("a, *args", "a, **kwargs", True), ("a, **kwargs", "a, *args", True),
+    ("a", "a, b", True),
+])
+def test_variadic_spelling_and_kind_contracts(tmp_path, old, new, breaks):
+    assert bool(compare(tmp_path, f"__all__=['api']\ndef api({old}): pass",
+                        f"__all__=['api']\ndef api({new}): pass")) is breaks
+
+
+@pytest.mark.parametrize("name", ["args", "kwargs", "variadic_positional", "variadic_keyword"])
+def test_variadic_names_cannot_hide_removed_ordinary_argument(tmp_path, name):
+    errors = compare(tmp_path, f"__all__=['api']\ndef api({name}, **options): pass",
+                     f"__all__=['api']\ndef api(**{name}): pass")
+    assert f"api({name}): existing argument removed" in errors
+
+
+def git_baseline(tmp_path):
+    source = tmp_path / "src" / "triad_dispatch_lib"
+    source.mkdir(parents=True)
+    initializer = source / "__init__.py"
+    initializer.write_text("__all__=['api']\ndef api(a, b=1): pass")
+    subprocess.run(["git", "init", "--quiet", str(tmp_path)], check=True)
+    subprocess.run(["git", "add", "src"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.name=API Test", "-c", "user.email=test@example.invalid",
+                    "commit", "--quiet", "-m", "Synthetic baseline"], cwd=tmp_path, check=True)
+    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=tmp_path, text=True).strip()
+    metadata(tmp_path, commit)
+    return initializer
+
+
+@pytest.mark.parametrize("contamination", ["repository-routing", "signing-config"])
+def test_incoming_git_environment_cannot_escape_fixture(tmp_path, contamination):
+    clean = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+    clean.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL=os.devnull)
+    incoming = dict(clean)
+    sentinel = tmp_path / "sentinel"
+    sentinel.mkdir()
+    (sentinel / "src").mkdir()
+    (sentinel / "src/keep.txt").write_text("keep")
+    for args in [["init", "--quiet"], ["add", "src"],
+                 ["-c", "user.name=Sentinel", "-c", "user.email=sentinel@example.invalid",
+                  "commit", "--quiet", "-m", "Sentinel baseline"]]:
+        subprocess.run(["git", *args], cwd=sentinel, env=clean, check=True)
+    (sentinel / "src/pending.txt").write_text("unrelated pending work")
+    before = {path: (sentinel / path).read_bytes() for path in
+              [".git/HEAD", ".git/config", ".git/index", "src/keep.txt", "src/pending.txt"]}
+    before_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sentinel, env=clean)
+    if contamination == "repository-routing":
+        incoming.update(GIT_DIR=str(sentinel / ".git"), GIT_WORK_TREE=str(sentinel))
+    else:
+        config = tmp_path / "signing.gitconfig"
+        config.write_text(f"[commit]\n gpgsign = true\n[gpg]\n program = {tmp_path / 'no-signing-agent'}\n")
+        incoming["GIT_CONFIG_GLOBAL"] = str(config)
+    child_temp = tmp_path / "child-pytest"
+    result = subprocess.run([sys.executable, "-m", "pytest", "-q", str(Path(__file__).resolve()),
+                             "-k", "repository_archive_compares_real_baseline",
+                             "--basetemp", str(child_temp)], cwd=tmp_path, env=incoming,
+                            capture_output=True, text=True)
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sentinel, env=clean) == before_commit
+    assert {path: (sentinel / path).read_bytes() for path in before} == before
+    assert result.returncode == 0, result.stdout + result.stderr
+    fixture_repos = list(child_temp.rglob(".git"))
+    assert fixture_repos
+    for git_dir in fixture_repos:
+        assert subprocess.check_output(["git", "rev-list", "--count", "HEAD"],
+                                       cwd=git_dir.parent, env=clean).strip() == b"1"
+
+
+@pytest.mark.parametrize("exports, diagnostic", [
+    ([], "baseline requires nonempty protected floor exports"),
+    ([1], "baseline requires nonempty protected floor exports"),
+    (["absent"], "baseline lost protected floor exports"),
+])
+def test_floor_export_guards_refuse_invalid_active_protection(tmp_path, exports, diagnostic):
+    git_baseline(tmp_path)
+    path = tmp_path / "api-compatibility.json"
+    document = json.loads(path.read_text())
+    document["floor_exports"] = exports
+    path.write_text(json.dumps(document))
+    with pytest.raises(ValueError, match=diagnostic):
+        checker().check_repository(tmp_path)
+
+
+@pytest.mark.parametrize("from_source_cwd", [False, True])
+@pytest.mark.parametrize("candidate, breaks", [
+    ("__all__=['api']\ndef api(a, b=1): pass", False),
+    ("__all__=['api']\ndef api(b=1): pass", True),
+    ("__all__=['api','extra']\ndef api(a, b=1, *, option=None): pass\ndef extra(): pass", False),
+])
+def test_repository_archive_compares_real_baseline(tmp_path, monkeypatch, from_source_cwd, candidate, breaks):
+    initializer = git_baseline(tmp_path)
+    initializer.write_text(candidate)
+    monkeypatch.chdir(tmp_path / "src" if from_source_cwd else tmp_path)
+    errors = checker().check_repository(tmp_path)
+    assert bool(errors) is breaks
+    if breaks:
+        assert "api(a): existing argument removed" in errors
+
+
+def test_resolved_baseline_identity_mismatch_refuses(tmp_path, monkeypatch):
+    metadata(tmp_path, "0" * 40)
+    module = checker()
+    # Boundary fake: Git claims successful resolution to a different full ID.
+    monkeypatch.setattr(module.subprocess, "run", lambda *args, **kwargs:
+                        subprocess.CompletedProcess(args[0], 0, stdout="1" * 40 + "\n"))
+    with pytest.raises(ValueError, match="baseline commit does not resolve exactly"):
+        module.check_repository(tmp_path)

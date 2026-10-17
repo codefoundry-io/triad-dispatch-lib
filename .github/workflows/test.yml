@@ -4,6 +4,20 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_call:
+    inputs:
+      ref:
+        description: Exact source commit to verify
+        required: true
+        type: string
+      release_tag:
+        description: Optional published release tag; must match package version
+        default: ''
+        type: string
+      upload_release_artifacts:
+        description: Upload verified Ubuntu 3.12 archives for publication
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -22,16 +36,17 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Verify checked-out revision
         env:
-          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          EXPECTED_SHA: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
         run: |
           actual_sha=$(git rev-parse HEAD)
           test "$actual_sha" = "$EXPECTED_SHA"
           echo "Verified source commit: $actual_sha"
-          git rev-parse HEAD^{tree}
+          git rev-parse 'HEAD^{tree}'
+          echo "SOURCE_DATE_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_ENV"
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: ${{ matrix.python }}
@@ -41,11 +56,20 @@ jobs:
           enable-cache: false
       - run: uv sync --locked
       - name: Verify selected Python
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           uv run --locked python - <<'PY'
-          import os, platform, sys
+          import os, platform, re, sys, tomllib
           assert '.'.join(map(str, sys.version_info[:2])) == os.environ['UV_PYTHON']
           print({'python': platform.python_version(), 'executable': sys.executable})
+          with open('pyproject.toml', 'rb') as source:
+              version = tomllib.load(source)['project']['version']
+          assert re.fullmatch(r'[0-9]+(?:\.[0-9]+)*(?:(?:a|b|rc)[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?', version)
+          tag = os.environ['RELEASE_TAG']
+          assert not tag or tag == 'v' + version, 'release tag must match package version'
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write(f'PACKAGE_VERSION={version}\n')
           PY
       - run: uv run --locked pytest -q
       - run: uv run --locked python tools/sync_spec_assets.py --check
@@ -56,9 +80,12 @@ jobs:
           uv run --locked python - <<'PY'
           from pathlib import Path
           import os, tarfile
+          from tools.publish_release import normalize_sdist
+          sdist, = Path('dist').glob('*.tar.gz')
+          normalize_sdist(sdist, int(os.environ['SOURCE_DATE_EPOCH']))
           root = Path(os.environ["RUNNER_TEMP"]) / "triad-sdist"
           root.mkdir()
-          with tarfile.open("dist/triad_dispatch_lib-0.1.0.dev4.tar.gz") as archive:
+          with tarfile.open(sdist) as archive:
               archive.extractall(root, filter="data")
           source, = root.iterdir()
           with open(os.environ["GITHUB_ENV"], "a") as output:
@@ -75,11 +102,30 @@ jobs:
           uv run --locked python tools/sync_spec_assets.py --check
           uv build --wheel
       - name: Verify installed wheel and binary dependencies
-        run: uv run --locked python tools/verify_wheel.py "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl"
+        run: uv run --locked python tools/verify_wheel.py "$SDIST_SOURCE/dist/triad_dispatch_lib-$PACKAGE_VERSION-py3-none-any.whl"
       - name: Verify installed Codex prompt and admission driver
-        run: uv run --locked python tools/codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4 self-test
+        run: uv run --locked python tools/codex_smoke.py --wheel "$SDIST_SOURCE/dist/triad_dispatch_lib-$PACKAGE_VERSION-py3-none-any.whl" --expected-version "$PACKAGE_VERSION" self-test
       - name: Verify installed four-route synthetic matrix
-        run: uv run --locked python tools/four_route_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4
+        run: uv run --locked python tools/four_route_smoke.py --wheel "$SDIST_SOURCE/dist/triad_dispatch_lib-$PACKAGE_VERSION-py3-none-any.whl" --expected-version "$PACKAGE_VERSION"
       - run: git diff --exit-code
       - name: Verify installed supervised callback synthetic exchange
-        run: uv run --locked python tools/native_codex_smoke.py --wheel "${{ env.SDIST_SOURCE }}/dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl" --expected-version 0.1.0.dev4 --self-test
+        run: uv run --locked python tools/native_codex_smoke.py --wheel "$SDIST_SOURCE/dist/triad_dispatch_lib-$PACKAGE_VERSION-py3-none-any.whl" --expected-version "$PACKAGE_VERSION" --self-test
+      - name: Collect only verified release archives
+        if: inputs.upload_release_artifacts && matrix.os == 'ubuntu-24.04' && matrix.python == '3.12'
+        run: |
+          uv run --locked python - <<'PY'
+          import os, shutil
+          from pathlib import Path
+          output = Path(os.environ['RUNNER_TEMP']) / 'release-artifacts'
+          output.mkdir()
+          sdist, = Path('dist').glob('*.tar.gz')
+          wheel, = (Path(os.environ['SDIST_SOURCE']) / 'dist').glob('*.whl')
+          for path in (sdist, wheel):
+              shutil.copyfile(path, output / path.name)
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: inputs.upload_release_artifacts && matrix.os == 'ubuntu-24.04' && matrix.python == '3.12'
+        with:
+          name: release-artifacts
+          path: ${{ runner.temp }}/release-artifacts/
+          if-no-files-found: error

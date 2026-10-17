@@ -1,0 +1,15 @@
+{
+  "floor": {"version": "0.1.0.dev4", "commit": "087af94a7078de0ae9701fb057840b5492f51f66"},
+  "baseline": {"version": "0.1.0.dev4", "commit": "087af94a7078de0ae9701fb057840b5492f51f66"},
+  "history": [],
+  "floor_exports": [
+    "AdmissionError", "AgreementError", "AgreementResult", "CallOutcome",
+    "ContractError", "DispatchError", "InvestigationRequest", "OutputError",
+    "PromptError", "ProviderOutput", "ReceiptError", "ReviewRequest", "ReviewRun",
+    "RosterError", "admit_output", "evaluate_agreement", "extract_final",
+    "load_roster_contract", "merge_roster", "parse_json", "render_data",
+    "render_investigation_prompt", "render_review_clauses", "resolve_roster",
+    "run_investigations", "run_review", "select_entries", "validate_binding",
+    "validate_resolved", "validate_transport_receipt", "validate_verdict"
+  ]
+}

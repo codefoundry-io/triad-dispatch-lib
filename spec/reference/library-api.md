@@ -1,9 +1,10 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev4` implementation of the 29
-package-root exports in `triad_dispatch_lib`: 16 functions, six dataclasses and
-seven exception types. It records existing Python behavior; it does not change
-the package's version or compatibility policy. Wire fields, allowed roster
+This reference describes the current `0.1.0.dev4` implementation of the 31
+package-root exports in `triad_dispatch_lib`: 17 functions, six dataclasses and
+eight exception types. It records existing Python behavior; it does not change
+the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
+protect this public surface from the declared dev4 floor. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
 [sources](README.md#one-source-per-fact). See the [conformance map](library-conformance.md)
 for rule/case/test coverage and [host adoption](../../docs/host-adoption.md)
@@ -136,6 +137,69 @@ copies of enabled entry dictionaries in roster order. It refuses an empty enable
 selection with `empty_selection`. It does not filter on family or acceptance,
 sort entries, resolve routes or check native capabilities. Model/effort strings
 and nulls remain opaque requested configuration; no provider defaults are added.
+
+`RosterError(code)` keeps its constructor, stable codes, fixed messages and
+`.args`. Every instance initializes `.path: tuple[str | int, ...] | None`,
+`.missing: str | None` and `.document: str | None` to `None`. Only a library-raised
+`schema_violation` sets them: `.path` is the first selected validator error's
+`absolute_schema_path`, and `.missing` is the first absent schema-defined name
+in that selected `required` list, using the guarded rule described for admission.
+No child-error search or second validation pass is performed. A non-required
+winner leaves `.missing=None` even if another violation concerns missing data.
+Parser, duplicate-name, empty-selection and nesting refusals keep all three `None`.
+
+`.document` identifies the evaluated document: `defaults`, `override`, or
+`resolved`. The last covers standalone validation, final resolution and selection
+revalidation; it does not attribute a merged property to an original input.
+Overrides evaluate from the schema document root; defaults and resolved rosters
+evaluate through `$defs/resolvedRoster`. An empty tuple denotes that evaluation
+root. `$ref` and `if` hops may be omitted: `.path` is neither an instance pointer
+nor necessarily a JSON Pointer into the source schema. Do not invent a prefix.
+
+For a Google leg with `route="agy"` and neither `agy` nor `gemini` block, the
+selected path is `("properties", "legs", "items", "allOf", 1, "allOf", 2,
+"then", "anyOf")` and `.missing=None`. Adding `gemini={}` instead selects
+`("properties", "legs", "items", "allOf", 1, "allOf", 2, "then", "allOf", 0,
+"then", "required")`
+with `.missing="agy"`. These are the tested route-block vectors, not a promise
+that all combinations of simultaneous failures select the same error.
+
+The value-free roster guarantee covers these attributes, `.code`, fixed text
+and `.args`, using trusted schema metadata only. Python exception internals,
+including `__context__` and tracebacks, may retain validator/input references;
+suppressed displayed chaining is not internal erasure. No `.member`, `.unknown`
+or raw validator-error API is added. Issue #9's arbitrary unknown-key spelling
+request is declined for this slice, remains partial, and may receive a later
+owner decision. Exact host diagnostic formatting remains host-owned.
+
+## Transport-object shape validation
+
+```python
+validate_transport_receipt(doc: dict) -> None
+```
+
+Supply the already parsed nested `transport` object, not a whole host receipt.
+The operation returns `None` without mutation for the unchanged canonical
+[`receipt-fields.json`](../contracts/receipt-fields.json) shape. Wrong JSON
+types, missing/extra members, invalid vocabulary and native-route constraints
+raise `ReceiptError("schema_violation")`. Schema integer semantics permit
+integral floats; binary/version may be null when unobserved and observed CLI
+versions remain opaque strings. No model policy or version-equality gate is added.
+
+`ReceiptError(ValueError)` has `.code` and fixed messages:
+`Transport receipt violates the canonical schema.` (`schema_violation`) and
+`Transport receipt nesting exceeds the validation limit.` (`nesting_limit`).
+Neither interpolates caller data. Python exception-internal limits described
+above still apply. Missing, inconsistent or invalid packaged resources raise
+`ContractError`; unresolved references never retrieve remote data. The verified
+receipt bundle retains the canonical schema identity and six-field manifest.
+
+This API performs no parsing, caller-path reading, execution or authenticity
+check. Hosts still compare invocation identity and `wrapper_cmd`, bind the actual
+route/binary/observed version and current attempt, validate envelopes, and enforce
+stdin/execution observations, ownership, seals, reads and collection. Shape-valid
+data is neither authentic evidence nor approval; selective adoption needs no
+coordinator or native execution change.
 
 ## Prompt rendering
 
@@ -344,14 +408,22 @@ checks. Fields below are in constructor order; only shown defaults are optional.
 These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
-`AdmissionError` and `RosterError` explicitly declare it stable. `ContractError`
-and `PromptError` have no library-defined `.code`. No broader code/version
-stability commitment is introduced here.
+`AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
+and `PromptError` have no library-defined `.code`. The adopted compatibility
+floor also protects selected actual operational outcomes, including
+`extract_final` emitting `OutputError` codes `invalid_carrier` and `timed_out`,
+and agreement reasons `missing_output` and `negative_verdict`. Constructor checks
+preserve `.code` for tested constructor inputs; constructing
+`AgreementError('empty_selection')` or `DispatchError('invalid_requests')` alone
+does not establish which operations emit those codes. This inventory alone
+adds no blanket code/version stability promise beyond the scoped
+[compatibility policy](../../docs/api-compatibility.md).
 
 | Exception | Base | Current emitted codes / role |
 | --- | --- | --- |
 | `AdmissionError` | `ValueError` | `invalid_json`, `invalid_utf8`, `duplicate_member`, `nonfinite_number`, `invalid_input_type`, `nesting_limit`, `schema_violation`, `invalid_expected`, `binding_mismatch` |
 | `RosterError` | `ValueError` | `invalid_json`, `schema_violation`, `duplicate_name`, `empty_selection`, `nesting_limit` |
+| `ReceiptError` | `ValueError` | `schema_violation`, `nesting_limit` |
 | `OutputError` | `ValueError` | `invalid_output`, `invalid_carrier`, `not_completed`, `timed_out`, `transport_failed`, `nonzero_exit`, `invalid_envelope`, `terminal_failure`, `missing_terminal`, `multiple_terminals`, `carrier_mismatch` |
 | `AgreementError` | `ValueError` | `invalid_expected_map`, `invalid_binding`, `invalid_outputs_map`, `invalid_output`, `empty_selection`, `name_mismatch`, `mixed_basis`, `extra_output`, `invalid_integrity` |
 | `DispatchError` | `ValueError` | `invalid_concurrency`, `invalid_callback`, `invalid_requests`, `empty_selection`, `invalid_entries`, `disabled_entry`, `unresolved_route`, `invalid_binding`, `binding_mismatch`, `mixed_basis`, `preflight_failed` |

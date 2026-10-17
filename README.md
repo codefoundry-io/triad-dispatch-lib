@@ -16,7 +16,8 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 The development package (`0.1.0.dev4`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
-async host callbacks. Repository drivers verify the installed package with
+async host callbacks, safe roster schema diagnostics and transport-object shape
+validation. Repository drivers verify the installed package with
 synthetic four-route responses; earlier fresh Codex observations remain historical.
 The dev4 package is not published to a package index. Codex host v0.2.561
 independently released with library dev3 from `2d1e62e7`; Claude adoption remains
@@ -24,6 +25,10 @@ planned. Neither host is claimed to adopt dev4. See
 [independent host adoption](docs/host-adoption.md).
 
 - [Current status and next work](docs/status.md)
+- [Latest stable library release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)
+  ([all releases, including prereleases](https://github.com/codefoundry-io/triad-dispatch-lib/releases))
+- [Obtain and verify the library: wheel, sdist and manifest](docs/installing.md)
+- [Library publication, host proposal and retry operations](docs/releasing.md)
 - [Research assessment](docs/research/2026-10-12-shared-library-assessment.md)
 - [API design and staged Codex testing](docs/design/2026-10-12-v2-admission.md)
 - [Implementation plan](docs/superpowers/plans/2026-10-12-v2-admission.md)
@@ -43,7 +48,7 @@ its deterministic implementation and tests. Edit `spec/contracts/` and
 generated assets without writing or requiring Git/network access.
 
 [`spec/import-origin.json`](spec/import-origin.json) records the original import
-commit and file hashes as ancestry, not current document hashes. The three runtime
+commit and file hashes as ancestry, not current document hashes. The four runtime
 manifests each contain exactly `schema_version`, `source_repository`, `source_path`,
 `status`, `sha256` and `contract_id`. Each ID identifies one bundle of payload
 bytes, not the entire specification or a repository commit. Integrity establishes
@@ -59,7 +64,10 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 
 ## API
 
-The [current Python API contract](spec/reference/library-api.md) covers all 29
+The [public API compatibility gate](docs/api-compatibility.md) protects the declared
+`0.1.0.dev4` floor through structural and representative consumer checks.
+
+The [current Python API contract](spec/reference/library-api.md) covers all 31
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
@@ -72,6 +80,14 @@ incompatible vendor blocks; host checks must safely handle these and final
 validation is mandatory before consumption. `resolve_roster` retains its
 validated dictionary return. Capability, route and custom diagnostic checks
 remain host-owned; later mutations require revalidation.
+
+`RosterError` adds trusted schema `.path`, selected-required-only `.missing` and
+`.document` (`defaults`, `override`, `resolved`); it does not expose an instance
+pointer or arbitrary unknown-key names. Issue #9 remains partial.
+`validate_transport_receipt(doc)` validates only the parsed nested `transport`
+object and returns `None`, raising `ReceiptError` for invalid shape. Hosts still
+establish truthful observations, command equality, current attempts and custody.
+See the [follow-up dispositions](docs/requests/2026-10-16-adoption-followups-disposition.md).
 
 ```python
 from triad_dispatch_lib import AdmissionError, ContractError, validate_verdict
@@ -198,6 +214,7 @@ uv sync --locked
 uv run --locked pytest -q
 uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
+uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
 uv build dist/triad_dispatch_lib-0.1.0.dev4.tar.gz --wheel
 uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl
@@ -212,7 +229,7 @@ metadata permits Python 3.12+; tested combinations are recorded in verification
 evidence. `uv.lock` pins development dependencies. The wheel probe creates a
 temporary environment outside the checkout and installs the wheel and allowed
 runtime dependencies using binary wheels only, then replays the raw fixtures.
-It verifies all three bundle manifests and all eight payloads, reporting their
+It verifies all four bundle manifests and all nine payloads, reporting their
 content IDs/digests, import path, versions, platform and wheel hash. That
 probe needs package-index access for installation; the admission API itself is
 offline. Transitive `rpds-py` includes native Rust code, so wheel availability is
