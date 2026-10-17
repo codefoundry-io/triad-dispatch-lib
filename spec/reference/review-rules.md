@@ -43,9 +43,18 @@ binding pair is validated by the library before any reply is compared (`lib/verd
 `triad_dispatch_lib.validate_binding`): a pair the library refuses (`AdmissionError` `invalid_expected`) or a packaged-contract
 fault there (`ContractError`) is a HOST fault, exit 64, one line — the reply was never judged — never a refused reply (exit 1),
 and `collect` raises its `_HostFault` for such an admission, on the claude entry's saved reply too (`lib/collect_v2.py`
-`_raw_admissible` :877-889), instead of reporting the attempt not admissible (the adoption assessment § 5.23). On B the
+`_raw_admissible` :882), instead of reporting the attempt not admissible (the adoption assessment § 5.23). On B the
 library's admission result decides (`validate_verdict` raises `AdmissionError('invalid_expected')` like any admission
-refusal; B's exit classification of it is B's own) — both hosts' classifications recorded here as a fact (DL-165);
+refusal; B's exit classification of it is B's own) — both hosts' classifications recorded here as a fact (DL-165). Since
+triad `024b1f9e` (LIB-ADOPT 2) the reply itself is admitted on A by `validate_verdict` on the ORIGINAL text (`lib/verdict_v2.py`
+`_admit_obj` :436: the host question → `validate_binding` → ONE `validate_verdict(text, expected=expected)` call), the host
+keeping three layers after a refusal — the duplicate-member NAME scan after `duplicate_member` (§ 5.22, `_reject_duplicate`),
+the schema-location reason from `.path` / `.missing` after `schema_violation` (never an instance value), the field-named
+binding wording from `_binding_reason` after `binding_mismatch` — with these exit classes: the parse codes are exit 2
+(`invalid_json` / `nesting_limit` retryable ONCE on the entity-unescape pass; `nonfinite_number` / `invalid_utf8` final),
+`schema_violation` / `binding_mismatch` exit 1, `invalid_expected` / a library `ContractError` exit 64. Behaviour changes
+recorded on A: a non-finite number in a reply is exit 2 final (was exit 1); a malformed expected pair beside an UNPARSEABLE
+reply is 64 (was 2 — the pair is checked before the parse); a reply with no end marker is 3 first (DL-169);
 a seal `collect` wrote for an entry before the step stopped stays. On B an `OSError`, `ValueError` or `TypeError` raised
 out of a v2 step ends as the round-integrity refusal, exit 2 (`bin/review_round.py:2451-2452`, `:2585-2587` @
 `7f75863`), so B's exit does not tell a host fault from a refusal (a fact).
@@ -240,8 +249,20 @@ and twin (`tests/unit/skills/t23-review-web-c32.sh` axis 9 @ triad `3894879`; B 
 `referencing>=0.37,<1` — before the roster is resolved: `lib/verdict_v2.py` `_get_validator` :261, called by
 `review_scratch.py prepare` before `v2_resolve_roster` (:3235) and by `collect` / `retry` through `_check_toolkit`
 (`lib/collect_v2.py` :1495); apt's `python3-jsonschema` 4.10.3, though visible beside the venv, is below the floor and is
-refused with one line carrying both pins, the Mac and Ubuntu install lines and the running interpreter; `roster_v2`'s own
-dependency hint prints the same line, `lib/roster_v2.py` `_require_jsonschema` :256)
+refused with one line carrying both pins, the Mac and Ubuntu install lines and the running interpreter; since triad
+`024b1f9e` (LIB-ADOPT 2) the roster CLI asks the same host question itself — `lib/roster_v2.py` `main` :1005 prints
+`roster_v2: HOST FAULT: this host cannot resolve a roster: <reason>`, exit 64 — and `_require_jsonschema` is retired).
+Since triad `024b1f9e` (LIB-ADOPT 2) the roster is merged on A by the library's `merge_roster` and validated by
+`validate_resolved` with the host's checks on top (§ 5.24; `lib/roster_v2.py` `resolve_roster` :671):
+`validate_resolved(defaults)` attributed "shipped default roster is corrupt" by call site → the host's own read of the
+override (UTF-8 / "is not JSON" / a JSON object) → `merge_roster(defaults, <the override text>)` → the host's case-fold
+duplicate refusal over the override's own names → `_check_required` / `_check_blocks` → `validate_resolved(merged)` →
+`_check_capabilities` → the Google route; a library `RosterError` is re-raised as the host's one line naming the document,
+the schema path and the missing name (`_library_refusal` :280); a library `ContractError` is HOST FAULT 64 on the
+roster CLI and at `prepare` (`lib/review_scratch.py` `v2_resolve_roster` :2588). Recorded deviation: an
+unknown key is refused by its schema path, no key name; behaviour change: a hand-edited override with a duplicated key is
+refused (the duplicate named by the host's strict scan), and two entries with an identical name are refused by the
+library's `duplicate_name` before the host's case-fold walk (DL-170)
 pydantic 2 (a host install fact; NOT RUN on Ubuntu). Claude Code also ranks managed-settings and `--agents`
 definitions above project agents and scans every `.claude/agents/` from its working directory up to the repository
 root; a host that reads fewer places records that it does not observe the others (Claude Code sub-agents
@@ -1037,6 +1058,11 @@ rung did not read ends `unknown`, exit 1, never retried (On A t74 G5 @ triad `c8
 The transport receipt and audit / run-log records carry the common transport object defined by
 `contracts/receipt-fields.json`: stdin delivery class, execution route, binary, observed CLI version and attempt.
 Existing host envelopes remain. Schema validation alone does not prove host implementation or observed runtime identity.
+On A since triad `024b1f9e` (LIB-ADOPT 2) `collect` and `retry` judge every run-log's `transport` object with the library's
+`validate_transport_receipt` before the executed-command comparison (`lib/collect_v2.py` `_receipt_reason` :1305): a
+run-log without a transport object, or one the contract refuses, makes the entry INVALID with the library's fixed message
+and the log path (a new refusal class — until then only the executed command decided; `ReceiptError` carries no member
+path, a recorded limit); a library `ContractError` there is the one-line HOST FAULT 64, no per-entry state written (DL-171).
 Historical A driver behavior before the R-TERMINAL/C78 replacement: when a later agy driver turn (a capacity retry or a schema-repair re-run) fails to spawn, the audit `cmd` is the argv of
 the last turn that spawned, the receipt describes that same last spawned turn (its binary and its delivery; 6.0 —
 earlier the unspawned turn's pre-spawn shape), and the unspawned turn adds no attempt to the read audit

@@ -1,5 +1,19 @@
 # Changelog
 
+## LIB-ADOPT 2 on host A — 2026-10-18 (not tagged)
+
+- R-BIND: on A the reply is admitted by `validate_verdict` on the original text behind
+  `validate_binding`, the host keeping the duplicate-member name scan, the schema-location reason and
+  the binding wording; the parse codes are exit 2 (two retryable once), schema / binding 1,
+  `invalid_expected` / `ContractError` 64; a non-finite number is 2 (was 1) and a malformed pair
+  beside an unparseable reply is 64 (was 2) (DL-169). R-ROSTER: the roster is merged by `merge_roster`
+  and validated by `validate_resolved` with the host's checks on top; an unknown key is refused by its
+  schema path and a duplicated override key by name; the roster CLI asks the host question itself
+  (DL-170). R-RECEIPT: every run-log's transport object is judged by `validate_transport_receipt`
+  before the executed-command comparison — a new refusal class on A (DL-171). The three On-A pointer
+  sets re-pointed (DL-172). No prompt, schema or contract revision; nothing is ordered for B beyond
+  three checks.
+
 ## LIB-ADOPT 1b on host A — 2026-10-17 (not tagged)
 
 - R-BIND: on A a library-refused EXPECTED pair (`invalid_expected`) or a `ContractError` at
