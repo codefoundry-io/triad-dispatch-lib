@@ -411,7 +411,7 @@ Rows with A work open: DL-160.
 
 Rows with B work open: DL-72, DL-77, DL-79, DL-84, DL-85, DL-86, DL-92.
 
-Checks suggested for B: DL-13, DL-14, DL-16, DL-22, DL-42, DL-43, DL-67, DL-89, DL-90, DL-117, DL-118, DL-120, DL-136, DL-143, DL-144, DL-149, DL-150, DL-152.
+Checks suggested for B: DL-13, DL-14, DL-16, DL-22, DL-42, DL-43, DL-67, DL-89, DL-90, DL-117, DL-118, DL-120, DL-136, DL-143, DL-144, DL-149, DL-150, DL-152, DL-165, DL-167.
 
 B's installation-coexistence checks in DL-105/108/109 are WITHDRAWN under
 [D-U8-WITHDRAWN-20261010](../decisions/owner-register.md#D-U8-WITHDRAWN-20261010).
