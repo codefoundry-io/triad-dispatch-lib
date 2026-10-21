@@ -1,5 +1,14 @@
 # Changelog
 
+## Leg wording leftovers — 2026-10-21 (not tagged)
+
+- The owner register's D-4/Q-L (at least three legs run), Q-S and Q1 (a Minor-only result
+  releasable) rows carry an inline Superseded marker pointing at D-REVIEW-STRATEGY-20261002, which
+  already superseded them: R-AGREE needs every selected leg's explicit approval and R-ROSTER takes any
+  nonempty roster. C12 and its coverage row say "default" legs, not "standing" ones; the example
+  roster's opt-in claude entry is a "second claude entry" (DL-174). Text only: no rule, schema,
+  prompt or contract revision; nothing is ordered for B.
+
 ## LIB-ADOPT 2 on host A — 2026-10-18 (not tagged)
 
 - R-BIND: on A the reply is admitted by `validate_verdict` on the original text behind
