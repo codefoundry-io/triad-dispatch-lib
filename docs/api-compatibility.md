@@ -85,7 +85,8 @@ constructors, exception bases/constructor code preservation and selected emitted
 codes/diagnostics, strict JSON and all
 six bindings, roster order/copy/opaque model values, receipt shape/opaque CLI
 versions, prompt default/manifest shape and carrier/negative/timeout/agreement
-safety. It does not freeze exact prompt text. The full existing conformance and
+safety, plus the additive dev5 AGY metadata-separation contract. It does not
+freeze exact prompt text. The full existing conformance and
 async/lifecycle suites remain the deeper regression evidence.
 
 These tests run in source and unpacked sdist test suites without `.git`.

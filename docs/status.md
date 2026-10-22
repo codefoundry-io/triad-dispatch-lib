@@ -1,5 +1,7 @@
 # Current status
 
+Updated: 2026-10-22
+
 ## AGY metadata compatibility candidate — 2026-10-22
 
 The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata
@@ -15,14 +17,51 @@ Historical rounds are not reclassified; a fresh review follows verified adapter
 integration. Package/API/distribution checks, live verification and formal review
 outcomes are recorded in the [candidate verification record](verification/2026-10-22-agy-metadata.md).
 The implementation passed 1397 local tests and the four native package CI jobs.
-The first fresh formal round completed `AGREED` with matching integrity, including
-an actual AGY response carrying both metadata fields. Bounded documentation
-findings are being corrected before a fresh review of the changed candidate.
-No merge, public release or workstation installation has occurred.
+The first two metadata implementation rounds completed `AGREED` with matching
+integrity, including actual AGY responses admitted by the new path. Their bounded
+documentation findings are corrected in this candidate. PR #24 also incorporates
+the documentation changes from open PRs #20 and #22; a fresh complete review of
+the combined candidate remains pending. No pull request merge, public release
+or workstation installation has occurred.
 
-The published library remains dev4. The sections below record preceding work.
+## Current release and follow-ups
 
-Updated: 2026-10-16
+The published library is
+[v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
+a GitHub prerelease from `087af94a7078de0ae9701fb057840b5492f51f66` with wheel,
+sdist and manifest assets. The API compatibility gate merged in
+[PR #15](https://github.com/codefoundry-io/triad-dispatch-lib/pull/15).
+Current main `f043c257ccd748371c34e9d1f23e32064e139354` has the same `src/`
+tree as the release. Existing roster diagnostics and receipt-shape APIs are
+already included in dev4.
+
+Codex, Claude and AGY host repositories now record dev4 adoption; see the
+[dated manifest evidence](host-adoption.md#current-recorded-adoption-2026-10-22).
+Their implementation, installation and release evidence remain host-owned.
+The library's automated release notices still target only Codex and Claude.
+The original dev4 delivery attempt failed on missing App settings; current
+settings were not re-audited in this triage. That failed notice delivery does
+not negate independent consumer adoption.
+
+The owner-requested dev4 change list was delivered manually to all three host
+proposal PRs on 2026-10-22; see the [delivery record](releasing.md#current-activation-boundary).
+The old failed delivery job is not automatic pending work: retrying it requires
+a separate owner decision because its branch-based deduplication does not detect
+those manual proposals.
+
+The [2026-10-22 triage and release plan](requests/2026-10-22-triage-and-release-plan.md)
+records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
+with successful package/API CI. Instance-location diagnostics remain an optional
+follow-up; the schema identity, acceptance contract and extraction boundaries
+are unchanged. Documentation corrections alone do not require a new runtime
+release. The separate dev5 runtime candidate is described above; this triage
+section does not itself authorize publication or installation.
+
+## Historical checkpoints through 2026-10-16
+
+The sections below retain their original slice-time evidence and pending-work
+language. They are historical records, not the current adoption/release state;
+use the section above and its dated plan for continuation.
 
 ## Public API compatibility: implementation candidate
 

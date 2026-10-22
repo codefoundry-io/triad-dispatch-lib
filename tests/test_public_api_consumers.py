@@ -1,4 +1,4 @@
-"""Selected dev4 consumer contracts; runnable without pytest or a Git checkout."""
+"""Selected API floor and current consumer contracts; runnable without pytest or Git."""
 
 import argparse
 from dataclasses import FrozenInstanceError
