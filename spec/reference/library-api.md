@@ -1,7 +1,7 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev4` implementation of the 31
-package-root exports in `triad_dispatch_lib`: 17 functions, six dataclasses and
+This reference describes the candidate `0.1.0.dev5` implementation of the 32
+package-root exports in `triad_dispatch_lib`: 18 functions, six dataclasses and
 eight exception types. It records existing Python behavior; it does not change
 the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
 protect this public surface from the declared dev4 floor. Wire fields, allowed roster
@@ -310,10 +310,17 @@ does not implement C23 same-run finish recovery. Parsing errors may raise
 
 `admit_output` validates `expected` first, checks metadata and carrier/binding
 compatibility, extracts original final JSON, and runs full verdict admission.
+For `agy-stream-json` only, it first separates undeclared top-level AGY metadata
+using the canonical schema's property names. The original `ProviderOutput` and
+`extract_final` result stay unchanged; the returned verdict contains the validated
+payload. Generic `validate_verdict` and all other carriers remain strict.
 Claude, Gemini and AGY carriers require their matching family/route. Generic
-`native-final` can carry any valid binding, trusting the host's original final
-bytes and truthful observations. Extraction alone is not admission and cannot
-establish provider execution, attempt currency or packet custody.
+`native-final` can carry any valid binding, trusting the host's supplied final
+JSON and truthful observations. It performs no metadata separation. For C23
+recovered AGY output, hosts retain original bytes and metadata, apply C80 separation
+when needed, then serialize the projected payload for this strict carrier.
+Extraction alone is not admission and cannot establish provider execution,
+attempt currency or packet custody.
 
 `evaluate_agreement` requires an actual boolean integrity result and a nonempty
 expected-binding dictionary. Selected keys must be nonempty strings matching
@@ -330,6 +337,29 @@ Agreement requires true integrity and no reasons. False integrity alone leaves
 modified; result maps are fresh and mutable, and `agreed` is a computed snapshot
 that does not recompute after callers mutate them. Collector host faults and
 selection-deviation records remain host responsibilities.
+
+### AGY metadata separation
+
+```python
+separate_agy_metadata(
+    raw: str | bytes, *, declared_fields: tuple[str, ...] = (),
+) -> tuple[dict, dict]
+```
+
+Strictly parse the original JSON before any separation, preserving duplicate,
+escaped-duplicate, non-finite, encoding and nesting refusals. Non-object input
+raises `OutputError("invalid_envelope")`; a non-tuple or non-string member in
+`declared_fields` raises `OutputError("invalid_output")`. Parsing errors retain
+their `AdmissionError` codes and precede argument/shape checks.
+
+Return fresh payload and metadata dictionaries. Only undeclared top-level
+`toolAction` and `toolSummary` move to metadata, with their exact parsed values.
+Any valid finite JSON value is metadata; it does not determine the verdict.
+Declared names, other unknown names and nested members remain payload. Input
+text/bytes is never changed. The function does not validate a caller schema,
+bindings, terminal state or whether the payload is a verdict. Hosts retain
+the original provider output and validate the payload afterward. See
+[R-AGY-METADATA](review-rules.md#R-AGY-METADATA).
 
 ## Bounded host callbacks
 

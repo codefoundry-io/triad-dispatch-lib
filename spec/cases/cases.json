@@ -140,7 +140,7 @@
       "rule": "R-ROSTER, R-PREPARE",
       "summary": "Roster resolution",
       "input": "no file / a file overriding one default by name / a file with an unknown key / two Google CLIs present",
-      "expected": "No file = three standing legs at recommended defaults, including the Claude leg at Opus with xhigh, named by the `opus` alias; file entry overrides by name, including an older Claude model only where a route takes a full model name (R-ROSTER); explicit null retains host selection semantics; unknown key refused; resolved roster printed before dispatch; unselected legs never start; runtime Google resolution recorded",
+      "expected": "No file = three default legs at recommended defaults, including the Claude leg at Opus with xhigh, named by the `opus` alias; file entry overrides by name, including an older Claude model only where a route takes a full model name (R-ROSTER); explicit null retains host selection semantics; unknown key refused; resolved roster printed before dispatch; unselected legs never start; runtime Google resolution recorded",
       "tests": {
         "A": "tests/unit/skills/t12-roster-v2.sh (cases C12, C18, C22: v2 named roster, merge-by-name, per-entry Google chain) @ triad ebc4dc7; tests/unit/skills/t28-review-lib-basis-c13c19c32.sh axis 4 (a non-default shipped preset, -max, is selectable: the roster_v2.py resolve preview prints its model and effort, opus / max, and refuses when its -web twin file is missing; the leg spawns the -web twin and the round record binds that file; a name outside the closed shipped list, the removed -older and a ':'-scoped one included, is refused at prepare) @ triad e0b15f1 and tests/unit/skills/t12-roster-v2.sh axes 32, 33 (claude.agent names a shipped preset by its bare name; an unlisted, scoped or newline-carrying id is refused) @ triad 3894879; tests/unit/skills/t14-prepare-v2.sh axis 36 (an unselected entry never starts; the resolved roster is printed and recorded) @ triad ee011968",
         "B": "Implemented P3 candidate: Three defaults, B project discovery, merge-by-name, enabled display and consumption by capability-checked invocation allocation. Malformed review identifier/root path types receive controlled CLI refusal before adapter preparation. Evidence: tests/test_review_roster.py, tests/test_v2_adapters.py, tests/test_v2_rounds.py, tests/test_v2_review_findings.py, tests/test_v2_input_refusals.py. Current verification and publication: decisions/host-b-p3-verification.md."
@@ -698,6 +698,19 @@
       "tests": {
         "A": "NOT RUN for replacement. Read-only1de943af common run_cli_with_retry retains capacity and schema loops; host adoption/verification pending, native leg excluded.",
         "B": "IMPLEMENTED in B f4d6331. tests/test_single_cli_call.py real local subprocess journals: dedicated RED5failed/4passed; final GREEN397focused/2369full passed,4skipped, four skill validators and diff check passed. Pre/post source matched and exact owned temporary roots removed. Two later exit-code comment updates preserve identical executable AST. R1 was incomplete from actual Claude usage exhaustion; fresh owner-selected Sol/xhigh+Astra/high+Google Pro/high R2 all SAFE with matching integrity and exact cleanup. Capacity64, schema66, auth/transport precedence, initial prompt/web clause and existing explicit review retry regressions passed. Local fixtures establish wrapper policy, not universal vendor behavior or A adoption. Two nonblocking existing/wording residuals are disclosed in decisions/2026-10-11-single-cli-invocation.md. macOS26.6.2 arm64/Python3.12.13; Ubuntu not run."
+      }
+    },
+    {
+      "id": "C80",
+      "surface": "engine-transport",
+      "rule": "R-AGY-METADATA, R-BIND, R-TERMINAL",
+      "summary": "AGY tool metadata does not invalidate an otherwise valid verdict",
+      "input": "Original AGY structured result has undeclared top-level toolAction/toolSummary beside a valid positive or negative bound verdict. Controls: custom schema declares either name; other/nested extra fields; duplicate or nonfinite JSON; missing verdict/result; failed terminal; binding mismatch; non-AGY carrier.",
+      "expected": "Preserve original output and metadata. Strictly parse original JSON before separating only undeclared top-level toolAction/toolSummary. Apply unchanged payload schema and bindings; retain negative verdicts. Declared names stay payload. Other invalid data and terminal failures remain refusals; no metadata-triggered whole-CLI retry or canonical schema relaxation.",
+      "tests": {
+        "A": "NOT RUN; independent adoption requested.",
+        "B": "NOT RUN; implementation pending.",
+        "library": "IMPLEMENTED in 184e9bf. tests/test_output.py::test_agy_metadata_admits_actual_verdict_without_rewriting_raw, test_separate_agy_metadata_preserves_explicit_payload_declarations, test_separate_agy_metadata_refuses_original_json_before_projection, test_agy_metadata_does_not_bypass_invocation_binding, test_agy_metadata_alone_does_not_supply_missing_verdict, test_non_agy_carriers_keep_metadata_names_strict and tests/test_public_api_consumers.py::PublicAPIConsumers::test_agy_metadata_separation_and_negative_admission cover separation, raw preservation, positive/negative admission and strict controls. Local source suite passed 1397 tests on macOS/Python3.12.13. Native CI run39772302033 at184e9bf passed macos-15/ubuntu-24.04 x Python3.12/3.14 source, sdist/rebuilt-wheel and installed drivers; API compatibility run39772302537 passed at the same head. This is library evidence only; A/B adapter adoption and provider recovery/custody remain independent."
       }
     }
   ]

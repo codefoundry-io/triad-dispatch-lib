@@ -169,3 +169,163 @@ def test_native_does_not_strip_host_markers():
     with pytest.raises(lib.AdmissionError) as caught:
         lib.admit_output(output('```json\n' + json.dumps(BASE) + '\n```'), expected={k: BASE[k] for k in BINDINGS})
     assert caught.value.code == "invalid_json"
+
+
+@pytest.mark.parametrize("negative", [False, True])
+@pytest.mark.parametrize("as_bytes", [False, True])
+def test_agy_metadata_admits_actual_verdict_without_rewriting_raw(negative, as_bytes):
+    data = dict(BASE, family="google", route="agy")
+    if negative:
+        data.update(verdict="DO NOT MERGE", findings=[FINDING])
+    raw = '{ "toolAction" : {"name":"read"}, "toolSummary" : [null, true, "한글"], ' + json.dumps(data)[1:]
+    envelope = wrap(raw, "agy-stream-json")
+    if as_bytes:
+        raw, envelope = raw.encode(), envelope.encode()
+    observed = output(envelope, "agy-stream-json")
+    assert lib.admit_output(observed, expected={k: data[k] for k in BINDINGS}) == data
+    assert observed.stdout == envelope
+    assert lib.extract_final(observed) == raw
+    payload, metadata = lib.separate_agy_metadata(raw)
+    assert payload == data
+    assert metadata == {"toolAction": {"name": "read"}, "toolSummary": [None, True, "한글"]}
+
+
+@pytest.mark.parametrize("declared_fields,want_payload,want_metadata", [
+    ((), {"answer": 42}, {"toolAction": False, "toolSummary": None}),
+    (("toolAction",), {"answer": 42, "toolAction": False}, {"toolSummary": None}),
+    (("toolSummary",), {"answer": 42, "toolSummary": None}, {"toolAction": False}),
+    (("toolAction", "toolSummary"), {"answer": 42, "toolAction": False, "toolSummary": None}, {}),
+])
+def test_separate_agy_metadata_preserves_explicit_payload_declarations(declared_fields, want_payload, want_metadata):
+    payload, metadata = lib.separate_agy_metadata(
+        '{"answer":42,"toolAction":false,"toolSummary":null}', declared_fields=declared_fields)
+    assert payload == want_payload
+    assert metadata == want_metadata
+
+
+def test_separate_agy_metadata_returns_fresh_independent_objects_and_retains_other_names():
+    raw = b'{"nested":{"toolAction":[1]},"other":[2],"toolAction":{"items":[3]},"toolSummary":0.5}'
+    payload, metadata = lib.separate_agy_metadata(raw)
+    assert payload == {"nested": {"toolAction": [1]}, "other": [2]}
+    assert metadata == {"toolAction": {"items": [3]}, "toolSummary": 0.5}
+    payload["nested"]["toolAction"].append(4)
+    metadata["toolAction"]["items"].append(5)
+    assert lib.separate_agy_metadata(raw) == (
+        {"nested": {"toolAction": [1]}, "other": [2]},
+        {"toolAction": {"items": [3]}, "toolSummary": 0.5},
+    )
+    assert payload is not metadata
+
+
+@pytest.mark.parametrize("raw,code", [
+    ('{"toolAction":1,"toolAction":2}', "duplicate_member"),
+    ('{"toolSummary":1,"toolSummar\\u0079":2}', "duplicate_member"),
+    ('{"toolAction":{"x":1,"\\u0078":2}}', "duplicate_member"),
+    ('{"toolAction":NaN}', "nonfinite_number"),
+    ('{"toolSummary":Infinity}', "nonfinite_number"),
+    ('{"toolSummary":1e999}', "nonfinite_number"),
+    ('{"toolSummary":', "invalid_json"),
+    (b'\xff', "invalid_utf8"),
+    ({}, "invalid_input_type"),
+])
+def test_separate_agy_metadata_refuses_original_json_before_projection(raw, code):
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.separate_agy_metadata(raw)
+    assert caught.value.code == code
+
+
+@pytest.mark.parametrize("raw", ["null", "[]", '"text"', "1", "false"])
+def test_separate_agy_metadata_requires_object(raw):
+    with pytest.raises(lib.OutputError) as caught:
+        lib.separate_agy_metadata(raw)
+    assert caught.value.code == "invalid_envelope"
+
+
+@pytest.mark.parametrize("declared_fields", [None, [], "toolAction", (1,), ("toolSummary", None)])
+def test_separate_agy_metadata_requires_tuple_of_field_names(declared_fields):
+    with pytest.raises(lib.OutputError) as caught:
+        lib.separate_agy_metadata("{}", declared_fields=declared_fields)
+    assert caught.value.code == "invalid_output"
+
+
+def test_separate_agy_metadata_parses_original_before_invalid_declarations():
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.separate_agy_metadata('{"toolAction":NaN}', declared_fields=[])
+    assert caught.value.code == "nonfinite_number"
+
+
+@pytest.mark.parametrize("change", [
+    {"other": "extra"},
+    {"findings": [dict(FINDING, toolSummary="nested extra")]},
+])
+def test_agy_metadata_does_not_remove_other_or_nested_verdict_extras(change):
+    data = dict(BASE, family="google", route="agy", toolAction="read", **change)
+    expected = {k: data[k] for k in BINDINGS}
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.admit_output(output(wrap(json.dumps(data), "agy-stream-json"), "agy-stream-json"), expected=expected)
+    assert caught.value.code == "schema_violation"
+
+
+@pytest.mark.parametrize("raw,code", [
+    ('{"toolAction":1,"toolAction":2}', "duplicate_member"),
+    ('{"toolSummary":1,"toolSummar\\u0079":2}', "duplicate_member"),
+    ('{"toolAction":NaN}', "nonfinite_number"),
+    ('{"toolSummary":1e999}', "nonfinite_number"),
+])
+def test_agy_admission_never_discards_malformed_metadata(raw, code):
+    expected = {k: BASE[k] for k in BINDINGS} | {"family": "google", "route": "agy"}
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.admit_output(output(wrap(raw, "agy-stream-json"), "agy-stream-json"), expected=expected)
+    assert caught.value.code == code
+
+
+@pytest.mark.parametrize("field,value", [
+    ("review_id", "other"), ("family", "claude"), ("content_digest", "b" * 64),
+    ("leg_name", "other"), ("attempt", 2), ("route", "gemini"),
+])
+def test_agy_metadata_does_not_bypass_invocation_binding(field, value):
+    data = dict(BASE, family="google", route="agy", toolSummary="read")
+    expected = {k: data[k] for k in BINDINGS}
+    data[field] = value
+    if field == "family":
+        data["route"] = None
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.admit_output(output(wrap(json.dumps(data), "agy-stream-json"), "agy-stream-json"), expected=expected)
+    assert (caught.value.code, caught.value.field) == ("binding_mismatch", field)
+
+
+def test_agy_metadata_alone_does_not_supply_missing_verdict():
+    expected = {k: BASE[k] for k in BINDINGS} | {"family": "google", "route": "agy"}
+    raw = '{"toolAction":"read","toolSummary":"complete"}'
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.admit_output(output(wrap(raw, "agy-stream-json"), "agy-stream-json"), expected=expected)
+    assert caught.value.code == "schema_violation"
+
+
+@pytest.mark.parametrize("carrier,family,route", [
+    ("native-final", "codex", None), ("claude-json", "claude", None),
+    ("gemini-json", "google", "gemini"),
+])
+def test_non_agy_carriers_keep_metadata_names_strict(carrier, family, route):
+    data = dict(BASE, family=family, route=route, toolAction="read", toolSummary="complete")
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.admit_output(output(wrap(json.dumps(data), carrier), carrier), expected={k: data[k] for k in BINDINGS})
+    assert caught.value.code == "schema_violation"
+
+
+def test_generic_verdict_validation_keeps_agy_metadata_names_strict():
+    data = dict(BASE, family="google", route="agy", toolAction="read", toolSummary="complete")
+    with pytest.raises(lib.AdmissionError) as caught:
+        lib.validate_verdict(json.dumps(data), expected={k: data[k] for k in BINDINGS})
+    assert caught.value.code == "schema_violation"
+
+
+@pytest.mark.parametrize("change,code", [
+    ({"completed": False}, "not_completed"), ({"timed_out": True}, "timed_out"),
+    ({"transport_failed": True}, "transport_failed"), ({"exit_code": 3}, "nonzero_exit"),
+])
+def test_agy_metadata_admission_preserves_terminal_precedence(change, code):
+    expected = {k: BASE[k] for k in BINDINGS} | {"family": "google", "route": "agy"}
+    with pytest.raises(lib.OutputError) as caught:
+        lib.admit_output(output('malformed private metadata', "agy-stream-json", **change), expected=expected)
+    assert caught.value.code == code

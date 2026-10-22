@@ -1,4 +1,4 @@
-"""Selected dev4 consumer contracts; runnable without pytest or a Git checkout."""
+"""Selected API floor and current consumer contracts; runnable without pytest or Git."""
 
 import argparse
 from dataclasses import FrozenInstanceError
@@ -14,7 +14,7 @@ EXPORTS = """AdmissionError AgreementError AgreementResult CallOutcome ContractE
 DispatchError InvestigationRequest OutputError PromptError ProviderOutput ReceiptError
 ReviewRequest ReviewRun RosterError admit_output evaluate_agreement extract_final
 load_roster_contract merge_roster parse_json render_data render_investigation_prompt
-render_review_clauses resolve_roster run_investigations run_review select_entries
+render_review_clauses resolve_roster run_investigations run_review select_entries separate_agy_metadata
 validate_binding validate_resolved validate_transport_receipt validate_verdict""".split()
 BINDING = dict(review_id="consumer-1", family="codex", content_digest="a" * 64,
                leg_name="c", attempt=1, route=None)
@@ -144,6 +144,27 @@ class PublicAPIConsumers(unittest.TestCase):
             with self.assertRaises(lib.OutputError) as caught:
                 lib.extract_final(lib.ProviderOutput(carrier, raw, 0, True, timed_out))
             self.assertEqual(caught.exception.code, code)
+
+    def test_agy_metadata_separation_and_negative_admission(self):
+        binding = BINDING | dict(family="google", route="agy")
+        verdict = VERDICT | binding | dict(verdict="DO NOT MERGE", open_questions=["missing context"])
+        raw = json.dumps(verdict | dict(toolAction={"read": True}, toolSummary=[None, "done"])).encode()
+        payload, metadata = lib.separate_agy_metadata(raw)
+        self.assertEqual(payload, verdict)
+        self.assertEqual(metadata, {"toolAction": {"read": True}, "toolSummary": [None, "done"]})
+        declared, metadata = lib.separate_agy_metadata(raw, declared_fields=("toolSummary",))
+        self.assertEqual(declared, verdict | dict(toolSummary=[None, "done"]))
+        self.assertEqual(metadata, {"toolAction": {"read": True}})
+        envelope = b'{"event":"result","result":{"status":"SUCCESS","structured_output":' + raw + b'}}'
+        observed = lib.ProviderOutput("agy-stream-json", envelope, 0, True)
+        self.assertEqual(lib.extract_final(observed), raw)
+        self.assertEqual(lib.admit_output(observed, expected=binding), verdict)
+        self.assertEqual(observed.stdout, envelope)
+        self.assertEqual(lib.evaluate_agreement({"c": binding}, {"c": observed}, integrity_ok=True).reasons,
+                         {"c": "negative_verdict"})
+        with self.assertRaises(lib.AdmissionError) as caught:
+            lib.validate_verdict(raw, expected=binding)
+        self.assertEqual(caught.exception.code, "schema_violation")
 
 
 if __name__ == "__main__":
