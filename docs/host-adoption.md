@@ -76,9 +76,14 @@ result fields, emitted errors, input copies and shallow result mutability.
   decision: ordered failed-then-successful finish evidence, read/tool/error checks,
   and the adopted host's exit/auth/timeout/transport rules. Do not feed a recovered
   raw ERROR stream directly to the strict carrier or admit arbitrary ERROR results.
-  After establishing recovery, an adapter may pass the original final verdict JSON
-  through `native-final` with truthful host-observed terminal metadata and the same
-  Google/AGY binding. This does not move execution or custody into the library.
+  After establishing recovery, retain the original final JSON and metadata in raw
+  custody. If `toolAction`/`toolSummary` are undeclared payload fields, first call
+  `separate_agy_metadata` with the schema's declared top-level names (C80), preserve
+  the returned metadata, and serialize the projected payload for `native-final`.
+  Without those undeclared fields, the original final JSON may pass directly.
+  Supply truthful host-observed terminal metadata and the same Google/AGY binding
+  in either path. `native-final` performs no separation and retains strict schema
+  and binding validation. This does not move execution or custody into the library.
   Exercise positive recovery, missing/reversed success, invalid answer, other
   execution errors and retained binding/terminal refusals before adopting that path.
 - **Integrity and host faults (R-AGREE):** `run_review` is a callback coordinator,
@@ -129,8 +134,11 @@ result fields, emitted errors, input copies and shallow result mutability.
   Preserve collected evidence and do not mutate it to manufacture a new decision.
 
 The generic `native-final` carrier trusts adapter-supplied execution observations
-for any family and validates original JSON, schema and all six bindings. It
-neither attests runtime model identity nor makes failed transport successful.
+for any family and strictly parses supplied final JSON, validating schema and all
+six bindings. Supplied JSON may be the original final result or a host-derived
+C80 payload with separately retained raw originals and metadata. The carrier
+does not perform that projection. It neither attests runtime model identity nor
+makes failed transport successful.
 Native spawning, read containment, packet/receipt seals and installer preservation
 must remain covered by host tests alongside the mapped library tests.
 

@@ -69,6 +69,12 @@ Library changes: output helper, AGY admission, root export and focused regressio
 Host changes: wrapper seam and regression coverage; exact verified wheel/pin
 migration. Version, adoption documentation and provenance follow the changed bytes.
 
+Measured candidate delta: authored library production +28/-3 lines and Codex
+wrapper +61/-15 lines, excluding mechanical vendoring and identity pins. The
+host's declared-field/alias discovery and strict original terminal-span parsing
+explain the growth from the initial estimate; they implement the same approved
+preservation rules. Tests, fixtures and documentation are counted separately.
+
 1. Record C80 and the common rule before implementation; request host review.
 2. Write failing positives for metadata-bearing actual verdicts; preserve strict
    negatives, custom declared names, original bytes and non-AGY behavior.

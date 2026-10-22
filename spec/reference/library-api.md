@@ -315,9 +315,12 @@ using the canonical schema's property names. The original `ProviderOutput` and
 `extract_final` result stay unchanged; the returned verdict contains the validated
 payload. Generic `validate_verdict` and all other carriers remain strict.
 Claude, Gemini and AGY carriers require their matching family/route. Generic
-`native-final` can carry any valid binding, trusting the host's original final
-bytes and truthful observations. Extraction alone is not admission and cannot
-establish provider execution, attempt currency or packet custody.
+`native-final` can carry any valid binding, trusting the host's supplied final
+JSON and truthful observations. It performs no metadata separation. For C23
+recovered AGY output, hosts retain original bytes and metadata, apply C80 separation
+when needed, then serialize the projected payload for this strict carrier.
+Extraction alone is not admission and cannot establish provider execution,
+attempt currency or packet custody.
 
 `evaluate_agreement` requires an actual boolean integrity result and a nonempty
 expected-binding dictionary. Selected keys must be nonempty strings matching

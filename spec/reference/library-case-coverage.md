@@ -1,10 +1,10 @@
 # Behavioral case ownership and library coverage
 
-This derived map assigns all 58 actual cases in [cases.json](../cases/cases.json)
+This derived map assigns all 59 actual cases in [cases.json](../cases/cases.json)
 to library implementation/test portions and remaining host or workflow owners.
 The canonical case text remains authoritative; condensed descriptions below
 do not replace it. C6 is superseded. IDs are not contiguous (C1-C37, C43,
-C60-C79), and the maximum ID is not the number of cases.
+C60-C80), and the maximum ID is not the number of cases.
 
 Every row is a disposition, not a claim that all axes have passed. Test names
 were inspected statically in the [2026-10-14 audit](../../docs/verification/2026-10-14-spec-contract-audit.md).
@@ -78,13 +78,7 @@ instead of adding unrelated runtime mechanisms to make a row appear complete.
 | C77, cases:668–673 | Typed classifier extensions drop unsupported/nonpositive exit mappings, retain valid siblings/auth rules; log once, never rewrite on read | No classifier extension loader; canonical tokens/vendor tables are data only | Static vendor-row/token tests only; no direct library runtime extension-map test | Host user extension loader, proposal validation, typed exits/classification and immutable reads |
 | C78, cases:692–697 | One external inference dispatch; no wrapper capacity/schema replay; preserve initial prompt/streams/exit/auth/transport; explicit review retry separate | `run_review` / `run_investigations` invoke each selected callback once, no automatic library retry; strict output refusal blocks agreement | `test_dispatch.py::test_four_routes_overlap_preserve_order_and_admit_carriers`, `test_all_preflights_finish_before_invoke_and_failure_aborts`, failure/deadline outcome tests; four-route synthetic refusal cases | Host callback/wrapper must start vendor inference once and map capacity64/schema66/auth/transport; vendor-internal and review-level retry remain separate |
 | C79, cases:680–685 | Required sealed packet readable with permitted tools without changing product cwd or widening writes/siblings; narrow guarded Gemini launch control bound/refused on change; coverage-negative retained | Renderer transports packet paths; admission retains schema-valid negative/coverage gaps and binding; smoke context requires canonical bound regular packet files but supplies no Gemini CLI add-directory launcher | `test_codex_smoke.py::test_packet_path_boundaries`, `test_packet_and_prompt_changes`; `test_agreement.py::test_negative_invalid_stale_and_swapped_block`; all-route prompt matrix | Host B guarded Gemini exact packet include-directory/preflight/custody; host A co-location/native availability; reviewer reports missing coverage |
-
-For C80 (`R-AGY-METADATA`), `separate_agy_metadata` and AGY-only `admit_output`
-implement original-byte preservation, metadata separation, declared names and
-strict payload admission. `tests/test_output.py` and the installed
-`tests/test_public_api_consumers.py` cover positive/negative verdicts, all
-bindings and strict refusal controls. Host wrapper/recovery/custody and live
-provider behavior remain host-owned, not established by library tests.
+| C80, cases:704–715 | Strictly parse original AGY JSON, separate only undeclared top-level toolAction/toolSummary, preserve raw/metadata and validate actual bound positive or negative verdict; retain all invalid-input/terminal refusals | `separate_agy_metadata` returns fresh payload/metadata; AGY-only `admit_output` applies canonical declared names before strict validation; `extract_final`, generic validation and other carriers remain unchanged | `test_output.py::test_agy_metadata_admits_actual_verdict_without_rewriting_raw`, `test_separate_agy_metadata_preserves_explicit_payload_declarations`, `test_separate_agy_metadata_refuses_original_json_before_projection`, `test_agy_metadata_does_not_bypass_invocation_binding`, `test_non_agy_carriers_keep_metadata_names_strict`; installed `test_public_api_consumers.py::PublicAPIConsumers::test_agy_metadata_separation_and_negative_admission`; measured local/native evidence in C80's library cell | Each host adopts independently, preserves raw custody and terminal/recovery rules, separates recovered AGY metadata before strict native-final admission, and verifies actual provider behavior |
 
 The native receipt readiness and pre-publication cyclic-context corrections
 cover narrow driver boundaries connected to C1/C2 and packet-input cases.

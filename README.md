@@ -186,17 +186,21 @@ preflight exposes the aggregate `preflight_failed` code, not per-entry diagnosti
 Full collectors must preserve the [host-fault distinction](docs/host-adoption.md#required-adapter-contracts).
 
 `ProviderOutput` supports `native-final`, `claude-json`, `gemini-json` and
-`agy-stream-json`. Native-final is original JSON after host-owned marker/fence
-removal; the library never strips markers. Claude requires an object-valued
-`structured_output`, Gemini a string-valued `response`, and AGY exactly one
+`agy-stream-json`. Native-final accepts final JSON after host-owned marker/fence
+removal or an explicitly derived C80 payload; the library never strips markers.
+Hosts retain original provider bytes separately from any projection. Claude
+requires an object-valued `structured_output`, Gemini a string-valued `response`, and AGY exactly one
 successful result terminal with object-valued structured output in valid JSONL.
 Duplicate members, malformed tails and ambiguous terminals are refused. Completion,
 timeout, transport and exit observations precede admission; unsupported envelope
 adaptation remains host-owned. `admit_output` preserves embedded JSON evidence.
 The strict AGY carrier does not perform C23 same-run finish recovery; adopting
 hosts must retain that decision and its guards before admitting recovered output.
-Generic `native-final` trusts host-observed completion and original final bytes
-for any family; it does not attest execution or authorize relabelling failed transport.
+Generic `native-final` trusts host-observed completion and supplied final JSON
+for any family and performs no metadata separation. Recovered AGY results with
+undeclared metadata need host-owned C80 separation before this strict path; see
+[adapter contracts](docs/host-adoption.md#required-adapter-contracts).
+It does not attest execution or authorize relabelling failed transport.
 `evaluate_agreement` re-admits every selected binding and requires unanimous safe
 verdicts plus true integrity. Valid dissent is retained and blocks approval.
 
@@ -261,9 +265,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and
@@ -295,8 +299,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

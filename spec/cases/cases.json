@@ -710,7 +710,7 @@
       "tests": {
         "A": "NOT RUN; independent adoption requested.",
         "B": "NOT RUN; implementation pending.",
-        "library": "NOT RUN; implementation pending."
+        "library": "IMPLEMENTED in 184e9bf. tests/test_output.py::test_agy_metadata_admits_actual_verdict_without_rewriting_raw, test_separate_agy_metadata_preserves_explicit_payload_declarations, test_separate_agy_metadata_refuses_original_json_before_projection, test_agy_metadata_does_not_bypass_invocation_binding, test_agy_metadata_alone_does_not_supply_missing_verdict, test_non_agy_carriers_keep_metadata_names_strict and tests/test_public_api_consumers.py::PublicAPIConsumers::test_agy_metadata_separation_and_negative_admission cover separation, raw preservation, positive/negative admission and strict controls. Local source suite passed 1397 tests on macOS/Python3.12.13. Native CI run39772302033 at184e9bf passed macos-15/ubuntu-24.04 x Python3.12/3.14 source, sdist/rebuilt-wheel and installed drivers; API compatibility run39772302537 passed at the same head. This is library evidence only; A/B adapter adoption and provider recovery/custody remain independent."
       }
     }
   ]

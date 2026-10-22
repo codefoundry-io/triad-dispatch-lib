@@ -13,7 +13,11 @@ integration and all host releases remain separately owned.
 The earlier metadata-only review block is superseded by this approved behavior.
 Historical rounds are not reclassified; a fresh review follows verified adapter
 integration. Package/API/distribution checks, live verification and formal review
-outcomes will be recorded before the candidate is described as complete.
+outcomes are recorded in the [candidate verification record](verification/2026-10-22-agy-metadata.md).
+The implementation passed 1397 local tests and the four native package CI jobs.
+The first fresh formal round completed `AGREED` with matching integrity, including
+an actual AGY response carrying both metadata fields. Bounded documentation
+findings are being corrected before a fresh review of the changed candidate.
 No merge, public release or workstation installation has occurred.
 
 The published library remains dev4. The sections below record preceding work.
