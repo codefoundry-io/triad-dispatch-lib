@@ -21,6 +21,12 @@ The original dev4 delivery attempt failed on missing App settings; current
 settings were not re-audited in this triage. That failed notice delivery does
 not negate independent consumer adoption.
 
+The owner-requested dev4 change list was delivered manually to all three host
+proposal PRs on 2026-10-22; see the [delivery record](releasing.md#current-activation-boundary).
+The old failed delivery job is not automatic pending work: retrying it requires
+a separate owner decision because its branch-based deduplication does not detect
+those manual proposals.
+
 The [2026-10-22 triage and release plan](requests/2026-10-22-triage-and-release-plan.md)
 records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
 with successful package/API CI. Instance-location diagnostics remain an optional

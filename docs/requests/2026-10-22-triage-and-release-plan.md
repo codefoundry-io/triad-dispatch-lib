@@ -121,6 +121,14 @@ installation and fresh-session/provider checks remain separate evidence.
    approval is required for App installation/permission changes; current App
    settings have not been re-audited here. Do not equate today's proposal PRs
    with future version-update notices or mutate them into automatic upgrades.
+   Dev4's requested change list has since been delivered manually to all three
+   proposals; see the [delivery record](../releasing.md#current-activation-boundary).
+   Do not automatically retry its old delivery job, whose branch-based
+   deduplication cannot recognize those proposals. Any deliberate retry is a
+   separate owner decision. Also, the helper currently reads only
+   `contracts/library-adoption.json`; Claude's separate `skills/.../lib/lib-adoption.json`
+   location makes its prior version appear as `unrecorded` in automated notices.
+   A future automation slice should explicitly address that lookup limitation.
 7. **Adopt and deploy independently.** Each host verifies the exact artifact,
    adapts diagnostics, updates its provenance and runs its own compatibility,
    packaging and review checks before its separate release/install approval.

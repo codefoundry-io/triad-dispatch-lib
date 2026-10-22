@@ -25,9 +25,24 @@ inspected. That audit preceded the owner-authorized PR #14 merge and
 The exact-tag four-platform verification and publication jobs succeeded with
 wheel, sdist and manifest assets. The original delivery job refused missing App
 settings and sent no host notices. Current App settings were not re-audited on
-2026-10-22; check them before a new delivery attempt. Publication does not
+2026-10-22; check them before delivery of a future version. Publication does not
 establish host adoption, and that failed delivery does not negate the later
 independent adoption records linked above.
+
+On 2026-10-22, the owner-requested dev4 change list was delivered manually to
+[Codex #46](https://github.com/codefoundry-io/triad-codex-dispatch/pull/46#issuecomment-6331229801),
+[Claude #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6331230108)
+and [AGY #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2#issuecomment-6331230380).
+Do not automatically retry the old dev4 delivery job as unfinished work. A later
+retry is a separate owner decision: automation deduplicates by its own
+`automation/triad-lib/<tag>` branch and will not recognize these manual proposals.
+
+The current helper reads prior adoption only from `contracts/library-adoption.json`.
+Claude's export records adoption under
+`skills/triad-cross-family-review/lib/lib-adoption.json`, so its automated notice
+will report the prior version as `unrecorded`. That conservative fallback is not
+evidence of no adoption. Changing record lookup belongs to a separately selected
+automation update alongside any third-host support.
 
 ## Configure the GitHub App
 
