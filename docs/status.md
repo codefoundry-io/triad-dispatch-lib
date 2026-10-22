@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-10-22
+Updated: 2026-10-23
 
 ## AGY metadata compatibility candidate — 2026-10-22
 
@@ -20,9 +20,15 @@ The implementation passed 1397 local tests and the four native package CI jobs.
 The first two metadata implementation rounds completed `AGREED` with matching
 integrity, including actual AGY responses admitted by the new path. Their bounded
 documentation findings are corrected in this candidate. PR #24 also incorporates
-the documentation changes from open PRs #20 and #22; a fresh complete review of
-the combined candidate remains pending. No pull request merge, public release
-or workstation installation has occurred.
+the documentation changes from open PRs #20 and #22. The combined review at
+`3fbc14187bbe76f3f3807e570afdf3db2fbe8cee` completed on 2026-10-23: all three
+required reviewers returned `SAFE TO MERGE`, collection was `AGREED`, and final
+integrity was `ROUND_INTEGRITY_OK`. The separate Astra comparison found no
+actionable defect. The [dated release notes](../spec/CHANGELOG.md#dev5-candidate-corrections-and-review--2026-10-23-not-tagged)
+record exact-basis CI, remaining limits and independent host follow-ups.
+These results do not approve later documentation edits or the separately blocked
+Codex adapter. No pull request merge, public release or workstation installation
+has occurred.
 
 ## Current release and follow-ups
 

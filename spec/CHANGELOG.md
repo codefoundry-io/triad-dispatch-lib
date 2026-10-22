@@ -1,5 +1,32 @@
 # Changelog
 
+## dev5 candidate corrections and review — 2026-10-23 (not tagged)
+
+- Clarify C23 recovery guidance: preserve original AGY bytes and separated
+  metadata, apply the C80 projection when needed, then submit the payload through
+  strict `native-final`. This corrects documentation; `native-final` itself does
+  not remove metadata.
+- Consolidate the PR #20/#22 adoption and release documentation with the C80
+  implementation in [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24).
+  The shared helper separates only undeclared top-level `toolAction` and
+  `toolSummary`; declared/nested data, strict JSON, schema and binding checks,
+  negative verdicts and terminal failures retain their contracts.
+- Reviewed basis `3fbc14187bbe76f3f3807e570afdf3db2fbe8cee`: 1,397 local tests,
+  [four native package CI jobs](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39809642349)
+  and [API CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39809642412)
+  passed. Round `20261023-lib-combined-r6-7a4d92` closed `AGREED` with all three
+  required reviewers `SAFE TO MERGE` and `ROUND_INTEGRITY_OK`; the separate
+  Astra comparison found no actionable defect. The previously disclosed,
+  unobserved serializer-recursion hardening suggestion remains nonblocking.
+- Library dev5 remains unpublished. Each host must verify and pin the exact
+  published source/wheel and complete its own adoption, native checks and review.
+  [Codex PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+  has a separate `ADMITTED_NOT_SAFE` host review; library approval does not
+  approve that adapter. Issue #9 diagnostics remain a separate proposal.
+
+These dated results apply to the named reviewed basis. This release-note update
+does not claim a new formal review, merge, publication or installation.
+
 ## AGY result metadata — 2026-10-22 (not tagged)
 
 - R-AGY-METADATA / C80: preserve original AGY output while separating undeclared
