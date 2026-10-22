@@ -227,9 +227,11 @@ remain proposals only, not approved owner decisions. The
 requester accepted dev4 `.field`/trusted schema `.path` and withdrew `.detail`,
 instance pointers and the duplicate pre-pass; see the
 [request sync evidence](verification/2026-10-15-provenance-request-sync.md).
-These settled library APIs do not establish host adaptation, full parse delegation
-or released adoption. Keep dev4 unpublished and source-pinned; combined verification
-is recorded separately in the [adoption API record](verification/2026-10-15-adoption-apis.md).
+At that 2026-10-15 checkpoint, these settled library APIs did not establish host
+adaptation, full parse delegation or released adoption, and dev4 remained
+unpublished and source-pinned. Combined verification is recorded separately in
+the [adoption API record](verification/2026-10-15-adoption-apis.md); current release
+and adoption evidence is at the top of this guide.
 
 The host's raw replacement/residual forms, case-folded directory-name checks and
 reported 3600-second entry timeout remain host responsibilities. This project's

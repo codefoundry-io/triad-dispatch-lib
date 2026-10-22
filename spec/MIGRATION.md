@@ -37,9 +37,9 @@ Build commit and artifact hashes belong in external verification/release evidenc
 Use [independent host adoption](../docs/host-adoption.md) for current adoption
 status and future consumer ports. Shared semantics are authored here; native
 spawning, model/effort controls, provider CLI setup and installer lifecycle remain
-host-owned. The current unpublished `0.1.0.dev4` package, Codex's adopted dev3
-source pin, candidate wire schema and historical specification tags are separate
-version concepts. No new spec tag is implied.
+host-owned. The published `0.1.0.dev4` prerelease, each host's recorded adoption
+pin, candidate wire schema and historical specification tags are separate version
+concepts. No new spec tag is implied.
 
 ## Old-repository notice, separate publication
 
