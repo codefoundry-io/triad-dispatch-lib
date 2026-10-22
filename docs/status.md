@@ -1,6 +1,39 @@
 # Current status
 
-Updated: 2026-10-16
+Updated: 2026-10-22
+
+## Current release and follow-ups
+
+The published library is
+[v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
+a GitHub prerelease from `087af94a7078de0ae9701fb057840b5492f51f66` with wheel,
+sdist and manifest assets. The API compatibility gate merged in
+[PR #15](https://github.com/codefoundry-io/triad-dispatch-lib/pull/15).
+Current main `f043c257ccd748371c34e9d1f23e32064e139354` has the same `src/`
+tree as the release. Existing roster diagnostics and receipt-shape APIs are
+already included in dev4.
+
+Codex, Claude and AGY host repositories now record dev4 adoption; see the
+[dated manifest evidence](host-adoption.md#current-recorded-adoption-2026-10-22).
+Their implementation, installation and release evidence remain host-owned.
+The library's automated release notices still target only Codex and Claude.
+The original dev4 delivery attempt failed on missing App settings; current
+settings were not re-audited in this triage. That failed notice delivery does
+not negate independent consumer adoption.
+
+The [2026-10-22 triage and release plan](requests/2026-10-22-triage-and-release-plan.md)
+records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
+with successful package/API CI. Instance-location diagnostics remain an optional
+follow-up; the schema identity, acceptance contract and extraction boundaries
+are unchanged. Documentation corrections alone do not require a new runtime
+release. No new version, merge, publication or installation is performed by
+this status update.
+
+## Historical checkpoints through 2026-10-16
+
+The sections below retain their original slice-time evidence and pending-work
+language. They are historical records, not the current adoption/release state;
+use the section above and its dated plan for continuation.
 
 ## Public API compatibility: implementation candidate
 

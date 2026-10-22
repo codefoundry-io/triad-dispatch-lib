@@ -1,8 +1,9 @@
 # triad-dispatch-lib
 
 Shared deterministic logic for the Claude-hosted
-[triad-dispatch](https://github.com/codefoundry-io/triad-dispatch) and the
-Codex-hosted [triad-codex-dispatch](https://github.com/codefoundry-io/triad-codex-dispatch).
+[triad-dispatch](https://github.com/codefoundry-io/triad-dispatch),
+Codex-hosted [triad-codex-dispatch](https://github.com/codefoundry-io/triad-codex-dispatch),
+and [agy-triad-dispatch](https://github.com/codefoundry-io/agy-triad-dispatch).
 Implement common rules once while preserving each host's native execution.
 
 The product scope is configurable **Codex, Claude, Gemini CLI and AGY** review
@@ -19,10 +20,13 @@ profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
 validation. Repository drivers verify the installed package with
 synthetic four-route responses; earlier fresh Codex observations remain historical.
-The dev4 package is not published to a package index. Codex host v0.2.561
-independently released with library dev3 from `2d1e62e7`; Claude adoption remains
-planned. Neither host is claimed to adopt dev4. See
-[independent host adoption](docs/host-adoption.md).
+The dev4 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
+not a package-index release. As checked on 2026-10-22, all three host repositories
+record dev4 from `087af94a` in their adoption manifests. Those records do not
+establish every host API integration, local installation or live-provider result.
+See [independent host adoption](docs/host-adoption.md) and the
+[open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
 
 - [Current status and next work](docs/status.md)
 - [Latest stable library release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)

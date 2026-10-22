@@ -5,12 +5,43 @@ exact-source/release selection, artifact verification, isolated installation,
 public API smoke and platform dependency requirements.
 
 `triad-dispatch-lib` owns common contracts, prompt clauses, cases and deterministic
-behavior. The Claude host (`triad-dispatch`) and Codex host
-(`triad-codex-dispatch`) own native spawning, model/effort resolution, native
+behavior. The Claude host (`triad-dispatch`), Codex host
+(`triad-codex-dispatch`) and AGY host (`agy-triad-dispatch`) own native spawning,
+model/effort resolution, native
 callback adapters, provider CLI setup, permissions, installation and configuration.
 The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
+
+## Current recorded adoption (2026-10-22)
+
+All three pinned repository manifests record library `0.1.0.dev4`, source
+`087af94a7078de0ae9701fb057840b5492f51f66`, wheel SHA-256
+`c5bfdf10c4ce81f431ec7f77106e4d77b1556ac9c7b6b01bdb6616f988e8b2cc`,
+and the same four runtime bundle IDs:
+
+| Host | Pinned repository evidence | Follow-up proposal |
+| --- | --- | --- |
+| Codex | [Manifest at `db0fe780`](https://github.com/codefoundry-io/triad-codex-dispatch/blob/db0fe780ff85483a98bafd3a1668dd8b7ab2f90f/contracts/library-adoption.json) | [Draft PR #46](https://github.com/codefoundry-io/triad-codex-dispatch/pull/46) |
+| Claude | [Export manifest at `c02cd976`](https://github.com/codefoundry-io/triad-dispatch/blob/c02cd9769880dc14b98f54f4bbe70a669b9b8611/skills/triad-cross-family-review/lib/lib-adoption.json) | [Draft PR #1](https://github.com/codefoundry-io/triad-dispatch/pull/1) |
+| AGY | [Manifest at `aa4b8db0`](https://github.com/codefoundry-io/agy-triad-dispatch/blob/aa4b8db07881cf299ec174e2f23c310196975600/contracts/library-adoption.json) | [Draft PR #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2) |
+
+These are recorded provenance checks, not fresh verification of each vendored
+file, every API integration, installation or live-provider behavior. The proposal
+PRs contain documentation only. Claude implementation belongs in its owning
+`codefoundry-io/triad` source before export; AGY currently uses default branch
+`feat/agy-triad-dispatch`. AGY's adoption does not add a new library host-profile
+literal: its proposed work preserves the existing `host="B"` integration.
+
+The existing `.path`, `.missing`, `.document`, `validate_transport_receipt` and
+`ReceiptError` APIs are already in published dev4. Issue #9 remains partial/open
+for optional diagnostics; none of these manifests implies host-message parity.
+See the [triage and release plan](requests/2026-10-22-triage-and-release-plan.md).
+
+## Earlier integration checkpoints
+
+The following records describe their original integration boundaries; current
+recorded adoption is listed above.
 
 Library [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed
@@ -19,13 +50,13 @@ merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed
 bundles library `0.1.0.dev3` from that source for JSON/verdict admission, roster
 resolution and prompt rendering. Its scheduler and native adapters remain
 host-owned. See its [pinned refresh record](https://github.com/codefoundry-io/triad-codex-dispatch/blob/c81c02984825af7dd1ec69a14af83f0ff18d0551/docs/verification/2026-10-15-library-refresh.md).
-Claude adoption remains planned. Host releases, local installation, fresh-session
-exposure and adoption of this unpublished `0.1.0.dev4` revision are separate
+At that checkpoint Claude adoption was planned and dev4 was unpublished.
+Host releases, local installation and fresh-session exposure remain separate
 claims; a library change does not automatically update a consumer.
 
 The 2026-10-16 follow-up adds `RosterError.path/missing/document` and
 `validate_transport_receipt`/`ReceiptError`, retaining `0.1.0.dev4`. These are
-library contracts awaiting each host's independent adoption. See the
+library contracts whose host adoption was tracked separately. See the
 [API](../spec/reference/library-api.md#rosters-and-contract-loading) and
 [contribution dispositions](requests/2026-10-16-adoption-followups-disposition.md).
 Issue #9 remains partial: unknown-key spelling is declined for this slice,

@@ -7,6 +7,12 @@ library installation. Automatic notices target
 only `codefoundry-io/triad-codex-dispatch` and
 `codefoundry-io/triad-dispatch`.
 
+As of the [2026-10-22 adoption check](host-adoption.md#current-recorded-adoption-2026-10-22),
+`codefoundry-io/agy-triad-dispatch` also records the library, but it is not an
+automatic notice target. The [release plan](requests/2026-10-22-triage-and-release-plan.md)
+tracks all three consumers and separates manual notice delivery from a future
+change to the automation allowlist and App scope.
+
 ## Current activation boundary
 
 The source provides publication, retry and proposal tooling. The 2026-10-16
@@ -17,9 +23,11 @@ applicable organization scopes. App registration/installation itself was not
 inspected. That audit preceded the owner-authorized PR #14 merge and
 [v0.1.0.dev4 publication](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4).
 The exact-tag four-platform verification and publication jobs succeeded with
-wheel, sdist and manifest assets. Delivery remains pending App configuration:
-the delivery job refused missing settings and sent no host notices. Publication
-does not establish host adoption.
+wheel, sdist and manifest assets. The original delivery job refused missing App
+settings and sent no host notices. Current App settings were not re-audited on
+2026-10-22; check them before a new delivery attempt. Publication does not
+establish host adoption, and that failed delivery does not negate the later
+independent adoption records linked above.
 
 ## Configure the GitHub App
 
