@@ -35,6 +35,19 @@ are unchanged. Documentation corrections alone do not require a new runtime
 release. No new version, merge, publication or installation is performed by
 this status update.
 
+## Selected next unit: roster instance location
+
+The owner requested progression after the October 22 triage. The
+[draft design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
+and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
+specify issue #9's additive `RosterError.instance_path` property. No implementation
+or new package version is included. The builder check found no important missing
+planning decision; required formal design review remains pending. The preceding
+documentation R2 returned `INCOMPLETE`: its AGY 1.4.5 terminal output included
+`toolAction` and `toolSummary`, which the unchanged strict schema rejects.
+That observed producer/format issue is host-owned; no relaxed validation or
+substitute reviewer is introduced here. Issues #17, #21 and #5 remain separate.
+
 ## Historical checkpoints through 2026-10-16
 
 The sections below retain their original slice-time evidence and pending-work
