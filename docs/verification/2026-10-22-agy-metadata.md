@@ -51,6 +51,33 @@ No runtime defect was reported. An encoder recursion scenario was explicitly
 unobserved and classified as a nonblocking hardening suggestion; no new failure
 handler or validation redesign is introduced without a demonstrated trigger.
 
+## Second formal round
+
+Round `20261022-lib-agy-metadata-r2-d38e96` reviewed candidate
+`7d26f400c97bdd5fb2942a97da2bf815e16135cc`, content digest
+`b87f8cf1aa74368cf2f57deb7f05188d87de2fafc0590e902ba888eeaee451c3`, after
+the four R1 documentation corrections. All three required reviewers returned
+`SAFE TO MERGE`; collection returned `AGREED` and verification returned
+`ROUND_INTEGRITY_OK`. The separate non-voting Astra/high comparison found no
+concrete defect. All producers completed, the packet was exported and the exact
+managed temporary root was removed.
+
+Three accepted Minor findings are corrected in the combined candidate: README
+adoption wording now matches the dated host records; the mapping contract links
+the C80 metadata exception; and consumer-test/API documentation distinguishes
+the dev4 floor from additive dev5 coverage. The unobserved encoder-recursion
+scenario remains the nonblocking hardening limit recorded above.
+
+Retained exact-head CI evidence for `7d26f40` records successful
+[package CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39775040999)
+on macOS 15 and Ubuntu 24.04 with Python 3.12 and 3.14, including unpacked-sdist
+rebuild and installed-wheel checks, and successful
+[API CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39775041050).
+R2 and those runs apply to that basis only. The later combined PR #24 includes
+the PR #20/#22 documentation and these corrections and requires a fresh complete
+review; this record does not claim independent formal approval of their original
+PR heads or approval of the changed combined candidate.
+
 ## Host and deployment sequence
 
 [Codex PR47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47) integrates

@@ -143,6 +143,13 @@ and prepare a separately reviewed fix; do not move the old tag.
 
 ## Changes and limits of this update
 
+This section records the historical PR #22 documentation update against main
+`f043c257ccd748371c34e9d1f23e32064e139354` on 2026-10-22. The later combined
+[PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24) separately
+adds the approved C80 runtime change and `0.1.0.dev5` candidate; its verification
+is recorded in the [AGY metadata candidate record](../verification/2026-10-22-agy-metadata.md).
+The test total and documentation-only limits below apply to that earlier update.
+
 Local macOS/Python 3.12.13 verification: `uv sync --locked` succeeded; the full
 suite passed **1346 tests**; generated assets, spec authoring and the declared
 public API compatibility checks passed; `git diff --check` was clean. A separate
