@@ -1,5 +1,13 @@
 # Current library conformance map
 
+`R-AGY-METADATA` / C80 is implemented by `separate_agy_metadata` and AGY-only
+`admit_output`. `tests/test_output.py` and the installed public API consumer
+probe verify metadata separation with original-byte, negative-verdict,
+declared-name and strict-invalid controls. `extract_final` and generic
+`validate_verdict` keep their prior contracts. Hosts retain provider execution,
+terminal recovery, raw log custody and independent adapter adoption; library
+tests alone do not certify those paths.
+
 This map connects canonical rules/cases to current shared implementation and
 tests. Each row maps only the named portion; it does not certify every axis of
 a case or replace host conformance evidence. Paths are relative to the library

@@ -13,11 +13,13 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development package (`0.1.0.dev4`) provides strict original-JSON parsing,
+The development candidate (`0.1.0.dev5`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
-validation. Repository drivers verify the installed package with
+validation. AGY result metadata is separated from the validated payload while
+the original provider output is preserved; see [C80 and the owner decision](spec/decisions/2026-10-22-agy-result-metadata.md).
+The dev5 candidate is not yet published. Repository drivers verify the installed package with
 synthetic four-route responses; earlier fresh Codex observations remain historical.
 The dev4 package is not published to a package index. Codex host v0.2.561
 independently released with library dev3 from `2d1e62e7`; Claude adoption remains
@@ -67,7 +69,7 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 The [public API compatibility gate](docs/api-compatibility.md) protects the declared
 `0.1.0.dev4` floor through structural and representative consumer checks.
 
-The [current Python API contract](spec/reference/library-api.md) covers all 31
+The [current Python API contract](spec/reference/library-api.md) covers all 32
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
@@ -216,11 +218,11 @@ uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
 uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev4.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
+uv build dist/triad_dispatch_lib-0.1.0.dev5.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
 git diff --check
 ```
 

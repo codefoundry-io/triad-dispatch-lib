@@ -1,5 +1,23 @@
 # Current status
 
+## AGY metadata compatibility candidate — 2026-10-22
+
+The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata
+instead of rejecting an otherwise valid verdict. [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24)
+records the shared decision, C80 and the dev5 implementation candidate.
+`separate_agy_metadata` preserves raw input and separates only undeclared
+top-level names; `admit_output` applies it only to AGY. Canonical schema bytes,
+other carriers and generic `validate_verdict` stay unchanged. Codex adapter
+integration and all host releases remain separately owned.
+
+The earlier metadata-only review block is superseded by this approved behavior.
+Historical rounds are not reclassified; a fresh review follows verified adapter
+integration. Package/API/distribution checks, live verification and formal review
+outcomes will be recorded before the candidate is described as complete.
+No merge, public release or workstation installation has occurred.
+
+The published library remains dev4. The sections below record preceding work.
+
 Updated: 2026-10-16
 
 ## Public API compatibility: implementation candidate

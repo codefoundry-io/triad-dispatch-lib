@@ -1070,7 +1070,6 @@ earlier the unspawned turn's pre-spawn shape), and the unspawned turn adds no at
 `e9960053`; the soft-deny re-run is removed @ triad `e34edcb4`, DL-140). B has no driver re-run
 turn (a fact).
 
-<a id="R-BIND"></a>
 <a id="R-AGY-METADATA"></a>
 **AGY result metadata (C80).** Preserve original provider output and its
 `toolAction`/`toolSummary` values. Before validating an AGY structured result,
@@ -1084,6 +1083,7 @@ timeout and recovery rules remain unchanged. Separation is transport handling,
 not a verdict rewrite or a reason to change the canonical verdict schema.
 See [the owner decision](../decisions/2026-10-22-agy-result-metadata.md).
 
+<a id="R-BIND"></a>
 Every leg's result binds `review_id`, `family` and `content_digest` today on both hosts; a mismatch is an INVALID leg, never
 a pass. v2 ADDS (round r2, all three families; lands with the D-3 wire — `contracts/leg-verdict-mapping.md`): `leg_name` (the
 roster entry), `attempt` (integer ≥ 1, per leg), `route` (the resolved Google route `agy` | `gemini`; null for a family with

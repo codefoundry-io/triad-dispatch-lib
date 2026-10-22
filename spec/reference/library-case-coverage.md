@@ -79,6 +79,13 @@ instead of adding unrelated runtime mechanisms to make a row appear complete.
 | C78, cases:692–697 | One external inference dispatch; no wrapper capacity/schema replay; preserve initial prompt/streams/exit/auth/transport; explicit review retry separate | `run_review` / `run_investigations` invoke each selected callback once, no automatic library retry; strict output refusal blocks agreement | `test_dispatch.py::test_four_routes_overlap_preserve_order_and_admit_carriers`, `test_all_preflights_finish_before_invoke_and_failure_aborts`, failure/deadline outcome tests; four-route synthetic refusal cases | Host callback/wrapper must start vendor inference once and map capacity64/schema66/auth/transport; vendor-internal and review-level retry remain separate |
 | C79, cases:680–685 | Required sealed packet readable with permitted tools without changing product cwd or widening writes/siblings; narrow guarded Gemini launch control bound/refused on change; coverage-negative retained | Renderer transports packet paths; admission retains schema-valid negative/coverage gaps and binding; smoke context requires canonical bound regular packet files but supplies no Gemini CLI add-directory launcher | `test_codex_smoke.py::test_packet_path_boundaries`, `test_packet_and_prompt_changes`; `test_agreement.py::test_negative_invalid_stale_and_swapped_block`; all-route prompt matrix | Host B guarded Gemini exact packet include-directory/preflight/custody; host A co-location/native availability; reviewer reports missing coverage |
 
+For C80 (`R-AGY-METADATA`), `separate_agy_metadata` and AGY-only `admit_output`
+implement original-byte preservation, metadata separation, declared names and
+strict payload admission. `tests/test_output.py` and the installed
+`tests/test_public_api_consumers.py` cover positive/negative verdicts, all
+bindings and strict refusal controls. Host wrapper/recovery/custody and live
+provider behavior remain host-owned, not established by library tests.
+
 The native receipt readiness and pre-publication cyclic-context corrections
 cover narrow driver boundaries connected to C1/C2 and packet-input cases.
 Their regressions do not certify canonical host process or sealed-round custody.
