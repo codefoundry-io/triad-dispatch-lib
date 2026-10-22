@@ -1,5 +1,12 @@
 # Changelog
 
+## AGY result metadata — 2026-10-22 (not tagged)
+
+- R-AGY-METADATA / C80: preserve original AGY output while separating undeclared
+  top-level toolAction/toolSummary from the payload subject to schema/binding
+  validation. Canonical schema bytes stay unchanged. Unit: engine-transport.
+  Library and host adoption evidence follow independently.
+
 ## LIB-ADOPT 2 on host A — 2026-10-18 (not tagged)
 
 - R-BIND: on A the reply is admitted by `validate_verdict` on the original text behind

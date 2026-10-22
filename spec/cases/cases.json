@@ -699,6 +699,19 @@
         "A": "NOT RUN for replacement. Read-only1de943af common run_cli_with_retry retains capacity and schema loops; host adoption/verification pending, native leg excluded.",
         "B": "IMPLEMENTED in B f4d6331. tests/test_single_cli_call.py real local subprocess journals: dedicated RED5failed/4passed; final GREEN397focused/2369full passed,4skipped, four skill validators and diff check passed. Pre/post source matched and exact owned temporary roots removed. Two later exit-code comment updates preserve identical executable AST. R1 was incomplete from actual Claude usage exhaustion; fresh owner-selected Sol/xhigh+Astra/high+Google Pro/high R2 all SAFE with matching integrity and exact cleanup. Capacity64, schema66, auth/transport precedence, initial prompt/web clause and existing explicit review retry regressions passed. Local fixtures establish wrapper policy, not universal vendor behavior or A adoption. Two nonblocking existing/wording residuals are disclosed in decisions/2026-10-11-single-cli-invocation.md. macOS26.6.2 arm64/Python3.12.13; Ubuntu not run."
       }
+    },
+    {
+      "id": "C80",
+      "surface": "engine-transport",
+      "rule": "R-AGY-METADATA, R-BIND, R-TERMINAL",
+      "summary": "AGY tool metadata does not invalidate an otherwise valid verdict",
+      "input": "Original AGY structured result has undeclared top-level toolAction/toolSummary beside a valid positive or negative bound verdict. Controls: custom schema declares either name; other/nested extra fields; duplicate or nonfinite JSON; missing verdict/result; failed terminal; binding mismatch; non-AGY carrier.",
+      "expected": "Preserve original output and metadata. Strictly parse original JSON before separating only undeclared top-level toolAction/toolSummary. Apply unchanged payload schema and bindings; retain negative verdicts. Declared names stay payload. Other invalid data and terminal failures remain refusals; no metadata-triggered whole-CLI retry or canonical schema relaxation.",
+      "tests": {
+        "A": "NOT RUN; independent adoption requested.",
+        "B": "NOT RUN; implementation pending.",
+        "library": "NOT RUN; implementation pending."
+      }
     }
   ]
 }

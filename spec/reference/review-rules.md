@@ -1071,6 +1071,19 @@ earlier the unspawned turn's pre-spawn shape), and the unspawned turn adds no at
 turn (a fact).
 
 <a id="R-BIND"></a>
+<a id="R-AGY-METADATA"></a>
+**AGY result metadata (C80).** Preserve original provider output and its
+`toolAction`/`toolSummary` values. Before validating an AGY structured result,
+strictly parse the original JSON and separate only these two top-level names
+when they are not caller-declared payload fields. Their presence alone is not
+a failed leg. Validate the remaining payload with the unchanged schema and all
+invocation bindings; keep negative verdicts negative. Do not remove other extra
+fields, nested names, or caller-declared names. Missing/malformed results,
+duplicate members, non-finite values, terminal failures and existing permission,
+timeout and recovery rules remain unchanged. Separation is transport handling,
+not a verdict rewrite or a reason to change the canonical verdict schema.
+See [the owner decision](../decisions/2026-10-22-agy-result-metadata.md).
+
 Every leg's result binds `review_id`, `family` and `content_digest` today on both hosts; a mismatch is an INVALID leg, never
 a pass. v2 ADDS (round r2, all three families; lands with the D-3 wire — `contracts/leg-verdict-mapping.md`): `leg_name` (the
 roster entry), `attempt` (integer ≥ 1, per leg), `route` (the resolved Google route `agy` | `gemini`; null for a family with
