@@ -1,5 +1,18 @@
 # Changelog
 
+## Shared runtime backward compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add R-SHARED-RUNTIME-COMPAT under the existing R-PARITY boundary: compatible
+  common launchers can serve multiple hosts; supported older calls survive
+  upgrades; one consumer's lifecycle preserves other consumers and active calls.
+- Add C81-C83, the shared-runtime-compatibility unit, an authoring map and a
+  bounded three-host handoff. Every host implementation result remains NOT RUN.
+- Keep Python API compatibility distinct from CLI/adapter/install compatibility.
+  Native execution, authentication, configuration and installation mechanics
+  stay host-owned. No runtime, schema, prompt, dependency or version changes.
+- Record the owner's new specification request without reviving the previously
+  withdrawn U8 investigation. Existing deployment is not declared compatible.
+
 ## dev5 candidate corrections and review — 2026-10-23 (not tagged)
 
 - Clarify C23 recovery guidance: preserve original AGY bytes and separated

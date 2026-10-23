@@ -2,6 +2,25 @@
 
 Updated: 2026-10-23
 
+## Shared runtime compatibility specification — candidate
+
+The owner requests common launcher reuse with backward compatibility.
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT)
+and C81-C83 define the supported-consumer, host-binding and lifecycle outcomes.
+The [handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md) records
+the measured gap and each host's responsibilities. This is specification work;
+common launcher implementation/adoption and all C81-C83 host results are NOT RUN.
+No global launcher or configuration was changed.
+
+Separately, Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and
+[v0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+is published with library dev5. Its four-leg review and native source/archive CI
+passed. Those results do not establish common launcher compatibility or local
+host installation. Broader release/adoption status reconciliation remains in
+[PR #27](https://github.com/codefoundry-io/triad-dispatch-lib/pull/27); older
+candidate/publication statements below describe their original checkpoints.
+
 ## AGY metadata compatibility candidate — 2026-10-22
 
 The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata

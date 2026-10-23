@@ -11,7 +11,7 @@ Keep the historical A/B pointers in cases and units intact. When changing shared
 semantics, update the applicable library code, tests and this map together.
 The reverse interface contract is [library-api.md](library-api.md). A helper's
 internal signature is not a new provider wire requirement.
-The [complete case disposition map](library-case-coverage.md) assigns all 59
+The [complete case disposition map](library-case-coverage.md) assigns all 62
 actual cases to partial library evidence and remaining owners.
 
 | Rules / cases | Implemented library portion | Evidence in current tests | Remaining host responsibility |
@@ -43,10 +43,10 @@ The additive dev4 observability APIs provide these partial contracts:
 
 ## Remaining normative groups and ownership
 
-The first implementation table above names 21 of the 29 active review-rule groups.
-The eight remaining groups and five process/authoring groups are assigned here,
+The first implementation table above names 21 of the 30 active review-rule groups.
+The nine remaining groups and five process/authoring groups are assigned here,
 so omission from a runtime table cannot be mistaken for an unimplemented library
-feature. This inventories all 34 active unique groups, not every sentence or case
+feature. This inventories all 35 active unique groups, not every sentence or case
 axis. Historical duplicate headings are not additional rules.
 
 | Group / canonical location | Current implementation or explicit owner | Verification boundary |
@@ -59,6 +59,7 @@ axis. Historical duplicate headings are not additional rules.
 | [R-VERIFY](review-rules.md#R-VERIFY) | Leader verifies claims and dispositions; developer owns bounded prompt checks | Synthetic tests do not prove live reviewer behavior |
 | [R-CLI-VERSION](review-rules.md#R-CLI-VERSION) | Host observes binaries/versions and enforces justified route floors | No library CLI catalog, probe or auto-upgrade |
 | [R-PARITY](review-rules.md#R-PARITY) | Common semantics live here; native exceptions and adoption belong to each host | Library tests plus each host's conformance evidence are needed |
+| [R-SHARED-RUNTIME-COMPAT](review-rules.md#R-SHARED-RUNTIME-COMPAT); C81-C83 | Candidate common-runtime/older-consumer contract; no shared launcher or installation implementation | Python API checks are separate; each claimed host/consumer/lifecycle combination remains NOT RUN |
 | [R-DIAG](process.md#R-DIAG) | Leader diagnoses failures, retains evidence and makes scoped decisions | Typed parser/coordinator errors are not the operational diagnosis workflow |
 | [R-PRD-SPEC](spec-authoring.md#R-PRD-SPEC) | Source authoring maps/schema/checker; `spec/tests/test_authoring.py::test_reference_metadata_error_refuses_before_read`, `test_local_reference_controls_preserve_missing_diagnostics` | Source development check; reference observation errors refuse before reads and missing-path diagnostics remain; absent from installed runtime intentionally |
 | [R-AUTHORING-SYNC](spec-authoring.md#R-AUTHORING-SYNC) | Maintainers reconcile current sources and notify affected hosts | Runtime does not fetch mutable specification revisions |
@@ -71,7 +72,7 @@ Five prompt payloads complete the nine packaged payloads in four bundles.
 Only the unchanged transport-object `receipt-fields.json` joins the runtime
 schemas; other host receipt/token/profile files stay in source/sdist deliberately.
 The behavioral corpus
-has 59 actual cases, with non-contiguous IDs; its largest ID is not its case count.
+has 62 actual cases, with non-contiguous IDs; its largest ID is not its case count.
 
 `spec/tests/test_spec_records.py::test_live_model_refusal_measurement_claims_match_vendor_rows`
 checks the known R-GOOGLE measurement clauses against CLI/token model-refusal

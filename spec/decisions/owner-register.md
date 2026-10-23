@@ -2,6 +2,26 @@
 
 Dates in decision headings and IDs are the owner's local date (KST, UTC+9); timestamps given with `Z` are UTC.
 
+<a id="D-SHARED-RUNTIME-COMPAT-20261023"></a>
+## D-SHARED-RUNTIME-COMPAT-20261023: specify common runtime backward compatibility
+
+Owner, 2026-10-23, direct instruction to the Codex leader (verbatim):
+
+> 내 질문은 공용으로 사용가능하냐고 어차피 같은 라이브러리잖아 하위호환성을 스펙에 넣어
+
+Recorded interpretation: common runtime/launcher reuse is a supported design
+goal, with backward compatibility written into the shared specification.
+Separate per-host installation is not presumed necessary. R-SHARED-RUNTIME-COMPAT
+and C81-C83 describe the proposed acceptance contract; host implementation and
+adoption remain separate. This authorizes the bounded specification work, not
+overwriting current shared launchers or changing global configuration.
+
+The older U8 withdrawal below remains historical and effective for its full
+investigation/implementation backlog. This new explicit request establishes the
+bounded common-compatibility contract; it does not silently revive U8's entire
+dual-install, pin-probe or concurrent-configuration investigation. See the
+[evidence and handoff](2026-10-23-shared-runtime-compatibility.md).
+
 <a id="D-U8-WITHDRAWN-20261010"></a>
 ## D-U8-WITHDRAWN-20261010: withdraw installation coexistence work
 

@@ -13,6 +13,12 @@ The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
 
+Host-owned installation does not require duplicate common runtimes. Shared
+launcher reuse and backward compatibility follow
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT),
+with the [C81-C83 handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
+Existing library adoption records do not establish those new host results.
+
 ## Current recorded adoption (2026-10-22)
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
