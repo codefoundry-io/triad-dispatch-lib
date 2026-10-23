@@ -94,7 +94,7 @@ section does not itself authorize publication or installation.
 The owner confirmed issue #9 implementation on October 23 after the latest
 unresolved-work briefing. The existing PR23 branch is reconciled with published
 dev6 main `1872227`. The
-[draft design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
+[reviewed design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
 and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
 specify issue #9's additive `RosterError.instance_path` property. The dev7 candidate
 now implements the property with same-selected-error tuple copying and preserves

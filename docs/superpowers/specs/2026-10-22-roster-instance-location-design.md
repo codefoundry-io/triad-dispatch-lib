@@ -1,9 +1,10 @@
 # Roster instance location design
 
-Status (2026-10-23): reconciled with main `1872227` for a fresh complete project
-design review. The owner selected issue #9 implementation after the latest
-unresolved-work briefing. A fresh current-schema check found no material open
-design question. No runtime implementation or release is included yet. The
+Status (2026-10-24): the design reconciled with main `1872227` completed formal
+review with `AGREED` and matching integrity; the separate Astra comparison found
+no material defect. The owner-selected issue #9 property is implemented in the
+unpublished dev7 candidate. [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23)
+carries current exact-commit final admission, CI and publication state. The
 earlier AGY metadata obstacle is historical: library dev5/dev6 and released
 Codex 0.2.564 supply the approved separation and review path. No earlier verdict
 transfers to this design or its later implementation.
