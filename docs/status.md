@@ -96,10 +96,14 @@ unresolved-work briefing. The existing PR23 branch is reconciled with published
 dev6 main `1872227`. The
 [draft design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
 and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
-specify issue #9's additive `RosterError.instance_path` property. No implementation
-or new package version is included. The builder check found no important missing
-planning decision; a fresh current-schema check also found no material gap.
-Required formal design review remains pending. The preceding metadata-only
+specify issue #9's additive `RosterError.instance_path` property. The dev7 candidate
+now implements the property with same-selected-error tuple copying and preserves
+existing validation and diagnostics. Formal design review completed `AGREED` with
+matching integrity; the separate Astra comparison found no material defect.
+The [source verification record](verification/2026-10-23-roster-instance-location.md)
+records local evidence. [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23)
+carries current exact-commit package, CI, implementation review, admission and
+publication state. The preceding metadata-only
 obstacle is historical following the approved dev5/dev6 library behavior and
 Codex 0.2.564 deployment; its old round still supplies no admission credit.
 The selected candidate version is dev7, with host formatting/adoption separate.

@@ -1,5 +1,19 @@
 # Changelog
 
+## dev7 roster instance location — 2026-10-23 (candidate, not tagged)
+
+- Add `RosterError.instance_path`, a tuple copied from the same first selected
+  schema error: canonical field names and integer indices, `()` at the evaluated
+  root, or `None` for direct/non-schema errors. Resolved indices use merged order.
+- Preserve constructors, codes, fixed messages, args, schema diagnostics, validation
+  ordering, input copies, serialization behavior and all canonical schema bytes.
+- Cover document attribution, indices 0/3, merged positions, Google aggregate and
+  required errors, unknown-property privacy and the public package consumer.
+- This unpublished `0.1.0.dev7` candidate does not alter published dev4-dev6
+  artifacts or host pins. Exact-commit package/CI/review and publication evidence
+  belong to [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23).
+  Host formatting/adoption and arbitrary unknown-key spelling remain separate.
+
 ## dev6 common runtime compatibility — 2026-10-23 (candidate, not tagged)
 
 - Add strict immutable runtime/consumer descriptions, exact consumer compatibility

@@ -147,6 +147,19 @@ class PublicAPIConsumers(unittest.TestCase):
         contract.clear()
         self.assertTrue(lib.load_roster_contract())
 
+    def test_roster_instance_location_preserves_schema_diagnostics(self):
+        document = dict(schema='triad-review-legs.v2',
+                        legs=[entry('first'), entry('second') | dict(timeout_s=0)])
+        with self.assertRaises(lib.RosterError) as caught:
+            lib.validate_resolved(document)
+        error = caught.exception
+        self.assertEqual(error.instance_path, ('legs', 1, 'timeout_s'))
+        self.assertEqual((error.code, error.document, error.path, error.missing),
+                         ('schema_violation', 'resolved',
+                          ('properties', 'legs', 'items', 'allOf', 0,
+                           'properties', 'timeout_s', 'minimum'), None))
+        self.assertEqual(error.args, ('Roster violates the canonical schema.',))
+
     def test_transport_and_prompt_return_contracts(self):
         receipt = dict(schema_version=2, stdin_delivery="complete", route="codex",
                        binary="codex", cli_version="opaque future CLI build", attempt=1)

@@ -162,7 +162,12 @@ result fields, emitted errors, input copies and shallow result mutability.
   resolved document, not merged-property origin. `.path` contains schema
   evaluation metadata, with possible omitted `$ref`/`if` hops; `.missing` is
   selected-required-only and may remain `None` for missing route blocks under
-  `anyOf`. Preserve the host's formatting and reduced-diagnostics deviation.
+  `anyOf`. The additive dev7 candidate `.instance_path` supplies canonical field
+  names and indices for host formatting: `()` is the document root, `None` is
+  unavailable, and resolved indices describe merged order. It exposes the parent
+  for required/aggregate/unknown-property failures. Host formatting and adoption
+  remain unimplemented by this library unit; preserve the host's formatting and
+  reduced-diagnostics deviation.
   Exception contexts/tracebacks may retain input references even when the public
   attributes and message are value-free.
 - **Cancellation custody:** callbacks must retain each published native request
