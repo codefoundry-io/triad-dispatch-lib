@@ -1,5 +1,6 @@
 """Pure runtime decisions: exact bindings, complete validation and safe retention."""
 from dataclasses import FrozenInstanceError, replace
+from collections import UserList
 import hashlib
 import json
 
@@ -104,6 +105,41 @@ def test_runtime_requires_a_complete_document(value):
     refuses('invalid_descriptor', lib.validate_runtime_descriptor, value)
 
 
+@pytest.mark.parametrize('field', ['commands', 'capabilities'])
+def test_binding_documents_require_json_lists(field):
+    doc = document()
+    doc[field] = tuple(doc[field])
+    refuses('invalid_binding', lib.validate_consumer_binding, doc)
+
+
+@pytest.mark.parametrize('field', ['commands', 'capabilities', 'supported_bindings'])
+def test_runtime_documents_require_json_lists(field):
+    b = binding()
+    doc = dict(schema='triad-runtime-compat.v1', artifact_digest='d' * 64,
+               commands=['triad-review'], capabilities=[], supported_bindings=[b.binding_id])
+    doc[field] = tuple(doc[field])
+    refuses('invalid_descriptor', lib.validate_runtime_descriptor, doc)
+
+
+@pytest.mark.parametrize('field', ['commands', 'capabilities'])
+def test_operations_refuse_mutable_binding_record_fields(field):
+    b = binding()
+    mutable = replace(b, **{field: list(getattr(b, field))})
+    refuses('invalid_binding', lib.check_consumer_compatibility, runtime(b), mutable)
+    refuses('invalid_binding', lib.select_consumer_binding, runtime(b), [b, mutable],
+            explicit_binding=b.binding_id, legacy_binding=None)
+
+
+@pytest.mark.parametrize('field', ['commands', 'capabilities', 'supported_bindings'])
+def test_operations_refuse_mutable_runtime_record_fields(field):
+    b = binding()
+    r = runtime(b)
+    mutable = replace(r, **{field: list(getattr(r, field))})
+    refuses('invalid_descriptor', lib.check_consumer_compatibility, mutable, b)
+    refuses('invalid_descriptor', lib.select_consumer_binding, mutable, [b],
+            explicit_binding=b.binding_id, legacy_binding=None)
+
+
 def test_compatibility_requires_exact_membership_commands_and_capabilities():
     b = binding()
     refuses('unsupported_binding', lib.check_consumer_compatibility,
@@ -197,3 +233,18 @@ def test_retention_preserves_active_and_consumer_references_and_unknown_use():
 def test_retention_refuses_incomplete_or_malformed_inventories(artifacts, consumers, active, known, code):
     refuses(code, lib.plan_runtime_retention, artifacts, consumer_references=consumers,
             active_references=active, dependencies_known=known)
+
+
+@pytest.mark.parametrize('field', ['artifacts', 'consumer_references', 'active_references'])
+def test_retention_refuses_sequence_containers_outside_list_tuple(field):
+    args = dict(artifacts=['a' * 64], consumer_references=[], active_references=[],
+                dependencies_known=True)
+    args[field] = UserList(args[field])
+    refuses('invalid_inventory', lib.plan_runtime_retention, **args)
+
+
+def test_retention_accepts_tuple_inventories_without_mutation():
+    artifact = 'a' * 64
+    result = lib.plan_runtime_retention((artifact,), consumer_references=(artifact,),
+                                       active_references=(), dependencies_known=True)
+    assert (result.retain, result.remove) == ((artifact,), ())

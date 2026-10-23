@@ -65,7 +65,9 @@ def _sequence(value, code):
 
 
 def _items(value, pattern, code, *, nonempty=False, duplicates=False):
-    items = _sequence(value, code)
+    if not isinstance(value, (list, tuple)):
+        _refuse(code)
+    items = value
     if nonempty and not items:
         _refuse(code)
     if any(not _matches(item, pattern) for item in items):
@@ -82,6 +84,9 @@ def _document(document, fields, schema, code):
         _refuse(code)
     if document['schema'] != schema:
         _refuse('unsupported_schema')
+    for name in ('commands', 'capabilities', 'supported_bindings'):
+        if name in fields and not isinstance(document[name], list):
+            _refuse(code)
 
 
 def validate_consumer_binding(document: dict) -> ConsumerBinding:
@@ -118,7 +123,12 @@ def validate_runtime_descriptor(document: dict) -> RuntimeDescriptor:
 def _binding_record(binding):
     if not isinstance(binding, ConsumerBinding):
         _refuse('invalid_binding')
-    validated = validate_consumer_binding({name: getattr(binding, name) for name in _BINDING_FIELDS})
+    document = {name: getattr(binding, name) for name in _BINDING_FIELDS}
+    for name in ('commands', 'capabilities'):
+        if not isinstance(document[name], tuple):
+            _refuse('invalid_binding')
+        document[name] = list(document[name])
+    validated = validate_consumer_binding(document)
     if not _matches(binding.binding_id, _DIGEST) or binding.binding_id != validated.binding_id:
         _refuse('invalid_binding')
     return validated
@@ -127,7 +137,12 @@ def _binding_record(binding):
 def _runtime_record(runtime):
     if not isinstance(runtime, RuntimeDescriptor):
         _refuse('invalid_descriptor')
-    return validate_runtime_descriptor({name: getattr(runtime, name) for name in _RUNTIME_FIELDS})
+    document = {name: getattr(runtime, name) for name in _RUNTIME_FIELDS}
+    for name in ('commands', 'capabilities', 'supported_bindings'):
+        if not isinstance(document[name], tuple):
+            _refuse('invalid_descriptor')
+        document[name] = list(document[name])
+    return validate_runtime_descriptor(document)
 
 
 def check_consumer_compatibility(runtime: RuntimeDescriptor, binding: ConsumerBinding) -> None:
