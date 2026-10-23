@@ -93,7 +93,9 @@ versions, prompt default/manifest shape and carrier/negative/timeout/agreement
 safety, plus the additive dev5 AGY metadata-separation contract. The dev6
 consumer checks cover explicit runtime binding selection, unchanged established
 legacy selection, unknown-selector and missing-context refusal, and retention of
-active/consumer references or all artifacts when dependencies are unknown. It does not
+active/consumer references or all artifacts when dependencies are unknown. The
+additive dev7 consumer check locates an invalid second-entry timeout through
+`RosterError.instance_path` while retaining existing schema diagnostics. It does not
 freeze exact prompt text. The full existing conformance and
 async/lifecycle suites remain the deeper regression evidence.
 

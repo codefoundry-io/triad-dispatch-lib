@@ -89,6 +89,26 @@ are unchanged. Documentation corrections alone do not require a new runtime
 release. The separate dev5 runtime candidate is described above; this triage
 section does not itself authorize publication or installation.
 
+## Selected next unit: roster instance location
+
+The owner confirmed issue #9 implementation on October 23 after the latest
+unresolved-work briefing. The existing PR23 branch is reconciled with published
+dev6 main `1872227`. The
+[reviewed design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
+and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
+specify issue #9's additive `RosterError.instance_path` property. The dev7 candidate
+now implements the property with same-selected-error tuple copying and preserves
+existing validation and diagnostics. Formal design review completed `AGREED` with
+matching integrity; the separate Astra comparison found no material defect.
+The [source verification record](verification/2026-10-23-roster-instance-location.md)
+records local evidence. [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23)
+carries current exact-commit package, CI, implementation review, admission and
+publication state. The preceding metadata-only
+obstacle is historical following the approved dev5/dev6 library behavior and
+Codex 0.2.564 deployment; its old round still supplies no admission credit.
+The selected candidate version is dev7, with host formatting/adoption separate.
+Issues #17, #21 and #5 remain separate.
+
 ## Historical checkpoints through 2026-10-16
 
 The sections below retain their original slice-time evidence and pending-work

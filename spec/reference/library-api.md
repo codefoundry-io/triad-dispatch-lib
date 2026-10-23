@@ -1,6 +1,6 @@
 # Python library API contract
 
-This reference describes the candidate `0.1.0.dev6` implementation of the 41
+This reference describes the candidate `0.1.0.dev7` implementation of the 41
 package-root exports in `triad_dispatch_lib`: 23 functions, nine dataclasses and
 nine exception types. It records existing Python behavior; it does not change
 the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
@@ -145,13 +145,16 @@ and nulls remain opaque requested configuration; no provider defaults are added.
 
 `RosterError(code)` keeps its constructor, stable codes, fixed messages and
 `.args`. Every instance initializes `.path: tuple[str | int, ...] | None`,
-`.missing: str | None` and `.document: str | None` to `None`. Only a library-raised
-`schema_violation` sets them: `.path` is the first selected validator error's
-`absolute_schema_path`, and `.missing` is the first absent schema-defined name
+`.instance_path: tuple[str | int, ...] | None`, `.missing: str | None` and
+`.document: str | None` to `None`. The additive `.instance_path` is an unpublished
+dev7 candidate; the other three attributes were published in dev4. Only a
+library-raised `schema_violation` sets them: `.path` is the first selected validator error's
+`absolute_schema_path`, `.instance_path` copies `tuple(absolute_path)` from that
+same error, and `.missing` is the first absent schema-defined name
 in that selected `required` list, using the guarded rule described for admission.
 No child-error search or second validation pass is performed. A non-required
 winner leaves `.missing=None` even if another violation concerns missing data.
-Parser, duplicate-name, empty-selection and nesting refusals keep all three `None`.
+Parser, duplicate-name, empty-selection and nesting refusals keep all four `None`.
 
 `.document` identifies the evaluated document: `defaults`, `override`, or
 `resolved`. The last covers standalone validation, final resolution and selection
@@ -161,6 +164,12 @@ evaluate through `$defs/resolvedRoster`. An empty tuple denotes that evaluation
 root. `$ref` and `if` hops may be omitted: `.path` is neither an instance pointer
 nor necessarily a JSON Pointer into the source schema. Do not invent a prefix.
 
+`.instance_path` locates the failing instance within `.document`: a fourth-entry
+timeout is `("legs", 3, "timeout_s")`. Here `()` means the evaluated document root;
+`None` means unavailable. Resolved indices refer to final merged order, including
+preserved default slots and appended entries, not override provenance. This is a
+tuple of canonical field names and integer indices, not a rendered JSON Pointer.
+
 For a Google leg with `route="agy"` and neither `agy` nor `gemini` block, the
 selected path is `("properties", "legs", "items", "allOf", 1, "allOf", 2,
 "then", "anyOf")` and `.missing=None`. Adding `gemini={}` instead selects
@@ -168,9 +177,17 @@ selected path is `("properties", "legs", "items", "allOf", 1, "allOf", 2,
 "then", "required")`
 with `.missing="agy"`. These are the tested route-block vectors, not a promise
 that all combinations of simultaneous failures select the same error.
+Both errors have `.instance_path=("legs", index)`: required and aggregate errors
+identify the containing object, without searching child errors for a leaf.
 
 The value-free roster guarantee covers these attributes, `.code`, fixed text
-and `.args`, using trusted schema metadata only. Python exception internals,
+and `.args`. `.path` and `.missing` use trusted schema metadata; `.instance_path`
+uses canonical instance field names and indices. The verified canonical roster
+schema has fixed properties and closed objects, so paths disclose no input values,
+entry names or arbitrary unknown-key spelling. Additional-property errors identify
+the containing root, entry or adapter object. Arbitrary dynamic-key schemas are
+outside this API; future schema extensions must reassess this guarantee. Python
+exception internals,
 including `__context__` and tracebacks, may retain validator/input references;
 suppressed displayed chaining is not internal erasure. No `.member`, `.unknown`
 or raw validator-error API is added. Issue #9's arbitrary unknown-key spelling
