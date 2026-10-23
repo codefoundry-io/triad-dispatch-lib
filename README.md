@@ -29,7 +29,8 @@ responses; earlier fresh Codex observations remain historical.
 The dev5 wheel, sdist and manifest are published as a
 [GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5),
 not a package-index release. As checked on 2026-10-22, all three host repositories
-record dev4 from `087af94a` in their adoption manifests. Those records do not
+recorded dev4 from `087af94a` in their adoption manifests; Codex v0.2.563
+subsequently adopted dev5 from `859f27c`. Those records do not
 establish every host API integration, local installation or live-provider result.
 See [independent host adoption](docs/host-adoption.md) and the
 [open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).

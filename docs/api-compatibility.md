@@ -84,8 +84,9 @@ rewrites may require preserving their existing spelling or a reviewed decision.
 ## Consumer evidence and releases
 
 `tests/test_public_api_consumers.py` uses only package-root imports and standard
-library test tools. It protects export availability, nine frozen dataclass
-constructors, exception bases/constructor code preservation and selected emitted
+library test tools. It protects export availability, six directly constructed
+frozen dataclasses and three dev6 frozen records returned by public operations,
+exception bases/constructor code preservation and selected emitted
 codes/diagnostics, strict JSON and all
 six bindings, roster order/copy/opaque model values, receipt shape/opaque CLI
 versions, prompt default/manifest shape and carrier/negative/timeout/agreement

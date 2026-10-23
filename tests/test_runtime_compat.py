@@ -1,11 +1,32 @@
 """Pure runtime decisions: exact bindings, complete validation and safe retention."""
 from dataclasses import FrozenInstanceError, replace
 from collections import UserList
+import copy
 import hashlib
 import json
+import pickle
 
 import pytest
 import triad_dispatch_lib as lib
+
+
+@pytest.mark.parametrize('code', [
+    'invalid_descriptor', 'invalid_binding', 'unsupported_schema', 'invalid_selector',
+    'missing_context', 'unknown_binding', 'ambiguous_binding', 'unsupported_binding',
+    'command_mismatch', 'capability_mismatch', 'invalid_inventory', 'incomplete_inventory',
+])
+@pytest.mark.parametrize('operation', [copy.copy, copy.deepcopy,
+                                      lambda value: pickle.loads(pickle.dumps(value))],
+                         ids=['copy', 'deepcopy', 'pickle'])
+def test_runtime_errors_preserve_code_and_state_across_copy_and_pickle(code, operation):
+    error = lib.RuntimeCompatibilityError(code)
+    error.context = {'operation': ['decision']}
+    restored = operation(error)
+    assert restored is not error
+    assert type(restored) is lib.RuntimeCompatibilityError
+    assert restored.code == code
+    assert restored.args == error.args
+    assert restored.__dict__ == error.__dict__
 
 
 def document(**changes):

@@ -48,6 +48,9 @@ class RuntimeCompatibilityError(ValueError):
             'incomplete_inventory': 'Runtime inventory omits referenced artifacts.',
         }[code])
 
+    def __reduce__(self):
+        return type(self), (self.code,), self.__dict__
+
 
 class DispatchError(ValueError):
     """Invalid coordination inputs or preflight; no invocation has started."""
