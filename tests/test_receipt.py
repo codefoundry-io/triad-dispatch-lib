@@ -127,6 +127,6 @@ def test_broken_receipt_bundle_is_contract_failure(tmp_path, monkeypatch, fault)
 
 def test_receipt_public_exports_and_private_loader():
     api()
-    assert len(lib.__all__) == 32
+    assert len(lib.__all__) == 41
     assert lib.__all__.count('ReceiptError') == lib.__all__.count('validate_transport_receipt') == 1
     assert not hasattr(lib, '_load_receipt_contract')
