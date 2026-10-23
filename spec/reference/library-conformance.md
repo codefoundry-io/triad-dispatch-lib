@@ -11,7 +11,7 @@ Keep the historical A/B pointers in cases and units intact. When changing shared
 semantics, update the applicable library code, tests and this map together.
 The reverse interface contract is [library-api.md](library-api.md). A helper's
 internal signature is not a new provider wire requirement.
-The [complete case disposition map](library-case-coverage.md) assigns all 59
+The [complete case disposition map](library-case-coverage.md) assigns all 62
 actual cases to partial library evidence and remaining owners.
 
 | Rules / cases | Implemented library portion | Evidence in current tests | Remaining host responsibility |
@@ -29,6 +29,7 @@ actual cases to partial library evidence and remaining owners.
 | R-BIND, R-TERMINAL; C14, C30, C78 (partial) | `output.extract_final`, `admit_output`: typed terminal guards and original member spans | `tests/test_output.py::test_admit_all_carriers`, `test_extraction_preserves_original_representation`, `test_full_envelope_is_strict`, `test_terminal_guards_precede_payload`, `test_google_sibling_carrier_cannot_swap` | Truthful execution observations and unsupported envelope adaptation |
 | R-CONTAIN; C23 (strict subset only) | Strict successful AGY stream admission; no finish-recovery analyzer | `tests/test_output.py::test_agy_missing_or_failed_result_refused`, `test_agy_exit_three_refuses_partial_valid_result_before_parse` | Preserve qualifying same-run recovery and all its structured evidence/guards |
 | R-AGY-METADATA; C80 (shared separation and admission) | `output.separate_agy_metadata`, AGY-only `admit_output`: strict original parsing, undeclared top-level metadata separation and unchanged payload validation; raw extraction preserved | `tests/test_output.py::test_agy_metadata_admits_actual_verdict_without_rewriting_raw`, `test_separate_agy_metadata_preserves_explicit_payload_declarations`, `test_separate_agy_metadata_refuses_original_json_before_projection`, `test_agy_metadata_does_not_bypass_invocation_binding`, `test_generic_verdict_validation_keeps_agy_metadata_names_strict`; installed `tests/test_public_api_consumers.py::PublicAPIConsumers::test_agy_metadata_separation_and_negative_admission`; local/native evidence in C80's library cell | Native execution, terminal recovery, raw/metadata custody, custom-schema declarations and independent host adapter adoption |
+| R-SHARED-RUNTIME-COMPAT; C81-C83 (deterministic portion) | `runtime_compat`: immutable descriptions, exact supported binding/capability checks, explicit or established-legacy selection, conservative retention | `tests/test_runtime_compat.py`; dependency-free `tests/test_public_api_consumers.py` replayed from source and installed wheel | Artifact/evidence authentication, real capability/CLI corpus, native/configuration/custody context, filesystem transactions, actual active invocations and independent host adoption |
 | R-CLASSIFY, R-AUTH, R-TOKENS, R-NOCOST; C8, C11, C17, C37, C43, C74-C77 | No extracted classifier/auth/token API | `tests/test_output.py::test_quota_looking_evidence_is_ordinary_data` covers only the no-keyword-classification boundary | Vendor sentence carriers, credentials, STOP precedence, exit tokens and repair |
 | R-PREPARE, R-BIND, R-RECEIPT, R-CLEANUP, R-PLATFORM (partial packaged-content portion) | `contracts` / `bundle_manifest`, `tools/sync_spec_assets.py`: packaged consistency and generation | `tests/test_contracts.py::test_manifest_and_digest`, `test_broken_contract`; `tests/test_spec_assets.py::test_generation_preserves_bytes_and_is_deterministic`, `test_check_never_writes_on_drift`, `test_symlinks_refused_without_touching_outside`, `test_symlink_status_errors_refuse_before_writes`, `test_tree_enumeration_errors_refuse_before_writes`, `test_unreadable_output_directory_refuses_before_following_link`, `test_output_root_observation_error_never_skips_inventory`, `test_output_root_missing_and_occupied_controls`, `test_following_metadata_errors_preserve_errno_before_writes`, `test_source_root_missing_and_file_preserve_diagnostics` | Packet custody, authenticity, host receipts/seals, deletion roots, installers, native platform evidence |
 
@@ -43,10 +44,10 @@ The additive dev4 observability APIs provide these partial contracts:
 
 ## Remaining normative groups and ownership
 
-The first implementation table above names 21 of the 29 active review-rule groups.
+The first implementation table above names 22 of the 30 active review-rule groups.
 The eight remaining groups and five process/authoring groups are assigned here,
 so omission from a runtime table cannot be mistaken for an unimplemented library
-feature. This inventories all 34 active unique groups, not every sentence or case
+feature. This inventories all 35 active unique groups, not every sentence or case
 axis. Historical duplicate headings are not additional rules.
 
 | Group / canonical location | Current implementation or explicit owner | Verification boundary |
@@ -71,7 +72,7 @@ Five prompt payloads complete the nine packaged payloads in four bundles.
 Only the unchanged transport-object `receipt-fields.json` joins the runtime
 schemas; other host receipt/token/profile files stay in source/sdist deliberately.
 The behavioral corpus
-has 59 actual cases, with non-contiguous IDs; its largest ID is not its case count.
+has 62 actual cases, with non-contiguous IDs; its largest ID is not its case count.
 
 `spec/tests/test_spec_records.py::test_live_model_refusal_measurement_claims_match_vendor_rows`
 checks the known R-GOOGLE measurement clauses against CLI/token model-refusal

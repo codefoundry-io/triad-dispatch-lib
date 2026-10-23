@@ -1,5 +1,34 @@
 # Changelog
 
+## dev6 common runtime compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add strict immutable runtime/consumer descriptions, exact consumer compatibility
+  checking and explicit or established-legacy binding selection. Missing,
+  ambiguous, unsupported and malformed context refuses without choosing another host.
+- Add conservative runtime retention decisions: other consumers and active
+  invocations protect their artifacts; unknown dependencies retain all assets.
+- Preserve the dev4 public API floor, existing provider schemas/prompts and bundle
+  identities. New public interfaces are documented in
+  [runtime-compatibility-api.md](reference/runtime-compatibility-api.md).
+- Hosts authenticate provenance and compatibility evidence and own filesystem
+  transactions, native adapters and execution. These pure APIs are not a common
+  launcher deployment or a host C81-C83 conformance claim.
+- The owner selected library plus Codex implementation/release. Claude and AGY
+  adoption remains separately owned; their source repositories are unchanged.
+
+## Shared runtime backward compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add R-SHARED-RUNTIME-COMPAT under the existing R-PARITY boundary: compatible
+  common launchers can serve multiple hosts; supported older calls survive
+  upgrades; one consumer's lifecycle preserves other consumers and active calls.
+- Add C81-C83, the shared-runtime-compatibility unit, an authoring map and a
+  bounded three-host handoff. Every host implementation result remains NOT RUN.
+- Keep Python API compatibility distinct from CLI/adapter/install compatibility.
+  Native execution, authentication, configuration and installation mechanics
+  stay host-owned. No runtime, schema, prompt, dependency or version changes.
+- Record the owner's new specification request without reviving the previously
+  withdrawn U8 investigation. Existing deployment is not declared compatible.
+
 ## dev5 candidate corrections and review — 2026-10-23 (not tagged)
 
 - Clarify C23 recovery guidance: preserve original AGY bytes and separated
