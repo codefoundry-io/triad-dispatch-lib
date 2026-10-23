@@ -1,5 +1,20 @@
 # Changelog
 
+## Release and issue #25 status reconciliation — 2026-10-23 (not tagged)
+
+- Record published dev5, its exact source and completed manual delivery separately
+  from the failed automatic notice job. Earlier candidate status below describes
+  its original checkpoint; [dev5 release notes](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+  supersede that publication-status wording.
+- Date the earlier Claude plan and status boundaries. Link the later Claude dev5
+  source/export and open PR #26, which owns its detailed C80 A adoption record.
+- Correct C80 B from implementation pending to an implemented Codex PR #47
+  candidate with its unresolved `ADMITTED_NOT_SAFE` gate. This records progress
+  without claiming accepted conformance, merged adoption or a host release.
+- Issue #9 remains a separate diagnostics plan in PR #23; the schema namespace,
+  `acceptance` field and host boundaries retain their existing dispositions.
+  No runtime, schema, prompt, artifact or version changes accompany this update.
+
 ## dev5 candidate corrections and review — 2026-10-23 (not tagged)
 
 - Clarify C23 recovery guidance: preserve original AGY bytes and separated

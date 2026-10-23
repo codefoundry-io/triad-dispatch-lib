@@ -15,6 +15,21 @@ change to the automation allowlist and App scope.
 
 ## Current activation boundary
 
+On 2026-10-23 (KST), [dev5](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+was published from `859f27c07c1123e87b50344f587999a0cbc172a6`. The
+[exact-tag release run](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39852025988)
+completed its four native verification jobs and publication. The separate
+`deliver` job failed on missing GitHub App configuration; publication succeeded.
+Manual release notes were delivered to
+[Codex #46](https://github.com/codefoundry-io/triad-codex-dispatch/pull/46#issuecomment-6351093675),
+[Claude #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6351096977)
+and [AGY #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2#issuecomment-6351099545).
+Do not automatically retry this notice job: the branch-based deduplication does
+not recognize those manual proposals. Host adoption remains independently owned;
+no App settings or credentials were changed by that publication or this update.
+
+### Earlier dev4 activation evidence
+
 The source provides publication, retry and proposal tooling. The 2026-10-16
 read-only audit found no library releases, repository-visible Actions variables
 or secret names, or environments. In particular, `TRIAD_RELEASE_APP_ID` and

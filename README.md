@@ -14,19 +14,22 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development candidate (`0.1.0.dev5`) provides strict original-JSON parsing,
+The published development prerelease (`0.1.0.dev5`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
 validation. AGY result metadata is separated from the validated payload while
 the original provider output is preserved; see [C80 and the owner decision](spec/decisions/2026-10-22-agy-result-metadata.md).
-The dev5 candidate is not yet published. Repository drivers verify the installed package with
-synthetic four-route responses; earlier fresh Codex observations remain historical.
-The dev4 wheel, sdist and manifest are published as a
-[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
-not a package-index release. As checked on 2026-10-22, all three host repositories
-record dev4 from `087af94a` in their adoption manifests. Those records do not
-establish every host API integration, local installation or live-provider result.
+The dev5 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+from `859f27c07c1123e87b50344f587999a0cbc172a6`, not a package-index release.
+Repository drivers verify the installed package with synthetic four-route
+responses; actual provider observations retain their individual review bases.
+The 2026-10-22 three-host dev4 adoption records are a dated baseline. The
+[2026-10-23 host follow-up](docs/host-adoption.md#latest-host-follow-up-2026-10-23)
+records later Claude dev5 adoption and the separately held Codex candidate.
+Library publication does not establish every host API integration, local
+installation or live-provider result.
 See [independent host adoption](docs/host-adoption.md) and the
 [open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
 

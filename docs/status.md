@@ -2,7 +2,45 @@
 
 Updated: 2026-10-23
 
-## AGY metadata compatibility candidate — 2026-10-22
+## Current release and follow-ups
+
+[v0.1.0.dev5](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+is published as a GitHub prerelease with wheel, sdist and manifest assets.
+[PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24) merged at
+`859f27c07c1123e87b50344f587999a0cbc172a6`, whose tree matches reviewed head
+`30bf2c93d712ea6adbecb54adb7516d6ce017246`. The later release round
+`20261023-lib24-release-r2-b73603` completed `AGREED` with all three required
+reviewers `SAFE TO MERGE`, `ROUND_INTEGRITY_OK`, and no actionable finding from
+the separate Astra comparison. The [release run](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39852025988)
+completed all four native verification jobs and publication; its separate
+automatic notice job failed on missing App configuration. Manual notices were
+delivered to all three host proposal PRs; see [delivery evidence](releasing.md#current-activation-boundary).
+
+[Issue #25](https://github.com/codefoundry-io/triad-dispatch-lib/issues/25)
+identifies stale Claude adoption and C80 status wording. Its dev4-only host
+snapshot and pending dev5 publication/measurement are superseded by the release
+above and the later Claude source/export evidence in
+[PR #26](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26).
+That open PR owns the detailed C80 A record and slice-2 merge correction.
+See [current host follow-up](host-adoption.md#latest-host-follow-up-2026-10-23).
+
+Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+contains the C80 adapter candidate, but its `ADMITTED_NOT_SAFE` review and
+terminal-selection follow-up remain open. Its merge/release and adoption of the
+published artifact remain separate from this library release. The C80 B record
+now distinguishes candidate implementation from accepted conformance.
+
+Issue #9 remains partial/open: [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23)
+is a plan for additive roster instance-location diagnostics, not an implemented
+or published API. Its earlier metadata compatibility obstacle has a released
+library path; design review and implementation remain pending. Keep the existing
+schema identity (#17), `acceptance` contract (#21), and host boundaries (#5).
+PR #22's earlier documentation was incorporated through #24; its still-open
+branch does not define the current release state.
+
+## AGY metadata compatibility candidate — historical 2026-10-22/23 checkpoint
+
+The record below predates the final release round and publication described above.
 
 The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata
 instead of rejecting an otherwise valid verdict. [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24)
@@ -30,7 +68,7 @@ These results do not approve later documentation edits or the separately blocked
 Codex adapter. No pull request merge, public release or workstation installation
 has occurred.
 
-## Current release and follow-ups
+## Earlier dev4 release and follow-ups — 2026-10-22 checkpoint
 
 The published library is
 [v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
@@ -575,8 +613,11 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Codex v0.2.561 independently adopted dev3 after library PR #1 merged.
-Claude adoption and adoption of the current dev4 slice remain separate work.
+Historical boundary for the 2026-10-15 slice: Codex v0.2.561 independently adopted
+dev3 after library PR #1 merged; Claude adoption and adoption of that dev4 slice
+remained separate work at that checkpoint. See
+[Current release and follow-ups](#current-release-and-follow-ups) for later
+release and recorded adoption evidence.
 The earlier Codex integration experiment used parent-dispatched native children;
 the library and driver do not spawn native agents or provider processes. This
 slice performs no consumer update, global installation, package-index publication

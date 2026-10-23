@@ -13,7 +13,28 @@ The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
 
+## Latest host follow-up (2026-10-23)
+
+Library [dev5](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+is published from `859f27c07c1123e87b50344f587999a0cbc172a6`. Claude's later
+[source `fd8c709d`](https://github.com/codefoundry-io/triad/commit/fd8c709de1f32608e267e77b2a67805b36741253)
+and [export 0.2.1982 at `5d9f6a4`](https://github.com/codefoundry-io/triad-dispatch/commit/5d9f6a4348fd40bedb5d449eccb07d2ef94dd42f)
+record dev5 adoption. [Open PR #26](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26)
+proposes the detailed C80 A evidence and slice-2 merge correction. Its reported
+AGY 1.4.5 measurement and host review supersede the pending steps in
+[issue #25](https://github.com/codefoundry-io/triad-dispatch-lib/issues/25);
+they remain host-attributed evidence, not a new run performed by this library.
+
+[Codex PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+contains a C80 candidate at `801e7047b844b0ff1885a983d1c6c6cac35f4515`, with
+the independent host gate `ADMITTED_NOT_SAFE`. Correct terminal/payload selection,
+verify the published library artifact and complete host review before release.
+The independent [AGY host proposal](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2)
+retains its own integration and verification responsibilities.
+
 ## Current recorded adoption (2026-10-22)
+
+This is the dated dev4 baseline; the later follow-up above supersedes its current-version scope.
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
 `087af94a7078de0ae9701fb057840b5492f51f66`, wheel SHA-256
@@ -202,6 +223,12 @@ R-THREAT's machine-level concurrency, not proof of a B race or a lock-transplant
 requirement. See the [scoped disposition](requests/2026-10-16-adoption-followups-disposition.md#pr-11-host-concurrency).
 
 ## Claude host adoption assessment (2026-10-15)
+
+Historical assessment: the planned function selection, eight-pair comparison and
+manifest adoption below describe 2026-10-15. The adopted-state paragraph later
+in this section records the subsequent nine-pair, `with_manifest=True`
+integration; the [latest host follow-up](#latest-host-follow-up-2026-10-23)
+links the later dev5 record and the correction proposed in PR #26.
 
 The [request record](requests/2026-10-15-claude-host-adoption-requests.md)
 retains the host leader's dev3 measurements and links the published scratch
