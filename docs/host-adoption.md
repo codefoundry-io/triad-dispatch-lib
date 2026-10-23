@@ -28,7 +28,16 @@ Passing these pure APIs does not establish host C81-C83 conformance. The current
 implementation scope covers this library followed by a separately reviewed Codex
 adoption; Claude and AGY receive pinned adoption work in the proposal PRs below.
 
-## Current recorded adoption (2026-10-22)
+<a id="current-recorded-adoption-2026-10-22"></a>
+## Historical adoption snapshot (2026-10-22)
+
+This section preserves the pinned 2026-10-22 evidence. Codex
+[v0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+subsequently adopted library dev5 source
+`859f27c07c1123e87b50344f587999a0cbc172a6`, as recorded in the
+[shared-runtime decision](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
+Broader release/adoption reconciliation remains separate in
+[PR #27](https://github.com/codefoundry-io/triad-dispatch-lib/pull/27).
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
 `087af94a7078de0ae9701fb057840b5492f51f66`, wheel SHA-256
@@ -55,8 +64,8 @@ See the [triage and release plan](requests/2026-10-22-triage-and-release-plan.md
 
 ## Earlier integration checkpoints
 
-The following records describe their original integration boundaries; current
-recorded adoption is listed above.
+The following records describe their original integration boundaries; the dated
+adoption snapshot and subsequent Codex update are listed above.
 
 Library [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed

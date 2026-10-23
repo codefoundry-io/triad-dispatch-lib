@@ -17,7 +17,7 @@ launcher copies are required. The normative behavior is written once in
 ## Scope and preserved features
 
 This amendment defines observable compatibility, consumer binding and lifecycle
-outcomes. The owner subsequently authorized implementation, merge and deployment,
+outcomes. The owner subsequently [authorized implementation, merge and deployment](owner-register.md#D-SHARED-RUNTIME-IMPLEMENTATION-20261023),
 selecting library plus Codex adoption; Claude/AGY receive follow-up instructions.
 The [Python interface](../reference/runtime-compatibility-api.md) and
 [implementation plan](../../docs/superpowers/plans/2026-10-23-shared-runtime-compatibility.md)

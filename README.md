@@ -77,7 +77,7 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 The [public API compatibility gate](docs/api-compatibility.md) protects the declared
 `0.1.0.dev4` floor through structural and representative consumer checks.
 
-The [current Python API contract](spec/reference/library-api.md) covers all 32
+The [current Python API contract](spec/reference/library-api.md) covers all 41
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
@@ -307,8 +307,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

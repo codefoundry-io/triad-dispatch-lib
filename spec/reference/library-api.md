@@ -425,7 +425,7 @@ cannot force termination or bound cleanup time for uncooperative callbacks.
 
 ## Exported dataclasses
 
-All six are `frozen=True`: ordinary field reassignment is refused, but nested
+All nine are `frozen=True`: ordinary field reassignment is refused, but nested
 objects are not deeply immutable. Constructors perform no schema/admission
 checks. Fields below are in constructor order; only shown defaults are optional.
 
@@ -437,13 +437,22 @@ checks. Fields below are in constructor order; only shown defaults are optional.
 | `CallOutcome` | `name: str`, `status: str`, `value: object \| None`, `error_code: str \| None` | Coordinator emits `completed` with returned value and null error; `failed` with null value/`callback_failed`; or `timed_out` with null value/`timed_out`. A completed investigation can itself return null. |
 | `ReviewRun` | `outcomes: tuple[CallOutcome, ...]`, `agreement: AgreementResult` | Ordered callback delivery plus independently computed admission/agreement. |
 | `AgreementResult` | `agreed: bool`, `verdicts: dict[str, dict]`, `reasons: dict[str, str]`, `integrity_ok: bool` | Snapshot result; nested maps/verdicts remain mutable. |
+| `ConsumerBinding` | `schema: str`, `consumer: str`, `baseline_digest: str`, `library_digest: str`, `adapter: str`, `capabilities: tuple[str, ...]`, `commands: tuple[str, ...]`, `context_digest: str`, `binding_id: str` | Exact consumer context; validation derives its identity and normalizes collections to sorted tuples. |
+| `RuntimeDescriptor` | `schema: str`, `artifact_digest: str`, `commands: tuple[str, ...]`, `capabilities: tuple[str, ...]`, `supported_bindings: tuple[str, ...]` | Host-authenticated runtime declaration; operations revalidate tuple fields and exact declared support. |
+| `RuntimeRetention` | `retain: tuple[str, ...]`, `remove: tuple[str, ...]`, `diagnostic: str` | Sorted retention/removal decision; performs no lifecycle operations. |
+
+The [common runtime API](runtime-compatibility-api.md) defines the new records'
+validation, identity, selection and conservative retention behavior. Their public
+constructors do not validate inputs; every consuming operation revalidates them.
 
 ## Exported exception families and emitted codes
 
 These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
-`AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
+`AdmissionError`, `RosterError`, `ReceiptError` and `RuntimeCompatibilityError`
+explicitly declare it stable. Runtime compatibility refusals use fixed,
+value-free messages. `ContractError`
 and `PromptError` have no library-defined `.code`. The adopted compatibility
 floor also protects selected actual operational outcomes, including
 `extract_final` emitting `OutputError` codes `invalid_carrier` and `timed_out`,
@@ -459,6 +468,7 @@ adds no blanket code/version stability promise beyond the scoped
 | `AdmissionError` | `ValueError` | `invalid_json`, `invalid_utf8`, `duplicate_member`, `nonfinite_number`, `invalid_input_type`, `nesting_limit`, `schema_violation`, `invalid_expected`, `binding_mismatch` |
 | `RosterError` | `ValueError` | `invalid_json`, `schema_violation`, `duplicate_name`, `empty_selection`, `nesting_limit` |
 | `ReceiptError` | `ValueError` | `schema_violation`, `nesting_limit` |
+| `RuntimeCompatibilityError` | `ValueError` | `invalid_descriptor`, `invalid_binding`, `unsupported_schema`, `invalid_selector`, `missing_context`, `unknown_binding`, `ambiguous_binding`, `unsupported_binding`, `command_mismatch`, `capability_mismatch`, `invalid_inventory`, `incomplete_inventory` |
 | `OutputError` | `ValueError` | `invalid_output`, `invalid_carrier`, `not_completed`, `timed_out`, `transport_failed`, `nonzero_exit`, `invalid_envelope`, `terminal_failure`, `missing_terminal`, `multiple_terminals`, `carrier_mismatch` |
 | `AgreementError` | `ValueError` | `invalid_expected_map`, `invalid_binding`, `invalid_outputs_map`, `invalid_output`, `empty_selection`, `name_mismatch`, `mixed_basis`, `extra_output`, `invalid_integrity` |
 | `DispatchError` | `ValueError` | `invalid_concurrency`, `invalid_callback`, `invalid_requests`, `empty_selection`, `invalid_entries`, `disabled_entry`, `unresolved_route`, `invalid_binding`, `binding_mismatch`, `mixed_basis`, `preflight_failed` |

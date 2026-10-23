@@ -22,6 +22,28 @@ bounded common-compatibility contract; it does not silently revive U8's entire
 dual-install, pin-probe or concurrent-configuration investigation. See the
 [evidence and handoff](2026-10-23-shared-runtime-compatibility.md).
 
+<a id="D-SHARED-RUNTIME-IMPLEMENTATION-20261023"></a>
+### Implementation amendment — 2026-10-23
+
+The specification-stage authorization above records the earlier boundary.
+The owner subsequently instructed the Codex leader (verbatim):
+
+> 구현 후 머지 및 배포
+
+The owner's scope-selection reply was (verbatim):
+
+> 1,2
+
+Recorded effect: authorize implementation, merge, release and deployment for
+the common library and the Codex integration, with their respective verification
+and review gates. Claude and AGY receive pinned handoff instructions only;
+implementation, installation and deployment in those hosts remain separately
+owned. Deployment is included in this later authorization; the earlier
+specification-only boundary is preserved as history, not the current scope.
+The [implementation plan](../../docs/superpowers/plans/2026-10-23-shared-runtime-compatibility.md)
+and [shared-runtime decision](2026-10-23-shared-runtime-compatibility.md)
+record the ordered library and Codex work and preservation requirements.
+
 <a id="D-U8-WITHDRAWN-20261010"></a>
 ## D-U8-WITHDRAWN-20261010: withdraw installation coexistence work
 
