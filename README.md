@@ -14,16 +14,23 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development package (`0.1.0.dev4`) provides strict original-JSON parsing,
+The development candidate (`0.1.0.dev6`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
-validation. Repository drivers verify the installed package with
-synthetic four-route responses; earlier fresh Codex observations remain historical.
-The dev4 wheel, sdist and manifest are published as a
-[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
+validation. AGY result metadata is separated from the validated payload while
+the original provider output is preserved; see [C80 and the owner decision](spec/decisions/2026-10-22-agy-result-metadata.md).
+The additive [runtime compatibility APIs](spec/reference/runtime-compatibility-api.md)
+validate consumer bindings, select explicit or established legacy context, and
+retain artifacts referenced by other consumers or active invocations. Host
+provenance checks, installers and actual native execution remain separate.
+Repository drivers verify the installed package with synthetic four-route
+responses; earlier fresh Codex observations remain historical.
+The dev5 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5),
 not a package-index release. As checked on 2026-10-22, all three host repositories
-record dev4 from `087af94a` in their adoption manifests. Those records do not
+recorded dev4 from `087af94a` in their adoption manifests; Codex v0.2.563
+subsequently adopted dev5 from `859f27c`. Those records do not
 establish every host API integration, local installation or live-provider result.
 See [independent host adoption](docs/host-adoption.md) and the
 [open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
@@ -71,7 +78,7 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 The [public API compatibility gate](docs/api-compatibility.md) protects the declared
 `0.1.0.dev4` floor through structural and representative consumer checks.
 
-The [current Python API contract](spec/reference/library-api.md) covers all 31
+The [current Python API contract](spec/reference/library-api.md) covers all 41
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
@@ -188,17 +195,21 @@ preflight exposes the aggregate `preflight_failed` code, not per-entry diagnosti
 Full collectors must preserve the [host-fault distinction](docs/host-adoption.md#required-adapter-contracts).
 
 `ProviderOutput` supports `native-final`, `claude-json`, `gemini-json` and
-`agy-stream-json`. Native-final is original JSON after host-owned marker/fence
-removal; the library never strips markers. Claude requires an object-valued
-`structured_output`, Gemini a string-valued `response`, and AGY exactly one
+`agy-stream-json`. Native-final accepts final JSON after host-owned marker/fence
+removal or an explicitly derived C80 payload; the library never strips markers.
+Hosts retain original provider bytes separately from any projection. Claude
+requires an object-valued `structured_output`, Gemini a string-valued `response`, and AGY exactly one
 successful result terminal with object-valued structured output in valid JSONL.
 Duplicate members, malformed tails and ambiguous terminals are refused. Completion,
 timeout, transport and exit observations precede admission; unsupported envelope
 adaptation remains host-owned. `admit_output` preserves embedded JSON evidence.
 The strict AGY carrier does not perform C23 same-run finish recovery; adopting
 hosts must retain that decision and its guards before admitting recovered output.
-Generic `native-final` trusts host-observed completion and original final bytes
-for any family; it does not attest execution or authorize relabelling failed transport.
+Generic `native-final` trusts host-observed completion and supplied final JSON
+for any family and performs no metadata separation. Recovered AGY results with
+undeclared metadata need host-owned C80 separation before this strict path; see
+[adapter contracts](docs/host-adoption.md#required-adapter-contracts).
+It does not attest execution or authorize relabelling failed transport.
 `evaluate_agreement` re-admits every selected binding and requires unanimous safe
 verdicts plus true integrity. Valid dissent is retained and blocks approval.
 
@@ -220,11 +231,11 @@ uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
 uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev4.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
+uv build dist/triad_dispatch_lib-0.1.0.dev6.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 --self-test
 git diff --check
 ```
 
@@ -263,9 +274,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and
@@ -297,8 +308,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev4-py3-none-any.whl --expected-version 0.1.0.dev4 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev4 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

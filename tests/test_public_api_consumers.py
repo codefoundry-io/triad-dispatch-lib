@@ -1,4 +1,4 @@
-"""Selected dev4 consumer contracts; runnable without pytest or a Git checkout."""
+"""Selected API floor and current consumer contracts; runnable without pytest or Git."""
 
 import argparse
 from dataclasses import FrozenInstanceError
@@ -14,8 +14,11 @@ EXPORTS = """AdmissionError AgreementError AgreementResult CallOutcome ContractE
 DispatchError InvestigationRequest OutputError PromptError ProviderOutput ReceiptError
 ReviewRequest ReviewRun RosterError admit_output evaluate_agreement extract_final
 load_roster_contract merge_roster parse_json render_data render_investigation_prompt
-render_review_clauses resolve_roster run_investigations run_review select_entries
-validate_binding validate_resolved validate_transport_receipt validate_verdict""".split()
+render_review_clauses resolve_roster run_investigations run_review select_entries separate_agy_metadata
+validate_binding validate_resolved validate_transport_receipt validate_verdict
+ConsumerBinding RuntimeDescriptor RuntimeRetention RuntimeCompatibilityError
+validate_consumer_binding validate_runtime_descriptor check_consumer_compatibility
+select_consumer_binding plan_runtime_retention""".split()
 BINDING = dict(review_id="consumer-1", family="codex", content_digest="a" * 64,
                leg_name="c", attempt=1, route=None)
 VERDICT = dict(schema_version=2, **BINDING, verdict="SAFE TO MERGE",
@@ -29,6 +32,47 @@ def entry(name):
 
 
 class PublicAPIConsumers(unittest.TestCase):
+    def test_runtime_selection_refusal_and_conservative_retention(self):
+        document = dict(schema='triad-consumer-binding.v1', consumer='consumer-a',
+                        baseline_digest='a' * 64, library_digest='b' * 64,
+                        adapter='native', capabilities=['native'], commands=['triad-review'],
+                        context_digest='c' * 64)
+        legacy = lib.validate_consumer_binding(document)
+        explicit = lib.validate_consumer_binding(document | dict(consumer='consumer-b'))
+        runtime = lib.validate_runtime_descriptor(dict(
+            schema='triad-runtime-compat.v1', artifact_digest='d' * 64,
+            commands=['triad-review'], capabilities=['native'],
+            supported_bindings=[legacy.binding_id, explicit.binding_id]))
+        self.assertIsNone(lib.check_consumer_compatibility(runtime, legacy))
+        inventory = [explicit, legacy]
+        self.assertEqual(lib.select_consumer_binding(
+            runtime, inventory, explicit_binding=explicit.binding_id,
+            legacy_binding=legacy.binding_id), explicit)
+        self.assertEqual(lib.select_consumer_binding(
+            runtime, inventory, explicit_binding=None,
+            legacy_binding=legacy.binding_id), legacy)
+        with self.assertRaises(lib.RuntimeCompatibilityError) as caught:
+            lib.select_consumer_binding(runtime, inventory, explicit_binding='e' * 64,
+                                        legacy_binding=legacy.binding_id)
+        self.assertEqual(caught.exception.code, 'unknown_binding')
+        with self.assertRaises(lib.RuntimeCompatibilityError) as caught:
+            lib.select_consumer_binding(runtime, [legacy], explicit_binding=None, legacy_binding=None)
+        self.assertEqual(caught.exception.code, 'missing_context')
+        retained = lib.plan_runtime_retention(
+            ['d' * 64, 'a' * 64, 'b' * 64], consumer_references=['b' * 64],
+            active_references=['a' * 64], dependencies_known=True)
+        self.assertEqual((retained.retain, retained.remove, retained.diagnostic),
+                         (('a' * 64, 'b' * 64), ('d' * 64,), 'references_preserved'))
+        unknown = lib.plan_runtime_retention(
+            ['d' * 64, 'a' * 64], consumer_references=[], active_references=[],
+            dependencies_known=False)
+        self.assertEqual((unknown.retain, unknown.remove, unknown.diagnostic),
+                         (('a' * 64, 'd' * 64), (), 'dependencies_unknown'))
+        for value, field in [(legacy, 'binding_id'), (runtime, 'artifact_digest'),
+                             (retained, 'diagnostic')]:
+            with self.assertRaises(FrozenInstanceError):
+                setattr(value, field, None)
+
     def test_exports_and_six_frozen_constructors(self):
         self.assertTrue(set(EXPORTS).issubset(lib.__all__))
         for name in EXPORTS:
@@ -50,7 +94,8 @@ class PublicAPIConsumers(unittest.TestCase):
     def test_error_bases_codes_and_diagnostics(self):
         for name, code in [("AdmissionError", "invalid_json"), ("RosterError", "invalid_json"),
                            ("ReceiptError", "schema_violation"), ("OutputError", "timed_out"),
-                           ("AgreementError", "empty_selection"), ("DispatchError", "invalid_requests")]:
+                           ("AgreementError", "empty_selection"), ("DispatchError", "invalid_requests"),
+                           ("RuntimeCompatibilityError", "unsupported_binding")]:
             error = getattr(lib, name)(code)
             self.assertIsInstance(error, ValueError)
             self.assertEqual(error.code, code)
@@ -144,6 +189,27 @@ class PublicAPIConsumers(unittest.TestCase):
             with self.assertRaises(lib.OutputError) as caught:
                 lib.extract_final(lib.ProviderOutput(carrier, raw, 0, True, timed_out))
             self.assertEqual(caught.exception.code, code)
+
+    def test_agy_metadata_separation_and_negative_admission(self):
+        binding = BINDING | dict(family="google", route="agy")
+        verdict = VERDICT | binding | dict(verdict="DO NOT MERGE", open_questions=["missing context"])
+        raw = json.dumps(verdict | dict(toolAction={"read": True}, toolSummary=[None, "done"])).encode()
+        payload, metadata = lib.separate_agy_metadata(raw)
+        self.assertEqual(payload, verdict)
+        self.assertEqual(metadata, {"toolAction": {"read": True}, "toolSummary": [None, "done"]})
+        declared, metadata = lib.separate_agy_metadata(raw, declared_fields=("toolSummary",))
+        self.assertEqual(declared, verdict | dict(toolSummary=[None, "done"]))
+        self.assertEqual(metadata, {"toolAction": {"read": True}})
+        envelope = b'{"event":"result","result":{"status":"SUCCESS","structured_output":' + raw + b'}}'
+        observed = lib.ProviderOutput("agy-stream-json", envelope, 0, True)
+        self.assertEqual(lib.extract_final(observed), raw)
+        self.assertEqual(lib.admit_output(observed, expected=binding), verdict)
+        self.assertEqual(observed.stdout, envelope)
+        self.assertEqual(lib.evaluate_agreement({"c": binding}, {"c": observed}, integrity_ok=True).reasons,
+                         {"c": "negative_verdict"})
+        with self.assertRaises(lib.AdmissionError) as caught:
+            lib.validate_verdict(raw, expected=binding)
+        self.assertEqual(caught.exception.code, "schema_violation")
 
 
 if __name__ == "__main__":

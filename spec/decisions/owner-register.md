@@ -2,6 +2,48 @@
 
 Dates in decision headings and IDs are the owner's local date (KST, UTC+9); timestamps given with `Z` are UTC.
 
+<a id="D-SHARED-RUNTIME-COMPAT-20261023"></a>
+## D-SHARED-RUNTIME-COMPAT-20261023: specify common runtime backward compatibility
+
+Owner, 2026-10-23, direct instruction to the Codex leader (verbatim):
+
+> 내 질문은 공용으로 사용가능하냐고 어차피 같은 라이브러리잖아 하위호환성을 스펙에 넣어
+
+Recorded interpretation: common runtime/launcher reuse is a supported design
+goal, with backward compatibility written into the shared specification.
+Separate per-host installation is not presumed necessary. R-SHARED-RUNTIME-COMPAT
+and C81-C83 describe the proposed acceptance contract; host implementation and
+adoption remain separate. This authorizes the bounded specification work, not
+overwriting current shared launchers or changing global configuration.
+
+The older U8 withdrawal below remains historical and effective for its full
+investigation/implementation backlog. This new explicit request establishes the
+bounded common-compatibility contract; it does not silently revive U8's entire
+dual-install, pin-probe or concurrent-configuration investigation. See the
+[evidence and handoff](2026-10-23-shared-runtime-compatibility.md).
+
+<a id="D-SHARED-RUNTIME-IMPLEMENTATION-20261023"></a>
+### Implementation amendment — 2026-10-23
+
+The specification-stage authorization above records the earlier boundary.
+The owner subsequently instructed the Codex leader (verbatim):
+
+> 구현 후 머지 및 배포
+
+The owner's scope-selection reply was (verbatim):
+
+> 1,2
+
+Recorded effect: authorize implementation, merge, release and deployment for
+the common library and the Codex integration, with their respective verification
+and review gates. Claude and AGY receive pinned handoff instructions only;
+implementation, installation and deployment in those hosts remain separately
+owned. Deployment is included in this later authorization; the earlier
+specification-only boundary is preserved as history, not the current scope.
+The [implementation plan](../../docs/superpowers/plans/2026-10-23-shared-runtime-compatibility.md)
+and [shared-runtime decision](2026-10-23-shared-runtime-compatibility.md)
+record the ordered library and Codex work and preservation requirements.
+
 <a id="D-U8-WITHDRAWN-20261010"></a>
 ## D-U8-WITHDRAWN-20261010: withdraw installation coexistence work
 
@@ -165,7 +207,7 @@ new rule; every row points at the normative location.
 | Directive (2026-09-19, current-source and cross-host coordination) | Both leaders read latest remote main; share every common design/contract/prompt/behavior change before implementation; diagnose any omitted existing functionality with three families, however small. Codex drafts the shared protocol; Claude reviews the same commit. Each leader owns only its host | `reference/spec-authoring.md#R-AUTHORING-SYNC`; this new authoring draft awaits Claude review, without carrying forward the old basis acknowledgement |
 | Directive (2026-09-20, Codex first) | "니가 먼저 진행하고 같은 문제가 있는지 항상 claude host 쪽 코드를 보고 지적 업데이트해 라인으로 지적하고 codex업데이트가 끝날때 까지 claude 쪽은 업데이트 안할거야" | Lead-host sequencing in `reference/spec-authoring.md#R-AUTHORING-SYNC`; B leads implementation and verification, inspects A at each change, and accumulates commit/file/line evidence and final A instructions. No A edits by Codex |
 | D-3 | Verdict wire contract: adjudicate via ONE three-family round, each host keeps its own schema until then | `contracts/leg-verdict.schema.json` (written; host A admits v2 verdicts against its vendored copy, `lib/verdict_v2.py` @ triad `ee011968`); `R-AGREE` last sentence |
-| D-4 / Q-L | Three-family review is the default; substitutes are contingency; the model behind each slot is replaceable; at least three legs run | `R-ROSTER` |
+| D-4 / Q-L | Three-family review is the default; substitutes are contingency; the model behind each slot is replaceable; at least three legs run **Superseded on 2026-10-02 by [D-REVIEW-STRATEGY-20261002](#D-REVIEW-STRATEGY-20261002)** for the minimum-family/count requirement: any nonempty roster, count and family descriptive | `R-ROSTER` |
 | D-9 | Network tools in the gemini review policy: same three-family round, date-anchored web evidence only **Superseded for REVIEW web on 2026-10-03 by [D-REVIEW-LEGS-20261003](#D-REVIEW-LEGS-20261003)** (standing authorization; the no-web posture applies only to a false condition). | `contracts/README.md` (policy row) |
 | D-10 | Reviewer framing: CLOSED by owner Q3 (codex session) — evidence-centred, a no-defect conclusion allowed | `prompts/common-clauses.md § adversarial-framing` |
 | D-13 | Host A `fixture.sh` contract: header wins (leak prune + 14-day retention), A-side only | none here |
@@ -179,11 +221,11 @@ new rule; every row points at the normative location.
 | Q-G / Q-J / Q-N | agy and gemini are distinct CLIs of one family with opposite availability at the two sites; keep each host's SHIPPED fallback logic; the owner tests gemini where it is in service and briefs the leader **The two-site framing is superseded as current state on 2026-10-03 by [D-ONE-ENVIRONMENT-20261003](#D-ONE-ENVIRONMENT-20261003)** (host A describes one environment, agy its default Google route and gemini its compatibility route; each host's fallback logic and the owner's gemini testing stand). | `R-GOOGLE` |
 | Q-O | `acceptance` is a data field only; every rule derived from it is cut | `R-ROSTER`, `contracts/review-legs.example.json` |
 | Q-P | The shared package lives in this SEPARATE repository; enforcement mode is the leaders' call (recommendation: informational drift report first) | `README.md § How a host uses a revision` step 3 |
-| Q-S | selected option: a MERGE WITH FIXES with only Minor findings counts as agreement, no extra round | `R-AGREE` |
+| Q-S | selected option: a MERGE WITH FIXES with only Minor findings counts as agreement, no extra round **Superseded on 2026-10-02 by [D-REVIEW-STRATEGY-20261002](#D-REVIEW-STRATEGY-20261002)**: a Minor-only negative does not count as agreement | `R-AGREE` |
 | Q-T | selected option: leaders hand files, the owner pushes | `README.md` step 1 and 4, `AGENTS.md`/`CLAUDE.md` |
 | Q-U | selected option: prompts live here as the one editable copy; hosts vendor at the adopted revision | `prompts/`, `README.md` step 2 |
 | Q-V | Concept only, no UI, no LikeC4; this repository is a lightweight experiment lab | `README.md` purpose, `reference/spec-authoring.md § 7` |
-| Q1 (codex session) | selected option: "코드를 수정하면 전원 재검토. Minor만 남은 원본은 승인 가능" — Minor-only findings do not block the unchanged reviewed bytes; any change to reviewed content = full participating-roster re-review | `R-AGREE`, `R-REREVIEW` |
+| Q1 (codex session) | selected option: "코드를 수정하면 전원 재검토. Minor만 남은 원본은 승인 가능" — Minor-only findings do not block the unchanged reviewed bytes; any change to reviewed content = full participating-roster re-review **Superseded on 2026-10-02 by [D-REVIEW-STRATEGY-20261002](#D-REVIEW-STRATEGY-20261002)** for the Minor-only release: a Minor-only negative does not count as agreement | `R-AGREE`, `R-REREVIEW` |
 | Q2 (codex session) | selected option: "두 CLI 모두 Pro 계열 + 확인 가능한 high로 맞춤; 인증 경계 유지" — Pro family + verifiable HIGH on both Google CLIs; B's Auto-only path and A's unpinned gemini call = migration items | `R-NOCOST`, roster example, C18 |
 | Q3 (codex session) | selected option: "증거 중심으로 통일하고 무결함 결론도 허용" — shared review prompt is evidence-centred and allows a no-defect conclusion; D-10 closed | `prompts/common-clauses.md § adversarial-framing` |
 | Q-W | Google review leg default model = the 3.1 Pro-high tier; Flash retired as a reviewer; the model option stays only so a future model can be evaluated (corrects the leader's "provider default / auto" reading) | `R-NOCOST`, `contracts/review-legs.example.json`, C18 |

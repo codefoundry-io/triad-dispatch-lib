@@ -1070,6 +1070,19 @@ earlier the unspawned turn's pre-spawn shape), and the unspawned turn adds no at
 `e9960053`; the soft-deny re-run is removed @ triad `e34edcb4`, DL-140). B has no driver re-run
 turn (a fact).
 
+<a id="R-AGY-METADATA"></a>
+**AGY result metadata (C80).** Preserve original provider output and its
+`toolAction`/`toolSummary` values. Before validating an AGY structured result,
+strictly parse the original JSON and separate only these two top-level names
+when they are not caller-declared payload fields. Their presence alone is not
+a failed leg. Validate the remaining payload with the unchanged schema and all
+invocation bindings; keep negative verdicts negative. Do not remove other extra
+fields, nested names, or caller-declared names. Missing/malformed results,
+duplicate members, non-finite values, terminal failures and existing permission,
+timeout and recovery rules remain unchanged. Separation is transport handling,
+not a verdict rewrite or a reason to change the canonical verdict schema.
+See [the owner decision](../decisions/2026-10-22-agy-result-metadata.md).
+
 <a id="R-BIND"></a>
 Every leg's result binds `review_id`, `family` and `content_digest` today on both hosts; a mismatch is an INVALID leg, never
 a pass. v2 ADDS (round r2, all three families; lands with the D-3 wire — `contracts/leg-verdict-mapping.md`): `leg_name` (the
@@ -1608,6 +1621,64 @@ authorize a model probe (R-MODEL), fallback, global settings or provider permiss
 Parity covers option names, types, defaults, scope, refusal behavior and the declared host exceptions of every shared
 surface (`units.json`: `common` name + `exceptions`); a matching filename alone is not parity. Host-native internals, test
 trees, install layers and agent registration stay host-specific.
+
+## Shared runtime and backward compatibility
+
+<a id="R-SHARED-RUNTIME-COMPAT"></a>
+The Claude, Codex and AGY consuming hosts may use one common runtime and its
+compatible launcher entry points. Host implementations adopting this rule must
+support reuse when both compatibility and trusted provenance are established;
+the installing host's name or marker alone is not a reason to require separate
+copies. Reuse does not authorize overwriting an unverified or owner-authored
+file. The installation mechanism remains host-owned under R-PARITY.
+
+Compatibility is declared against immutable supported consumer baselines and
+the common surface plus its declared host exceptions. Before advertising reuse,
+record the runtime/artifact identity, library/API baseline, supported host
+adapter/capability combinations, and their consumer verification. A shared
+filename, equal library version, successful import or `--help` response alone
+does not establish compatibility. Existing provenance pins remain effective;
+sharing a runtime does not silently update an adopted revision.
+
+For every supported older consumer, a compatible runtime update preserves its
+existing call without requiring a client rewrite: command/subcommand names,
+options and argument meanings, defaults, stdin/prompt-file/path semantics,
+stdout payload and stderr roles, exit/refusal behavior, result/receipt schemas,
+binding and custody checks, and any consumed public helper API. New optional
+features remain optional. Keep the library's existing
+[Python API compatibility gate](../../docs/api-compatibility.md); it is one layer,
+not evidence for launcher, CLI, host-adapter or installed lifecycle compatibility.
+An intentional incompatible transition requires an explicit reviewed decision,
+affected-call inventory, migration and verification. A version bump alone does
+not waive compatibility. Do not replace a shared runtime until all consumers
+still bound to it retain their supported contract or have explicitly migrated.
+
+Common execution must retain the consuming host's adopted context: native child
+versus CLI adapter, model/effort and roster resolution, configuration and
+classifier paths, provider authentication and permissions, toolkit identity,
+receipt paths and round bindings. Common defaults remain common at a given
+adopted revision; only declared host exceptions vary. Installer identity and
+installation order never select or override that context. If required context
+or capabilities are missing, ambiguous or incompatible, diagnose and refuse
+before provider execution instead of selecting another host or fallback. This
+rule adds no authentication probe, global-setting change or native-spawn API.
+
+Before replacing a working entry point, verify the candidate against the
+declared supported consumer corpus. An incompatible or unverified candidate
+leaves the existing installation usable and unchanged. Installing, upgrading or
+removing one consumer must not delete or rebind runtime assets needed by another
+consumer or an active bound invocation. Unknown dependency state preserves the
+assets with a diagnostic. Preserve unrelated owner files and host configuration;
+the contract specifies these outcomes, not a new registry format, reference
+counter, installer implementation or synchronized host-release gate.
+
+Verify C81-C83 for each claimed consuming host, supported older/current baseline
+and platform, including different installer order, native/CLI adapters,
+positive calls and refusal controls, upgrade failure, removal and an active
+invocation. Record NOT RUN for missing evidence. Existing installations and
+earlier Python API results are not grandfathered into conformance. The owner
+direction and bounded implementation handoff are in
+[the shared-runtime decision](../decisions/2026-10-23-shared-runtime-compatibility.md).
 
 ## Platforms
 

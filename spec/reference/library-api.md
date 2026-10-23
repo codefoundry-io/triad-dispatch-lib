@@ -1,8 +1,8 @@
 # Python library API contract
 
-This reference describes the current `0.1.0.dev4` implementation of the 31
-package-root exports in `triad_dispatch_lib`: 17 functions, six dataclasses and
-eight exception types. It records existing Python behavior; it does not change
+This reference describes the candidate `0.1.0.dev6` implementation of the 41
+package-root exports in `triad_dispatch_lib`: 23 functions, nine dataclasses and
+nine exception types. It records existing Python behavior; it does not change
 the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
 protect this public surface from the declared dev4 floor. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
@@ -16,6 +16,11 @@ consistency, not authenticity or a complete host/spec revision identity. Callers
 must bound input sizes and supply ordinary finite JSON-like configuration data.
 Type annotations describe accepted values but dataclass construction itself does
 not validate them. Validation occurs at the operations described below.
+
+The additive [common runtime compatibility API](runtime-compatibility-api.md)
+defines strict immutable descriptions, explicit/legacy binding selection and
+conservative retention decisions. Artifact authentication, actual compatibility
+verification, native execution and installation remain host responsibilities.
 
 ## Original JSON and invocation admission
 
@@ -310,10 +315,17 @@ does not implement C23 same-run finish recovery. Parsing errors may raise
 
 `admit_output` validates `expected` first, checks metadata and carrier/binding
 compatibility, extracts original final JSON, and runs full verdict admission.
+For `agy-stream-json` only, it first separates undeclared top-level AGY metadata
+using the canonical schema's property names. The original `ProviderOutput` and
+`extract_final` result stay unchanged; the returned verdict contains the validated
+payload. Generic `validate_verdict` and all other carriers remain strict.
 Claude, Gemini and AGY carriers require their matching family/route. Generic
-`native-final` can carry any valid binding, trusting the host's original final
-bytes and truthful observations. Extraction alone is not admission and cannot
-establish provider execution, attempt currency or packet custody.
+`native-final` can carry any valid binding, trusting the host's supplied final
+JSON and truthful observations. It performs no metadata separation. For C23
+recovered AGY output, hosts retain original bytes and metadata, apply C80 separation
+when needed, then serialize the projected payload for this strict carrier.
+Extraction alone is not admission and cannot establish provider execution,
+attempt currency or packet custody.
 
 `evaluate_agreement` requires an actual boolean integrity result and a nonempty
 expected-binding dictionary. Selected keys must be nonempty strings matching
@@ -330,6 +342,29 @@ Agreement requires true integrity and no reasons. False integrity alone leaves
 modified; result maps are fresh and mutable, and `agreed` is a computed snapshot
 that does not recompute after callers mutate them. Collector host faults and
 selection-deviation records remain host responsibilities.
+
+### AGY metadata separation
+
+```python
+separate_agy_metadata(
+    raw: str | bytes, *, declared_fields: tuple[str, ...] = (),
+) -> tuple[dict, dict]
+```
+
+Strictly parse the original JSON before any separation, preserving duplicate,
+escaped-duplicate, non-finite, encoding and nesting refusals. Non-object input
+raises `OutputError("invalid_envelope")`; a non-tuple or non-string member in
+`declared_fields` raises `OutputError("invalid_output")`. Parsing errors retain
+their `AdmissionError` codes and precede argument/shape checks.
+
+Return fresh payload and metadata dictionaries. Only undeclared top-level
+`toolAction` and `toolSummary` move to metadata, with their exact parsed values.
+Any valid finite JSON value is metadata; it does not determine the verdict.
+Declared names, other unknown names and nested members remain payload. Input
+text/bytes is never changed. The function does not validate a caller schema,
+bindings, terminal state or whether the payload is a verdict. Hosts retain
+the original provider output and validate the payload afterward. See
+[R-AGY-METADATA](review-rules.md#R-AGY-METADATA).
 
 ## Bounded host callbacks
 
@@ -390,7 +425,7 @@ cannot force termination or bound cleanup time for uncooperative callbacks.
 
 ## Exported dataclasses
 
-All six are `frozen=True`: ordinary field reassignment is refused, but nested
+All nine are `frozen=True`: ordinary field reassignment is refused, but nested
 objects are not deeply immutable. Constructors perform no schema/admission
 checks. Fields below are in constructor order; only shown defaults are optional.
 
@@ -402,13 +437,22 @@ checks. Fields below are in constructor order; only shown defaults are optional.
 | `CallOutcome` | `name: str`, `status: str`, `value: object \| None`, `error_code: str \| None` | Coordinator emits `completed` with returned value and null error; `failed` with null value/`callback_failed`; or `timed_out` with null value/`timed_out`. A completed investigation can itself return null. |
 | `ReviewRun` | `outcomes: tuple[CallOutcome, ...]`, `agreement: AgreementResult` | Ordered callback delivery plus independently computed admission/agreement. |
 | `AgreementResult` | `agreed: bool`, `verdicts: dict[str, dict]`, `reasons: dict[str, str]`, `integrity_ok: bool` | Snapshot result; nested maps/verdicts remain mutable. |
+| `ConsumerBinding` | `schema: str`, `consumer: str`, `baseline_digest: str`, `library_digest: str`, `adapter: str`, `capabilities: tuple[str, ...]`, `commands: tuple[str, ...]`, `context_digest: str`, `binding_id: str` | Exact consumer context; validation derives its identity and normalizes collections to sorted tuples. |
+| `RuntimeDescriptor` | `schema: str`, `artifact_digest: str`, `commands: tuple[str, ...]`, `capabilities: tuple[str, ...]`, `supported_bindings: tuple[str, ...]` | Host-authenticated runtime declaration; operations revalidate tuple fields and exact declared support. |
+| `RuntimeRetention` | `retain: tuple[str, ...]`, `remove: tuple[str, ...]`, `diagnostic: str` | Sorted retention/removal decision; performs no lifecycle operations. |
+
+The [common runtime API](runtime-compatibility-api.md) defines the new records'
+validation, identity, selection and conservative retention behavior. Their public
+constructors do not validate inputs; every consuming operation revalidates them.
 
 ## Exported exception families and emitted codes
 
 These inventories describe codes emitted by current operations, not permission
 to construct exceptions with arbitrary strings. Human-readable messages are
 not a payload channel or a parsing interface. Coded exceptions have `.code`;
-`AdmissionError`, `RosterError` and `ReceiptError` explicitly declare it stable. `ContractError`
+`AdmissionError`, `RosterError`, `ReceiptError` and `RuntimeCompatibilityError`
+explicitly declare it stable. Runtime compatibility refusals use fixed,
+value-free messages. `ContractError`
 and `PromptError` have no library-defined `.code`. The adopted compatibility
 floor also protects selected actual operational outcomes, including
 `extract_final` emitting `OutputError` codes `invalid_carrier` and `timed_out`,
@@ -424,6 +468,7 @@ adds no blanket code/version stability promise beyond the scoped
 | `AdmissionError` | `ValueError` | `invalid_json`, `invalid_utf8`, `duplicate_member`, `nonfinite_number`, `invalid_input_type`, `nesting_limit`, `schema_violation`, `invalid_expected`, `binding_mismatch` |
 | `RosterError` | `ValueError` | `invalid_json`, `schema_violation`, `duplicate_name`, `empty_selection`, `nesting_limit` |
 | `ReceiptError` | `ValueError` | `schema_violation`, `nesting_limit` |
+| `RuntimeCompatibilityError` | `ValueError` | `invalid_descriptor`, `invalid_binding`, `unsupported_schema`, `invalid_selector`, `missing_context`, `unknown_binding`, `ambiguous_binding`, `unsupported_binding`, `command_mismatch`, `capability_mismatch`, `invalid_inventory`, `incomplete_inventory` |
 | `OutputError` | `ValueError` | `invalid_output`, `invalid_carrier`, `not_completed`, `timed_out`, `transport_failed`, `nonzero_exit`, `invalid_envelope`, `terminal_failure`, `missing_terminal`, `multiple_terminals`, `carrier_mismatch` |
 | `AgreementError` | `ValueError` | `invalid_expected_map`, `invalid_binding`, `invalid_outputs_map`, `invalid_output`, `empty_selection`, `name_mismatch`, `mixed_basis`, `extra_output`, `invalid_integrity` |
 | `DispatchError` | `ValueError` | `invalid_concurrency`, `invalid_callback`, `invalid_requests`, `empty_selection`, `invalid_entries`, `disabled_entry`, `unresolved_route`, `invalid_binding`, `binding_mismatch`, `mixed_basis`, `preflight_failed` |

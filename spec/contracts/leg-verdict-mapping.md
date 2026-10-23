@@ -37,8 +37,10 @@ NOT-SAFE, 3 severities, `affected_surfaces_inspected`, `open_questions`; any ope
 (i) SAFE TO MERGE ⇒ no Critical / must-fix finding AND `open_questions` empty. (ii) non-affirmative ⇒ at least one finding
 OR one open question. (iii) a non-affirmative object whose findings are all non-blocking and whose `open_questions` is
 empty is VALID (property 1), but is not agreement. The collector requires every selected leg to explicitly return
-`SAFE TO MERGE` and applies the remaining blocker and integrity checks in R-AGREE. Unknown fields and duplicate members
-are rejected at the original-text boundary on both hosts.
+`SAFE TO MERGE` and applies the remaining blocker and integrity checks in R-AGREE.
+Duplicate members are rejected in the original JSON. AGY transport metadata is
+separated under [R-AGY-METADATA / C80](../reference/review-rules.md#R-AGY-METADATA)
+before the projected verdict is validated; other unknown fields remain rejected.
 Legacy results are never converted into fabricated evidence, coverage or an empty uncertainty list — a missing v2 field
 stays absent/unknown, and a converted result is not admissible under v2 without a new review.
 

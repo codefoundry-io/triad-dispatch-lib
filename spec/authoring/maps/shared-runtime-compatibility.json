@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "prd": {
+    "document": "decisions/2026-10-23-shared-runtime-compatibility.md",
+    "status": "candidate",
+    "purpose_ref": "decisions/2026-10-23-shared-runtime-compatibility.md#PRD-SHARED-PURPOSE",
+    "scope_ref": "decisions/2026-10-23-shared-runtime-compatibility.md#PRD-SHARED-SCOPE",
+    "acceptance_ref": "decisions/2026-10-23-shared-runtime-compatibility.md#PRD-SHARED-ACCEPTANCE"
+  },
+  "specs": [
+    {
+      "document": "reference/review-rules.md",
+      "status": "candidate",
+      "scope_ref": "reference/review-rules.md#R-SHARED-RUNTIME-COMPAT"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-SHARED-RUNTIME-COMPAT",
+      "prd_ref": "decisions/2026-10-23-shared-runtime-compatibility.md#PRD-SHARED-ACCEPTANCE",
+      "spec_refs": ["reference/review-rules.md#R-SHARED-RUNTIME-COMPAT"],
+      "rule_refs": ["reference/review-rules.md#R-SHARED-RUNTIME-COMPAT", "reference/review-rules.md#R-PARITY", "reference/review-rules.md#R-BIND", "reference/review-rules.md#R-AUTH"],
+      "contract_refs": ["contracts/exit-tokens.json", "contracts/receipt-fields.json", "contracts/leg-verdict.schema.json"],
+      "case_ids": ["C81", "C82", "C83"],
+      "unit_ids": ["shared-runtime-compatibility"]
+    }
+  ]
+}

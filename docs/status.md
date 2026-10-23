@@ -1,8 +1,62 @@
 # Current status
 
-Updated: 2026-10-22
+Updated: 2026-10-23
 
-## Current release and follow-ups
+## Shared runtime compatibility dev6 implementation — candidate
+
+The owner requests common launcher reuse with backward compatibility.
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT)
+and C81-C83 define the supported-consumer, host-binding and lifecycle outcomes.
+The [handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md) records
+the measured gap and each host's responsibilities. The owner authorized
+implementation, merge and publication, then selected library plus Codex scope.
+The [implementation plan](superpowers/plans/2026-10-23-shared-runtime-compatibility.md)
+adds strict runtime/consumer validation, exact binding selection and conservative
+retention APIs; [the API reference](../spec/reference/runtime-compatibility-api.md)
+defines their trust boundary. Exact-candidate library verification, formal review
+and publication outcomes are recorded in
+[PR #28](https://github.com/codefoundry-io/triad-dispatch-lib/pull/28).
+Host C81-C83 results remain NOT RUN until separately verified; no global launcher
+or configuration has changed in this library step.
+
+Separately, Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and
+[v0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+is published with library dev5. Its four-leg review and native source/archive CI
+passed. Those results do not establish common launcher compatibility or local
+host installation. Broader release/adoption status reconciliation remains in
+[PR #27](https://github.com/codefoundry-io/triad-dispatch-lib/pull/27); older
+candidate/publication statements below describe their original checkpoints.
+
+## AGY metadata compatibility candidate — 2026-10-22
+
+The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata
+instead of rejecting an otherwise valid verdict. [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24)
+records the shared decision, C80 and the dev5 implementation candidate.
+`separate_agy_metadata` preserves raw input and separates only undeclared
+top-level names; `admit_output` applies it only to AGY. Canonical schema bytes,
+other carriers and generic `validate_verdict` stay unchanged. Codex adapter
+integration and all host releases remain separately owned.
+
+The earlier metadata-only review block is superseded by this approved behavior.
+Historical rounds are not reclassified; a fresh review follows verified adapter
+integration. Package/API/distribution checks, live verification and formal review
+outcomes are recorded in the [candidate verification record](verification/2026-10-22-agy-metadata.md).
+The implementation passed 1397 local tests and the four native package CI jobs.
+The first two metadata implementation rounds completed `AGREED` with matching
+integrity, including actual AGY responses admitted by the new path. Their bounded
+documentation findings are corrected in this candidate. PR #24 also incorporates
+the documentation changes from open PRs #20 and #22. The combined review at
+`3fbc14187bbe76f3f3807e570afdf3db2fbe8cee` completed on 2026-10-23: all three
+required reviewers returned `SAFE TO MERGE`, collection was `AGREED`, and final
+integrity was `ROUND_INTEGRITY_OK`. The separate Astra comparison found no
+actionable defect. The [dated release notes](../spec/CHANGELOG.md#dev5-candidate-corrections-and-review--2026-10-23-not-tagged)
+record exact-basis CI, remaining limits and independent host follow-ups.
+These results do not approve later documentation edits or the separately blocked
+Codex adapter. No pull request merge, public release or workstation installation
+has occurred.
+
+## Historical release and follow-ups — 2026-10-22
 
 The published library is
 [v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
@@ -32,21 +86,24 @@ records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
 with successful package/API CI. Instance-location diagnostics remain an optional
 follow-up; the schema identity, acceptance contract and extraction boundaries
 are unchanged. Documentation corrections alone do not require a new runtime
-release. No new version, merge, publication or installation is performed by
-this status update.
+release. The separate dev5 runtime candidate is described above; this triage
+section does not itself authorize publication or installation.
 
 ## Selected next unit: roster instance location
 
-The owner requested progression after the October 22 triage. The
+The owner confirmed issue #9 implementation on October 23 after the latest
+unresolved-work briefing. The existing PR23 branch is reconciled with published
+dev6 main `1872227`. The
 [draft design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
 and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
 specify issue #9's additive `RosterError.instance_path` property. No implementation
 or new package version is included. The builder check found no important missing
-planning decision; required formal design review remains pending. The preceding
-documentation R2 returned `INCOMPLETE`: its AGY 1.4.5 terminal output included
-`toolAction` and `toolSummary`, which the unchanged strict schema rejects.
-That observed producer/format issue is host-owned; no relaxed validation or
-substitute reviewer is introduced here. Issues #17, #21 and #5 remain separate.
+planning decision; a fresh current-schema check also found no material gap.
+Required formal design review remains pending. The preceding metadata-only
+obstacle is historical following the approved dev5/dev6 library behavior and
+Codex 0.2.564 deployment; its old round still supplies no admission credit.
+The selected candidate version is dev7, with host formatting/adoption separate.
+Issues #17, #21 and #5 remain separate.
 
 ## Historical checkpoints through 2026-10-16
 

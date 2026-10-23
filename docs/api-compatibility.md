@@ -9,6 +9,10 @@ version. At any version, a version bump alone does not waive this gate.
 
 ## Run the gate
 
+This Python API gate does not certify a common installed launcher or CLI.
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT)
+separately governs backward compatibility and reuse across consuming hosts.
+
 ```sh
 uv sync --locked
 uv run --locked python tools/check_api_compatibility.py
@@ -80,12 +84,17 @@ rewrites may require preserving their existing spelling or a reviewed decision.
 ## Consumer evidence and releases
 
 `tests/test_public_api_consumers.py` uses only package-root imports and standard
-library test tools. It protects export availability, six frozen dataclass
-constructors, exception bases/constructor code preservation and selected emitted
+library test tools. It protects export availability, six directly constructed
+frozen dataclasses and three dev6 frozen records returned by public operations,
+exception bases/constructor code preservation and selected emitted
 codes/diagnostics, strict JSON and all
 six bindings, roster order/copy/opaque model values, receipt shape/opaque CLI
 versions, prompt default/manifest shape and carrier/negative/timeout/agreement
-safety. It does not freeze exact prompt text. The full existing conformance and
+safety, plus the additive dev5 AGY metadata-separation contract. The dev6
+consumer checks cover explicit runtime binding selection, unchanged established
+legacy selection, unknown-selector and missing-context refusal, and retention of
+active/consumer references or all artifacts when dependencies are unknown. It does not
+freeze exact prompt text. The full existing conformance and
 async/lifecycle suites remain the deeper regression evidence.
 
 These tests run in source and unpacked sdist test suites without `.git`.

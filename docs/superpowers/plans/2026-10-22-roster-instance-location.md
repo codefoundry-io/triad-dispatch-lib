@@ -1,6 +1,6 @@
 # Roster Instance Location Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this single unit with an independent task review. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Let a caller locate the failing roster entry without changing validation or existing diagnostics.
 
@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Add only `RosterError.instance_path: tuple[str | int, ...] | None`; `None` by default, `()` for a schema error at the evaluated root.
-- Preserve `RosterError(code)`, all existing attributes/codes/fixed messages/args, first-error ordering, schema bytes and copy behavior.
+- Preserve `RosterError(code)`, all existing attributes/codes/fixed messages/args, first-error ordering, schema bytes and input copy behavior. Exception serialization is unchanged.
 - Populate from that same selected error only. No child search, second validation, new parser, pointer renderer or raw key/value API.
 - `.document` identifies defaults/override/resolved; resolved indices identify the merged roster, not override provenance.
 - Keep schema IDs, acceptance semantics, native/host adapters and issue #5 unchanged.
@@ -28,11 +28,11 @@
 - Unknown properties disclosed in diagnostics: root/entry/adapter errors expose only the parent location and fixed text.
 - Installed package lacks the additive property: a package-root consumer regression runs in source, archive and isolated wheel.
 
-Estimated delta: production +2 to +5 / -0 / net +2 to +5 in two files; novel core at most 5 lines; tests roughly +60 to +100; docs roughly +50 to +90 excluding this plan/design. Version preparation is metadata, not a new feature. Record any actual growth and its reason.
+Estimated delta: production +2 to +5 / -0 / net +2 to +5 in two files; novel core at most 5 lines; tests roughly +100 to +180 for the five-code and document/entry matrix; docs roughly +50 to +90 excluding this plan/design. Version preparation is metadata, not a new feature. Record any actual growth and its reason. Current base is main `1872227` (published dev6); the existing PR23 branch is reconciled by merge, without rewriting history.
 
 ### Task 1: Add and document the instance-location property
 
-**Files:** modify `src/triad_dispatch_lib/errors.py`, `src/triad_dispatch_lib/roster.py`, `tests/test_roster_diagnostics.py`, `tests/test_public_api_consumers.py`, `spec/reference/library-api.md`, `README.md`, and current `docs/status.md`; add a dated verification record. Prepare `pyproject.toml` and `uv.lock` for `0.1.0.dev5` only after checking that version remains unused. Historical records retain their dates and meaning.
+**Files:** modify `src/triad_dispatch_lib/errors.py`, `src/triad_dispatch_lib/roster.py`, `tests/test_roster_diagnostics.py`, `tests/test_public_api_consumers.py`, `spec/reference/library-api.md`, `README.md`, and current `docs/status.md`; add a dated verification record. Prepare `pyproject.toml` and `uv.lock` for `0.1.0.dev7` after checking that version remains unused. Historical records and published dev4-dev6 artifacts retain their dates and meaning.
 
 **Interfaces:** consumes the existing first `ValidationError.absolute_path`, verified roster schema and `RosterError(code)`; produces the tuple-valued property alongside the unchanged schema-path diagnostics. No new root export.
 
@@ -48,7 +48,7 @@ Estimated delta: production +2 to +5 / -0 / net +2 to +5 in two files; novel cor
 - [ ] Document all four attributes together, distinguishing trusted schema metadata from canonical instance field names/indices. Explain root versus unavailable, document-relative indices, selected aggregate/required behavior, fixed disclosure and exception-internal limits. Mark the property as the unreleased candidate; preserve dev4's published capabilities and remaining unknown-key request.
 - [ ] Run full source tests, `tools/sync_spec_assets.py --check`, `spec/tools/check_authoring.py`, `tools/check_api_compatibility.py` and `git diff --check` after `uv sync --locked`. Require all pass, no test exclusions and no asset drift.
 - [ ] Build and normalize the exact sdist with the existing release helper, extract to a new neutral temporary directory, run locked archive tests/assets/authoring checks and rebuild the wheel. Run `verify_wheel.py`, `codex_smoke.py ... self-test`, `four_route_smoke.py` (its default synthetic matrix), and `native_codex_smoke.py ... --self-test` against that rebuilt wheel, with exact version/path arguments. Retain logs and digests; no real provider or installation claim follows from synthetic drivers.
-- [ ] Commit only this unit, push a scoped draft PR and attach it. Require successful Ubuntu 24.04/macOS 15 × Python 3.12/3.14 package jobs and separate API CI at the exact head.
+- [ ] Commit only this unit, update the existing scoped PR23 title/body and attach it. Require successful Ubuntu 24.04/macOS 15 × Python 3.12/3.14 package jobs and separate API CI at the exact head.
 - [ ] Complete the project formal implementation review of the frozen candidate and separate Astra comparison, reproduce findings, and rerun changed evidence as required. Preserve requested versus observed model settings and exact lifecycle export/cleanup evidence.
 - [ ] Post the reviewed result and PR link to issue #9. Prepare an exact publication packet with source/version/diff/CI/review/artifact and release-note evidence for the owner's merge/publication decision. Keep current host pins and published dev4 assets intact until a subsequent authorized release and host-owned adoption.
 

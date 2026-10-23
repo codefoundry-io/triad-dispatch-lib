@@ -1,5 +1,77 @@
 # Changelog
 
+## dev6 common runtime compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add strict immutable runtime/consumer descriptions, exact consumer compatibility
+  checking and explicit or established-legacy binding selection. Missing,
+  ambiguous, unsupported and malformed context refuses without choosing another host.
+- Add conservative runtime retention decisions: other consumers and active
+  invocations protect their artifacts; unknown dependencies retain all assets.
+- Preserve the dev4 public API floor, existing provider schemas/prompts and bundle
+  identities. New public interfaces are documented in
+  [runtime-compatibility-api.md](reference/runtime-compatibility-api.md).
+- Hosts authenticate provenance and compatibility evidence and own filesystem
+  transactions, native adapters and execution. These pure APIs are not a common
+  launcher deployment or a host C81-C83 conformance claim.
+- The owner selected library plus Codex implementation/release. Claude and AGY
+  adoption remains separately owned; their source repositories are unchanged.
+
+## Shared runtime backward compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add R-SHARED-RUNTIME-COMPAT under the existing R-PARITY boundary: compatible
+  common launchers can serve multiple hosts; supported older calls survive
+  upgrades; one consumer's lifecycle preserves other consumers and active calls.
+- Add C81-C83, the shared-runtime-compatibility unit, an authoring map and a
+  bounded three-host handoff. Every host implementation result remains NOT RUN.
+- Keep Python API compatibility distinct from CLI/adapter/install compatibility.
+  Native execution, authentication, configuration and installation mechanics
+  stay host-owned. No runtime, schema, prompt, dependency or version changes.
+- Record the owner's new specification request without reviving the previously
+  withdrawn U8 investigation. Existing deployment is not declared compatible.
+
+## dev5 candidate corrections and review — 2026-10-23 (not tagged)
+
+- Clarify C23 recovery guidance: preserve original AGY bytes and separated
+  metadata, apply the C80 projection when needed, then submit the payload through
+  strict `native-final`. This corrects documentation; `native-final` itself does
+  not remove metadata.
+- Consolidate the PR #20/#22 adoption and release documentation with the C80
+  implementation in [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24).
+  The shared helper separates only undeclared top-level `toolAction` and
+  `toolSummary`; declared/nested data, strict JSON, schema and binding checks,
+  negative verdicts and terminal failures retain their contracts.
+- Reviewed basis `3fbc14187bbe76f3f3807e570afdf3db2fbe8cee`: 1,397 local tests,
+  [four native package CI jobs](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39809642349)
+  and [API CI](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39809642412)
+  passed. Round `20261023-lib-combined-r6-7a4d92` closed `AGREED` with all three
+  required reviewers `SAFE TO MERGE` and `ROUND_INTEGRITY_OK`; the separate
+  Astra comparison found no actionable defect. The previously disclosed,
+  unobserved serializer-recursion hardening suggestion remains nonblocking.
+- Library dev5 remains unpublished. Each host must verify and pin the exact
+  published source/wheel and complete its own adoption, native checks and review.
+  [Codex PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+  has a separate `ADMITTED_NOT_SAFE` host review; library approval does not
+  approve that adapter. Issue #9 diagnostics remain a separate proposal.
+
+These dated results apply to the named reviewed basis. This release-note update
+does not claim a new formal review, merge, publication or installation.
+
+## AGY result metadata — 2026-10-22 (not tagged)
+
+- R-AGY-METADATA / C80: preserve original AGY output while separating undeclared
+  top-level toolAction/toolSummary from the payload subject to schema/binding
+  validation. Canonical schema bytes stay unchanged. Unit: engine-transport.
+  Library and host adoption evidence follow independently.
+
+## Leg wording leftovers — 2026-10-21 (not tagged)
+
+- The owner register's D-4/Q-L (at least three legs run), Q-S and Q1 (a Minor-only result
+  releasable) rows carry an inline Superseded marker pointing at D-REVIEW-STRATEGY-20261002, which
+  already superseded them: R-AGREE needs every selected leg's explicit approval and R-ROSTER takes any
+  nonempty roster. C12 and its coverage row say "default" legs, not "standing" ones; the example
+  roster's opt-in claude entry is a "second claude entry" (DL-174). Text only: no rule, schema,
+  prompt or contract revision; nothing is ordered for B.
+
 ## LIB-ADOPT 2 on host A — 2026-10-18 (not tagged)
 
 - R-BIND: on A the reply is admitted by `validate_verdict` on the original text behind
