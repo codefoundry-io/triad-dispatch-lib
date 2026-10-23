@@ -162,6 +162,6 @@ print(json.dumps(dict(loads=len(loads), checks=checks, expected=expected * 2,
                                check=True, capture_output=True, text=True)
     observed = json.loads(completed.stdout)
     assert observed['checks'] == observed['expected']
-    assert observed['exports'] == 32
+    assert observed['exports'] == 41
     assert observed['refusals'] == (0 if invalid_origin is None else 2)
     assert observed['loads'] == 2

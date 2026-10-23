@@ -13,7 +13,31 @@ The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
 
-## Current recorded adoption (2026-10-22)
+Host-owned installation does not require duplicate common runtimes. Shared
+launcher reuse and backward compatibility follow
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT),
+with the [C81-C83 handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
+Existing library adoption records do not establish those new host results.
+
+The dev6 [common runtime API](../spec/reference/runtime-compatibility-api.md)
+validates exact consumer bindings, selects an explicit or established legacy
+binding, and computes conservative retention. Hosts must authenticate descriptors
+and artifacts, exercise their supported consumer corpus, preserve native adapter
+and receipt identity, and perform transactional publication/removal themselves.
+Passing these pure APIs does not establish host C81-C83 conformance. The current
+implementation scope covers this library followed by a separately reviewed Codex
+adoption; Claude and AGY receive pinned adoption work in the proposal PRs below.
+
+<a id="current-recorded-adoption-2026-10-22"></a>
+## Historical adoption snapshot (2026-10-22)
+
+This section preserves the pinned 2026-10-22 evidence. Codex
+[v0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+subsequently adopted library dev5 source
+`859f27c07c1123e87b50344f587999a0cbc172a6`, as recorded in the
+[shared-runtime decision](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
+Broader release/adoption reconciliation remains separate in
+[PR #27](https://github.com/codefoundry-io/triad-dispatch-lib/pull/27).
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
 `087af94a7078de0ae9701fb057840b5492f51f66`, wheel SHA-256
@@ -40,8 +64,8 @@ See the [triage and release plan](requests/2026-10-22-triage-and-release-plan.md
 
 ## Earlier integration checkpoints
 
-The following records describe their original integration boundaries; current
-recorded adoption is listed above.
+The following records describe their original integration boundaries; the dated
+adoption snapshot and subsequent Codex update are listed above.
 
 Library [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed
