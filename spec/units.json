@@ -4,7 +4,7 @@
   "units": {
     "shared-runtime-compatibility": {
       "common": "compatible common runtime and launcher entry points consumed by Claude, Codex and AGY hosts",
-      "contract": "reference/review-rules.md#R-SHARED-RUNTIME-COMPAT; existing command/result contracts of each supported consumer; C81-C83",
+      "contract": "reference/review-rules.md#R-SHARED-RUNTIME-COMPAT; reference/runtime-compatibility-api.md; existing command/result contracts of each supported consumer; C81-C83",
       "exceptions": "Native spawn/CLI adapters, installation mechanism and declared host context remain host-owned. Installer identity never overrides the consumer. No new shared installer or registry is implemented here; withdrawn U8 work is not restarted.",
       "A_source": "3rd-Agent/wrappers/ and .claude/skills/triad-cross-family-review/lib/; owning host maintainer maps its supported commands and installer before implementation",
       "A_shipped": "bin/{codex,gemini,antigravity}_wrapper.py and skills/triad-cross-family-review/lib/; current compatibility NOT RUN",

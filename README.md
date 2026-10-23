@@ -14,16 +14,20 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development candidate (`0.1.0.dev5`) provides strict original-JSON parsing,
+The development candidate (`0.1.0.dev6`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
 validation. AGY result metadata is separated from the validated payload while
 the original provider output is preserved; see [C80 and the owner decision](spec/decisions/2026-10-22-agy-result-metadata.md).
-The dev5 candidate is not yet published. Repository drivers verify the installed package with
-synthetic four-route responses; earlier fresh Codex observations remain historical.
-The dev4 wheel, sdist and manifest are published as a
-[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
+The additive [runtime compatibility APIs](spec/reference/runtime-compatibility-api.md)
+validate consumer bindings, select explicit or established legacy context, and
+retain artifacts referenced by other consumers or active invocations. Host
+provenance checks, installers and actual native execution remain separate.
+Repository drivers verify the installed package with synthetic four-route
+responses; earlier fresh Codex observations remain historical.
+The dev5 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5),
 not a package-index release. As checked on 2026-10-22, all three host repositories
 record dev4 from `087af94a` in their adoption manifests. Those records do not
 establish every host API integration, local installation or live-provider result.
@@ -226,11 +230,11 @@ uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
 uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev5.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
+uv build dist/triad_dispatch_lib-0.1.0.dev6.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev6-py3-none-any.whl --expected-version 0.1.0.dev6 --self-test
 git diff --check
 ```
 
@@ -269,9 +273,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev6 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and

@@ -1,8 +1,8 @@
 # Python library API contract
 
-This reference describes the candidate `0.1.0.dev5` implementation of the 32
-package-root exports in `triad_dispatch_lib`: 18 functions, six dataclasses and
-eight exception types. It records existing Python behavior; it does not change
+This reference describes the candidate `0.1.0.dev6` implementation of the 41
+package-root exports in `triad_dispatch_lib`: 23 functions, nine dataclasses and
+nine exception types. It records existing Python behavior; it does not change
 the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
 protect this public surface from the declared dev4 floor. Wire fields, allowed roster
 values, phases and canonical clauses remain authoritative in their respective
@@ -16,6 +16,11 @@ consistency, not authenticity or a complete host/spec revision identity. Callers
 must bound input sizes and supply ordinary finite JSON-like configuration data.
 Type annotations describe accepted values but dataclass construction itself does
 not validate them. Validation occurs at the operations described below.
+
+The additive [common runtime compatibility API](runtime-compatibility-api.md)
+defines strict immutable descriptions, explicit/legacy binding selection and
+conservative retention decisions. Artifact authentication, actual compatibility
+verification, native execution and installation remain host responsibilities.
 
 ## Original JSON and invocation admission
 

@@ -1,6 +1,6 @@
 # Common runtime reuse and backward compatibility
 
-Status: candidate specification and host handoff; no common launcher deployment.
+Status: specification and dev6 library implementation candidate; Codex adoption follows its own gate. No common launcher deployment yet.
 Authoring main fetched on 2026-10-23: `859f27c07c1123e87b50344f587999a0cbc172a6`.
 Owner direction: [D-SHARED-RUNTIME-COMPAT-20261023](owner-register.md#D-SHARED-RUNTIME-COMPAT-20261023).
 
@@ -17,8 +17,12 @@ launcher copies are required. The normative behavior is written once in
 ## Scope and preserved features
 
 This amendment defines observable compatibility, consumer binding and lifecycle
-outcomes. It does not select a new dispatcher, registry format or installer,
-change a runtime API/schema/prompt, or update workstation launchers. Common
+outcomes. The owner subsequently authorized implementation, merge and deployment,
+selecting library plus Codex adoption; Claude/AGY receive follow-up instructions.
+The [Python interface](../reference/runtime-compatibility-api.md) and
+[implementation plan](../../docs/superpowers/plans/2026-10-23-shared-runtime-compatibility.md)
+now define additive deterministic validation, selection and retention APIs.
+This does not select a cross-host registry or change provider schemas/prompts. Common
 deterministic semantics still belong in this library; native spawning, provider
 integration, installation and configuration stay in each host repository.
 
@@ -31,8 +35,8 @@ evidence to reconcile, not permission to create new undocumented exceptions.
 
 The withdrawn [U8 investigation](owner-register.md#D-U8-WITHDRAWN-20261010) is
 not resumed wholesale. This new owner request supplies a bounded specification
-for future common-runtime implementation and adoption. It does not authorize
-copying one host's private adapter into another or replacing owner files.
+for common-runtime implementation and adoption. It does not authorize copying
+one host's private adapter into another or replacing owner-authored files.
 
 ## Evidence and current behavior
 

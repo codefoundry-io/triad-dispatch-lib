@@ -2,15 +2,22 @@
 
 Updated: 2026-10-23
 
-## Shared runtime compatibility specification — candidate
+## Shared runtime compatibility dev6 implementation — candidate
 
 The owner requests common launcher reuse with backward compatibility.
 [R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT)
 and C81-C83 define the supported-consumer, host-binding and lifecycle outcomes.
 The [handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md) records
-the measured gap and each host's responsibilities. This is specification work;
-common launcher implementation/adoption and all C81-C83 host results are NOT RUN.
-No global launcher or configuration was changed.
+the measured gap and each host's responsibilities. The owner authorized
+implementation, merge and publication, then selected library plus Codex scope.
+The [implementation plan](superpowers/plans/2026-10-23-shared-runtime-compatibility.md)
+adds strict runtime/consumer validation, exact binding selection and conservative
+retention APIs; [the API reference](../spec/reference/runtime-compatibility-api.md)
+defines their trust boundary. Exact-candidate library verification, formal review
+and publication outcomes are recorded in
+[PR #28](https://github.com/codefoundry-io/triad-dispatch-lib/pull/28).
+Host C81-C83 results remain NOT RUN until separately verified; no global launcher
+or configuration has changed in this library step.
 
 Separately, Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
 merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and
@@ -49,7 +56,7 @@ These results do not approve later documentation edits or the separately blocked
 Codex adapter. No pull request merge, public release or workstation installation
 has occurred.
 
-## Current release and follow-ups
+## Historical release and follow-ups — 2026-10-22
 
 The published library is
 [v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),

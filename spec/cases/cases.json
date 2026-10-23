@@ -724,7 +724,7 @@
         "A": "NOT RUN; Claude host implementation and common-runtime adoption pending.",
         "B": "NOT RUN; released Codex 0.2.563 does not establish shared-launcher compatibility.",
         "AGY": "NOT RUN; current installed AGY launchers bind an AGY toolkit; reuse by other hosts is unverified.",
-        "library": "NOT RUN as a runtime case; specification and authoring references only. The Python API compatibility gate does not test host launchers."
+        "library": "Deterministic API candidate: tests/test_runtime_compat.py and tests/test_public_api_consumers.py cover strict descriptors, exact binding identity, explicit/legacy selection and missing/unsupported context. Real launchers, provenance authentication and native/CLI invocation remain host NOT RUN."
       }
     },
     {
@@ -738,7 +738,7 @@
         "A": "NOT RUN; host consumer corpus and supported baseline declaration pending.",
         "B": "NOT RUN; existing 1200/600 plus additive 2400-second timeout tests are bounded host evidence, not a cross-host compatibility result.",
         "AGY": "NOT RUN; older/newer common-runtime consumer matrix pending.",
-        "library": "Existing Python API gate remains separate; no CLI or installed shared-runtime compatibility is claimed."
+        "library": "Deterministic API candidate: exact supported binding membership includes baseline/library/adapter/context identity; legacy selection is unchanged by inventory order and new optional bindings. Existing Python API floor remains protected. Host CLI/upgrade behavior is NOT RUN."
       }
     },
     {
@@ -752,7 +752,7 @@
         "A": "NOT RUN; host installation/lifecycle implementation pending.",
         "B": "NOT RUN; this new bounded contract does not restart the withdrawn U8 investigation or claim its historical checks passed.",
         "AGY": "NOT RUN; multi-consumer removal/update verification pending.",
-        "library": "No shared-runtime installer or host registration mechanism is implemented by this specification change."
+        "library": "Deterministic API candidate: plan_runtime_retention preserves consumer and active references, retains all artifacts for unknown dependencies, and refuses incomplete inventories. No filesystem deletion, locking or host lifecycle observation is performed; actual host lifecycle is NOT RUN."
       }
     }
   ]

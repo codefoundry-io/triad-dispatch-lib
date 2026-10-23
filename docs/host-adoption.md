@@ -19,6 +19,15 @@ launcher reuse and backward compatibility follow
 with the [C81-C83 handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
 Existing library adoption records do not establish those new host results.
 
+The dev6 [common runtime API](../spec/reference/runtime-compatibility-api.md)
+validates exact consumer bindings, selects an explicit or established legacy
+binding, and computes conservative retention. Hosts must authenticate descriptors
+and artifacts, exercise their supported consumer corpus, preserve native adapter
+and receipt identity, and perform transactional publication/removal themselves.
+Passing these pure APIs does not establish host C81-C83 conformance. The current
+implementation scope covers this library followed by a separately reviewed Codex
+adoption; Claude and AGY receive pinned adoption work in the proposal PRs below.
+
 ## Current recorded adoption (2026-10-22)
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
