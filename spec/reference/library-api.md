@@ -1,6 +1,6 @@
 # Python library API contract
 
-This reference describes the candidate `0.1.0.dev7` implementation of the 41
+This reference describes the published `0.1.0.dev7` implementation of the 41
 package-root exports in `triad_dispatch_lib`: 23 functions, nine dataclasses and
 nine exception types. It records existing Python behavior; it does not change
 the package's version. The adopted [compatibility policy and gate](../../docs/api-compatibility.md)
@@ -146,8 +146,8 @@ and nulls remain opaque requested configuration; no provider defaults are added.
 `RosterError(code)` keeps its constructor, stable codes, fixed messages and
 `.args`. Every instance initializes `.path: tuple[str | int, ...] | None`,
 `.instance_path: tuple[str | int, ...] | None`, `.missing: str | None` and
-`.document: str | None` to `None`. The additive `.instance_path` is an unpublished
-dev7 candidate; the other three attributes were published in dev4. Only a
+`.document: str | None` to `None`. The additive `.instance_path` was published
+in dev7; the other three attributes were published in dev4. Only a
 library-raised `schema_violation` sets them: `.path` is the first selected validator error's
 `absolute_schema_path`, `.instance_path` copies `tuple(absolute_path)` from that
 same error, and `.missing` is the first absent schema-defined name
@@ -190,9 +190,11 @@ outside this API; future schema extensions must reassess this guarantee. Python
 exception internals,
 including `__context__` and tracebacks, may retain validator/input references;
 suppressed displayed chaining is not internal erasure. No `.member`, `.unknown`
-or raw validator-error API is added. Issue #9's arbitrary unknown-key spelling
-request is declined for this slice, remains partial, and may receive a later
-owner decision. Exact host diagnostic formatting remains host-owned.
+or raw validator-error API is added. Issue #9 is
+[closed/completed for its requester](https://github.com/codefoundry-io/triad-dispatch-lib/issues/9#issuecomment-6373642690)
+with dev7 instance locations. Arbitrary unknown-key spelling remains outside
+this release; a new concrete diagnostic need may receive a later owner decision.
+Exact host diagnostic formatting remains host-owned.
 
 ## Transport-object shape validation
 

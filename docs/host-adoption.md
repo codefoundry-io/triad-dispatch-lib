@@ -20,7 +20,7 @@ Library [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag
 is published from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`. Claude's public
 distribution manifest still pins dev5 source
 `859f27c07c1123e87b50344f587999a0cbc172a6`. Its earlier
-[source `fd8c709d`](https://github.com/codefoundry-io/triad/commit/fd8c709de1f32608e267e77b2a67805b36741253)
+attributed source `fd8c709d`
 and [export 0.2.1982 at `5d9f6a4`](https://github.com/codefoundry-io/triad-dispatch/commit/5d9f6a4348fd40bedb5d449eccb07d2ef94dd42f)
 record dev5 adoption. [PR #26 evidence](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26)
 contains the detailed C80 A record and slice-2 landing correction. Its reported
@@ -44,8 +44,8 @@ with dev7.
 
 The [2026-10-24 Codex completion evidence](https://github.com/codefoundry-io/triad-codex-dispatch/pull/49#issuecomment-6379719805)
 records four SAFE results and `ADMITTED_SAFE` in fresh round
-`20261024-codex-dev7-r4-e919d11` after actual Argon/Flash recovery. The prior
-quota-blocked R3 is historical. The local suite passed 2685 tests with 5 skips;
+`20261024-codex-dev7-r4-e919d11` after actual Argon/Flash recovery. An earlier
+quota-failed round is historical. The local suite passed 2685 tests with 5 skips;
 [post-merge CI 40057435631](https://github.com/codefoundry-io/triad-codex-dispatch/actions/runs/40057435631)
 passed source/archive on macOS (2685/5) and Ubuntu (2683/7), and CodeQL passed.
 Published assets and all 394 installed tracked files were verified against the
