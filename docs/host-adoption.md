@@ -298,7 +298,7 @@ Python 3.12), Ubuntu 24.04 aarch64 and Ubuntu 24.04 x86_64 (Docker, the `~/.venv
 recorded in the host's `docs/lib-dependency-closures.md`), recorded in the host's
 `docs/reviews/inputs/2026-10-17-lib-adopt/platform-gate.md`. Host adapter heads: 1a merged into `main`
 at 45a2b1c1, 1b at 6fd777b8, slice 2 agreed at 024b1f9e; exported plugin versions 0.2.1959 (1b) and
-0.2.1971 (slice 2). Slice 2 was merged into the host's `main` as 3a423ea6. On 2026-10-23 the host re-adopted v0.1.0.dev5 (wheel `triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl`, sha256 `833d55e9bf394885423bf1ed954a972747e1968b52b911b5253a9b7971512c7f`, 48505 bytes) and adopted C80 at its admission boundary (`verdict_v2._admit_obj`, bound route `agy` only) @ triad fd8c709d, exported as 0.2.1982; ledger `docs/reviews/2026-10-23-lib-dev5-residuals.md`. Independent reproduction of the host's runs stays outside this repository.
+0.2.1971 (slice 2). Slice 2 reached the host's `main` by fast-forward (closing commit 3a423ea6). On 2026-10-23 the host re-adopted v0.1.0.dev5 (wheel `triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl`, sha256 `833d55e9bf394885423bf1ed954a972747e1968b52b911b5253a9b7971512c7f`, 48505 bytes) and adopted C80 at its admission boundary (`verdict_v2._admit_obj`, bound route `agy` only) @ triad fd8c709d, exported as 0.2.1982; ledger `docs/reviews/2026-10-23-lib-dev5-residuals.md`. Independent reproduction of the host's runs stays outside this repository.
 
 This is the host-attributed dev5/C80 record, not dev7 adoption or shared-runtime
 lifecycle certification. As checked on 2026-10-24, the exported Claude adoption
