@@ -418,11 +418,16 @@ These lists are derived from the status cells above.
 | DL-175 | C80 | REQ-REVIEW | A (done) | agy 1.4.5 puts `toolAction` / `toolSummary` at the top level of `structured_output` (measured on A 2026-10-23, json-schema-file route, run-log 20261022T165813Z-81189-972a0766); A's admission refused it at `additionalProperties`, so every A round with an agy entry collected INCOMPLETE. A had also learned the dev5 contract's agy quota sentence into its classifier extension only (2026-10-16), so the dev5 parity test failed until it was promoted | A re-adopted v0.1.0.dev5 and calls `separate_agy_metadata` at `verdict_v2._admit_obj` for the bound route `agy`; the quota sentence promoted to A's `CLI_PATTERNS` `cli-subscription-cap` @ triad fd8c709d | FIXED-A (triad fd8c709d) |
 | DL-176 | C81, C82, C83 | REQ-SHARED-RUNTIME-COMPAT | spec; A; B | Codex 0.2.563 `scripts/bootstrap.sh::preflight_install_command_targets` / `verify_installed_launchers` at `89acf3a7c3deda49d0e48942020e5061e638aa61`; installed AGY generic launchers and adapter snapshot observed 2026-10-23 | Owner authorized implementation and publication, selecting library plus Codex. Dev6 adds immutable descriptions, exact explicit/legacy binding admission and conservative retention in `runtime_compat.py`; host provenance, native execution and installation remain separate. A receives pinned adoption instructions; B adoption follows the library release. AGY also receives a pinned host-owned handoff. Host C81-C83 verification remains NOT RUN. See decisions/2026-10-23-shared-runtime-compatibility.md and reference/runtime-compatibility-api.md. DL-175 remains reserved by open PR26. | IN-PROGRESS (spec: dev6 implementation candidate); OPEN (A: pinned handoff); OPEN (B: adoption) |
 
-DL-176 retains its original implementation checkpoint and NOT RUN boundaries.
-For published dev6/dev7 and later bounded Codex release, installation and fresh
-exposure evidence, see the [2026-10-24 host follow-up](../../docs/host-adoption.md#latest-host-follow-up-2026-10-24).
-That evidence does not turn the frozen C81-C83 rows into universal passes;
-Claude and AGY dev7 integration/lifecycle completion remains unreported.
+DL-176 and the derived open-work lists below retain their original checkpoint.
+The current status supersedes its `reserved by open PR26`, `IN-PROGRESS`
+spec dev6 candidate and `OPEN (B: adoption)` cells: the PR26 record is incorporated
+here, dev6/dev7 are published, and Codex has adopted them in released
+0.2.564/0.2.565. See the
+[2026-10-24 host follow-up](../../docs/host-adoption.md#latest-host-follow-up-2026-10-24)
+for bounded release, installation and fresh-exposure evidence. The frozen C81-C83
+host NOT RUN rows remain historical; the later evidence is not a universal pass,
+and unverified host lifecycle coverage remains outstanding. Claude and AGY dev7
+integration/lifecycle completion remains unreported.
 
 Rows with A work open: DL-160, DL-176.
 

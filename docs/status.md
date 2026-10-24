@@ -116,8 +116,11 @@ Then-current main `f043c257ccd748371c34e9d1f23e32064e139354` had the same `src/`
 tree as the release. Existing roster diagnostics and receipt-shape APIs are
 already included in dev4.
 
-Codex, Claude and AGY host repositories now record dev4 adoption; see the
+At the 2026-10-22 checkpoint, Codex, Claude and AGY host repositories recorded
+dev4 adoption; see the
 [dated manifest evidence](host-adoption.md#current-recorded-adoption-2026-10-22).
+For published dev7 and current host adoption, see
+[the dated host follow-up](host-adoption.md#latest-host-follow-up-2026-10-24).
 Their implementation, installation and release evidence remain host-owned.
 The library's automated release notices still target only Codex and Claude.
 The original dev4 delivery attempt failed on missing App settings; current
@@ -132,9 +135,10 @@ those manual proposals.
 
 The [2026-10-22 triage and release plan](requests/2026-10-22-triage-and-release-plan.md)
 records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
-with successful package/API CI. Instance-location diagnostics remain an optional
-follow-up; the schema identity, acceptance contract and extraction boundaries
-are unchanged. Documentation corrections alone do not require a new runtime
+with successful package/API CI. At that checkpoint instance-location diagnostics
+were an optional follow-up; published dev7 now supplies them and issue #9 is
+closed/completed, as recorded above. The schema identity, acceptance contract
+and extraction boundaries are unchanged. Documentation corrections alone do not require a new runtime
 release. The separate dev5 runtime candidate is described above; this triage
 section does not itself authorize publication or installation.
 
