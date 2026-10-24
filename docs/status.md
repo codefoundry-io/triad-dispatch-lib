@@ -1,8 +1,58 @@
 # Current status
 
-Updated: 2026-10-23
+Updated: 2026-10-24
 
-## Shared runtime compatibility dev6 implementation — candidate
+## Current release and follow-ups
+
+[v0.1.0.dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+is published as a GitHub prerelease with wheel, sdist and manifest assets.
+[PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23) merged at
+`62c3a741b729c6359cc5079a0306fad1fdd1fac8` with the reviewed source tree preserved.
+The wheel SHA-256 is
+`cc24c8d285927c9a874a54c0b72a01668eaf77abbf183e6cf3abb8771ea9b480`.
+The [release run](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/40014779906)
+completed package verification and publication; its separate automatic notice
+job failed on missing App configuration. Earlier
+[dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)
+was published after [PR #28](https://github.com/codefoundry-io/triad-dispatch-lib/pull/28)
+merged at `1872227abd42553635c733e0aa228548a577a732`.
+See [publication and notice boundaries](releasing.md#current-activation-boundary).
+
+[Issue #25](https://github.com/codefoundry-io/triad-dispatch-lib/issues/25)
+is [closed/completed by owner instruction](https://github.com/codefoundry-io/triad-dispatch-lib/issues/25#issuecomment-6373643371).
+Its dev4-only snapshot and pending dev5 publication/measurement are historical.
+The Claude source/export and detailed host-attributed C80 A evidence are in
+[PR #26](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26).
+PRs #26 and #27 carry this documentation reconciliation; their live PR records
+retain the review and merge outcomes.
+
+Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
+merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and released
+[0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+with dev5, superseding its earlier `ADMITTED_NOT_SAFE` candidate state.
+[PR #48](https://github.com/codefoundry-io/triad-codex-dispatch/pull/48) merged at
+`2eec0bb62e0de027332b45c12e59fab94cf2bbc8` and released
+[0.2.564](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.564)
+with dev6. [PR #49](https://github.com/codefoundry-io/triad-codex-dispatch/pull/49)
+merged at `660abcb518d2246aeac33b6d3ec619ce2a564051` and released
+[0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
+with dev7. Its bounded review, CI, local installation and fresh-session evidence
+is recorded in [the dated host follow-up](host-adoption.md#latest-host-follow-up-2026-10-24).
+Claude's public distribution pins dev5 and AGY's default branch pins dev4;
+their dev7 typed diagnostics and shared-runtime integration/lifecycle work remain
+requested, with no completion reported.
+
+[Issue #9](https://github.com/codefoundry-io/triad-dispatch-lib/issues/9) is
+[closed/completed by owner instruction](https://github.com/codefoundry-io/triad-dispatch-lib/issues/9#issuecomment-6373642690):
+dev7 supplies the requested roster instance locations. Unknown-key names, input
+values, raw messages and verdict-side diagnostic extensions are outside this
+scope. Keep the existing schema identity (#17) and `acceptance` contract (#21).
+The dev7 release notes retain the earlier partial/open wording for issue #9;
+the owner closure linked above supersedes that issue-status wording.
+[Issue #5](https://github.com/codefoundry-io/triad-dispatch-lib/issues/5) remains
+open, `OWNER-DEFERRED`, for five boundary proposals; it is not a current defect.
+
+## Shared runtime compatibility dev6 — published
 
 The owner requests common launcher reuse with backward compatibility.
 [R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT)
@@ -16,19 +66,20 @@ retention APIs; [the API reference](../spec/reference/runtime-compatibility-api.
 defines their trust boundary. Exact-candidate library verification, formal review
 and publication outcomes are recorded in
 [PR #28](https://github.com/codefoundry-io/triad-dispatch-lib/pull/28).
-Host C81-C83 results remain NOT RUN until separately verified; no global launcher
-or configuration has changed in this library step.
+The frozen C81-C83 NOT RUN rows in their original handoff remain historical.
+The later bounded Codex evidence is recorded separately in the dated host
+follow-up; it does not establish universal C81-C83 conformance. This library step
+does not change global launchers or configuration.
 
 Separately, Codex [PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
 merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and
 [v0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
 is published with library dev5. Its four-leg review and native source/archive CI
-passed. Those results do not establish common launcher compatibility or local
-host installation. Broader release/adoption status reconciliation remains in
-[PR #27](https://github.com/codefoundry-io/triad-dispatch-lib/pull/27); older
-candidate/publication statements below describe their original checkpoints.
+passed; its evidence is superseded for current adoption by PRs #48/#49 above.
 
-## AGY metadata compatibility candidate — 2026-10-22
+## AGY metadata compatibility candidate — historical 2026-10-22/23 checkpoint
+
+The record below predates the final release round and publication described above.
 
 The owner approved accepting AGY `toolAction`/`toolSummary` as provider metadata
 instead of rejecting an otherwise valid verdict. [PR #24](https://github.com/codefoundry-io/triad-dispatch-lib/pull/24)
@@ -52,23 +103,26 @@ required reviewers returned `SAFE TO MERGE`, collection was `AGREED`, and final
 integrity was `ROUND_INTEGRITY_OK`. The separate Astra comparison found no
 actionable defect. The [dated release notes](../spec/CHANGELOG.md#dev5-candidate-corrections-and-review--2026-10-23-not-tagged)
 record exact-basis CI, remaining limits and independent host follow-ups.
-These results do not approve later documentation edits or the separately blocked
-Codex adapter. No pull request merge, public release or workstation installation
-has occurred.
+At that checkpoint these results did not approve later documentation edits or
+the separately blocked Codex adapter, and no pull request merge, public release
+or workstation installation had occurred. Current releases are recorded above.
 
-## Historical release and follow-ups — 2026-10-22
+## Earlier dev4 release and follow-ups — 2026-10-22 checkpoint
 
-The published library is
+At this checkpoint the published library was
 [v0.1.0.dev4](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev4),
 a GitHub prerelease from `087af94a7078de0ae9701fb057840b5492f51f66` with wheel,
 sdist and manifest assets. The API compatibility gate merged in
 [PR #15](https://github.com/codefoundry-io/triad-dispatch-lib/pull/15).
-Current main `f043c257ccd748371c34e9d1f23e32064e139354` has the same `src/`
+Then-current main `f043c257ccd748371c34e9d1f23e32064e139354` had the same `src/`
 tree as the release. Existing roster diagnostics and receipt-shape APIs are
 already included in dev4.
 
-Codex, Claude and AGY host repositories now record dev4 adoption; see the
+At the 2026-10-22 checkpoint, Codex, Claude and AGY host repositories recorded
+dev4 adoption; see the
 [dated manifest evidence](host-adoption.md#current-recorded-adoption-2026-10-22).
+For published dev7 and current host adoption, see
+[the dated host follow-up](host-adoption.md#latest-host-follow-up-2026-10-24).
 Their implementation, installation and release evidence remain host-owned.
 The library's automated release notices still target only Codex and Claude.
 The original dev4 delivery attempt failed on missing App settings; current
@@ -83,31 +137,33 @@ those manual proposals.
 
 The [2026-10-22 triage and release plan](requests/2026-10-22-triage-and-release-plan.md)
 records PR #20 and issues #9, #17, #21 and #5. PR #20 is a wording correction
-with successful package/API CI. Instance-location diagnostics remain an optional
-follow-up; the schema identity, acceptance contract and extraction boundaries
-are unchanged. Documentation corrections alone do not require a new runtime
+with successful package/API CI. At that checkpoint instance-location diagnostics
+were an optional follow-up; published dev7 now supplies them and issue #9 is
+closed/completed, as recorded above. The schema identity, acceptance contract
+and extraction boundaries are unchanged. Documentation corrections alone do not require a new runtime
 release. The separate dev5 runtime candidate is described above; this triage
 section does not itself authorize publication or installation.
 
-## Selected next unit: roster instance location
+## Roster instance location — published dev7
 
 The owner confirmed issue #9 implementation on October 23 after the latest
 unresolved-work briefing. The existing PR23 branch is reconciled with published
 dev6 main `1872227`. The
 [reviewed design](superpowers/specs/2026-10-22-roster-instance-location-design.md)
 and [single-unit plan](superpowers/plans/2026-10-22-roster-instance-location.md)
-specify issue #9's additive `RosterError.instance_path` property. The dev7 candidate
-now implements the property with same-selected-error tuple copying and preserves
+specify issue #9's additive `RosterError.instance_path` property. Published dev7
+implements the property with same-selected-error tuple copying and preserves
 existing validation and diagnostics. Formal design review completed `AGREED` with
 matching integrity; the separate Astra comparison found no material defect.
 The [source verification record](verification/2026-10-23-roster-instance-location.md)
 records local evidence. [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23)
-carries current exact-commit package, CI, implementation review, admission and
-publication state. The preceding metadata-only
+carries exact-commit package, CI, implementation review, admission and
+publication evidence; it merged at `62c3a741b729c6359cc5079a0306fad1fdd1fac8`.
+The preceding metadata-only
 obstacle is historical following the approved dev5/dev6 library behavior and
 Codex 0.2.564 deployment; its old round still supplies no admission credit.
-The selected candidate version is dev7, with host formatting/adoption separate.
-Issues #17, #21 and #5 remain separate.
+Codex 0.2.565 adopts the typed locations; Claude and AGY remain separate follow-ups.
+Issue #9 is complete; issues #17, #21 and #5 retain their separate dispositions.
 
 ## Historical checkpoints through 2026-10-16
 
@@ -621,8 +677,11 @@ shared contract, without automatic full-CLI retries.
 
 ## Boundaries
 
-Codex v0.2.561 independently adopted dev3 after library PR #1 merged.
-Claude adoption and adoption of the current dev4 slice remain separate work.
+Historical boundary for the 2026-10-15 slice: Codex v0.2.561 independently adopted
+dev3 after library PR #1 merged; Claude adoption and adoption of that dev4 slice
+remained separate work at that checkpoint. See
+[Current release and follow-ups](#current-release-and-follow-ups) for later
+release and recorded adoption evidence.
 The earlier Codex integration experiment used parent-dispatched native children;
 the library and driver do not spawn native agents or provider processes. This
 slice performs no consumer update, global installation, package-index publication

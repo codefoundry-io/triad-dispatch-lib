@@ -14,7 +14,7 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The development candidate (`0.1.0.dev7`) provides strict original-JSON parsing,
+The published development prerelease (`0.1.0.dev7`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
@@ -24,16 +24,21 @@ The additive [runtime compatibility APIs](spec/reference/runtime-compatibility-a
 validate consumer bindings, select explicit or established legacy context, and
 retain artifacts referenced by other consumers or active invocations. Host
 provenance checks, installers and actual native execution remain separate.
+`RosterError.instance_path` adds canonical field/index locations for host diagnostics.
 Repository drivers verify the installed package with synthetic four-route
-responses; earlier fresh Codex observations remain historical.
-The dev5 wheel, sdist and manifest are published as a
-[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5),
-not a package-index release. As checked on 2026-10-22, all three host repositories
-recorded dev4 from `087af94a` in their adoption manifests; Codex v0.2.563
-subsequently adopted dev5 from `859f27c`. Those records do not
-establish every host API integration, local installation or live-provider result.
+responses; actual provider observations retain their individual review bases.
+The dev7 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`.
+[Codex 0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
+adopts dev7 with verified local installation and fresh skill exposure. Claude's
+public distribution still pins dev5; AGY's default branch still pins dev4.
+Their dev7 integration and lifecycle verification remain host-owned follow-ups.
+See the [dated host evidence](docs/host-adoption.md#latest-host-follow-up-2026-10-24).
+Library publication and fresh skill exposure do not establish post-install
+provider inference or an existing Desktop-session reload.
 See [independent host adoption](docs/host-adoption.md) and the
-[open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
+[historical 2026-10-22 triage and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
 
 - [Current status and next work](docs/status.md)
 - [Latest stable library release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)
@@ -93,10 +98,11 @@ validated dictionary return. Capability, route and custom diagnostic checks
 remain host-owned; later mutations require revalidation.
 
 `RosterError` provides trusted schema `.path`, selected-required-only `.missing`,
-`.document` (`defaults`, `override`, `resolved`) and the additive dev7 candidate
+`.document` (`defaults`, `override`, `resolved`) and the published dev7
 `.instance_path` tuple of canonical field names and indices. Its `()` means the
 document root; `None` means unavailable. Resolved indices describe final merged
-order. Arbitrary unknown-key names remain declined; issue #9 remains partial.
+order. Arbitrary unknown-key names remain declined; issue #9 is closed/completed
+for its requester's concrete roster-location need.
 `validate_transport_receipt(doc)` validates only the parsed nested `transport`
 object and returns `None`, raising `ReceiptError` for invalid shape. Hosts still
 establish truthful observations, command equality, current attempts and custody.

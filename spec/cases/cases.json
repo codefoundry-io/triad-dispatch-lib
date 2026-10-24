@@ -709,7 +709,7 @@
       "expected": "Preserve original output and metadata. Strictly parse original JSON before separating only undeclared top-level toolAction/toolSummary. Apply unchanged payload schema and bindings; retain negative verdicts. Declared names stay payload. Other invalid data and terminal failures remain refusals; no metadata-triggered whole-CLI retry or canonical schema relaxation.",
       "tests": {
         "A": "IMPLEMENTED on A @ triad fd8c709d (v0.1.0.dev5 re-adopted): lib/verdict_v2.py `_admit_obj` calls the vendored `separate_agy_metadata` only for the bound route `agy` (declared = the canonical contract's properties), then the unchanged `validate_verdict`; when nothing moved or the separation refused, the original text is judged; verdict.json and the review run-log keep the metadata. tests/unit/skills/t11-verdict-v2.sh axis 39 (the measured agy 1.4.5 object admitted with its bytes unchanged; a negative verdict kept; gemini-route, codex, another extra and a nested name strict; duplicate / non-finite exit 2; a binding mismatch beside the metadata), tests/unit/skills/t15-collect-v2.sh axis 131 (AGREED with the metadata on the agy entry; INCOMPLETE with it on the codex entry), tests/unit/wrappers/t59-schema-file-passthrough.sh axis 7b (the wrapper forwards structured_output unchanged). Full host suite 102/102 at triad 279804ef (fd8c709d changed only docs, comments and one docstring, and re-ran t11, t29 and the parity test green); host round lib-dev5-adopt-r1 AGREED 3/3 on 8c0df726..279804ef with an agy 1.4.5 verdict carrying both names admitted VALID (host ledger docs/reviews/2026-10-23-lib-dev5-residuals.md).",
-        "B": "NOT RUN; implementation pending.",
+        "B": "IMPLEMENTED and released: Codex PR47 merged at 89acf3a7c3deda49d0e48942020e5061e638aa61; bin/antigravity_wrapper.py delegates metadata separation to separate_agy_metadata while preserving original JSON, declared fields, strict validation and bindings. C80-specific host evidence: https://github.com/codefoundry-io/triad-codex-dispatch/pull/47; focused 150 passed, complete local 2628 passed / 5 skipped, native CI39912745899 source/archive macOS 2628/5 and Ubuntu 2626/7. Fresh round 20261023-codex-agy-timeout-r5-91a7d3 returned four SAFE with ROUND_INTEGRITY_OK / ADMITTED_SAFE, superseding that PR's earlier R4 NOT-SAFE candidate. Release0.2.563 adopts dev5. Later continuity: PR48/0.2.564 adopts dev6; PR49 merged at660abcb518d2246aeac33b6d3ec619ce2a564051 /0.2.565 adopts dev7, with distinct round20261024-codex-dev7-r4-e919d11; see https://github.com/codefoundry-io/triad-codex-dispatch/pull/49#issuecomment-6379719805. These are attributed host integration/release records, not a new library-run C80 reproduction, universal lifecycle certification or post-install provider-inference claim.",
         "library": "IMPLEMENTED in 184e9bf. tests/test_output.py::test_agy_metadata_admits_actual_verdict_without_rewriting_raw, test_separate_agy_metadata_preserves_explicit_payload_declarations, test_separate_agy_metadata_refuses_original_json_before_projection, test_agy_metadata_does_not_bypass_invocation_binding, test_agy_metadata_alone_does_not_supply_missing_verdict, test_non_agy_carriers_keep_metadata_names_strict and tests/test_public_api_consumers.py::PublicAPIConsumers::test_agy_metadata_separation_and_negative_admission cover separation, raw preservation, positive/negative admission and strict controls. Local source suite passed 1397 tests on macOS/Python3.12.13. Native CI run39772302033 at184e9bf passed macos-15/ubuntu-24.04 x Python3.12/3.14 source, sdist/rebuilt-wheel and installed drivers; API compatibility run39772302537 passed at the same head. This is library evidence only; A/B adapter adoption and provider recovery/custody remain independent."
       }
     },
@@ -724,7 +724,7 @@
         "A": "NOT RUN; Claude host implementation and common-runtime adoption pending.",
         "B": "NOT RUN; released Codex 0.2.563 does not establish shared-launcher compatibility.",
         "AGY": "NOT RUN; current installed AGY launchers bind an AGY toolkit; reuse by other hosts is unverified.",
-        "library": "Deterministic API candidate: tests/test_runtime_compat.py and tests/test_public_api_consumers.py cover strict descriptors, exact binding identity, explicit/legacy selection and missing/unsupported context. Real launchers, provenance authentication and native/CLI invocation remain host NOT RUN."
+        "library": "Deterministic API published in v0.1.0.dev6 (source 1872227abd42553635c733e0aa228548a577a732): tests/test_runtime_compat.py and tests/test_public_api_consumers.py cover strict descriptors, exact binding identity, explicit/legacy selection and missing/unsupported context. Real launchers, provenance authentication and native/CLI invocation remain host NOT RUN."
       }
     },
     {
@@ -738,7 +738,7 @@
         "A": "NOT RUN; host consumer corpus and supported baseline declaration pending.",
         "B": "NOT RUN; existing 1200/600 plus additive 2400-second timeout tests are bounded host evidence, not a cross-host compatibility result.",
         "AGY": "NOT RUN; older/newer common-runtime consumer matrix pending.",
-        "library": "Deterministic API candidate: exact supported binding membership includes baseline/library/adapter/context identity; legacy selection is unchanged by inventory order and new optional bindings. Existing Python API floor remains protected. Host CLI/upgrade behavior is NOT RUN."
+        "library": "Deterministic API published in v0.1.0.dev6 (source 1872227abd42553635c733e0aa228548a577a732): exact supported binding membership includes baseline/library/adapter/context identity; legacy selection is unchanged by inventory order and new optional bindings. Existing Python API floor remains protected. Host CLI/upgrade behavior is NOT RUN."
       }
     },
     {
@@ -752,7 +752,7 @@
         "A": "NOT RUN; host installation/lifecycle implementation pending.",
         "B": "NOT RUN; this new bounded contract does not restart the withdrawn U8 investigation or claim its historical checks passed.",
         "AGY": "NOT RUN; multi-consumer removal/update verification pending.",
-        "library": "Deterministic API candidate: plan_runtime_retention preserves consumer and active references, retains all artifacts for unknown dependencies, and refuses incomplete inventories. No filesystem deletion, locking or host lifecycle observation is performed; actual host lifecycle is NOT RUN."
+        "library": "Deterministic API published in v0.1.0.dev6 (source 1872227abd42553635c733e0aa228548a577a732): plan_runtime_retention preserves consumer and active references, retains all artifacts for unknown dependencies, and refuses incomplete inventories. No filesystem deletion, locking or host lifecycle observation is performed; actual host lifecycle is NOT RUN."
       }
     }
   ]

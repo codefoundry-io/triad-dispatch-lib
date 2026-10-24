@@ -9,11 +9,47 @@ only `codefoundry-io/triad-codex-dispatch` and
 
 As of the [2026-10-22 adoption check](host-adoption.md#current-recorded-adoption-2026-10-22),
 `codefoundry-io/agy-triad-dispatch` also records the library, but it is not an
-automatic notice target. The [release plan](requests/2026-10-22-triage-and-release-plan.md)
+automatic notice target. The [historical 2026-10-22 release plan](requests/2026-10-22-triage-and-release-plan.md)
 tracks all three consumers and separates manual notice delivery from a future
 change to the automation allowlist and App scope.
 
 ## Current activation boundary
+
+As of 2026-10-24 (KST), [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+is published from `62c3a741b729c6359cc5079a0306fad1fdd1fac8` (merged PR #23),
+with wheel SHA-256
+`cc24c8d285927c9a874a54c0b72a01668eaf77abbf183e6cf3abb8771ea9b480`.
+[Release run 40014779906](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/40014779906)
+completed package verification and publication; automatic delivery separately
+failed on missing App settings. Earlier
+[dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)
+was published from `1872227abd42553635c733e0aa228548a577a732` (merged PR #28).
+The dev7 follow-up was delivered manually to
+[Codex #46](https://github.com/codefoundry-io/triad-codex-dispatch/pull/46#issuecomment-6373568489),
+[Claude #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6373568959)
+and [AGY #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2#issuecomment-6373569416).
+Codex 0.2.565 adopts dev7 with verified local installation and fresh skill
+exposure; Claude and AGY have dev7 requests with no completion reported. See
+[dated host evidence and limits](host-adoption.md#latest-host-follow-up-2026-10-24).
+Publication, automatic notices, manual requests and host completion remain
+separate. This reconciliation does not change App settings or retry delivery.
+
+### Earlier dev5 activation evidence
+
+On 2026-10-23 (KST), [dev5](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
+was published from `859f27c07c1123e87b50344f587999a0cbc172a6`. The
+[exact-tag release run](https://github.com/codefoundry-io/triad-dispatch-lib/actions/runs/39852025988)
+completed its four native verification jobs and publication. The separate
+`deliver` job failed on missing GitHub App configuration; publication succeeded.
+Manual release notes were delivered to
+[Codex #46](https://github.com/codefoundry-io/triad-codex-dispatch/pull/46#issuecomment-6351093675),
+[Claude #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6351096977)
+and [AGY #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2#issuecomment-6351099545).
+Do not automatically retry this notice job: the branch-based deduplication does
+not recognize those manual proposals. Host adoption remains independently owned;
+no App settings or credentials were changed by that publication or this update.
+
+### Earlier dev4 activation evidence
 
 The source provides publication, retry and proposal tooling. The 2026-10-16
 read-only audit found no library releases, repository-visible Actions variables

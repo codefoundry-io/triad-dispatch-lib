@@ -1,5 +1,25 @@
 # Changelog
 
+## Release and host status reconciliation — 2026-10-24 (documentation only, not a new release)
+
+- Record published [dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)
+  and [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+  and Codex [0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563),
+  [0.2.564](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.564)
+  and [0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565).
+  These releases supersede the dated candidate/publication wording below.
+- Preserve PR #26's host-attributed Claude dev5/C80 A evidence and current public
+  dev5 pin; AGY's default branch remains dev4. Their dev7 adoption and runtime
+  lifecycle verification remain requested, with no completion reported.
+- Correct C80 B to the merged PR #47 release and record bounded later PR #49
+  review, CI, installation and fresh-session evidence separately from the frozen
+  C81-C83 NOT RUN rows. No universal conformance or post-install inference claim.
+- Issues #9 and #25 are closed/completed by owner instruction. Dev7 supplies
+  roster instance locations; additional diagnostic extensions are outside scope.
+  Issue #5 remains open, OWNER-DEFERRED, for five boundary proposals.
+- PRs #26/#27 carry this reconciliation, changing documentation/evidence
+  only, with no runtime, normative rule, schema, prompt, dependency or version change.
+
 ## C80 adopted on host A — 2026-10-23 (not tagged)
 
 - C80 / R-AGY-METADATA: host A (the claude host) re-adopted v0.1.0.dev5 and separates `toolAction` / `toolSummary` at its admission boundary for the bound `agy` route only, keeping verdict.json and the run-log unchanged; the case's `A` row now cites its tests and its AGREED round (DL-175). A also promoted the dev5 contract's agy quota sentence into its shipped classifier. No rule, schema, prompt or contract revision; nothing is ordered for B.
