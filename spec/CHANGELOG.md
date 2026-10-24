@@ -1,5 +1,9 @@
 # Changelog
 
+## C80 adopted on host A — 2026-10-23 (not tagged)
+
+- C80 / R-AGY-METADATA: host A (the claude host) re-adopted v0.1.0.dev5 and separates `toolAction` / `toolSummary` at its admission boundary for the bound `agy` route only, keeping verdict.json and the run-log unchanged; the case's `A` row now cites its tests and its AGREED round (DL-175). A also promoted the dev5 contract's agy quota sentence into its shipped classifier. No rule, schema, prompt or contract revision; nothing is ordered for B.
+
 ## dev7 roster instance location — 2026-10-23 (candidate, not tagged)
 
 - Add `RosterError.instance_path`, a tuple copied from the same first selected
