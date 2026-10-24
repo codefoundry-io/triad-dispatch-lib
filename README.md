@@ -32,8 +32,10 @@ The dev7 wheel, sdist and manifest are published as a
 from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`.
 [Codex 0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
 adopts dev7 with verified local installation and fresh skill exposure. Claude's
-public distribution still pins dev5; AGY's default branch still pins dev4.
-Their dev7 integration and lifecycle verification remain host-owned follow-ups.
+public distribution pins dev7 since [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987), rendering the typed
+roster locations; it consumes no common runtime, and C81-C83 stay NOT RUN on A
+(DL-177). AGY's default branch still pins dev4; its dev7 integration and
+lifecycle verification remain a host-owned follow-up.
 See the [dated host evidence](docs/host-adoption.md#latest-host-follow-up-2026-10-24).
 Library publication and fresh skill exposure do not establish post-install
 provider inference or an existing Desktop-session reload.

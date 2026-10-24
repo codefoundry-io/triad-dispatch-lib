@@ -1,5 +1,10 @@
 # Changelog
 
+## Host A dev7 adoption and shared-runtime inventory — 2026-10-24 (not tagged)
+
+- Host A (the claude host) re-adopted v0.1.0.dev7 and renders `RosterError.instance_path` in its roster refusal line; its public distribution pins dev7 since [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987). README, host-adoption, releasing and status now say so where they reported Claude at dev5.
+- DL-177: the host A inventory for C81-C83 (A installs no shared launcher, resolves no wrapper through PATH and calls no `runtime_compat` function); the C81-C83 rows stay NOT RUN and unchanged; whether A consumes the common runtime is an owner decision. No rule, schema, prompt or contract revision; nothing is ordered for B.
+
 ## Release and host status reconciliation — 2026-10-24 (documentation only, not a new release)
 
 - Record published [dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)

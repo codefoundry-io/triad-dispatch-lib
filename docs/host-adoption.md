@@ -18,8 +18,8 @@ cases; implement host mechanisms in their owning repository.
 
 Library [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
 is published from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`. Claude's public
-distribution manifest still pins dev5 source
-`859f27c07c1123e87b50344f587999a0cbc172a6`. Its earlier
+distribution manifest pins that dev7 source since [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987) (triad
+`d26d86c6`; see the Claude host section below). Its earlier
 attributed source `fd8c709d`
 and [export 0.2.1982 at `5d9f6a4`](https://github.com/codefoundry-io/triad-dispatch/commit/5d9f6a4348fd40bedb5d449eccb07d2ef94dd42f)
 record dev5 adoption. [PR #26 evidence](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26)
@@ -216,8 +216,8 @@ result fields, emitted errors, input copies and shallow result mutability.
   names and indices for host formatting: `()` is the document root, `None` is
   unavailable, and resolved indices describe merged order. It exposes the parent
   for required/aggregate/unknown-property failures. Host formatting and adoption
-  remain host-owned; Codex 0.2.565 adopts these locations, while Claude/AGY
-  completion remains unreported. Preserve each host's formatting and
+  remain host-owned; Codex 0.2.565 and Claude 0.2.1987 adopt these locations,
+  while AGY completion remains unreported. Preserve each host's formatting and
   reduced-diagnostics deviation.
   Exception contexts/tracebacks may retain input references even when the public
   attributes and message are value-free.
@@ -358,8 +358,17 @@ at 45a2b1c1, 1b at 6fd777b8, slice 2 agreed at 024b1f9e; exported plugin version
 0.2.1971 (slice 2). Slice 2 reached the host's `main` by fast-forward (closing commit 3a423ea6). On 2026-10-23 the host re-adopted v0.1.0.dev5 (wheel `triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl`, sha256 `833d55e9bf394885423bf1ed954a972747e1968b52b911b5253a9b7971512c7f`, 48505 bytes) and adopted C80 at its admission boundary (`verdict_v2._admit_obj`, bound route `agy` only) @ triad fd8c709d, exported as 0.2.1982; ledger `docs/reviews/2026-10-23-lib-dev5-residuals.md`. Independent reproduction of the host's runs stays outside this repository.
 
 This is the host-attributed dev5/C80 record, not dev7 adoption or shared-runtime
-lifecycle certification. As checked on 2026-10-24, the exported Claude adoption
-manifest still pins dev5. The dev7 and shared-runtime follow-ups are tracked in
+lifecycle certification. On 2026-10-24 the host re-adopted v0.1.0.dev7 (wheel
+`triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl`, sha256
+`cc24c8d285927c9a874a54c0b72a01668eaf77abbf183e6cf3abb8771ea9b480`, 51485 bytes)
+@ triad d26d86c6, exported and released as [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987); ledger
+`docs/reviews/2026-10-24-lib-dev7-residuals.md`. Its roster refusal line renders
+`.instance_path` after the schema path (`, instance legs/2/timeout_s`; `<root>`
+for the evaluated root; no clause when unavailable; `(merged order)` at the final
+resolved-roster validation) beside the library `.document`. The host calls no
+`runtime_compat` function and consumes no common runtime; C81-C83 stay NOT RUN on
+A, with its inventory in DL-177, and whether A consumes the common runtime is an
+owner decision. The dev7 request is
 [Claude PR #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6373568959).
 
 ## Selective adoption and dependencies

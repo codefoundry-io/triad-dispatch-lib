@@ -38,9 +38,11 @@ merged at `660abcb518d2246aeac33b6d3ec619ce2a564051` and released
 [0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
 with dev7. Its bounded review, CI, local installation and fresh-session evidence
 is recorded in [the dated host follow-up](host-adoption.md#latest-host-follow-up-2026-10-24).
-Claude's public distribution pins dev5 and AGY's default branch pins dev4;
-their dev7 typed diagnostics and shared-runtime integration/lifecycle work remain
-requested, with no completion reported.
+Claude's public distribution pins dev7 since [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987) and renders the
+typed roster locations; it consumes no common runtime, C81-C83 stay NOT RUN on A
+and its use of the common runtime is an owner decision (DL-177). AGY's default
+branch pins dev4; its dev7 typed diagnostics and shared-runtime integration and
+lifecycle work remain requested, with no completion reported.
 
 [Issue #9](https://github.com/codefoundry-io/triad-dispatch-lib/issues/9) is
 [closed/completed by owner instruction](https://github.com/codefoundry-io/triad-dispatch-lib/issues/9#issuecomment-6373642690):

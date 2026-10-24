@@ -29,7 +29,9 @@ The dev7 follow-up was delivered manually to
 [Claude #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6373568959)
 and [AGY #2](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2#issuecomment-6373569416).
 Codex 0.2.565 adopts dev7 with verified local installation and fresh skill
-exposure; Claude and AGY have dev7 requests with no completion reported. See
+exposure; Claude [0.2.1987](https://github.com/codefoundry-io/triad-dispatch/releases/tag/v0.2.1987) adopts dev7 and renders the roster
+locations (C81-C83 NOT RUN on A, DL-177); AGY has a dev7 request with no
+completion reported. See
 [dated host evidence and limits](host-adoption.md#latest-host-follow-up-2026-10-24).
 Publication, automatic notices, manual requests and host completion remain
 separate. This reconciliation does not change App settings or retry delivery.
