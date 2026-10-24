@@ -14,22 +14,29 @@ and [current CLI feature assessment](docs/research/2026-10-12-cli-feature-assess
 
 ## Status
 
-The published development prerelease (`0.1.0.dev5`) provides strict original-JSON parsing,
+The published development prerelease (`0.1.0.dev7`) provides strict original-JSON parsing,
 canonical v2 verdict admission, named roster resolution, all four route prompt
 profiles on hosts A/B, strict output carriers, unanimous agreement and bounded
 async host callbacks, safe roster schema diagnostics and transport-object shape
 validation. AGY result metadata is separated from the validated payload while
 the original provider output is preserved; see [C80 and the owner decision](spec/decisions/2026-10-22-agy-result-metadata.md).
-The dev5 wheel, sdist and manifest are published as a
-[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
-from `859f27c07c1123e87b50344f587999a0cbc172a6`, not a package-index release.
+The additive [runtime compatibility APIs](spec/reference/runtime-compatibility-api.md)
+validate consumer bindings, select explicit or established legacy context, and
+retain artifacts referenced by other consumers or active invocations. Host
+provenance checks, installers and actual native execution remain separate.
+`RosterError.instance_path` adds canonical field/index locations for host diagnostics.
 Repository drivers verify the installed package with synthetic four-route
 responses; actual provider observations retain their individual review bases.
-The 2026-10-22 three-host dev4 adoption records are a dated baseline. The
-[2026-10-23 host follow-up](docs/host-adoption.md#latest-host-follow-up-2026-10-23)
-records later Claude dev5 adoption and the separately held Codex candidate.
-Library publication does not establish every host API integration, local
-installation or live-provider result.
+The dev7 wheel, sdist and manifest are published as a
+[GitHub prerelease](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`.
+[Codex 0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
+adopts dev7 with verified local installation and fresh skill exposure. Claude's
+public distribution still pins dev5; AGY's default branch still pins dev4.
+Their dev7 integration and lifecycle verification remain host-owned follow-ups.
+See the [dated host evidence](docs/host-adoption.md#latest-host-follow-up-2026-10-24).
+Library publication and fresh skill exposure do not establish post-install
+provider inference or an existing Desktop-session reload.
 See [independent host adoption](docs/host-adoption.md) and the
 [open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
 
@@ -76,7 +83,7 @@ rules/cases to APIs and tests, with partial coverage and host responsibilities.
 The [public API compatibility gate](docs/api-compatibility.md) protects the declared
 `0.1.0.dev4` floor through structural and representative consumer checks.
 
-The [current Python API contract](spec/reference/library-api.md) covers all 32
+The [current Python API contract](spec/reference/library-api.md) covers all 41
 package-root exports: signatures, result fields, mutation boundaries, emitted
 error codes and callback lifecycle. It supplements the canonical wire and review
 rules; historical implementation plans are not the current API entry point.
@@ -90,9 +97,12 @@ validation is mandatory before consumption. `resolve_roster` retains its
 validated dictionary return. Capability, route and custom diagnostic checks
 remain host-owned; later mutations require revalidation.
 
-`RosterError` adds trusted schema `.path`, selected-required-only `.missing` and
-`.document` (`defaults`, `override`, `resolved`); it does not expose an instance
-pointer or arbitrary unknown-key names. Issue #9 remains partial.
+`RosterError` provides trusted schema `.path`, selected-required-only `.missing`,
+`.document` (`defaults`, `override`, `resolved`) and the published dev7
+`.instance_path` tuple of canonical field names and indices. Its `()` means the
+document root; `None` means unavailable. Resolved indices describe final merged
+order. Arbitrary unknown-key names remain declined; issue #9 is closed/completed
+for its requester's concrete roster-location need.
 `validate_transport_receipt(doc)` validates only the parsed nested `transport`
 object and returns `None`, raising `ReceiptError` for invalid shape. Hosts still
 establish truthful observations, command equality, current attempts and custody.
@@ -229,11 +239,11 @@ uv run --locked python spec/tools/check_authoring.py
 uv run --locked python tools/sync_spec_assets.py --check
 uv run --locked python tools/check_api_compatibility.py
 uv build --sdist
-uv build dist/triad_dispatch_lib-0.1.0.dev5.tar.gz --wheel
-uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl
-uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 self-test
-uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
+uv build dist/triad_dispatch_lib-0.1.0.dev7.tar.gz --wheel
+uv run --locked python tools/verify_wheel.py dist/triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl
+uv run --locked python tools/codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl --expected-version 0.1.0.dev7 self-test
+uv run --locked python tools/four_route_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl --expected-version 0.1.0.dev7
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl --expected-version 0.1.0.dev7 --self-test
 git diff --check
 ```
 
@@ -272,9 +282,9 @@ expected fields, and explicit review scope. The fixture digest convention is
 SHA-256 of the sorted compact JSON list of relative paths and file hashes.
 
 ```sh
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 render --context context.json --prompt prompt.txt
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev7 render --context context.json --prompt prompt.txt
 # Dispatch prompt.txt using the host's native agent mechanism; save its final JSON.
-uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 admit --context context.json --prompt prompt.txt --result result.json
+uv run --locked python tools/codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev7 admit --context context.json --prompt prompt.txt --result result.json
 ```
 
 Each command installs the specified wheel into a fresh temporary environment and
@@ -306,8 +316,8 @@ It uses the library's real bounded callbacks and agreement. The driver never
 spawns agents: a Codex parent supervises a test-only file exchange.
 
 ```sh
-uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl --expected-version 0.1.0.dev5 --self-test
-uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev5 --config /absolute/config.json --run-dir /absolute/new-run
+uv run --locked python tools/native_codex_smoke.py --wheel dist/triad_dispatch_lib-0.1.0.dev7-py3-none-any.whl --expected-version 0.1.0.dev7 --self-test
+uv run --locked python tools/native_codex_smoke.py --wheel path/to/package.whl --expected-version 0.1.0.dev7 --config /absolute/config.json --run-dir /absolute/new-run
 ```
 
 The self-test is **synthetic**, with three named review entries, concurrency two,

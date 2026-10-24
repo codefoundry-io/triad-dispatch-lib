@@ -1,19 +1,71 @@
 # Changelog
 
-## Release and issue #25 status reconciliation — 2026-10-23 (not tagged)
+## Release and host status reconciliation — 2026-10-24 (documentation only, not a new release)
 
-- Record published dev5, its exact source and completed manual delivery separately
-  from the failed automatic notice job. Earlier candidate status below describes
-  its original checkpoint; [dev5 release notes](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
-  supersede that publication-status wording.
-- Date the earlier Claude plan and status boundaries. Link the later Claude dev5
-  source/export and open PR #26, which owns its detailed C80 A adoption record.
-- Correct C80 B from implementation pending to an implemented Codex PR #47
-  candidate with its unresolved `ADMITTED_NOT_SAFE` gate. This records progress
-  without claiming accepted conformance, merged adoption or a host release.
-- Issue #9 remains a separate diagnostics plan in PR #23; the schema namespace,
-  `acceptance` field and host boundaries retain their existing dispositions.
-  No runtime, schema, prompt, artifact or version changes accompany this update.
+- Record published [dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)
+  and [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+  and Codex [0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563),
+  [0.2.564](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.564)
+  and [0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565).
+  These releases supersede the dated candidate/publication wording below.
+- Preserve PR #26's host-attributed Claude dev5/C80 A evidence and current public
+  dev5 pin; AGY's default branch remains dev4. Their dev7 adoption and runtime
+  lifecycle verification remain requested, with no completion reported.
+- Correct C80 B to the merged PR #47 release and record bounded later PR #49
+  review, CI, installation and fresh-session evidence separately from the frozen
+  C81-C83 NOT RUN rows. No universal conformance or post-install inference claim.
+- Issues #9 and #25 are closed/completed by owner instruction. Dev7 supplies
+  roster instance locations; additional diagnostic extensions are outside scope.
+  Issue #5 remains open, OWNER-DEFERRED, for five boundary proposals.
+- PRs #26/#27 carry this reconciliation, changing documentation/evidence
+  only, with no runtime, normative rule, schema, prompt, dependency or version change.
+
+## C80 adopted on host A — 2026-10-23 (not tagged)
+
+- C80 / R-AGY-METADATA: host A (the claude host) re-adopted v0.1.0.dev5 and separates `toolAction` / `toolSummary` at its admission boundary for the bound `agy` route only, keeping verdict.json and the run-log unchanged; the case's `A` row now cites its tests and its AGREED round (DL-175). A also promoted the dev5 contract's agy quota sentence into its shipped classifier. No rule, schema, prompt or contract revision; nothing is ordered for B.
+
+## dev7 roster instance location — 2026-10-23 (candidate, not tagged)
+
+- Add `RosterError.instance_path`, a tuple copied from the same first selected
+  schema error: canonical field names and integer indices, `()` at the evaluated
+  root, or `None` for direct/non-schema errors. Resolved indices use merged order.
+- Preserve constructors, codes, fixed messages, args, schema diagnostics, validation
+  ordering, input copies, serialization behavior and all canonical schema bytes.
+- Cover document attribution, indices 0/3, merged positions, Google aggregate and
+  required errors, unknown-property privacy and the public package consumer.
+- This unpublished `0.1.0.dev7` candidate does not alter published dev4-dev6
+  artifacts or host pins. Exact-commit package/CI/review and publication evidence
+  belong to [PR #23](https://github.com/codefoundry-io/triad-dispatch-lib/pull/23).
+  Host formatting/adoption and arbitrary unknown-key spelling remain separate.
+
+## dev6 common runtime compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add strict immutable runtime/consumer descriptions, exact consumer compatibility
+  checking and explicit or established-legacy binding selection. Missing,
+  ambiguous, unsupported and malformed context refuses without choosing another host.
+- Add conservative runtime retention decisions: other consumers and active
+  invocations protect their artifacts; unknown dependencies retain all assets.
+- Preserve the dev4 public API floor, existing provider schemas/prompts and bundle
+  identities. New public interfaces are documented in
+  [runtime-compatibility-api.md](reference/runtime-compatibility-api.md).
+- Hosts authenticate provenance and compatibility evidence and own filesystem
+  transactions, native adapters and execution. These pure APIs are not a common
+  launcher deployment or a host C81-C83 conformance claim.
+- The owner selected library plus Codex implementation/release. Claude and AGY
+  adoption remains separately owned; their source repositories are unchanged.
+
+## Shared runtime backward compatibility — 2026-10-23 (candidate, not tagged)
+
+- Add R-SHARED-RUNTIME-COMPAT under the existing R-PARITY boundary: compatible
+  common launchers can serve multiple hosts; supported older calls survive
+  upgrades; one consumer's lifecycle preserves other consumers and active calls.
+- Add C81-C83, the shared-runtime-compatibility unit, an authoring map and a
+  bounded three-host handoff. Every host implementation result remains NOT RUN.
+- Keep Python API compatibility distinct from CLI/adapter/install compatibility.
+  Native execution, authentication, configuration and installation mechanics
+  stay host-owned. No runtime, schema, prompt, dependency or version changes.
+- Record the owner's new specification request without reviving the previously
+  withdrawn U8 investigation. Existing deployment is not declared compatible.
 
 ## dev5 candidate corrections and review — 2026-10-23 (not tagged)
 

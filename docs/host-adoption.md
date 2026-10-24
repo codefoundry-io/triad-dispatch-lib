@@ -13,28 +13,78 @@ The four configurable routes and native callback interfaces remain supported.
 Implement a shared semantic change once here with its specification, code and
 cases; implement host mechanisms in their owning repository.
 
-## Latest host follow-up (2026-10-23)
+<a id="latest-host-follow-up-2026-10-23"></a>
+## Latest host follow-up (2026-10-24)
 
-Library [dev5](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev5)
-is published from `859f27c07c1123e87b50344f587999a0cbc172a6`. Claude's later
+Library [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+is published from `62c3a741b729c6359cc5079a0306fad1fdd1fac8`. Claude's public
+distribution manifest still pins dev5 source
+`859f27c07c1123e87b50344f587999a0cbc172a6`. Its earlier
 [source `fd8c709d`](https://github.com/codefoundry-io/triad/commit/fd8c709de1f32608e267e77b2a67805b36741253)
 and [export 0.2.1982 at `5d9f6a4`](https://github.com/codefoundry-io/triad-dispatch/commit/5d9f6a4348fd40bedb5d449eccb07d2ef94dd42f)
-record dev5 adoption. [Open PR #26](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26)
-proposes the detailed C80 A evidence and slice-2 merge correction. Its reported
+record dev5 adoption. [PR #26 evidence](https://github.com/codefoundry-io/triad-dispatch-lib/pull/26)
+contains the detailed C80 A record and slice-2 merge correction. Its reported
 AGY 1.4.5 measurement and host review supersede the pending steps in
 [issue #25](https://github.com/codefoundry-io/triad-dispatch-lib/issues/25);
-they remain host-attributed evidence, not a new run performed by this library.
+they remain host-attributed evidence. The owning source was not accessible through
+the current connector, so no independent source inspection or rerun is claimed.
+Issue #25 is closed/completed; PRs #26 and #27 carry this documentation reconciliation.
 
 [Codex PR #47](https://github.com/codefoundry-io/triad-codex-dispatch/pull/47)
-contains a C80 candidate at `801e7047b844b0ff1885a983d1c6c6cac35f4515`, with
-the independent host gate `ADMITTED_NOT_SAFE`. Correct terminal/payload selection,
-verify the published library artifact and complete host review before release.
-The independent [AGY host proposal](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2)
-retains its own integration and verification responsibilities.
+merged at `89acf3a7c3deda49d0e48942020e5061e638aa61` and released
+[0.2.563](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.563)
+with dev5. That accepted release supersedes its earlier `ADMITTED_NOT_SAFE`
+candidate; the old review remains historical evidence. [PR #48](https://github.com/codefoundry-io/triad-codex-dispatch/pull/48)
+merged at `2eec0bb62e0de027332b45c12e59fab94cf2bbc8` and released
+[0.2.564](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.564)
+with dev6. [PR #49](https://github.com/codefoundry-io/triad-codex-dispatch/pull/49)
+merged at `660abcb518d2246aeac33b6d3ec619ce2a564051` and released
+[0.2.565](https://github.com/codefoundry-io/triad-codex-dispatch/releases/tag/v0.2.565)
+with dev7.
 
-## Current recorded adoption (2026-10-22)
+The [2026-10-24 Codex completion evidence](https://github.com/codefoundry-io/triad-codex-dispatch/pull/49#issuecomment-6379719805)
+records four SAFE results and `ADMITTED_SAFE` in fresh round
+`20261024-codex-dev7-r4-e919d11` after actual Argon/Flash recovery. The prior
+quota-blocked R3 is historical. The local suite passed 2685 tests with 5 skips;
+[post-merge CI 40057435631](https://github.com/codefoundry-io/triad-codex-dispatch/actions/runs/40057435631)
+passed source/archive on macOS (2685/5) and Ubuntu (2683/7), and CodeQL passed.
+Published assets and all 394 installed tracked files were verified against the
+merged release. Local verification covered 20 launcher/help paths, three invalid
+selectors and two located schema refusals; a fresh ephemeral session exposed all
+four installed skills. The old Codex receipt/binding, AGY default/binding,
+0.2.563/0.2.564 cache paths and checked configuration files were preserved.
+This bounded evidence does not replace the frozen C81-C83 NOT RUN rows with a
+universal pass. Existing Desktop-session reload and post-install provider
+inference are not claimed.
 
-This is the dated dev4 baseline; the later follow-up above supersedes its current-version scope.
+AGY's default branch `feat/agy-triad-dispatch` still records dev4 in
+`bin/library_adoption.py` (`VERSION`). The latest
+[Claude proposal](https://github.com/codefoundry-io/triad-dispatch/pull/1) and
+[AGY proposal](https://github.com/codefoundry-io/agy-triad-dispatch/pull/2)
+comments request dev7 typed locations and shared-runtime integration/lifecycle
+verification; they do not report completion. Those host-owned follow-ups remain.
+
+Host-owned installation does not require duplicate common runtimes. Shared
+launcher reuse and backward compatibility follow
+[R-SHARED-RUNTIME-COMPAT](../spec/reference/review-rules.md#R-SHARED-RUNTIME-COMPAT),
+with the [C81-C83 handoff](../spec/decisions/2026-10-23-shared-runtime-compatibility.md).
+Existing library adoption records do not establish those new host results.
+
+The dev6 [common runtime API](../spec/reference/runtime-compatibility-api.md)
+validates exact consumer bindings, selects an explicit or established legacy
+binding, and computes conservative retention. Hosts must authenticate descriptors
+and artifacts, exercise their supported consumer corpus, preserve native adapter
+and receipt identity, and perform transactional publication/removal themselves.
+Passing these pure APIs does not establish host C81-C83 conformance. The current
+library implementation is published, and the bounded Codex adoption evidence is
+recorded above; Claude and AGY retain their pinned adoption work.
+
+<a id="current-recorded-adoption-2026-10-22"></a>
+## Historical adoption snapshot (2026-10-22)
+
+This section preserves the pinned 2026-10-22 dev4 baseline. The latest dated
+follow-up above supersedes its current-version scope and records host-specific
+completion limits.
 
 All three pinned repository manifests record library `0.1.0.dev4`, source
 `087af94a7078de0ae9701fb057840b5492f51f66`, wheel SHA-256
@@ -55,14 +105,15 @@ PRs contain documentation only. Claude implementation belongs in its owning
 literal: its proposed work preserves the existing `host="B"` integration.
 
 The existing `.path`, `.missing`, `.document`, `validate_transport_receipt` and
-`ReceiptError` APIs are already in published dev4. Issue #9 remains partial/open
-for optional diagnostics; none of these manifests implies host-message parity.
+`ReceiptError` APIs were already in published dev4. At this checkpoint issue #9
+was partial/open; it is now closed/completed with dev7 instance locations.
+None of these historical manifests implies host-message parity.
 See the [triage and release plan](requests/2026-10-22-triage-and-release-plan.md).
 
 ## Earlier integration checkpoints
 
-The following records describe their original integration boundaries; current
-recorded adoption is listed above.
+The following records describe their original integration boundaries; the dated
+adoption snapshot and subsequent Codex update are listed above.
 
 Library [PR #1](https://github.com/codefoundry-io/triad-dispatch-lib/pull/1)
 merged at `9489543ee24f338e9c6d0e3b032a1aa389986429`, preserving the reviewed
@@ -159,7 +210,13 @@ result fields, emitted errors, input copies and shallow result mutability.
   resolved document, not merged-property origin. `.path` contains schema
   evaluation metadata, with possible omitted `$ref`/`if` hops; `.missing` is
   selected-required-only and may remain `None` for missing route blocks under
-  `anyOf`. Preserve the host's formatting and reduced-diagnostics deviation.
+  `anyOf`. The published dev7 `.instance_path` supplies canonical field
+  names and indices for host formatting: `()` is the document root, `None` is
+  unavailable, and resolved indices describe merged order. It exposes the parent
+  for required/aggregate/unknown-property failures. Host formatting and adoption
+  remain host-owned; Codex 0.2.565 adopts these locations, while Claude/AGY
+  completion remains unreported. Preserve each host's formatting and
+  reduced-diagnostics deviation.
   Exception contexts/tracebacks may retain input references even when the public
   attributes and message are value-free.
 - **Cancellation custody:** callbacks must retain each published native request
@@ -296,7 +353,12 @@ Python 3.12), Ubuntu 24.04 aarch64 and Ubuntu 24.04 x86_64 (Docker, the `~/.venv
 recorded in the host's `docs/lib-dependency-closures.md`), recorded in the host's
 `docs/reviews/inputs/2026-10-17-lib-adopt/platform-gate.md`. Host adapter heads: 1a merged into `main`
 at 45a2b1c1, 1b at 6fd777b8, slice 2 agreed at 024b1f9e; exported plugin versions 0.2.1959 (1b) and
-0.2.1971 (slice 2). Independent reproduction of the host's runs stays outside this repository.
+0.2.1971 (slice 2). Slice 2 was merged into the host's `main` as 3a423ea6. On 2026-10-23 the host re-adopted v0.1.0.dev5 (wheel `triad_dispatch_lib-0.1.0.dev5-py3-none-any.whl`, sha256 `833d55e9bf394885423bf1ed954a972747e1968b52b911b5253a9b7971512c7f`, 48505 bytes) and adopted C80 at its admission boundary (`verdict_v2._admit_obj`, bound route `agy` only) @ triad fd8c709d, exported as 0.2.1982; ledger `docs/reviews/2026-10-23-lib-dev5-residuals.md`. Independent reproduction of the host's runs stays outside this repository.
+
+This is the host-attributed dev5/C80 record, not dev7 adoption or shared-runtime
+lifecycle certification. As checked on 2026-10-24, the exported Claude adoption
+manifest still pins dev5. The dev7 and shared-runtime follow-ups are tracked in
+[Claude PR #1](https://github.com/codefoundry-io/triad-dispatch/pull/1#issuecomment-6373568959).
 
 ## Selective adoption and dependencies
 
