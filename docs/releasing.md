@@ -9,13 +9,13 @@ only `codefoundry-io/triad-codex-dispatch` and
 
 As of the [2026-10-22 adoption check](host-adoption.md#current-recorded-adoption-2026-10-22),
 `codefoundry-io/agy-triad-dispatch` also records the library, but it is not an
-automatic notice target. The [release plan](requests/2026-10-22-triage-and-release-plan.md)
+automatic notice target. The [historical 2026-10-22 release plan](requests/2026-10-22-triage-and-release-plan.md)
 tracks all three consumers and separates manual notice delivery from a future
 change to the automation allowlist and App scope.
 
 ## Current activation boundary
 
-On 2026-10-24, [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
+As of 2026-10-24 (KST), [dev7](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev7)
 is published from `62c3a741b729c6359cc5079a0306fad1fdd1fac8` (merged PR #23),
 with wheel SHA-256
 `cc24c8d285927c9a874a54c0b72a01668eaf77abbf183e6cf3abb8771ea9b480`.

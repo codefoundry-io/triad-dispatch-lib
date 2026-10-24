@@ -38,7 +38,7 @@ See the [dated host evidence](docs/host-adoption.md#latest-host-follow-up-2026-1
 Library publication and fresh skill exposure do not establish post-install
 provider inference or an existing Desktop-session reload.
 See [independent host adoption](docs/host-adoption.md) and the
-[open-item review and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
+[historical 2026-10-22 triage and release plan](docs/requests/2026-10-22-triage-and-release-plan.md).
 
 - [Current status and next work](docs/status.md)
 - [Latest stable library release](https://github.com/codefoundry-io/triad-dispatch-lib/releases/latest)

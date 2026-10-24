@@ -47,6 +47,8 @@ requested, with no completion reported.
 dev7 supplies the requested roster instance locations. Unknown-key names, input
 values, raw messages and verdict-side diagnostic extensions are outside this
 scope. Keep the existing schema identity (#17) and `acceptance` contract (#21).
+The dev7 release notes retain the earlier partial/open wording for issue #9;
+the owner closure linked above supersedes that issue-status wording.
 [Issue #5](https://github.com/codefoundry-io/triad-dispatch-lib/issues/5) remains
 open, `OWNER-DEFERRED`, for five boundary proposals; it is not a current defect.
 
