@@ -2,6 +2,34 @@
 
 Dates in decision headings and IDs are the owner's local date (KST, UTC+9); timestamps given with `Z` are UTC.
 
+<a id="D-AGY-WEB-EVIDENCE-20261108"></a>
+## D-AGY-WEB-EVIDENCE-20261108: web stays on for every review leg; an agy web fact is a search pointer
+
+Context: on agy 1.5.3 the agy route has `search_web` but no page fetch (DL-179; evidence
+[spikes/2026-11-08-agy-153-toolset.md](../spikes/2026-11-08-agy-153-toolset.md) § Web-tool probes; vendor issue #1353).
+
+Owner, 2026-11-08, to the claude-host leader, first asking whether agy web search works automatically or needs a
+setting (verbatim):
+
+> 조사해 웹 검색이 자동으로되는건지 설정해야하ㅓ는건ㅁ지
+
+The leader then reported the probes above and offered three options (leader option labels, not owner words): A — agy
+uses web search results as pointers only, and web evidence that decides a finding is verified by legs that can fetch
+pages (codex with `--search`, the claude leg with WebFetch) and by the leader on the raw page; B — let agy cite search
+summaries as evidence; C — turn web off for agy until the vendor fixes it. Owner (verbatim):
+
+> AI쪽은 웹검색해서 검토해 최신으로 봐야하잖아  매주 바뀨ㅣ는데
+
+The leader's reading (not owner words): reviews must use web search to see the latest because AI tooling changes every
+week, so web stays ON in every review leg (no option C) — option A. Recorded effect under that reading:
+[R-REVIEW-WEB](../reference/review-rules.md#R-REVIEW-WEB) keeps the standing authorization
+([D-REVIEW-LEGS-20261003](#D-REVIEW-LEGS-20261003)) for every leg, the agy leg included; an agy leg's web fact is a search
+POINTER (summary plus redirect URL), never fetched evidence; a web fact that decides a finding is verified on the raw page
+by a leg that can fetch (codex `--search`, the claude leg) or by the leader before it is acted on. The investigation
+`web-evidence` clause and the Google leg prompt move to the agy 1.5.x tool set in the next library release (DL-180). This
+answers DL-179's owner question; its dev-log option labels (a) / (b) / (c) differ from the A / B / C offered here — the
+ruling combines its (a) and (c), and rejects its (b).
+
 <a id="D-SHARED-RUNTIME-COMPAT-20261023"></a>
 ## D-SHARED-RUNTIME-COMPAT-20261023: specify common runtime backward compatibility
 

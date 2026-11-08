@@ -351,7 +351,10 @@ WebFetch` only (`bin/claude_wrapper.py:417-418`) and restricts no tool list, its
 plan` (`:419-420`); a native codex investigation runs in the host's own codex session, and no B
 code selects its web (open, DL-39). Web evidence in an investigation is a FETCHED page: the
 leg cites the URL it fetched and the date or version visible on that page; a search summary is a pointer, never a
-citation; an unfetched, placeholder or undated claim is UNSURE. The host appends the shared clause `web-evidence`
+citation; an unfetched, placeholder or undated claim is UNSURE. On agy >= 1.4.8 the agy route cannot fetch a page (R-REVIEW-WEB,
+[D-AGY-WEB-EVIDENCE-20261108](../decisions/owner-register.md#D-AGY-WEB-EVIDENCE-20261108)), so its web facts stay
+pointers and a deciding one is fetched by another leg or the leader; the clause text follows in the next library release
+(DL-180). The host appends the shared clause `web-evidence`
 (`prompts/investigation.md`) LAST on every web-enabled Google INVESTIGATION. Existing host
 audit/redaction/failure-log/retention rules apply; no new permanent exact-text or page store is required (D-B2).
 Verify prompt assembly in tests and actual fetched-page interpretation through bounded task-authorized evidence.
@@ -625,6 +628,14 @@ Render only the short common `review-web-permission` clause from `prompts/common
 add technology classification or automatic web triggers. The investigation `web-evidence` clause (R-INVEST) is never
 appended in REVIEW. Raw investigations remain separate under R-INVEST;
 the raw Claude `--web` permit does not add review accounting or rewrite the caller's prompt.
+
+Measured fact and ruling (agy route): on agy >= 1.4.8 in print mode the agy route has `search_web` but no page fetch —
+`read_url_content` is registry-known but not offered (vendor bug #1353; measured on agy 1.5.3, C84,
+`decisions/2026-11-08-agy-153-toolset.md`). Web stays authorized for every review leg, the agy leg included (owner,
+[D-AGY-WEB-EVIDENCE-20261108](../decisions/owner-register.md#D-AGY-WEB-EVIDENCE-20261108)). An agy leg's web fact is a
+search POINTER (the summary and its redirect URL), never fetched evidence (C29); a web fact that decides a finding is
+verified on the raw page, by a leg that can fetch (codex `--search`, the claude leg) or by the leader, before it is
+acted on.
 
 ## Containment and validity — what exists today and must survive
 

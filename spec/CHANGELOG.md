@@ -1,5 +1,20 @@
 # Changelog
 
+## agy web evidence ruling — 2026-11-08 (not tagged)
+
+- Owner ruling [D-AGY-WEB-EVIDENCE-20261108](decisions/owner-register.md#D-AGY-WEB-EVIDENCE-20261108) (owner words
+  verbatim, the leader's reading marked as such): web stays on for every review leg; on agy >= 1.4.8 in print mode the
+  agy route has `search_web` but no page fetch (vendor bug #1353), so an agy leg's web fact is a search pointer and a web
+  fact that decides a finding is verified on the raw page by a leg that can fetch (codex `--search`, the claude leg) or
+  by the leader before it is acted on. Sentences added to R-REVIEW-WEB and R-INVEST.
+- Evidence: `spikes/2026-11-08-agy-153-toolset.md` § Web-tool probes with `p1.jsonl` - `p4.jsonl` and `p3.err`
+  (`search_web` works with no setting; no page-fetch tool even for the default agent; an unknown tool name in an agent
+  `tools:` list aborts the run; `excludeDefaultComponents: true` keeps `manage_task`). A dated section appended to
+  `decisions/2026-11-08-agy-153-toolset.md`.
+- Dev-log: DL-179 `OWNER` → `RULED`; new DL-180 `OPEN (spec: next library release)` for `prompts/leg-google.md`,
+  `prompts/investigation.md`, their packaged bundle copies and `tests/test_prompts.py`.
+- No prompt, schema, contract, packaged-bundle or library-code change.
+
 ## agy 1.5.3 custom-agent tool set — 2026-11-08 (not tagged)
 
 - R-CONTAIN (agy leg): record the measured agy 1.5.3 fact — a custom agent is offered only `read_file` (`Path`),
