@@ -1,0 +1,5 @@
+error: failed to construct executor: failed to resolve components: unknown component: tool "read_url" not found in registry
+unknown component: tool "web_fetch" not found in registry
+unknown component: tool "fetch_url" not found in registry
+unknown component: tool "browser" not found in registry
+AGY_ERROR: {"short_error":"failed to construct executor: failed to resolve components: unknown component: tool \"read_url\" not found in registry\nunknown component: tool \"web_fetch\" not found in registry\nunknown component: tool \"fetch_url\" not found in registry\nunknown component: tool \"browser\" not found in registry","status":"UNKNOWN","error_code":2,"code_kind":"grpc","retryable":false,"error_id":"af57419d-8589-4db4-92f3-4244ba046b17-1"}

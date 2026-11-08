@@ -2,6 +2,62 @@
 
 Dates in decision headings and IDs are the owner's local date (KST, UTC+9); timestamps given with `Z` are UTC.
 
+<a id="D-AGY-MIN-VERSION-20261108"></a>
+## D-AGY-MIN-VERSION-20261108: no backward compatibility with older agy builds; tell the user to update
+
+Context: host A's first agy 1.5.3 fix kept the pre-1.5.3 tool names (`view_file`, `grep_search`, `list_dir`,
+`find_by_name`) accepted beside `read_file`, and the alias clash (`view_file` in `tools:` resolves to `read_file`;
+listing both aborts the run) forced a prose-only workaround. The leader asked the owner whether to keep backward
+compatibility or require an update.
+
+Owner, 2026-11-08 (verbatim): "하위호환성 유지할거야 업데이트를 요청하고 에러낼거야? 난 그냥 업데이트하라고고지하는게 나을 것 같아"
+
+Leader's reading: do not keep compatibility code for older agy builds. Host A's read-only agy path requires agy
+>= 1.5.3 (the only measured version) and refuses an older build before any spawn with one line telling the user to
+run `agy update` (`config-conflict`, the existing floor form); its agent `tools:` lists name only what 1.5.3 offers
+(`read_file`, `finish`; the research agent adds `read_url_content` and `search_web`), and its census, hook and gate
+accept `read_file` only. The owner updates agy by hand (owner 2026-11-08: "내가 주기적으로 할께").
+
+Applies: R-CONTAIN (agy leg), C84, DL-178, DL-181. Host B chooses its own route; this ruling binds host A and allows,
+not requires, the same on B.
+
+Follow-up, 2026-11-08: host A's review found a measured 1.5.3 shape — while the shared Google prompt still names the
+retired read tools (DL-180), the model may call `grep_search` / `list_dir`; agy returns an ERROR step before the hook
+(not a denial), which a census without the retired names files as an off-list execution and voids the leg (lora-rerun
+r2 google leg: `grep_search` error, `list_dir` error, no hook row). Asked whether to tolerate those errored calls, update
+the prompt first, or both, the owner chose (verbatim option label): "오류만 너그럽게 (추천)". Leader's reading: an
+errored — not executed, not denied — step of a retired read name (`view_file`, `grep_search`, `list_dir`,
+`find_by_name`) is filed as an errored read, not an off-list execution, until the prompt is updated (DL-180); a DONE step
+of a retired name still voids.
+
+<a id="D-AGY-WEB-EVIDENCE-20261108"></a>
+## D-AGY-WEB-EVIDENCE-20261108: web stays on for every review leg; an agy web fact is a search pointer
+
+Context: on agy 1.5.3 the agy route has `search_web` but no page fetch (DL-179; evidence
+[spikes/2026-11-08-agy-153-toolset.md](../spikes/2026-11-08-agy-153-toolset.md) § Web-tool probes; vendor issue #1353).
+
+Owner, 2026-11-08, to the claude-host leader, first asking whether agy web search works automatically or needs a
+setting (verbatim):
+
+> 조사해 웹 검색이 자동으로되는건지 설정해야하ㅓ는건ㅁ지
+
+The leader then reported the probes above and offered three options (leader option labels, not owner words): A — agy
+uses web search results as pointers only, and web evidence that decides a finding is verified by legs that can fetch
+pages (codex with `--search`, the claude leg with WebFetch) and by the leader on the raw page; B — let agy cite search
+summaries as evidence; C — turn web off for agy until the vendor fixes it. Owner (verbatim):
+
+> AI쪽은 웹검색해서 검토해 최신으로 봐야하잖아  매주 바뀨ㅣ는데
+
+The leader's reading (not owner words): reviews must use web search to see the latest because AI tooling changes every
+week, so web stays ON in every review leg (no option C) — option A. Recorded effect under that reading:
+[R-REVIEW-WEB](../reference/review-rules.md#R-REVIEW-WEB) keeps the standing authorization
+([D-REVIEW-LEGS-20261003](#D-REVIEW-LEGS-20261003)) for every leg, the agy leg included; an agy leg's web fact is a search
+POINTER (summary plus redirect URL), never fetched evidence; a web fact that decides a finding is verified on the raw page
+by a leg that can fetch (codex `--search`, the claude leg) or by the leader before it is acted on. The investigation
+`web-evidence` clause and the Google leg prompt move to the agy 1.5.x tool set in the next library release (DL-180). This
+answers DL-179's owner question; its dev-log option labels (a) / (b) / (c) differ from the A / B / C offered here — the
+ruling combines its (a) and (c), and rejects its (b).
+
 <a id="D-SHARED-RUNTIME-COMPAT-20261023"></a>
 ## D-SHARED-RUNTIME-COMPAT-20261023: specify common runtime backward compatibility
 

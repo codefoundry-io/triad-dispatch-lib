@@ -1,0 +1,4 @@
+Measured 2026-11-08 on agy 1.5.3 (host A): a custom agent whose tools: list named read_file AND view_file (plus grep_search, list_dir, find_by_name, finish) aborted before any model turn (vendor rc 3, wrapper exit 1; host A run-log 20261108T094256Z-47806-897b4d31).
+Vendor stderr lines (verbatim):
+error: failed to construct executor: tool name conflict: multiple tools resolved with name "read_file"
+AGY_ERROR: {"short_error":"failed to construct executor: tool name conflict: multiple tools resolved with name \"read_file\"","status":"UNKNOWN","error_code":2,"code_kind":"grpc","retryable":false,"error_id":"d82c3890-8823-457c-960b-449e40cfdeda-1"}
