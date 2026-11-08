@@ -763,7 +763,7 @@
       "input": "agy 1.5.3 (measured on host A 2026-11-08, spikes/2026-11-08-agy-153-toolset.md): a read-only review custom agent whose tools list names view_file, grep_search, list_dir, find_by_name and finish is offered only read_file (Path, StartLine, EndLine, ByteOffset), manage_task and finish (the research twin adds search_web, not read_url_content); a leg reads the packet with read_file steps carrying Path. Controls: an executed manage_task step; a view_file step with AbsolutePath on an agy build before 1.5.3.",
       "expected": "The agy read-only leg whose stream shows read_file steps with Path is admitted; its read_file reads are counted as reads in the read audit and as packet reads (Path equal to the packet path) by the host's packet-read evidence; the review hook allows read_file. An executed manage_task still withholds the answer (admission-refused); view_file with AbsolutePath stays accepted. No other tool joins the allow set. Rule: R-CONTAIN agy 1.5.3 sentence; decisions/2026-11-08-agy-153-toolset.md.",
       "tests": {
-        "A": "NOT RUN — host A implementation pending (authoring/shared-dev-log.md DL-178).",
+        "A": "PASS (host A triad 27eb39d1, 2026-11-08: tests/unit/wrappers/t38-agy-admission-refused.sh axes 37-38, tests/unit/skills/t5-read-audit-gate.sh axis 10f, tests/unit/skills/t9-agy-hook.sh, tests/unit/wrappers/t13-agy-stream-digest.sh axis 35, tests/unit/wrappers/t71-agy-model-passthrough-c18.sh axis 9b; live on agy 1.5.3: review rounds agy153-fix r1-r4, gate PASS through read_file Path, hook 0 denied)",
         "B": "NOT RUN — check of B's AGY profile route suggested (DL-178)."
       }
     }

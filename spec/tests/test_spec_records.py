@@ -292,9 +292,9 @@ def test_agy_153_read_file_is_a_shared_containment_rule():
     assert "C84" in rule and "decisions/2026-11-08-agy-153-toolset.md" in rule
     case = cases()["C84"]
     assert "R-CONTAIN" in case["rule"] and "manage_task" in case["expected"]
-    assert case["tests"]["A"].startswith("NOT RUN") and case["tests"]["B"].startswith("NOT RUN")
+    assert case["tests"]["A"].startswith("PASS (host A") and case["tests"]["B"].startswith("NOT RUN")
     row = _row("DL-178")
-    assert row[1] == "C84" and "OPEN (A" in row[6] and "CHECK-B" in row[6]
+    assert row[1] == "C84" and "FIXED-A" in row[6] and "CHECK-B" in row[6]
 
 
 def test_agy_min_version_ruling_lets_a_host_require_153_and_tell_older_builds_to_update():
@@ -310,7 +310,7 @@ def test_agy_min_version_ruling_lets_a_host_require_153_and_tell_older_builds_to
     assert "오류만 너그럽게 (추천)" in entry and "retired read" in rule and "DL-180" in rule
     row = _row("DL-181")
     assert row[1] == "C84" and row[3] == "A" and row[6].startswith("RULED (D-AGY-MIN-VERSION-20261108)")
-    assert "DL-181" in _footer_ids("Rows with A work open:")
+    assert "FIXED-A" in row[6] and "DL-181" not in _footer_ids("Rows with A work open:")
 
 
 def test_agy_web_evidence_ruling_keeps_web_on_and_treats_agy_search_as_a_pointer():
