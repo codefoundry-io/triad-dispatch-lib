@@ -1,5 +1,18 @@
 # Changelog
 
+## agy 1.5.3 custom-agent tool set — 2026-11-08 (not tagged)
+
+- R-CONTAIN (agy leg): record the measured agy 1.5.3 fact — a custom agent is offered only `read_file` (`Path`),
+  `manage_task` and `finish` (+ `search_web` on the research agent), and a file read's stream and hook tool name is
+  `read_file` — and the shared rule: a host's agy allow list, read-audit read classification and packet-read evidence
+  accept `read_file` / `Path` beside `view_file` / `AbsolutePath`; `manage_task` stays off-list.
+- New case C84 (A and B NOT RUN); dev-log DL-178 (`RECORDED-SPEC`; `OPEN (A)`; `CHECK-B`) and DL-179 (`OWNER`: what the
+  agy route does about web evidence now that `read_url_content` is not offered); decision
+  `decisions/2026-11-08-agy-153-toolset.md`; evidence `spikes/2026-11-08-agy-153-toolset.md` with its measured files.
+  A one-line newer-fact pointer is appended to `decisions/2026-10-09-agy-search-tools.md`.
+- No prompt, schema, contract, packaged-bundle or library-code change: `prompts/leg-google.md` and
+  `prompts/investigation.md` move with a library release after the owner's answer (DL-179).
+
 ## Release and host status reconciliation — 2026-10-24 (documentation only, not a new release)
 
 - Record published [dev6](https://github.com/codefoundry-io/triad-dispatch-lib/releases/tag/v0.1.0.dev6)

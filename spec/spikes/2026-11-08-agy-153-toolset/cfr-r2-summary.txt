@@ -1,0 +1,2 @@
+[2026-11-08T15:52:01] [wrapper] antigravity vendor-error exit=65 vendor=0 elapsed=116.1s attempt=1 prompt_file=/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/results-r2/google/attempt-1/prompt.txt model=gemini-4-argon-high reasoning=high
+[2026-11-08T15:52:01] admission refused: read-blind run: ok; no successful read in the digest (files_read and web empty) — every attempted read errored although reads are granted — check the read_attempts outcomes (nonexistent paths / paging overshoot)

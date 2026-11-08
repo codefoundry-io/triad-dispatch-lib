@@ -1,0 +1,2 @@
+1.5.3
+2026-11-08T15:31:26+0900 /Users/chaniri/.local/bin/agy

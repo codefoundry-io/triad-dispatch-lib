@@ -754,6 +754,18 @@
         "AGY": "NOT RUN; multi-consumer removal/update verification pending.",
         "library": "Deterministic API published in v0.1.0.dev6 (source 1872227abd42553635c733e0aa228548a577a732): plan_runtime_retention preserves consumer and active references, retains all artifacts for unknown dependencies, and refuses incomplete inventories. No filesystem deletion, locking or host lifecycle observation is performed; actual host lifecycle is NOT RUN."
       }
+    },
+    {
+      "id": "C84",
+      "surface": "agy-containment",
+      "rule": "R-CONTAIN",
+      "summary": "agy 1.5.3 read_file-only custom-agent schema",
+      "input": "agy 1.5.3 (measured on host A 2026-11-08, spikes/2026-11-08-agy-153-toolset.md): a read-only review custom agent whose tools list names view_file, grep_search, list_dir, find_by_name and finish is offered only read_file (Path, StartLine, EndLine, ByteOffset), manage_task and finish (the research twin adds search_web, not read_url_content); a leg reads the packet with read_file steps carrying Path. Controls: an executed manage_task step; a view_file step with AbsolutePath on an agy build before 1.5.3.",
+      "expected": "The agy read-only leg whose stream shows read_file steps with Path is admitted; its read_file reads are counted as reads in the read audit and as packet reads (Path equal to the packet path) by the host's packet-read evidence; the review hook allows read_file. An executed manage_task still withholds the answer (admission-refused); view_file with AbsolutePath stays accepted. No other tool joins the allow set. Rule: R-CONTAIN agy 1.5.3 sentence; decisions/2026-11-08-agy-153-toolset.md.",
+      "tests": {
+        "A": "NOT RUN — host A implementation pending (authoring/shared-dev-log.md DL-178).",
+        "B": "NOT RUN — check of B's AGY profile route suggested (DL-178)."
+      }
     }
   ]
 }

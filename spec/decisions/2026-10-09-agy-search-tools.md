@@ -188,3 +188,7 @@ search event and limits. Your source already uses an explicit profile; do not
 change your native leg or copy B's plan-mode implementation. Review the shared
 implications of this owner-approved correction at this same spec commit. B is
 the implementation lead for this correction; no A code change is requested.
+
+### Newer fact, 2026-11-08
+
+On agy 1.5.3 a custom agent that lists `grep_search` / `list_dir` / `find_by_name` / `view_file` is no longer offered them (only `read_file`, `manage_task`, `finish`); the "retaining them for custom agents" premise above does not hold there. See [2026-11-08-agy-153-toolset.md](2026-11-08-agy-153-toolset.md).

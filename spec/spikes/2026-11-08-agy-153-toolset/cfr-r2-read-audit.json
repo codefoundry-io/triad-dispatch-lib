@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "cli": "antigravity",
+    "ts_utc": "2026-11-08T06:52:01+00:00",
+    "classification": "vendor-error",
+    "exit_code": 65,
+    "vendor_exit_code": 0,
+    "elapsed_s": 116.09
+  },
+  "digest": {
+    "event_count": 21,
+    "tool_steps": 5,
+    "error_steps": 5,
+    "files_read": [],
+    "files_read_omitted": 0,
+    "denied": [
+      {
+        "tool": "read_file",
+        "params": {
+          "Path": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2/brief.md"
+        }
+      },
+      {
+        "tool": "read_file",
+        "params": {
+          "Path": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2/diff.prod.patch"
+        }
+      }
+    ],
+    "denied_omitted": 0,
+    "web": [],
+    "web_omitted": 0,
+    "read_attempts": [
+      {
+        "tool": "read_file",
+        "params": {
+          "Path": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2/brief.md"
+        },
+        "outcome": "denied",
+        "class": "other"
+      },
+      {
+        "tool": "grep_search",
+        "params": {
+          "Query": ".*",
+          "SearchPath": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2/brief.md"
+        },
+        "outcome": "error",
+        "class": "read"
+      },
+      {
+        "tool": "finish",
+        "params": {
+          "attempt": "1",
+          "content_digest": "7484aea2cb916e6be9b22070a72a976a84102c2f8eeef69e2dee63f2a9319154",
+          "family": "google"
+        },
+        "outcome": "error",
+        "class": "other"
+      },
+      {
+        "tool": "list_dir",
+        "params": {
+          "DirectoryPath": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2"
+        },
+        "outcome": "error",
+        "class": "read"
+      },
+      {
+        "tool": "read_file",
+        "params": {
+          "Path": "/Users/chaniri/triad/_runs/review/2026-11-08-lora-rerun-r2/wt-r2/diff.prod.patch"
+        },
+        "outcome": "denied",
+        "class": "other"
+      }
+    ],
+    "read_attempts_omitted": 0,
+    "conversation_ids": [
+      "80104c3c-ca7a-40c0-a567-c17319574363"
+    ],
+    "conversation_ids_omitted": 0,
+    "runtime_models": [
+      "gemini-4-argon-high"
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "status": "SUCCESS",
+        "tool_steps": 5,
+        "error_steps": 5,
+        "runtime_models": [
+          "gemini-4-argon-high"
+        ],
+        "files_read": 0,
+        "denied": 2,
+        "web": 0,
+        "read_attempts": 5,
+        "conversation_ids": [
+          "80104c3c-ca7a-40c0-a567-c17319574363"
+        ]
+      }
+    ],
+    "attempts_omitted": 0
+  }
+}
