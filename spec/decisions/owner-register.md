@@ -2,6 +2,25 @@
 
 Dates in decision headings and IDs are the owner's local date (KST, UTC+9); timestamps given with `Z` are UTC.
 
+<a id="D-AGY-MIN-VERSION-20261108"></a>
+## D-AGY-MIN-VERSION-20261108: no backward compatibility with older agy builds; tell the user to update
+
+Context: host A's first agy 1.5.3 fix kept the pre-1.5.3 tool names (`view_file`, `grep_search`, `list_dir`,
+`find_by_name`) accepted beside `read_file`, and the alias clash (`view_file` in `tools:` resolves to `read_file`;
+listing both aborts the run) forced a prose-only workaround. The leader asked the owner whether to keep backward
+compatibility or require an update.
+
+Owner, 2026-11-08 (verbatim): "하위호환성 유지할거야 업데이트를 요청하고 에러낼거야? 난 그냥 업데이트하라고고지하는게 나을 것 같아"
+
+Leader's reading: do not keep compatibility code for older agy builds. Host A's read-only agy path requires agy
+>= 1.5.3 (the only measured version) and refuses an older build before any spawn with one line telling the user to
+run `agy update` (`config-conflict`, the existing floor form); its agent `tools:` lists name only what 1.5.3 offers
+(`read_file`, `finish`; the research agent adds `read_url_content` and `search_web`), and its census, hook and gate
+accept `read_file` only. The owner updates agy by hand (owner 2026-11-08: "내가 주기적으로 할께").
+
+Applies: R-CONTAIN (agy leg), C84, DL-178, DL-181. Host B chooses its own route; this ruling binds host A and allows,
+not requires, the same on B.
+
 <a id="D-AGY-WEB-EVIDENCE-20261108"></a>
 ## D-AGY-WEB-EVIDENCE-20261108: web stays on for every review leg; an agy web fact is a search pointer
 

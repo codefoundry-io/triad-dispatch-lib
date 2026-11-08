@@ -13,6 +13,10 @@
   `decisions/2026-11-08-agy-153-toolset.md`.
 - Dev-log: DL-179 `OWNER` → `RULED`; new DL-180 `OPEN (spec: next library release)` for `prompts/leg-google.md`,
   `prompts/investigation.md`, their packaged bundle copies and `tests/test_prompts.py`.
+- Owner ruling [D-AGY-MIN-VERSION-20261108](decisions/owner-register.md#D-AGY-MIN-VERSION-20261108): no backward
+  compatibility with older agy builds; R-CONTAIN now lets a host require agy >= 1.5.3 on the read-only path and refuse an
+  older build with an update notice (host A does). New DL-181. Measured alias clash (`view_file` in `tools:` resolves to
+  `read_file`; listing both aborts the run) recorded in the spike (`alias-clash.txt`), the decision record and R-CONTAIN.
 - No prompt, schema, contract, packaged-bundle or library-code change.
 
 ## agy 1.5.3 custom-agent tool set — 2026-11-08 (not tagged)

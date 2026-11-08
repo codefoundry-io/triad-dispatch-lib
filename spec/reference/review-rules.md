@@ -745,7 +745,9 @@ not attribution (found on A over rounds r11–r13, `authoring/shared-dev-log.md`
   agent adds `search_web`; `view_file`, `list_dir`, `grep_search`, `find_by_name` and `read_url_content` are not
   offered), and a file read's canonical stream and hook tool name is `read_file`. Shared rule, both hosts: a host's agy
   allow list, read-audit read classification and packet-read evidence accept `read_file` (path parameter `Path`)
-  alongside `view_file` (`AbsolutePath`); `manage_task` stays off-list (C84,
+  (a host that still serves pre-1.5.3 builds also accepts `view_file` / `AbsolutePath`; a host MAY instead require agy
+  >= 1.5.3 on the read-only path and refuse an older build before any spawn with an update notice — host A does,
+  [D-AGY-MIN-VERSION-20261108](../decisions/owner-register.md#D-AGY-MIN-VERSION-20261108)); `manage_task` stays off-list (C84,
   [decisions/2026-11-08-agy-153-toolset.md](../decisions/2026-11-08-agy-153-toolset.md)). On 1.5.3 `view_file` in a custom agent's `tools:` resolves to `read_file` and listing both aborts the run
   ("tool name conflict"), so `tools:` names only one of the two and the agent's prose allowlist names `read_file`. A read-only call without `--web` and without `--cwd` is
   refused with exit 3 before any vendor work (`:2391-2403`). Historical B baseline before C72: the formal route passed no `--agent`

@@ -297,6 +297,21 @@ def test_agy_153_read_file_is_a_shared_containment_rule():
     assert row[1] == "C84" and "OPEN (A" in row[6] and "CHECK-B" in row[6]
 
 
+def test_agy_min_version_ruling_lets_a_host_require_153_and_tell_older_builds_to_update():
+    # owner 2026-11-08 (D-AGY-MIN-VERSION-20261108): no backward compatibility; tell the user to update
+    register = (ROOT / "decisions/owner-register.md").read_text()
+    entry = register[register.index('<a id="D-AGY-MIN-VERSION-20261108"></a>'):]
+    entry = entry[:entry.index("<a id=", 10)]
+    assert "하위호환성 유지할거야 업데이트를 요청하고 에러낼거야? 난 그냥 업데이트하라고고지하는게 나을 것 같아" in entry
+    assert "leader's reading" in entry.lower() or "Leader's reading" in entry
+    rule = " ".join(_rule("R-CONTAIN").split())
+    assert "D-AGY-MIN-VERSION-20261108" in rule and ">= 1.5.3" in rule and "update notice" in rule
+    assert "tool name conflict" in rule
+    row = _row("DL-181")
+    assert row[1] == "C84" and row[3] == "A" and row[6].startswith("RULED (D-AGY-MIN-VERSION-20261108)")
+    assert "DL-181" in _footer_ids("Rows with A work open:")
+
+
 def test_agy_web_evidence_ruling_keeps_web_on_and_treats_agy_search_as_a_pointer():
     # owner 2026-11-08 (D-AGY-WEB-EVIDENCE-20261108): web stays on for every review leg; agy >= 1.4.8 has no page fetch
     register = (ROOT / "decisions/owner-register.md").read_text()
