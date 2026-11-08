@@ -21,6 +21,15 @@ accept `read_file` only. The owner updates agy by hand (owner 2026-11-08: "내�
 Applies: R-CONTAIN (agy leg), C84, DL-178, DL-181. Host B chooses its own route; this ruling binds host A and allows,
 not requires, the same on B.
 
+Follow-up, 2026-11-08: host A's review found a measured 1.5.3 shape — while the shared Google prompt still names the
+retired read tools (DL-180), the model may call `grep_search` / `list_dir`; agy returns an ERROR step before the hook
+(not a denial), which a census without the retired names files as an off-list execution and voids the leg (lora-rerun
+r2 google leg: `grep_search` error, `list_dir` error, no hook row). Asked whether to tolerate those errored calls, update
+the prompt first, or both, the owner chose (verbatim option label): "오류만 너그럽게 (추천)". Leader's reading: an
+errored — not executed, not denied — step of a retired read name (`view_file`, `grep_search`, `list_dir`,
+`find_by_name`) is filed as an errored read, not an off-list execution, until the prompt is updated (DL-180); a DONE step
+of a retired name still voids.
+
 <a id="D-AGY-WEB-EVIDENCE-20261108"></a>
 ## D-AGY-WEB-EVIDENCE-20261108: web stays on for every review leg; an agy web fact is a search pointer
 

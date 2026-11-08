@@ -307,6 +307,7 @@ def test_agy_min_version_ruling_lets_a_host_require_153_and_tell_older_builds_to
     rule = " ".join(_rule("R-CONTAIN").split())
     assert "D-AGY-MIN-VERSION-20261108" in rule and ">= 1.5.3" in rule and "update notice" in rule
     assert "tool name conflict" in rule
+    assert "오류만 너그럽게 (추천)" in entry and "retired read" in rule and "DL-180" in rule
     row = _row("DL-181")
     assert row[1] == "C84" and row[3] == "A" and row[6].startswith("RULED (D-AGY-MIN-VERSION-20261108)")
     assert "DL-181" in _footer_ids("Rows with A work open:")

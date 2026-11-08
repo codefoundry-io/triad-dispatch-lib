@@ -17,6 +17,8 @@
   compatibility with older agy builds; R-CONTAIN now lets a host require agy >= 1.5.3 on the read-only path and refuse an
   older build with an update notice (host A does). New DL-181. Measured alias clash (`view_file` in `tools:` resolves to
   `read_file`; listing both aborts the run) recorded in the spike (`alias-clash.txt`), the decision record and R-CONTAIN.
+- Owner follow-up on D-AGY-MIN-VERSION-20261108 ("오류만 너그럽게 (추천)"): while the shared Google prompt names the
+  retired read tools (DL-180), a host may file an errored retired-read step as an errored read; a DONE one still voids.
 - No prompt, schema, contract, packaged-bundle or library-code change.
 
 ## agy 1.5.3 custom-agent tool set — 2026-11-08 (not tagged)
