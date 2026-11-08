@@ -283,3 +283,16 @@ def test_task_blocked_has_one_producer_the_codex_host_claude_wrapper():
     assert "promote_claude_extraction" not in note and "DL-110" in note
     assert "the three extractors" not in " ".join(_rule("R-CLASSIFY").split())
     assert "FIXED-A" in _row("DL-110")[6]
+
+
+def test_agy_153_read_file_is_a_shared_containment_rule():
+    # agy 1.5.3 (measured on host A 2026-11-08): a custom agent is offered read_file (Path), never view_file
+    rule = " ".join(_rule("R-CONTAIN").split())
+    assert "agy 1.5.3" in rule and "`read_file`" in rule and "`Path`" in rule
+    assert "C84" in rule and "decisions/2026-11-08-agy-153-toolset.md" in rule
+    case = cases()["C84"]
+    assert "R-CONTAIN" in case["rule"] and "manage_task" in case["expected"]
+    assert case["tests"]["A"].startswith("NOT RUN") and case["tests"]["B"].startswith("NOT RUN")
+    row = _row("DL-178")
+    assert row[1] == "C84" and "OPEN (A" in row[6] and "CHECK-B" in row[6]
+    assert re.search(r"(?:^|; )OWNER", _row("DL-179")[6])
